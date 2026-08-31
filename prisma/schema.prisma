@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hashed password
+  name      String?
+  role      String   @default("COUPLE") // ADMIN, PHOTOGRAPHER, COUPLE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  weddingsOwned Wedding[] @relation("WeddingOwner")
+  weddingsAsCouple Wedding[] @relation("WeddingCouple")
+}
+
+model Wedding {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  brideName       String
+  groomName       String
+  date            DateTime?
+  description     String?
+  coverImage      String?
+  
+  // Branding & Settings
+  themeColor      String   @default("#000000")
+  welcomeMessage  String?
+  isPublic        Boolean  @default(true)
+  requireApproval Boolean  @default(true) // Moderation flag
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  ownerId         String
+  owner           User     @relation("WeddingOwner", fields: [ownerId], references: [id])
+  
+  coupleId        String?
+  couple          User?    @relation("WeddingCouple", fields: [coupleId], references: [id])
+  
+  albums          Album[]
+  media           Media[]
+  guests          Guest[]
+  locations       Location[]
+  timeline        TimelineItem[]
+  messages        Message[]
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  name        String
+  address     String?
+  coordinates String?  // "lat,lng"
+  type        String   @default("CEREMONY") // CEREMONY, RECEPTION, PARTY
+  weddingId   String
+  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+}
+
+model TimelineItem {
+  id          String   @id @default(cuid())
+  time        String   // e.g. "15:30"
+  title       String
+  description String?
+  weddingId   String
+  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  order       Int      @default(0)
+}
+
+model Guest {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?
+  weddingId String
+  wedding   Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  
+  media     Media[]
+  messages  Message[]
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  text      String
+  guestName String?
+  
+  weddingId String
+  wedding   Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  
+  guestId   String?
+  guest     Guest?   @relation(fields: [guestId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+}
+
+model Album {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   @default("CUSTOM") // GUESTS, PROFESSIONAL, SMART, CUSTOM
+  
+  weddingId   String
+  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  media       Media[]
+}
+
+model Media {
+  id          String      @id @default(cuid())
+  url         String
+  thumbnail   String?
+  type        String      @default("IMAGE") // IMAGE, VIDEO
+  mimeType    String?
+  size        Int         @default(0) // bytes
+  status      String      @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  // AI and Metadata preparation
+  aiTags      String?     // JSON string for objects/people
+  exif        String?     // JSON string for camera data/location
+  
+  weddingId   String
+  wedding     Wedding     @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  
+  albumId     String?
+  album       Album?      @relation(fields: [albumId], references: [id], onDelete: SetNull)
+
+  guestId     String?
+  guest       Guest?      @relation(fields: [guestId], references: [id], onDelete: SetNull)
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
