@@ -7,9 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, Image as ImageIcon, MapPin, Clock, MessageSquareHeart } from "lucide-react";
 import GuestbookForm from "./GuestbookForm";
 
-export default async function WeddingPublicPage({ params }: { params: { slug: string } }) {
+export default async function WeddingPublicPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const wedding = await prisma.wedding.findUnique({
-    where: { slug: params.slug },
+    where: { slug: slug },
     include: {
       media: {
         where: { status: "APPROVED" },

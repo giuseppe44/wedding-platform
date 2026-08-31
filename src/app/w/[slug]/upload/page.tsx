@@ -2,9 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import UploadClient from "./UploadClient";
 
-export default async function UploadPage({ params }: { params: { slug: string } }) {
+export default async function UploadPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const wedding = await prisma.wedding.findUnique({
-    where: { slug: params.slug },
+    where: { slug: slug },
     select: { id: true, brideName: true, groomName: true, slug: true, themeColor: true }
   });
 

@@ -28,25 +28,39 @@ export default function Home() {
           <div className="absolute inset-0 bg-stone-900/40 mix-blend-multiply" />
         </div>
         
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-16">
-          <h1 className="text-5xl md:text-7xl font-serif text-white mb-6 drop-shadow-xl">
-            Il matrimonio visto attraverso gli occhi di tutti.
-          </h1>
-          <p className="text-xl md:text-2xl text-stone-200 mb-10 font-light drop-shadow-md max-w-2xl mx-auto">
-            La prima Digital Wedding Experience. Raccogli foto, video e dediche dai tuoi invitati in un unico spazio elegante, privato e sicuro.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/login">
-              <Button size="lg" className="h-14 px-8 text-lg rounded-full bg-stone-100 text-stone-900 hover:bg-white transition-all">
-                Crea il tuo Spazio
-              </Button>
-            </Link>
-            <Link href="/w/demo-chiara-e-matteo">
-              <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full bg-black/20 text-white border-white/50 hover:bg-black/40 backdrop-blur-sm transition-all">
-                Esplora Demo
-              </Button>
-            </Link>
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
+          <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium tracking-wide">
+            LA PIATTAFORMA N.1 PER PROFESSIONISTI DEL MATRIMONIO
           </div>
+          <h1 className="text-5xl md:text-7xl font-serif text-white mb-6 drop-shadow-xl leading-tight">
+            Il matrimonio visto<br />attraverso gli occhi di tutti.
+          </h1>
+          <p className="text-xl md:text-2xl text-stone-200 mb-10 font-light drop-shadow-md max-w-3xl mx-auto">
+            Offri ai tuoi sposi una Digital Wedding Experience indimenticabile. Raccogli foto, video e dediche dagli invitati in uno spazio elegante, privato e sicuro.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="/w/demo-chiara-e-matteo">
+              <Button size="lg" className="h-14 px-8 text-lg rounded-full bg-white text-stone-900 hover:bg-stone-200 transition-all shadow-xl font-semibold">
+                Esplora Lato Invitati
+              </Button>
+            </Link>
+            <form action="/login" method="POST" className="inline-block">
+              {/* Form fittizio per reindirizzare direttamente alla dashboard sposi in demo */}
+              <input type="hidden" name="role" value="COUPLE" />
+              <Button formAction={async () => {
+                "use server";
+                const { loginAction } = await import("@/app/actions");
+                await loginAction("COUPLE");
+                const { redirect } = await import("next/navigation");
+                redirect("/couple/demo-chiara-e-matteo");
+              }} size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full bg-black/30 text-white border-white/50 hover:bg-black/50 backdrop-blur-sm transition-all">
+                Esplora Lato Sposi
+              </Button>
+            </form>
+          </div>
+          <p className="text-stone-300 text-sm mt-6 flex items-center justify-center gap-2">
+            <ShieldCheck className="w-4 h-4" /> Nessuna registrazione richiesta per la demo
+          </p>
         </div>
       </section>
 

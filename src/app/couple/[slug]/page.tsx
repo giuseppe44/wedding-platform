@@ -11,9 +11,10 @@ import Link from "next/link";
 import { Check, X, Download, Camera, MessageSquareHeart, Settings, Clock } from "lucide-react";
 import Image from "next/image";
 
-export default async function CoupleDashboard({ params }: { params: { slug: string } }) {
+export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const wedding = await prisma.wedding.findUnique({
-    where: { slug: params.slug },
+    where: { slug: slug },
     include: {
       media: { orderBy: { createdAt: "desc" } },
       timeline: { orderBy: { order: "asc" } },
