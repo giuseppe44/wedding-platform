@@ -24,10 +24,10 @@ export default async function CoupleDashboard({ params }: { params: { slug: stri
 
   if (!wedding) notFound();
 
-  const pendingMedia = wedding.media.filter(m => m.status === "PENDING");
-  const approvedMedia = wedding.media.filter(m => m.status === "APPROVED");
-  const pendingMessages = wedding.messages.filter(m => m.status === "PENDING");
-  const approvedMessages = wedding.messages.filter(m => m.status === "APPROVED");
+  const pendingMedia = wedding.media.filter((m: any) => m.status === "PENDING");
+  const approvedMedia = wedding.media.filter((m: any) => m.status === "APPROVED");
+  const pendingMessages = wedding.messages.filter((m: any) => m.status === "PENDING");
+  const approvedMessages = wedding.messages.filter((m: any) => m.status === "APPROVED");
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -105,7 +105,7 @@ export default async function CoupleDashboard({ params }: { params: { slug: stri
                       Da Approvare ({pendingMedia.length})
                     </h2>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      {pendingMedia.map((item) => (
+                      {pendingMedia.map((item: any) => (
                         <Card key={item.id} className="overflow-hidden shadow-sm">
                           <div className="aspect-square bg-gray-200 relative">
                             {item.type === "VIDEO" ? (
@@ -143,7 +143,7 @@ export default async function CoupleDashboard({ params }: { params: { slug: stri
                     <p className="text-gray-500">Nessuna foto approvata al momento.</p>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                      {approvedMedia.map((item) => (
+                      {approvedMedia.map((item: any) => (
                         <div key={item.id} className="aspect-square relative rounded-lg overflow-hidden group bg-gray-200">
                            {item.type === "VIDEO" ? (
                               <video src={item.url} className="object-cover w-full h-full" controls muted playsInline />
@@ -174,7 +174,7 @@ export default async function CoupleDashboard({ params }: { params: { slug: stri
                   <section className="bg-orange-50 p-6 rounded-xl border border-orange-100 mb-8">
                     <h2 className="text-xl font-semibold mb-4 text-orange-800">Dediche da Approvare</h2>
                     <div className="space-y-4">
-                      {pendingMessages.map(msg => (
+                      {pendingMessages.map((msg: any) => (
                         <Card key={msg.id}>
                           <CardContent className="p-4 flex justify-between items-center">
                             <div>
@@ -202,7 +202,7 @@ export default async function CoupleDashboard({ params }: { params: { slug: stri
                     <p className="text-gray-500">Nessuna dedica pubblicata.</p>
                   ) : (
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {approvedMessages.map(msg => (
+                      {approvedMessages.map((msg: any) => (
                         <Card key={msg.id}>
                           <CardContent className="p-4 relative group">
                             <p className="italic text-stone-700">"{msg.text}"</p>
@@ -245,7 +245,7 @@ export default async function CoupleDashboard({ params }: { params: { slug: stri
                 </Card>
 
                 <div className="space-y-4">
-                  {wedding.timeline.map((item) => (
+                  {wedding.timeline.map((item: any) => (
                     <Card key={item.id}>
                       <CardContent className="p-4 flex justify-between items-center">
                         <div className="flex gap-4 items-center">

@@ -86,7 +86,7 @@ export default async function WeddingPublicPage({ params }: { params: { slug: st
               <p className="text-center text-stone-500 py-12">Le foto appariranno qui una volta approvate. Sii il primo a caricarle!</p>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {wedding.media.map((item) => (
+                {wedding.media.map((item: any) => (
                   <div key={item.id} className="aspect-square relative rounded-md overflow-hidden bg-stone-200">
                     {item.type === "VIDEO" ? (
                       <video src={item.url} className="object-cover w-full h-full" controls muted playsInline />
@@ -105,7 +105,7 @@ export default async function WeddingPublicPage({ params }: { params: { slug: st
               <p className="text-center text-stone-500 py-12">Programma non ancora pubblicato.</p>
             ) : (
               <div className="space-y-6 max-w-lg mx-auto">
-                {wedding.timeline.map((item, idx) => (
+                {wedding.timeline.map((item: any, idx: any) => (
                   <div key={item.id} className="flex gap-4">
                     <div className="font-bold text-lg w-16 text-right pt-1">{item.time}</div>
                     <div className="relative flex-1 pb-8 border-l-2 border-stone-200 pl-6">
@@ -125,7 +125,7 @@ export default async function WeddingPublicPage({ params }: { params: { slug: st
                <p className="text-center text-stone-500 py-12">Location non ancora inserite.</p>
             ) : (
               <div className="grid gap-6 md:grid-cols-2">
-                {wedding.locations.map(loc => (
+                {wedding.locations.map((loc: any) => (
                   <Card key={loc.id}>
                     <CardContent className="p-6 text-center">
                       <MapPin className="h-8 w-8 mx-auto mb-3 text-stone-400" />
@@ -150,7 +150,7 @@ export default async function WeddingPublicPage({ params }: { params: { slug: st
             <GuestbookForm weddingId={wedding.id} buttonColor={wedding.themeColor} />
             
             <div className="space-y-4 mt-8">
-              {wedding.messages.map(msg => (
+              {wedding.messages.map((msg: any) => (
                 <div key={msg.id} className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
                   <p className="text-lg italic text-stone-700">"{msg.text}"</p>
                   <p className="text-right text-stone-500 font-medium mt-2">— {msg.guestName || "Anonimo"}</p>

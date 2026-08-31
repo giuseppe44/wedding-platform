@@ -16,7 +16,7 @@ export default async function DashboardPage() {
     }
   });
 
-  const totalStorage = weddings.reduce((acc, w) => acc + w.media.reduce((mAcc, m) => mAcc + m.size, 0), 0);
+  const totalStorage = weddings.reduce((acc: any, w: any) => acc + w.media.reduce((mAcc: any, m: any) => mAcc + m.size, 0), 0);
   const formattedStorage = (totalStorage / (1024 * 1024)).toFixed(2) + " MB";
 
   return (
@@ -79,8 +79,8 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {weddings.map((w) => {
-                const wStorage = (w.media.reduce((acc, m) => acc + m.size, 0) / (1024 * 1024)).toFixed(1);
+              {weddings.map((w: any) => {
+                const wStorage = (w.media.reduce((acc: any, m: any) => acc + m.size, 0) / (1024 * 1024)).toFixed(1);
                 return (
                   <Card key={w.id} className="shadow-sm hover:shadow-md transition-shadow">
                     <CardContent className="p-6">
