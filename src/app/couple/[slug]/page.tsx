@@ -292,6 +292,17 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
                         />
                       </div>
 
+                      <div className="space-y-2">
+                        <Label>Link Album Esterno (Google Drive, Dropbox, Pixieset)</Label>
+                        <Input 
+                          type="url" 
+                          name="externalGalleryUrl" 
+                          defaultValue={wedding.externalGalleryUrl || ""} 
+                          placeholder="https://drive.google.com/..." 
+                        />
+                        <p className="text-sm text-gray-500">Se inserito, nella galleria pubblica apparirà un bottone per visitare l'album ufficiale.</p>
+                      </div>
+
                       <Button type="submit" className="w-full">Salva Impostazioni</Button>
                     </form>
                   </CardContent>

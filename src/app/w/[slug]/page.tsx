@@ -83,6 +83,15 @@ export default async function WeddingPublicPage({ params }: { params: Promise<{ 
           
           <TabsContent value="gallery" className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
             <h3 className="text-2xl font-serif text-center mb-6">Galleria</h3>
+            {wedding.externalGalleryUrl && (
+              <div className="flex justify-center mb-6">
+                <a href={wedding.externalGalleryUrl} target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="rounded-full shadow-lg" style={{ backgroundColor: wedding.themeColor || '#000' }}>
+                    📸 Guarda l'Album Ufficiale
+                  </Button>
+                </a>
+              </div>
+            )}
             {wedding.media.length === 0 ? (
               <p className="text-center text-stone-500 py-12">Le foto appariranno qui una volta approvate. Sii il primo a caricarle!</p>
             ) : (

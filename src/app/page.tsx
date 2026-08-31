@@ -44,11 +44,19 @@ export default function Home() {
                 Esplora Lato Invitati
               </Button>
             </Link>
-                    <Link href="/login">
-           <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full bg-black/30 text-white border-white/50 hover:bg-black/50 backdrop-blur-sm transition-all">
-             Esplora Lato Sposi
-           </Button>
-         </Link>
+            <form action="/login" method="POST" className="inline-block">
+              {/* Form fittizio per reindirizzare direttamente alla dashboard sposi in demo */}
+              <input type="hidden" name="role" value="COUPLE" />
+              <Button formAction={async () => {
+                "use server";
+                const { loginAction } = await import("@/app/actions");
+                await loginAction("COUPLE");
+                const { redirect } = await import("next/navigation");
+                redirect("/couple/demo-chiara-e-matteo");
+              }} size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full bg-black/30 text-white border-white/50 hover:bg-black/50 backdrop-blur-sm transition-all">
+                Esplora Lato Sposi
+              </Button>
+            </form>
           </div>
           <p className="text-stone-300 text-sm mt-6 flex items-center justify-center gap-2">
             <ShieldCheck className="w-4 h-4" /> Nessuna registrazione richiesta per la demo

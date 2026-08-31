@@ -38,6 +38,7 @@ model Wedding {
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  externalGalleryUrl String?
 
   ownerId         String
   owner           User     @relation("WeddingOwner", fields: [ownerId], references: [id])

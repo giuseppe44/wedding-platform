@@ -8,11 +8,12 @@ export async function updateBranding(weddingId: string, formData: FormData) {
   await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
   const themeColor = formData.get("themeColor") as string;
   const welcomeMessage = formData.get("welcomeMessage") as string;
+  const externalGalleryUrl = formData.get("externalGalleryUrl") as string;
   const slug = formData.get("slug") as string;
 
   await prisma.wedding.update({
     where: { id: weddingId },
-    data: { themeColor, welcomeMessage },
+    data: { themeColor, welcomeMessage, externalGalleryUrl },
   });
 
   revalidatePath(`/couple/${slug}`, "page");
