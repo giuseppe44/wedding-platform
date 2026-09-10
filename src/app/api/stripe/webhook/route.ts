@@ -50,7 +50,7 @@ export async function POST(req: Request) {
                 planId: plan.id,
                 stripeSubscriptionId: subscription.id,
                 stripeCustomerId: customerId,
-                currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+                currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
               },
               create: {
                 userId,
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
                 planId: plan.id,
                 stripeSubscriptionId: subscription.id,
                 stripeCustomerId: customerId,
-                currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+                currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
               }
             });
             console.log(`Subscription created/updated for user ${userId}`);
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
             where: { id: dbSub.id },
             data: {
               status: subscription.status,
-              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
             }
           });
           console.log(`Subscription ${dbSub.id} updated to status ${subscription.status}`);

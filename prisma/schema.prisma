@@ -353,6 +353,9 @@ model Plan {
   id        String   @id @default(cuid())
   name      String   @unique // FREE, PREMIUM, DIAMOND
   features  String // JSON string of allowed features
+  price     Int      @default(0) // Prezzo in centesimi
+  interval  String   @default("month") // month, year
+  stripePriceId String? // ID del Price in Stripe
   createdAt DateTime @default(now())
 
   subscriptions Subscription[]
@@ -360,11 +363,14 @@ model Plan {
 
 model Subscription {
   id        String    @id @default(cuid())
-  userId    String
+  userId    String    @unique
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   planId    String
   plan      Plan      @relation(fields: [planId], references: [id], onDelete: Restrict)
   status    String    @default("ACTIVE") // ACTIVE, CANCELED, EXPIRED
+  stripeSubscriptionId String? @unique
+  stripeCustomerId     String?
+  currentPeriodEnd     DateTime?
   expiresAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

@@ -21,6 +21,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
+  // Handle external Mock URLs (Unsplash)
+  if (timelineItem.coverImage.startsWith("http") && !timelineItem.coverImage.includes("supabase.co")) {
+    return NextResponse.redirect(timelineItem.coverImage, 307);
+  }
+
   // Generate Cloud Signed URL or Local Stream
   if (isCloudStorage) {
     const signedUrl = await getSignedUrl(timelineItem.coverImage);

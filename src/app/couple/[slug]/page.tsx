@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import Link from "next/link";
 import { Plus, ArrowRight, Calendar } from "lucide-react";
+import { PlanWidget } from "@/components/PlanWidget";
 
 export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -69,6 +70,37 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
     "CUSTOM": "Altro"
   };
 
+  const coupleSubscription = await prisma.subscription.findFirst({
+    where: { userId: session.userId, status: "ACTIVE" },
+    include: { plan: true },
+    orderBy: { createdAt: "desc" }
+  });
+
+  const isCouplePremium = !!coupleSubscription && coupleSubscription.plan?.name.toUpperCase() !== "FREE" && coupleSubscription.plan?.name.toUpperCase() !== "BASE";
+  const couplePlanName = isCouplePremium ? coupleSubscription.plan.name : "Piano Base (Incluso)";
+
+  const coupleFeatures = {
+    included: isCouplePremium ? [
+      "Timeline illimitata per i capitoli di vita",
+      "Foto e Video in altissima qualità e senza limiti",
+      "Possibilità di rimuovere il marchio della piattaforma",
+      "Gestione avanzata per migliaia di invitati"
+    ] : [
+      "Fino a 3 capitoli della vostra storia",
+      "Raccolta foto da invitati (fino a 200 media)",
+      "Gestione Invitati e Tavoli (fino a 50 ospiti)",
+      "Digital Guestbook"
+    ],
+    missing: isCouplePremium ? [] : [
+      "Spazio illimitato per migliaia di foto e video ad alta risoluzione",
+      "Capitoli di vita infiniti (Viaggi, Anniversari, Famiglia)",
+      "Gestione di oltre 50 invitati",
+      "Rimozione del logo della piattaforma"
+    ]
+  };
+
+  const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
       {/* 1. Header Emozionale */}
@@ -79,6 +111,20 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
             Il vostro matrimonio è il primo capitolo. La vostra storia continua qui.
           </p>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {isOwner && (
+          <PlanWidget 
+            role="COUPLE"
+            currentPlanName={couplePlanName}
+            isActive={!!coupleSubscription}
+            expiresAt={coupleSubscription?.currentPeriodEnd?.toISOString() || coupleSubscription?.expiresAt?.toISOString()}
+            features={coupleFeatures}
+            upgradeLink={`/couple/${wedding.slug}/billing`}
+            stripeConfigured={stripeConfigured}
+          />
+        )}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-16">

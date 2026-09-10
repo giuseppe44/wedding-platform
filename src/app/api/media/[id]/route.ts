@@ -35,6 +35,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
   }
 
+  // Handle external Mock URLs (Unsplash)
+  if (media.url.startsWith("http") && !media.url.includes("supabase.co")) {
+    return NextResponse.redirect(media.url, 307);
+  }
+
   // Generate Cloud Signed URL or Local Stream
   if (isCloudStorage) {
     const signedUrl = await getSignedUrl(media.url);

@@ -41,6 +41,12 @@ export default async function BillingPage() {
       <div className="mb-10">
         <h1 className="text-3xl font-serif text-stone-800 mb-2">Piani e Fatturazione</h1>
         <p className="text-stone-600">Gestisci il tuo abbonamento e la visibilità del tuo profilo professionale.</p>
+        
+        {!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY && (
+          <div className="mt-4 p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm">
+            <strong>Modalità Demo:</strong> I pagamenti non sono ancora attivi. La configurazione di Stripe sarà completata prima del lancio ufficiale.
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

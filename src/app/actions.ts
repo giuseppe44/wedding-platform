@@ -4,24 +4,36 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { requireAuth, setSession } from "@/lib/auth";
 
-export async function loginAction(role: string) {
-  let user = await prisma.user.findFirst({ where: { role: "PHOTOGRAPHER" } });
-  if (!user) {
-    user = await prisma.user.create({
-      data: {
-        email: "demo@fotografo.it",
-        password: "hashed_password",
-        role: "PHOTOGRAPHER",
-        name: "Studio Fotografico Demo",
-      },
-    });
-  }
-  
+export async function loginAction(role: string, email?: string, password?: string, rememberMe: boolean = false) {
   if (role === "PHOTOGRAPHER") {
-    await setSession(user.id, "PHOTOGRAPHER");
+    let user = await prisma.user.findFirst({ where: { role: "PHOTOGRAPHER" } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: "demo@fotografo.it",
+          password: "hashed_password",
+          role: "PHOTOGRAPHER",
+          name: "Studio Fotografico Demo",
+        },
+      });
+    }
+    await setSession(user.id, "PHOTOGRAPHER", rememberMe);
+  } else if (role === "ADMIN") {
+    let user = await prisma.user.findFirst({ where: { role: "ADMIN" } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: "admin@weddingplatform.com",
+          password: "hashed_password",
+          role: "ADMIN",
+          name: "Super Admin",
+        },
+      });
+    }
+    await setSession(user.id, "ADMIN", rememberMe);
   } else {
-    // For MVP Demo Couple mode, any user can act as couple (would be wedding specific in prod)
-    await setSession("couple-demo-id", "COUPLE");
+    // For MVP Demo Couple mode
+    await setSession("couple-demo-id", "COUPLE", rememberMe);
   }
 }
 

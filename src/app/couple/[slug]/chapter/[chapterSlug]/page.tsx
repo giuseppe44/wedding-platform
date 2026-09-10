@@ -236,24 +236,24 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
           </div>
 
           <Tabs defaultValue="photos" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-8 mb-8 bg-stone-100 p-1 rounded-xl h-auto">
-              <TabsTrigger value="photos" className="gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"><Camera className="h-4 w-4"/> Foto</TabsTrigger>
-              <TabsTrigger value="messages" className="gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            <TabsList className="flex w-full overflow-x-auto no-scrollbar mb-8 bg-stone-100 p-1.5 rounded-2xl h-auto border border-stone-200/50 justify-start sm:justify-center">
+              <TabsTrigger value="photos" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Camera className="h-4 w-4"/> Foto</TabsTrigger>
+              <TabsTrigger value="messages" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all">
                 <MessageSquareHeart className="h-4 w-4"/> Dediche 
-                {pendingMessages.length > 0 && <span className="ml-1 bg-orange-500 text-white rounded-full px-2 text-xs">{pendingMessages.length}</span>}
+                {pendingMessages.length > 0 && <span className="ml-1 bg-rose-500 text-white rounded-full px-2 text-xs">{pendingMessages.length}</span>}
               </TabsTrigger>
 
-              {isOwner && <TabsTrigger value="timeline" className="gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"><Clock className="h-4 w-4"/> Programma</TabsTrigger>}
+              {isOwner && <TabsTrigger value="timeline" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Clock className="h-4 w-4"/> Programma</TabsTrigger>}
 
-              {isOwner && <TabsTrigger value="dettagli" className="gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"><Edit2 className="h-4 w-4"/> Dettagli</TabsTrigger>}
+              {isOwner && <TabsTrigger value="dettagli" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Edit2 className="h-4 w-4"/> Dettagli</TabsTrigger>}
 
-              {isOwner && <TabsTrigger value="seating" className="gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"><Users className="h-4 w-4"/> Tavoli</TabsTrigger>}
+              {isOwner && <TabsTrigger value="seating" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Users className="h-4 w-4"/> Tavoli</TabsTrigger>}
 
-              {isOwner && <TabsTrigger value="gifts" className="gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"><Gift className="h-4 w-4"/> Regali</TabsTrigger>}
+              {isOwner && <TabsTrigger value="gifts" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Gift className="h-4 w-4"/> Regali</TabsTrigger>}
 
-              {isOwner && <TabsTrigger value="pros" className="gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"><Camera className="h-4 w-4"/> Team</TabsTrigger>}
+              {isOwner && <TabsTrigger value="pros" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Camera className="h-4 w-4"/> Team</TabsTrigger>}
 
-              {isOwner && <TabsTrigger value="settings" className="gap-2 py-3 rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm"><Settings className="h-4 w-4"/> Impostazioni</TabsTrigger>}
+              {isOwner && <TabsTrigger value="settings" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Settings className="h-4 w-4"/> Impostazioni</TabsTrigger>}
             </TabsList>
 
             <TabsContent value="photos" className="space-y-6 animate-in fade-in">

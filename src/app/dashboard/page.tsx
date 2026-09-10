@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { Camera, HardDrive, Users, Settings, CreditCard } from "lucide-react";
+import { PlanWidget } from "@/components/PlanWidget";
 
 export default async function DashboardPage() {
   const session = await requireAuth(["PHOTOGRAPHER"]);
@@ -28,11 +29,40 @@ export default async function DashboardPage() {
   const totalStorage = weddings.reduce((acc: any, w: any) => acc + w.media.reduce((mAcc: any, m: any) => mAcc + m.size, 0), 0);
   const formattedStorage = (totalStorage / (1024 * 1024)).toFixed(2) + " MB";
 
+  // Widget Logic
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId: session.userId },
+    include: { plan: true }
+  });
+
+  const isPremium = subscription?.status === "active" && subscription.plan?.name.toUpperCase() !== "FREE" && subscription.plan?.name.toUpperCase() !== "BASE";
+  const currentPlanName = isPremium ? subscription.plan.name : "Piano Base Gratuito";
+  
+  const features = {
+    included: isPremium ? [
+      "Posizionamento in evidenza",
+      "Servizi illimitati inseribili",
+      "Recapiti diretti sbloccati per i clienti",
+      "Spazio di archiviazione espanso"
+    ] : [
+      "Accesso alla piattaforma",
+      "Gestione limitata dei matrimoni",
+      "Profilo Base (senza contatti diretti)"
+    ],
+    missing: isPremium ? [] : [
+      "Posizionamento in evidenza per attirare coppie",
+      "Servizi illimitati e recapiti diretti",
+      "Visibilità prioritaria nelle ricerche"
+    ]
+  };
+
+  const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
   return (
     <div className="container mx-auto p-4 md:p-8 min-h-screen bg-stone-50">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
         <div>
-          <h1 className="text-3xl font-bold">Area Professionisti</h1>
+          <h1 className="text-3xl font-bold font-serif">Area Professionisti</h1>
           <p className="text-stone-500">Gestisci i matrimoni e le consegne digitali.</p>
         </div>
         <div className="flex gap-4 items-center">
@@ -48,6 +78,18 @@ export default async function DashboardPage() {
             </Link>
           </form>
         </div>
+      </div>
+
+      <div className="mb-8">
+        <PlanWidget 
+          role="PHOTOGRAPHER" 
+          currentPlanName={currentPlanName} 
+          isActive={!!subscription && subscription.status === "active"} 
+          expiresAt={subscription?.currentPeriodEnd?.toISOString() || subscription?.expiresAt?.toISOString()} 
+          features={features} 
+          upgradeLink="/dashboard/billing" 
+          stripeConfigured={stripeConfigured}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
