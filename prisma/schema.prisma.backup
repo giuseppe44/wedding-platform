@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+directUrl = env("DIRECT_URL")
+  
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hashed password
+  name      String?
+  role      String   @default("COUPLE") // ADMIN, PHOTOGRAPHER, COUPLE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  timelineItemsOwned TimelineItem[] @relation("TimelineItemOwner")
+  timelineItemsAsCouple TimelineItem[] @relation("TimelineItemCouple")
+  familiesOwned      Family[]       @relation("FamilyOwner")
+}
+
+model Family {
+  id          String         @id @default(cuid())
+  name        String
+  slug        String         @unique
+  ownerId     String
+  owner       User           @relation("FamilyOwner", fields: [ownerId], references: [id])
+  items       TimelineItem[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model TimelineItem {
+  id              String   @id @default(cuid())
+  type            String   @default("WEDDING") // WEDDING, ANNIVERSARY, TRAVEL, BIRTH, BAPTISM, BIRTHDAY, FAMILY, MEMORY, CUSTOM
+  slug            String   @unique
+  brideName       String
+  groomName       String
+  date            DateTime?
+  description     String?
+  coverImage      String?
+  
+  themeColor      String   @default("#000000")
+  welcomeMessage  String?
+  isPublic        Boolean  @default(true)
+  requireApproval Boolean  @default(true) 
+  externalGalleryUrl String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  ownerId         String
+  owner           User     @relation("TimelineItemOwner", fields: [ownerId], references: [id])
+  
+  coupleId        String?
+  couple          User?    @relation("TimelineItemCouple", fields: [coupleId], references: [id])
+  
+  familyId        String?
+  family          Family?  @relation(fields: [familyId], references: [id])
+
+  albums          Album[]
+  media           Media[]
+  guests          Guest[]
+  locations       Location[]
+  schedule        ScheduleItem[]
+  messages        Message[]
+
+  @@map("Wedding")
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  name        String
+  address     String?
+  coordinates String?  
+  type        String   @default("CEREMONY") 
+  timelineItemId String @map("weddingId")
+  timelineItem   TimelineItem  @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+}
+
+model ScheduleItem {
+  id          String   @id @default(cuid())
+  time        String   
+  title       String
+  description String?
+  timelineItemId String @map("weddingId")
+  timelineItem   TimelineItem  @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  order       Int      @default(0)
+
+  @@map("TimelineItem")
+}
+
+model Guest {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?
+  timelineItemId String @map("weddingId")
+  timelineItem   TimelineItem  @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  
+  media     Media[]
+  messages  Message[]
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  text      String
+  guestName String?
+  
+  timelineItemId String @map("weddingId")
+  timelineItem   TimelineItem  @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  
+  guestId   String?
+  guest     Guest?   @relation(fields: [guestId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  status    String   @default("PENDING")
+}
+
+model Album {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   @default("CUSTOM")
+  
+  timelineItemId String @map("weddingId")
+  timelineItem   TimelineItem  @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  media       Media[]
+}
+
+model Media {
+  id          String      @id @default(cuid())
+  url         String
+  thumbnail   String?
+  type        String      @default("IMAGE") 
+  mimeType    String?
+  size        Int         @default(0) 
+  status      String      @default("PENDING") 
+  
+  aiTags      String?     
+  exif        String?     
+  
+  timelineItemId String @map("weddingId")
+  timelineItem   TimelineItem  @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  
+  albumId     String?
+  album       Album?      @relation(fields: [albumId], references: [id], onDelete: SetNull)
+
+  guestId     String?
+  guest       Guest?      @relation(fields: [guestId], references: [id], onDelete: SetNull)
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}

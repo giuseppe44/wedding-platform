@@ -7,7 +7,7 @@ import { Camera, CheckCircle2, Loader2, UploadCloud, X, Film, Image as ImageIcon
 import { uploadMediaAction } from "@/app/uploadAction";
 import Link from "next/link";
 
-export default function UploadClient({ weddingId, names, slug, buttonColor }: { weddingId: string, names: string, slug: string, buttonColor?: string }) {
+export default function UploadClient({ timelineItemId, displayTitle, displayType, slug, buttonColor }: { timelineItemId: string, displayTitle: string, displayType: string, slug: string, buttonColor?: string }) {
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -34,7 +34,7 @@ export default function UploadClient({ weddingId, names, slug, buttonColor }: { 
         formData.append("files", file);
       });
       
-      const result = await uploadMediaAction(weddingId, formData);
+      const result = await uploadMediaAction(timelineItemId, formData);
       if (result.success) {
         setSuccess(true);
         setFiles([]);
@@ -60,8 +60,8 @@ export default function UploadClient({ weddingId, names, slug, buttonColor }: { 
             Carica altre foto
           </Button>
           <Link href={`/w/${slug}`} className="block">
-            <Button className="w-full py-6 text-lg rounded-full" style={{ backgroundColor: buttonColor || '#000' }}>
-              Torna al Matrimonio
+            <Button className="w-full py-6 text-lg rounded-full text-white hover:opacity-90" style={{ backgroundColor: buttonColor || '#000' }}>
+              Torna alla pagina
             </Button>
           </Link>
         </div>
@@ -72,7 +72,7 @@ export default function UploadClient({ weddingId, names, slug, buttonColor }: { 
   return (
     <Card className="w-full max-w-md shadow-2xl border-none overflow-hidden">
       <CardHeader className="text-center bg-stone-100 pb-8 pt-8">
-        <CardTitle className="text-2xl font-serif leading-snug">Condividi foto per<br/>{names}</CardTitle>
+        <CardTitle className="text-2xl font-serif leading-snug">Condividi foto per<br/>{displayTitle}</CardTitle>
       </CardHeader>
       <CardContent className="p-6">
         <form onSubmit={handleUpload} className="space-y-6">
@@ -115,7 +115,7 @@ export default function UploadClient({ weddingId, names, slug, buttonColor }: { 
 
           <Button 
             type="submit" 
-            className="w-full h-14 text-lg rounded-full shadow-lg" 
+            className="w-full h-14 text-lg rounded-full shadow-lg text-white hover:opacity-90" 
             disabled={files.length === 0 || uploading}
             style={{ backgroundColor: buttonColor || '#000' }}
           >

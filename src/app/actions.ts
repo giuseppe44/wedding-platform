@@ -35,7 +35,7 @@ export async function createWedding(formData: FormData) {
 
   const slug = `${brideName.toLowerCase()}-e-${groomName.toLowerCase()}`.replace(/\s+/g, '-');
   
-  const wedding = await prisma.wedding.create({
+  const wedding = await prisma.timelineItem.create({
     data: {
       brideName,
       groomName,
@@ -49,7 +49,7 @@ export async function createWedding(formData: FormData) {
     await prisma.location.create({
       data: {
         name: location,
-        weddingId: wedding.id
+        timelineItemId: wedding.id
       }
     });
   }
@@ -58,7 +58,9 @@ export async function createWedding(formData: FormData) {
 }
 
 export async function approveMedia(mediaId: string) {
-  await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const media = await prisma.media.findUnique({ where: { id: mediaId }, include: { timelineItem: true } });
+  if (media?.timelineItem.ownerId !== session.userId && media?.timelineItem.coupleId !== session.userId) throw new Error("Non autorizzato");
   await prisma.media.update({
     where: { id: mediaId },
     data: { status: "APPROVED" },
@@ -67,10 +69,23 @@ export async function approveMedia(mediaId: string) {
 }
 
 export async function rejectMedia(mediaId: string) {
-  await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const media = await prisma.media.findUnique({ where: { id: mediaId }, include: { timelineItem: true } });
+  if (media?.timelineItem.ownerId !== session.userId && media?.timelineItem.coupleId !== session.userId) throw new Error("Non autorizzato");
   await prisma.media.update({
     where: { id: mediaId },
     data: { status: "REJECTED" },
   });
   revalidatePath("/couple/[slug]", "page");
+}
+
+export async function deleteMediaAction(mediaId: string) {
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const media = await prisma.media.findUnique({ where: { id: mediaId }, include: { timelineItem: true } });
+  if (!media) throw new Error("Media non trovato");
+  if (media.timelineItem.ownerId !== session.userId && media.timelineItem.coupleId !== session.userId) {
+    throw new Error("Non autorizzato");
+  }
+  await prisma.media.delete({ where: { id: mediaId } });
+  revalidatePath("/couple/[slug]", "layout");
 }

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { createWedding } from "@/app/actions";
+import { requireAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +9,15 @@ import Link from "next/link";
 import { Camera, HardDrive, Users, Settings } from "lucide-react";
 
 export default async function DashboardPage() {
-  const weddings = await prisma.wedding.findMany({
+  const session = await requireAuth(["PHOTOGRAPHER"]);
+
+  const weddings = await prisma.timelineItem.findMany({
+    where: { 
+      OR: [
+        { ownerId: session.userId },
+        { assignments: { some: { professionalProfile: { userId: session.userId }, status: 'ACTIVE' } } }
+      ]
+    },
     orderBy: { createdAt: "desc" },
     include: {
       media: true,

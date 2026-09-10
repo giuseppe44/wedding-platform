@@ -1,175 +1,240 @@
+import GuestLogin from "./GuestLogin";
+import { verifyTimelineAccess } from "@/lib/accessControl";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Image as ImageIcon, MapPin, Clock, MessageSquareHeart } from "lucide-react";
+import { Camera, MapPin } from "lucide-react";
 import GuestbookForm from "./GuestbookForm";
+import { getSession } from "@/lib/auth";
+import LoadMoreGallery from "@/components/LoadMoreGallery";
+import WeddingDetails from "./WeddingDetails";
+import GiftSection from "./GiftSection";
+import PublicProsSection from "./PublicProsSection";
+import TimelineSection from "./TimelineSection";
 
-export default async function WeddingPublicPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PublicTimelinePage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const { slug } = await params;
-  const wedding = await prisma.wedding.findUnique({
+  const resolvedParams = await searchParams;
+  const token = resolvedParams?.token ? String(resolvedParams.token) : undefined;
+  
+  const wedding = await prisma.timelineItem.findUnique({
     where: { slug: slug },
     include: {
-      media: {
+      locations: true, giftOptions: true, assignments: { include: { professionalProfile: true } },
+      schedule: { orderBy: { order: "asc" } },
+      messages: { 
+        where: { status: "APPROVED" },
+        orderBy: { createdAt: "desc" } 
+      },
+      media: { 
         where: { status: "APPROVED" },
         orderBy: { createdAt: "desc" },
-      },
-      locations: true,
-      timeline: {
-        orderBy: { order: "asc" },
-      },
-      messages: {
-        where: { status: "APPROVED" }, // only show approved messages
-        orderBy: { createdAt: "desc" },
+        take: 31
       }
-    },
+    }
   });
 
   if (!wedding) {
     notFound();
   }
 
-  const themeStyle = { backgroundColor: wedding.themeColor || "#000" };
+  const hasAccess = await verifyTimelineAccess(wedding, "VIEW_PUBLIC");
+  if (!hasAccess) {
+    if (wedding.visibility === "PRIVATE" || wedding.passwordHash) {
+      return <GuestLogin slug={slug} title={wedding.title || `${wedding.brideName} & ${wedding.groomName}`} token={token} />;
+    } else {
+      notFound();
+    }
+  }
+
+  const CHAPTER_TYPES: Record<string, { type: string, authors: string }> = {
+    "WEDDING": { type: "Il nostro matrimonio", authors: "gli sposi" },
+    "ANNIVERSARY": { type: "Anniversario", authors: "la coppia" },
+    "TRAVEL": { type: "Il nostro viaggio", authors: "la coppia" },
+    "BIRTH": { type: "Una nuova vita", authors: "la famiglia" },
+    "BAPTISM": { type: "Battesimo", authors: "la famiglia" },
+    "BIRTHDAY": { type: "Compleanno", authors: "il festeggiato" },
+    "FAMILY": { type: "La nostra famiglia", authors: "la famiglia" },
+    "MEMORY": { type: "Un ricordo", authors: "la famiglia" },
+    "CUSTOM": { type: "La nostra storia", authors: "l'autore" }
+  };
+
+  const config = CHAPTER_TYPES[wedding.type] || CHAPTER_TYPES["CUSTOM"];
+  const displayTitle = wedding.type === "WEDDING" 
+    ? `${wedding.brideName} & ${wedding.groomName}` 
+    : (wedding.title || config.type);
+
+  const themeColor = wedding.themeColor || "#1c1917"; // stone-900
+
+  const initialHasMore = wedding.media.length === 31;
+  const initialMedia = initialHasMore ? wedding.media.slice(0, 30) : wedding.media;
+  const initialCursor = initialMedia.length > 0 ? initialMedia[initialMedia.length - 1].id : null;
 
   return (
-    <div className="min-h-screen bg-stone-50 pb-24">
-      {/* Cover */}
-      <div className="w-full h-72 relative flex items-center justify-center overflow-hidden" style={themeStyle}>
+    <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
+      {/* 1. HERO */}
+      <div className="relative w-full h-[60vh] md:h-[70vh] bg-stone-900 flex items-center justify-center overflow-hidden">
         {wedding.coverImage ? (
-           <img src={wedding.coverImage} alt="Cover" className="object-cover w-full h-full opacity-70" />
+           <Image src={`/api/media/cover/${wedding.id}`} alt="Cover" fill className="absolute inset-0 object-cover w-full h-full opacity-60" priority sizes="100vw" />
         ) : (
-           <div className="absolute inset-0 bg-black/40" />
+           <div className="absolute inset-0 bg-gradient-to-tr from-stone-800 to-stone-600 opacity-80" />
         )}
-        <div className="relative z-10 text-center text-white px-4 pt-10">
-          <h1 className="text-5xl font-serif drop-shadow-lg">
-            {wedding.brideName} & {wedding.groomName}
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <p className="text-stone-200 text-sm md:text-base font-bold tracking-widest uppercase mb-4 drop-shadow-md">
+            {config.type}
+          </p>
+          <h1 className="text-4xl md:text-6xl font-serif text-white tracking-tight mb-6 drop-shadow-lg">
+            {displayTitle}
           </h1>
           {wedding.date && (
-            <p className="text-xl mt-4 drop-shadow-md font-light">
-              {wedding.date.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
+            <p className="text-stone-200 text-lg md:text-xl font-light italic drop-shadow-md">
+              {new Date(wedding.date).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
             </p>
           )}
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 mt-[-3rem] relative z-20">
-        
-        {/* Call to action principale per caricare foto (Sempre visibile in alto) */}
-        <Card className="shadow-xl mb-8 border-none overflow-hidden">
-          <CardContent className="p-8 text-center bg-white space-y-4">
-            {wedding.welcomeMessage && (
-              <p className="text-stone-600 italic font-serif text-lg mb-4">"{wedding.welcomeMessage}"</p>
+        <Card className="shadow-2xl border-none overflow-hidden rounded-2xl">
+          <CardContent className="p-8 md:p-12 text-center bg-white space-y-6">
+            {wedding.welcomeMessage ? (
+              <p className="text-stone-600 italic font-serif text-xl md:text-2xl leading-relaxed">
+                "{wedding.welcomeMessage}"
+              </p>
+            ) : (
+              <p className="text-stone-600 italic font-serif text-xl md:text-2xl leading-relaxed">
+                Condividi i tuoi ricordi di questo momento speciale.
+              </p>
             )}
-            <h2 className="text-2xl font-semibold text-stone-800">Condividi le tue foto e video!</h2>
-            <Link href={`/w/${wedding.slug}/upload`}>
-              <Button size="lg" className="w-full sm:w-auto text-lg py-6 px-10 rounded-full shadow-md transition-transform hover:scale-105 mt-2" style={{ backgroundColor: wedding.themeColor || '#000' }}>
+            <Link href={`/w/${wedding.slug}/upload`} className="inline-block mt-4">
+              <Button size="lg" className="w-full sm:w-auto text-lg py-6 px-10 rounded-full shadow-xl hover:scale-105 transition-transform text-white" style={{ backgroundColor: themeColor }}>
                 <Camera className="mr-2 h-6 w-6" />
-                Carica Ricordi
+                + Condividi le tue foto
               </Button>
             </Link>
           </CardContent>
         </Card>
-
-        {/* Tab Navigation per il resto dei contenuti */}
-        <Tabs defaultValue="gallery" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8 bg-white shadow-sm rounded-full p-1 h-14">
-            <TabsTrigger value="gallery" className="rounded-full data-[state=active]:bg-stone-100"><ImageIcon className="h-5 w-5" /></TabsTrigger>
-            <TabsTrigger value="timeline" className="rounded-full data-[state=active]:bg-stone-100"><Clock className="h-5 w-5" /></TabsTrigger>
-            <TabsTrigger value="locations" className="rounded-full data-[state=active]:bg-stone-100"><MapPin className="h-5 w-5" /></TabsTrigger>
-            <TabsTrigger value="guestbook" className="rounded-full data-[state=active]:bg-stone-100"><MessageSquareHeart className="h-5 w-5" /></TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="gallery" className="space-y-4 animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-2xl font-serif text-center mb-6">Galleria</h3>
-            {wedding.externalGalleryUrl && (
-              <div className="flex justify-center mb-6">
-                <a href={wedding.externalGalleryUrl} target="_blank" rel="noopener noreferrer">
-                  <Button size="lg" className="rounded-full shadow-lg" style={{ backgroundColor: wedding.themeColor || '#000' }}>
-                    📸 Guarda l'Album Ufficiale
-                  </Button>
-                </a>
-              </div>
-            )}
-            {wedding.media.length === 0 ? (
-              <p className="text-center text-stone-500 py-12">Le foto appariranno qui una volta approvate. Sii il primo a caricarle!</p>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {wedding.media.map((item: any) => (
-                  <div key={item.id} className="aspect-square relative rounded-md overflow-hidden bg-stone-200">
-                    {item.type === "VIDEO" ? (
-                      <video src={item.url} className="object-cover w-full h-full" controls muted playsInline />
-                    ) : (
-                      <img src={item.url} alt="Wedding memory" className="object-cover w-full h-full hover:scale-105 transition-transform duration-500" loading="lazy" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="timeline" className="animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-2xl font-serif text-center mb-6">Programma della giornata</h3>
-            {wedding.timeline.length === 0 ? (
-              <p className="text-center text-stone-500 py-12">Programma non ancora pubblicato.</p>
-            ) : (
-              <div className="space-y-6 max-w-lg mx-auto">
-                {wedding.timeline.map((item: any, idx: any) => (
-                  <div key={item.id} className="flex gap-4">
-                    <div className="font-bold text-lg w-16 text-right pt-1">{item.time}</div>
-                    <div className="relative flex-1 pb-8 border-l-2 border-stone-200 pl-6">
-                      <div className="absolute w-4 h-4 rounded-full bg-stone-300 -left-[9px] top-2" style={{ backgroundColor: wedding.themeColor || '#ccc' }}></div>
-                      <h4 className="text-xl font-semibold">{item.title}</h4>
-                      {item.description && <p className="text-stone-600 mt-1">{item.description}</p>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="locations" className="animate-in fade-in slide-in-from-bottom-4">
-            <h3 className="text-2xl font-serif text-center mb-6">Location</h3>
-            {wedding.locations.length === 0 ? (
-               <p className="text-center text-stone-500 py-12">Location non ancora inserite.</p>
-            ) : (
-              <div className="grid gap-6 md:grid-cols-2">
-                {wedding.locations.map((loc: any) => (
-                  <Card key={loc.id}>
-                    <CardContent className="p-6 text-center">
-                      <MapPin className="h-8 w-8 mx-auto mb-3 text-stone-400" />
-                      <h4 className="font-bold text-lg">{loc.name}</h4>
-                      <p className="text-stone-600 mt-2">{loc.address}</p>
-                      {loc.address && (
-                        <a href={`https://maps.google.com/?q=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer">
-                          <Button variant="outline" className="mt-4 w-full">Apri in Google Maps</Button>
-                        </a>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="guestbook" className="animate-in fade-in slide-in-from-bottom-4 space-y-8">
-            <h3 className="text-2xl font-serif text-center mb-2">Lascia una dedica</h3>
-            <p className="text-center text-stone-500 mb-6">Un pensiero per gli sposi rimarrà per sempre.</p>
-            
-            <GuestbookForm weddingId={wedding.id} buttonColor={wedding.themeColor} />
-            
-            <div className="space-y-4 mt-8">
-              {wedding.messages.map((msg: any) => (
-                <div key={msg.id} className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
-                  <p className="text-lg italic text-stone-700">"{msg.text}"</p>
-                  <p className="text-right text-stone-500 font-medium mt-2">— {msg.guestName || "Anonimo"}</p>
-                </div>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
       </div>
+
+      {/* 2. STORIA */}
+      {wedding.description && (
+        <div className="max-w-3xl mx-auto px-4 pt-24 text-center">
+          <h2 className="text-3xl font-serif text-stone-800 mb-8">La Storia</h2>
+          <p className="text-lg md:text-xl text-stone-600 leading-relaxed font-light">
+            {wedding.description}
+          </p>
+        </div>
+      )}
+
+      {/* 3. PROGRAMMA */}
+      {wedding.schedule.length > 0 && (
+        <div className="max-w-3xl mx-auto px-4 pt-24">
+          <h2 className="text-3xl font-serif text-stone-800 mb-12 text-center">Programma</h2>
+          <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-stone-300 before:to-transparent">
+            {wedding.schedule.map((item: any, idx: number) => (
+              <div key={item.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-stone-300 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2" style={{ backgroundColor: themeColor }}></div>
+                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                  <div className="font-bold text-xl mb-1" style={{ color: themeColor }}>{item.time}</div>
+                  <h4 className="text-xl font-semibold text-stone-800 mb-2">{item.title}</h4>
+                  {item.description && <p className="text-stone-500 leading-relaxed">{item.description}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 4. LOCATION */}
+      {wedding.locations.length > 0 && (
+        <div className="max-w-5xl mx-auto px-4 pt-24">
+          <h2 className="text-3xl font-serif text-stone-800 mb-12 text-center">Luoghi</h2>
+          <div className="grid gap-8 md:grid-cols-2">
+            {wedding.locations.map((loc: any) => (
+              <div key={loc.id} className="bg-white p-8 rounded-3xl text-center shadow-sm border border-stone-100 transition-transform hover:-translate-y-1">
+                <MapPin className="h-10 w-10 mx-auto mb-4 text-stone-400" />
+                <h4 className="font-serif text-2xl text-stone-800 mb-2">{loc.name}</h4>
+                <p className="text-stone-500 mb-6">{loc.address}</p>
+                {loc.address && (
+                  <a href={`https://maps.google.com/?q=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer">
+                    <Button variant="outline" className="w-full rounded-full border-stone-300 hover:bg-stone-50">Apri in Google Maps</Button>
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 5. GALLERIA */}
+      <div className="max-w-7xl mx-auto px-4 pt-24">
+        <h2 className="text-3xl font-serif text-stone-800 mb-4 text-center">I vostri ricordi</h2>
+        <p className="text-center text-stone-500 mb-12 font-serif italic max-w-2xl mx-auto">
+          Ogni fotografia è un pezzo di questa storia.
+        </p>
+
+        {wedding.externalGalleryUrl && (
+          <div className="flex justify-center mb-12">
+            <a href={wedding.externalGalleryUrl} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" className="rounded-full shadow-lg text-white" style={{ backgroundColor: themeColor }}>
+                📸 Guarda l'Album Ufficiale
+              </Button>
+            </a>
+          </div>
+        )}
+
+        {wedding.media.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-3xl border border-stone-100 shadow-sm">
+            <Camera className="w-16 h-16 mx-auto text-stone-200 mb-4" />
+            <p className="text-stone-400 font-serif text-xl">Sii il primo a condividere un momento.</p>
+          </div>
+        ) : (
+          <LoadMoreGallery 
+            initialMedia={initialMedia} 
+            initialHasMore={initialHasMore} 
+            initialCursor={initialCursor} 
+            timelineItemId={wedding.id} 
+            isPublicView={true} 
+          />
+        )}
+      </div>
+
+      {/* 6. DEDICHE */}
+      <div className="max-w-3xl mx-auto px-4 pt-24 pb-12">
+        <h2 className="text-3xl font-serif text-stone-800 mb-4 text-center">Lascia un messaggio</h2>
+        <p className="text-center text-stone-500 mb-12 font-serif italic">
+          Scrivi un pensiero da conservare nella storia.
+        </p>
+        
+        <div className="mb-16">
+          <GuestbookForm timelineItemId={wedding.id} buttonColor={themeColor} displayAuthorsLabel={config.authors} />
+        </div>
+
+        {wedding.messages.length > 0 && (
+          <div className="space-y-8">
+            {wedding.messages.map((msg: any) => (
+              <div key={msg.id} className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 relative">
+                <p className="text-xl italic text-stone-700 font-serif leading-relaxed">"{msg.text}"</p>
+                <p className="text-right text-stone-400 font-medium mt-4">— {msg.guestName || "Anonimo"}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 7. CTA FINALE */}
+      <div className="max-w-4xl mx-auto px-4 pt-12 pb-24 text-center border-t border-stone-200 mt-12">
+        <h3 className="text-2xl font-serif text-stone-800 mb-6">Grazie per essere parte di questa storia.</h3>
+        <Link href={`/w/${wedding.slug}/upload`}>
+          <Button size="lg" className="rounded-full shadow-lg text-white" style={{ backgroundColor: themeColor }}>
+            <Camera className="mr-2 h-5 w-5" /> Condividi altri ricordi
+          </Button>
+        </Link>
+      </div>
+
     </div>
   );
 }

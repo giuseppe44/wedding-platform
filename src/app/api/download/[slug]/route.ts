@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { downloadFileBuffer } from "@/lib/storage";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const archiver = require("archiver");
+import { getSession } from "@/lib/auth";
+import { ZipArchive } from "archiver";
 
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const wedding = await prisma.wedding.findUnique({
+  const wedding = await prisma.timelineItem.findUnique({
     where: { slug: slug },
     include: {
       media: {
@@ -19,11 +19,23 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     return new NextResponse("Not found", { status: 404 });
   }
 
+  // P0.1 - PROTEZIONE DOWNLOAD ZIP
+  if (wedding.visibility === "PRIVATE") {
+    const session = await getSession();
+    if (!session || (session.role !== "PHOTOGRAPHER" && session.role !== "COUPLE")) {
+      return new NextResponse("Non autorizzato", { status: 401 });
+    }
+    // Also strictly verify ownership/coupleId for private to avoid other authenticated users from stealing data
+    if (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN") {
+      return new NextResponse("Non autorizzato", { status: 401 });
+    }
+  }
+
   if (wedding.media.length === 0) {
     return new NextResponse("No approved media to download", { status: 400 });
   }
 
-  const zip = archiver('zip', {
+  const zip = new ZipArchive({
     zlib: { level: 5 }
   });
 
@@ -49,7 +61,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   return new NextResponse(stream, {
     headers: {
       "Content-Type": "application/zip",
-      "Content-Disposition": `attachment; filename="Foto_${wedding.brideName}_${wedding.groomName}.zip"`,
+      "Content-Disposition": `attachment; filename="Foto_${wedding.brideName || 'Capitolo'}_${wedding.groomName || slug}.zip"`,
     }
   });
 }

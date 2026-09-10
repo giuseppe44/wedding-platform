@@ -11,132 +11,361 @@ datasource db {
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String   // Hashed password
+  password  String // Hashed password
   name      String?
   role      String   @default("COUPLE") // ADMIN, PHOTOGRAPHER, COUPLE
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  weddingsOwned Wedding[] @relation("WeddingOwner")
-  weddingsAsCouple Wedding[] @relation("WeddingCouple")
+  timelineItemsOwned    TimelineItem[]       @relation("TimelineItemOwner")
+  timelineItemsAsCouple TimelineItem[]       @relation("TimelineItemCouple")
+  familiesOwned         Family[]             @relation("FamilyOwner")
+  professionalProfile   ProfessionalProfile?
+  Notification          Notification[]
+  Subscription          Subscription[]
 }
 
-model Wedding {
-  id              String   @id @default(cuid())
-  slug            String   @unique
-  brideName       String
-  groomName       String
-  date            DateTime?
-  description     String?
-  coverImage      String?
-  
-  // Branding & Settings
-  themeColor      String   @default("#000000")
-  welcomeMessage  String?
-  isPublic        Boolean  @default(true)
-  requireApproval Boolean  @default(true) // Moderation flag
-
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  externalGalleryUrl String?
-
-  ownerId         String
-  owner           User     @relation("WeddingOwner", fields: [ownerId], references: [id])
-  
-  coupleId        String?
-  couple          User?    @relation("WeddingCouple", fields: [coupleId], references: [id])
-  
-  albums          Album[]
-  media           Media[]
-  guests          Guest[]
-  locations       Location[]
-  timeline        TimelineItem[]
-  messages        Message[]
-}
-
-model Location {
-  id          String   @id @default(cuid())
-  name        String
-  address     String?
-  coordinates String?  // "lat,lng"
-  type        String   @default("CEREMONY") // CEREMONY, RECEPTION, PARTY
-  weddingId   String
-  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+model Family {
+  id        String         @id @default(cuid())
+  name      String
+  slug      String         @unique
+  ownerId   String
+  owner     User           @relation("FamilyOwner", fields: [ownerId], references: [id])
+  items     TimelineItem[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model TimelineItem {
-  id          String   @id @default(cuid())
-  time        String   // e.g. "15:30"
-  title       String
+  id          String    @id @default(cuid())
+  type        String    @default("WEDDING") // WEDDING, ANNIVERSARY, TRAVEL, BIRTH, BAPTISM, BIRTHDAY, FAMILY, MEMORY, CUSTOM
+  slug        String    @unique
+  brideName   String
+  groomName   String
+  date        DateTime?
+  title       String?
   description String?
-  weddingId   String
-  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
-  order       Int      @default(0)
+  coverImage  String?
+
+  themeColor         String  @default("#000000")
+  welcomeMessage     String?
+  isPublic           Boolean @default(true)
+  visibility         String  @default("PRIVATE")
+  requireApproval    Boolean @default(true)
+  externalGalleryUrl String?
+  passwordHash       String?
+  startTime          String?
+  endTime            String?
+  dressCode          String?
+  usefulInfo         String?
+  ceremonyType       String  @default("CIVIL")
+  professionalsJson  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerId String
+  owner   User   @relation("TimelineItemOwner", fields: [ownerId], references: [id])
+
+  coupleId String?
+  couple   User?   @relation("TimelineItemCouple", fields: [coupleId], references: [id])
+
+  familyId String?
+  family   Family? @relation(fields: [familyId], references: [id])
+
+  albums         Album[]
+  media          Media[]
+  guests         Guest[]
+  locations      Location[]
+  schedule       ScheduleItem[]
+  messages       Message[]
+  tables         Table[]
+  giftOptions    GiftOption[]
+  assignments    EventAssignment[]
+  reviews        Review[]
+  selectedGuests ChapterSelectedGuest[]
+  conversations  Conversation[]
+  audience       String?                @default("ALL_GUESTS")
+
+  @@map("Wedding")
+}
+
+model Location {
+  id             String       @id @default(cuid())
+  name           String
+  address        String?
+  city           String?
+  notes          String?
+  coordinates    String?
+  type           String       @default("CEREMONY")
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+}
+
+model ScheduleItem {
+  id             String       @id @default(cuid())
+  time           String
+  title          String
+  description    String?
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  order          Int          @default(0)
+
+  @@map("TimelineItem")
 }
 
 model Guest {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?
-  weddingId String
-  wedding   Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  
-  media     Media[]
-  messages  Message[]
+  surname        String?
+  tableId        String?
+  table          Table?       @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  id             String       @id @default(cuid())
+  name           String?
+  email          String?
+  phone          String?
+  category       String       @default("OTHER")
+  dietaryNotes   String?
+  isAttending    Boolean?
+  token          String?      @unique
+  hasAccess      Boolean      @default(true)
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  media               Media[]
+  messages            Message[]
+  selectedForChapters ChapterSelectedGuest[]
 }
 
 model Message {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   text      String
   guestName String?
-  
-  weddingId String
-  wedding   Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
-  
-  guestId   String?
-  guest     Guest?   @relation(fields: [guestId], references: [id], onDelete: SetNull)
+
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+
+  guestId String?
+  guest   Guest?  @relation(fields: [guestId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
-  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  status    String   @default("PENDING")
 }
 
 model Album {
-  id          String   @id @default(cuid())
-  name        String
-  type        String   @default("CUSTOM") // GUESTS, PROFESSIONAL, SMART, CUSTOM
-  
-  weddingId   String
-  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id   String @id @default(cuid())
+  name String
+  type String @default("CUSTOM")
 
-  media       Media[]
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media Media[]
 }
 
 model Media {
-  id          String      @id @default(cuid())
-  url         String
-  thumbnail   String?
-  type        String      @default("IMAGE") // IMAGE, VIDEO
-  mimeType    String?
-  size        Int         @default(0) // bytes
-  status      String      @default("PENDING") // PENDING, APPROVED, REJECTED
-  
-  // AI and Metadata preparation
-  aiTags      String?     // JSON string for objects/people
-  exif        String?     // JSON string for camera data/location
-  
-  weddingId   String
-  wedding     Wedding     @relation(fields: [weddingId], references: [id], onDelete: Cascade)
-  
-  albumId     String?
-  album       Album?      @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  id        String  @id @default(cuid())
+  url       String
+  thumbnail String?
+  type      String  @default("IMAGE")
+  mimeType  String?
+  size      Int     @default(0)
+  status    String  @default("PENDING")
 
-  guestId     String?
-  guest       Guest?      @relation(fields: [guestId], references: [id], onDelete: SetNull)
-  
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  aiTags String?
+  exif   String?
+
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+
+  albumId String?
+  album   Album?  @relation(fields: [albumId], references: [id], onDelete: SetNull)
+
+  guestId String?
+  guest   Guest?  @relation(fields: [guestId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Table {
+  id       String @id @default(cuid())
+  name     String
+  type     String @default("ROUND") // ROUND, RECTANGULAR
+  capacity Int    @default(10)
+
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+
+  guests Guest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GiftOption {
+  id           String  @id @default(cuid())
+  type         String  @default("CASH_GIFT") // GIFT_REGISTRY, HONEYMOON, CASH_GIFT
+  title        String?
+  description  String?
+  iban         String?
+  paypalLink   String?
+  externalLink String?
+  order        Int     @default(0)
+  isActive     Boolean @default(true)
+
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProfessionalProfile {
+  id           String  @id @default(cuid())
+  category     String  @default("OTHER") // PHOTOGRAPHER, VIDEOMAKER, WEDDING_PLANNER, DJ, MUSICIAN, LOCATION, CATERING, FLORIST, MAKEUP_ARTIST, HAIR_STYLIST, OTHER
+  businessName String
+  slug         String  @unique
+  description  String?
+  logoUrl      String?
+  website      String?
+  whatsapp     String?
+  instagram    String?
+  contactEmail String?
+  contactPhone String?
+  isActive     Boolean @default(true)
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  services    ProfessionalService[]
+  assignments EventAssignment[]
+  reviews     Review[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Conversation Conversation[]
+}
+
+model ProfessionalService {
+  id              String  @id @default(cuid())
+  name            String
+  description     String?
+  priceIndicative String?
+  order           Int     @default(0)
+
+  profileId String
+  profile   ProfessionalProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EventAssignment {
+  id        String  @id @default(cuid())
+  role      String?
+  serviceId String?
+  status    String  @default("ACTIVE") // ACTIVE, REVOKED
+
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+
+  professionalProfileId String              @map("proId")
+  professionalProfile   ProfessionalProfile @relation(fields: [professionalProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([timelineItemId, professionalProfileId])
+}
+
+model Review {
+  id         String  @id @default(cuid())
+  authorId   String
+  authorRole String  @default("COUPLE")
+  rating     Int
+  text       String?
+
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+
+  professionalProfileId String              @map("proId")
+  professionalProfile   ProfessionalProfile @relation(fields: [professionalProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([timelineItemId, professionalProfileId, authorId])
+}
+
+model ChapterSelectedGuest {
+  id             String       @id @default(cuid())
+  timelineItemId String       @map("chapterId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  guestId        String
+  guest          Guest        @relation(fields: [guestId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([timelineItemId, guestId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   @default("INFO") // NEW_CHAPTER, MESSAGE, ALERT
+  title     String
+  message   String?
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Conversation {
+  id                    String              @id @default(cuid())
+  timelineItemId        String              @map("weddingId")
+  timelineItem          TimelineItem        @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  professionalProfileId String              @map("proId")
+  professionalProfile   ProfessionalProfile @relation(fields: [professionalProfileId], references: [id], onDelete: Cascade)
+
+  messages ChatMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([timelineItemId, professionalProfileId])
+}
+
+model ChatMessage {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  text           String
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+}
+
+model Plan {
+  id        String   @id @default(cuid())
+  name      String   @unique // FREE, PREMIUM, DIAMOND
+  features  String // JSON string of allowed features
+  createdAt DateTime @default(now())
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId    String
+  plan      Plan      @relation(fields: [planId], references: [id], onDelete: Restrict)
+  status    String    @default("ACTIVE") // ACTIVE, CANCELED, EXPIRED
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

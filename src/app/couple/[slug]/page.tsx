@@ -1,316 +1,204 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { verifyProAssignment } from "@/app/proAssignmentActions";
+import { requireAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { approveMedia, rejectMedia } from "@/app/actions";
-import { updateBranding, addTimelineItem, deleteTimelineItem, approveMessage, rejectMessage } from "@/app/coupleActions";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { createChapter } from "@/app/chapterActions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import Link from "next/link";
-import { Check, X, Download, Camera, MessageSquareHeart, Settings, Clock } from "lucide-react";
-import Image from "next/image";
+import { Plus, ArrowRight, Calendar } from "lucide-react";
 
 export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const wedding = await prisma.wedding.findUnique({
+  
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  
+  const wedding = await prisma.timelineItem.findUnique({
     where: { slug: slug },
-    include: {
-      media: { orderBy: { createdAt: "desc" } },
-      timeline: { orderBy: { order: "asc" } },
-      messages: { orderBy: { createdAt: "desc" } },
-      locations: true,
-    },
   });
 
   if (!wedding) notFound();
 
-  const pendingMedia = wedding.media.filter((m: any) => m.status === "PENDING");
-  const approvedMedia = wedding.media.filter((m: any) => m.status === "APPROVED");
-  const pendingMessages = wedding.messages.filter((m: any) => m.status === "PENDING");
-  const approvedMessages = wedding.messages.filter((m: any) => m.status === "APPROVED");
+  
+  const isOwner = wedding.ownerId === session.userId || wedding.coupleId === session.userId || session.role === "ADMIN";
+  const isAssigned = await verifyProAssignment(wedding.id, session.userId);
+  
+  if (!isOwner && !isAssigned) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p>Non hai i permessi per accedere a questo matrimonio.</p>
+      </div>
+    );
+  }
+    
+  let allChapters = [wedding];
+  if (wedding.familyId) {
+    allChapters = await prisma.timelineItem.findMany({
+      where: { familyId: wedding.familyId },
+      orderBy: { date: "asc" },
+    });
+  } else if (wedding.coupleId) {
+    allChapters = await prisma.timelineItem.findMany({
+      where: { coupleId: wedding.coupleId },
+      orderBy: { date: "asc" },
+    });
+  }
+  
+  if (!allChapters.find(c => c.id === wedding.id)) {
+    allChapters.unshift(wedding);
+  }
+  
+  allChapters.sort((a, b) => {
+    if (a.type === "WEDDING") return -1;
+    if (b.type === "WEDDING") return 1;
+    const dateA = a.date ? new Date(a.date).getTime() : 0;
+    const dateB = b.date ? new Date(b.date).getTime() : 0;
+    return dateA - dateB;
+  });
+
+  const CHAPTER_TYPES: Record<string, string> = {
+    "ANNIVERSARY": "Anniversario",
+    "TRAVEL": "Viaggio",
+    "BIRTH": "Nascita",
+    "BAPTISM": "Battesimo",
+    "BIRTHDAY": "Compleanno",
+    "FAMILY": "Famiglia",
+    "MEMORY": "Ricordo",
+    "CUSTOM": "Altro"
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Dashboard: {wedding.brideName} & {wedding.groomName}</h1>
-            <p className="text-sm text-gray-500">Gestisci i ricordi del tuo giorno speciale.</p>
-          </div>
-          <div className="flex gap-2">
-            <Link href={`/w/${wedding.slug}`}>
-              <Button variant="outline">Vai al Sito Pubblico</Button>
-            </Link>
-          </div>
+    <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
+      {/* 1. Header Emozionale */}
+      <div className="bg-white shadow-sm border-b border-stone-200">
+        <div className="max-w-7xl mx-auto px-4 py-16 text-center">
+          <h1 className="text-4xl md:text-5xl font-serif text-stone-800 tracking-tight mb-4">La Nostra Storia</h1>
+          <p className="text-lg text-stone-500 font-light italic max-w-2xl mx-auto">
+            Il vostro matrimonio è il primo capitolo. La vostra storia continua qui.
+          </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 mt-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <h2 className="text-2xl font-serif text-stone-800 mb-12 text-center md:text-left">I Vostri Capitoli</h2>
+
+        {/* 2. Cronostoria (Timeline Verticale) */}
+        <div className="relative border-l-2 border-stone-200 ml-4 md:ml-8 pl-8 md:pl-12 pb-12 space-y-20">
           
-          {/* Sidebar */}
-          <div className="md:col-span-1 space-y-6">
-            <Card>
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Il tuo QR Code</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'))}/w/${wedding.slug}`} 
-                  alt="QR Code" 
-                  className="mx-auto mb-4 w-full max-w-[200px]"
-                />
-                <Button variant="secondary" className="w-full">Stampa QR</Button>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Statistiche</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-stone-500">Foto totali caricate</span>
-                  <span className="font-bold">{wedding.media.length}</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="text-stone-500">Foto pubbliche</span>
-                  <span className="font-bold text-green-600">{approvedMedia.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-stone-500">Messaggi ricevuti</span>
-                  <span className="font-bold">{wedding.messages.length}</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          {allChapters.map((chapter, index) => {
+            const isWedding = chapter.type === "WEDDING";
+            const displayTitle = isWedding ? `${chapter.brideName} & ${chapter.groomName}` : (chapter.title || "Capitolo senza titolo");
+            const displayType = isWedding ? "Matrimonio" : (CHAPTER_TYPES[chapter.type] || "Ricordo");
+            const nodeNumber = index + 1;
 
-          {/* Main Content */}
-          <div className="md:col-span-3">
-            <Tabs defaultValue="photos" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 mb-8">
-                <TabsTrigger value="photos" className="gap-2"><Camera className="h-4 w-4"/> Foto</TabsTrigger>
-                <TabsTrigger value="messages" className="gap-2">
-                  <MessageSquareHeart className="h-4 w-4"/> Dediche 
-                  {pendingMessages.length > 0 && <span className="ml-1 bg-orange-500 text-white rounded-full px-2 text-xs">{pendingMessages.length}</span>}
-                </TabsTrigger>
-                <TabsTrigger value="timeline" className="gap-2"><Clock className="h-4 w-4"/> Programma</TabsTrigger>
-                <TabsTrigger value="settings" className="gap-2"><Settings className="h-4 w-4"/> Impostazioni</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="photos" className="space-y-8 animate-in fade-in">
-                {pendingMedia.length > 0 && (
-                  <section className="bg-orange-50 p-6 rounded-xl border border-orange-100">
-                    <h2 className="text-xl font-semibold mb-4 text-orange-800 flex justify-between items-center">
-                      Da Approvare ({pendingMedia.length})
-                    </h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      {pendingMedia.map((item: any) => (
-                        <Card key={item.id} className="overflow-hidden shadow-sm">
-                          <div className="aspect-square bg-gray-200 relative">
-                            {item.type === "VIDEO" ? (
-                              <video src={item.url} className="object-cover w-full h-full" controls muted playsInline />
-                            ) : (
-                              <img src={item.url} alt="Media" className="object-cover w-full h-full" />
-                            )}
-                          </div>
-                          <CardContent className="p-2 flex gap-2">
-                            <form action={approveMedia.bind(null, item.id)} className="flex-1">
-                              <Button type="submit" variant="default" className="w-full bg-green-600 hover:bg-green-700 h-8">
-                                <Check className="h-4 w-4" />
-                              </Button>
-                            </form>
-                            <form action={rejectMedia.bind(null, item.id)} className="flex-1">
-                              <Button type="submit" variant="destructive" className="w-full h-8">
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </form>
-                          </CardContent>
-                        </Card>
-                      ))}
+            return (
+              <div key={chapter.id} className="relative group">
+                <div className="absolute -left-[49px] md:-left-[65px] flex items-center justify-center w-8 h-8 rounded-full border-4 border-[#faf9f8] bg-stone-800 text-white text-sm font-serif z-10 shadow-sm transition-transform group-hover:scale-110">{nodeNumber}</div>
+                
+                <div className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden hover:shadow-md transition-shadow">
+                  <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+                    {chapter.coverImage && (
+                      <div className="absolute inset-0 w-full h-full opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-20">
+                        <img src={chapter.coverImage} className="w-full h-full object-cover" alt="" />
+                      </div>
+                    )}
+                    <div className="relative z-10 flex-1">
+                       <div className="text-xs font-bold tracking-widest text-stone-500 mb-2 uppercase">Capitolo {nodeNumber}: {displayType}</div>
+                       <h3 className="text-3xl font-serif text-stone-800 mb-2">{displayTitle}</h3>
+                       {chapter.date && <p className="text-stone-600 flex items-center gap-2 font-medium"><Calendar className="w-4 h-4"/> {new Date(chapter.date).toLocaleDateString('it-IT')}</p>}
                     </div>
-                  </section>
-                )}
-
-                <section>
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Galleria Approvata ({approvedMedia.length})</h2>
-                    <a href={`/api/download/${wedding.slug}`}>
-                      <Button variant="outline" size="sm"><Download className="h-4 w-4 mr-2" /> Scarica Tutte (ZIP)</Button>
-                    </a>
+                    
+                    <div className="relative z-10 shrink-0">
+                      <Link href={`/couple/${wedding.slug}/chapter/${chapter.slug}`}>
+                        <Button className="bg-stone-800 hover:bg-stone-700 text-white gap-2 rounded-full px-6 py-6 h-auto text-lg">
+                          Apri Capitolo <ArrowRight className="w-5 h-5" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                  {approvedMedia.length === 0 ? (
-                    <p className="text-gray-500">Nessuna foto approvata al momento.</p>
-                  ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                      {approvedMedia.map((item: any) => (
-                        <div key={item.id} className="aspect-square relative rounded-lg overflow-hidden group bg-gray-200">
-                           {item.type === "VIDEO" ? (
-                              <video src={item.url} className="object-cover w-full h-full" controls muted playsInline />
-                            ) : (
-                              <img src={item.url} alt="Media" className="object-cover w-full h-full" />
-                            )}
-                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                            <form action={rejectMedia.bind(null, item.id)}>
-                              <Button type="submit" variant="destructive" size="icon" className="h-8 w-8 rounded-full">
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </form>
-                            <a href={item.url} download target="_blank" rel="noreferrer">
-                              <Button variant="secondary" size="icon" className="h-8 w-8 rounded-full">
-                                <Download className="h-4 w-4" />
-                              </Button>
-                            </a>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </section>
-              </TabsContent>
-
-              <TabsContent value="messages" className="space-y-6 animate-in fade-in">
-                {pendingMessages.length > 0 && (
-                  <section className="bg-orange-50 p-6 rounded-xl border border-orange-100 mb-8">
-                    <h2 className="text-xl font-semibold mb-4 text-orange-800">Dediche da Approvare</h2>
-                    <div className="space-y-4">
-                      {pendingMessages.map((msg: any) => (
-                        <Card key={msg.id}>
-                          <CardContent className="p-4 flex justify-between items-center">
-                            <div>
-                              <p className="italic">"{msg.text}"</p>
-                              <p className="text-sm font-semibold mt-1 text-stone-500">— {msg.guestName || "Anonimo"}</p>
-                            </div>
-                            <div className="flex gap-2 shrink-0 ml-4">
-                              <form action={approveMessage.bind(null, msg.id, wedding.slug)}>
-                                <Button type="submit" className="bg-green-600 hover:bg-green-700" size="icon"><Check className="h-4 w-4" /></Button>
-                              </form>
-                              <form action={rejectMessage.bind(null, msg.id, wedding.slug)}>
-                                <Button type="submit" variant="destructive" size="icon"><X className="h-4 w-4" /></Button>
-                              </form>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                <section>
-                  <h2 className="text-xl font-semibold mb-4">Dediche Pubblicate</h2>
-                  {approvedMessages.length === 0 ? (
-                    <p className="text-gray-500">Nessuna dedica pubblicata.</p>
-                  ) : (
-                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {approvedMessages.map((msg: any) => (
-                        <Card key={msg.id}>
-                          <CardContent className="p-4 relative group">
-                            <p className="italic text-stone-700">"{msg.text}"</p>
-                            <p className="text-sm font-semibold mt-2 text-stone-500 text-right">— {msg.guestName || "Anonimo"}</p>
-                            
-                            <form action={rejectMessage.bind(null, msg.id, wedding.slug)} className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button type="submit" variant="destructive" size="icon" className="h-6 w-6"><X className="h-3 w-3" /></Button>
-                            </form>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                </section>
-              </TabsContent>
-
-              <TabsContent value="timeline" className="space-y-6 animate-in fade-in">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Aggiungi Fase Evento</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <form action={addTimelineItem.bind(null, wedding.id)} className="flex flex-col md:flex-row gap-4 items-end">
-                      <input type="hidden" name="slug" value={wedding.slug} />
-                      <div className="w-full md:w-1/4">
-                        <Label>Orario</Label>
-                        <Input name="time" type="time" required />
-                      </div>
-                      <div className="w-full md:w-1/4">
-                        <Label>Titolo</Label>
-                        <Input name="title" required placeholder="Es. Taglio della Torta" />
-                      </div>
-                      <div className="w-full md:w-2/4">
-                        <Label>Descrizione (Opz.)</Label>
-                        <Input name="description" placeholder="A bordo piscina" />
-                      </div>
-                      <Button type="submit" className="w-full md:w-auto">Aggiungi</Button>
-                    </form>
-                  </CardContent>
-                </Card>
-
-                <div className="space-y-4">
-                  {wedding.timeline.map((item: any) => (
-                    <Card key={item.id}>
-                      <CardContent className="p-4 flex justify-between items-center">
-                        <div className="flex gap-4 items-center">
-                          <div className="font-bold text-xl">{item.time}</div>
-                          <div>
-                            <h4 className="font-semibold">{item.title}</h4>
-                            <p className="text-sm text-gray-500">{item.description}</p>
-                          </div>
-                        </div>
-                        <form action={deleteTimelineItem.bind(null, item.id, wedding.slug)}>
-                          <Button type="submit" variant="ghost" className="text-red-500 hover:text-red-700 hover:bg-red-50">Elimina</Button>
-                        </form>
-                      </CardContent>
-                    </Card>
-                  ))}
                 </div>
-              </TabsContent>
+              </div>
+            );
+          })}
 
-              <TabsContent value="settings" className="animate-in fade-in">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Personalizzazione Sito Pubblico</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <form action={updateBranding.bind(null, wedding.id)} className="space-y-6 max-w-md">
-                      <input type="hidden" name="slug" value={wedding.slug} />
-                      
-                      <div className="space-y-2">
-                        <Label>Colore Tema Principale</Label>
-                        <div className="flex gap-4 items-center">
-                          <Input type="color" name="themeColor" defaultValue={wedding.themeColor} className="w-16 p-1 h-10" />
-                          <span className="text-sm text-gray-500">Il colore principale dei bottoni e dei dettagli sul sito pubblico.</span>
-                        </div>
-                      </div>
+          <div className="relative pt-8">
+            <div className="absolute -left-[49px] md:-left-[65px] flex items-center justify-center w-8 h-8 rounded-full border-4 border-[#faf9f8] bg-stone-300 text-stone-600 text-lg font-serif z-10 shadow-sm">+</div>
+            
+            <div className="border-2 border-dashed border-stone-300 rounded-3xl p-10 md:p-16 text-center bg-transparent transition-all hover:border-stone-400 hover:bg-stone-100/50">
+               <h3 className="text-2xl font-serif text-stone-700 mb-4">La storia continua</h3>
+               <p className="text-stone-500 mb-8 max-w-md mx-auto leading-relaxed">
+                 Questa storia può continuare con nuovi ricordi, viaggi, anniversari e momenti importanti da custodire per sempre.
+               </p>
+               
+               <Dialog>
+                 <DialogTrigger className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border bg-background shadow-sm rounded-full border-stone-300 text-stone-800 hover:bg-stone-200 h-11 px-6 py-2">
+                   <Plus className="w-5 h-5 mr-2" /> Aggiungi un capitolo
+                 </DialogTrigger>
+                 <DialogContent className="sm:max-w-[500px]">
+                   <DialogHeader>
+                     <DialogTitle className="font-serif text-2xl">Aggiungi un nuovo capitolo</DialogTitle>
+                   </DialogHeader>
+                   <form encType="multipart/form-data" action={createChapter.bind(null, wedding.id)} className="space-y-4 pt-4">
+                     
+                     <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-2">
+                         <Label>Tipo di Evento</Label>
+                         <select name="type" className="w-full flex h-10 rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800" required>
+                           {Object.entries(CHAPTER_TYPES).map(([val, label]) => (
+                             <option key={val} value={val}>{label}</option>
+                           ))}
+                         </select>
+                       </div>
+                       <div className="space-y-2">
+                         <Label>Data Evento</Label>
+                         <Input type="date" name="date" required />
+                       </div>
+                     </div>
 
-                      <div className="space-y-2">
-                        <Label>Messaggio di Benvenuto</Label>
-                        <textarea 
-                          name="welcomeMessage" 
-                          defaultValue={wedding.welcomeMessage || ""}
-                          placeholder="Un breve messaggio per ringraziare chi carica le foto!"
-                          className="w-full min-h-24 p-3 border rounded-md resize-none"
-                        />
-                      </div>
+                     <div className="space-y-2">
+                       <Label>Titolo del Capitolo</Label>
+                       <Input name="title" placeholder="Es. Viaggio di Nozze in Giappone" required />
+                     </div>
 
-                      <div className="space-y-2">
-                        <Label>Link Album Esterno (Google Drive, Dropbox, Pixieset)</Label>
-                        <Input 
-                          type="url" 
-                          name="externalGalleryUrl" 
-                          defaultValue={wedding.externalGalleryUrl || ""} 
-                          placeholder="https://drive.google.com/..." 
-                        />
-                        <p className="text-sm text-gray-500">Se inserito, nella galleria pubblica apparirà un bottone per visitare l'album ufficiale.</p>
-                      </div>
+                     <div className="space-y-2">
+                       <Label>Descrizione (opzionale)</Label>
+                       <textarea 
+                         name="description" 
+                         className="w-full min-h-24 p-3 border border-stone-300 rounded-md resize-none text-sm focus:outline-none focus:ring-2 focus:ring-stone-800"
+                         placeholder="Racconta brevemente questo momento..."
+                       />
+                     </div>
+                     
+                     <div className="space-y-2">
+                       <Label>Visibilità</Label>
+                       <select name="visibility" className="w-full flex h-10 rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800">
+                         <option value="PRIVATE">Solo per noi</option>
+                         <option value="FAMILY">Condiviso con la famiglia</option>
+                         <option value="PUBLIC">Pubblico</option>
+                       </select>
+                     </div>
 
-                      <Button type="submit" className="w-full">Salva Impostazioni</Button>
-                    </form>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                     <div className="space-y-2 pb-4">
+                       <Label>Immagine di Copertina (opzionale)</Label>
+                       <Input name="coverFile" type="file" accept="image/*" />
+                     </div>
 
-            </Tabs>
+                     <DialogFooter>
+                       <DialogClose type="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                         Annulla
+                       </DialogClose>
+                       <Button type="submit" className="bg-stone-800 hover:bg-stone-700 text-white rounded-md">
+                         Salva Capitolo
+                       </Button>
+                     </DialogFooter>
+                   </form>
+                 </DialogContent>
+               </Dialog>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
