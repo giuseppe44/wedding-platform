@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { Camera, HardDrive, Users, Settings } from "lucide-react";
+import { Camera, HardDrive, Users, Settings, CreditCard } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await requireAuth(["PHOTOGRAPHER"]);
