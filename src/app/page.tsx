@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart, Camera, ArrowRight, UserCircle } from "lucide-react";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen font-sans flex flex-col md:flex-row bg-[#1c1917]">
+    <div className="flex flex-col min-h-screen">
+    <div className="flex-1 font-sans flex flex-col md:flex-row bg-[#1c1917]">
       
       {/* LATO SPOSI */}
       <div className="flex-1 relative flex flex-col justify-center items-center p-12 overflow-hidden bg-stone-900 group border-b md:border-b-0 md:border-r border-stone-800">
@@ -70,6 +72,8 @@ export default function Home() {
         </div>
       </div>
       
+    </div>
+    <Footer />
     </div>
   );
 }

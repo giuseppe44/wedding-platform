@@ -1,31 +1,33 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Briefcase, TrendingUp, Users, CheckCircle2, Star, ArrowRight, Printer } from "lucide-react";
+import Footer from "@/components/Footer";
 
 export default function ProfessionistiLandingPage() {
   return (
-    <div className="min-h-screen bg-[#1c1917] font-sans text-stone-100">
+    <div className="min-h-screen bg-[#1c1917] font-sans text-stone-100 flex flex-col">
       {/* HERO SECTION */}
-      <section className="relative pt-32 pb-20 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
+      <section className="relative pt-40 pb-32 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
         <div className="absolute inset-0 bg-stone-950 z-0">
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-900 to-transparent opacity-90" />
+          <img src="https://images.unsplash.com/photo-1554048612-b6a37e5cb23e?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover opacity-30 grayscale" alt="Fotografo" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent" />
         </div>
         
         <div className="relative z-10 max-w-4xl mx-auto text-white">
           <div className="inline-flex items-center justify-center p-3 bg-white/5 rounded-full mb-8 backdrop-blur-sm border border-white/10">
             <Briefcase className="w-5 h-5 text-amber-400 mr-2" />
-            <span className="text-sm font-medium tracking-wide">Per Fotografi e Professionisti</span>
+            <span className="text-sm font-medium tracking-wide text-amber-100">Il Business Partner per Fotografi</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-serif tracking-tight mb-8 drop-shadow-lg leading-tight">
             Trasforma ogni evento in <br />
             <span className="italic font-light text-amber-300">nuovi clienti.</span>
           </h1>
           <p className="text-xl text-stone-300 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
-            Non consegnare solo le foto: consegna un'esperienza. Ottieni i contatti degli invitati, vendi stampe dirette e crea la tua vetrina esclusiva.
+            Non limitarti a consegnare le foto: consegna un'esperienza. Ottieni le email degli invitati, vendi stampe in modo automatico e crea la tua vetrina esclusiva.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER">
-              <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-lg rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-xl transition-all hover:scale-105 border-none font-bold">
+              <Button size="lg" className="w-full sm:w-auto h-14 px-10 text-lg rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-2xl transition-all hover:scale-105 border-none font-bold">
                 Diventa Partner Ufficiale <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
@@ -33,111 +35,130 @@ export default function ProfessionistiLandingPage() {
         </div>
       </section>
 
-      {/* FUNZIONALITA */}
-      <section className="py-24 bg-stone-900">
+      {/* FEATURE 1 - SPLIT */}
+      <section className="py-24 bg-stone-900 border-t border-stone-800">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-serif text-white mb-6">Molto più di una gallery</h2>
-            <p className="text-lg text-stone-400 max-w-2xl mx-auto">
-              I migliori professionisti non si limitano a scattare foto. Gestiscono il loro brand.
-            </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="relative order-2 lg:order-1">
+              <div className="absolute -inset-4 bg-amber-900/30 rounded-[2rem] transform -rotate-3"></div>
+              <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=2070&auto=format&fit=crop" alt="Marketing Fotografi" className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[4/5] grayscale hover:grayscale-0 transition-all duration-700" />
+              <div className="absolute -bottom-10 -right-10 bg-stone-800 p-6 rounded-3xl shadow-2xl hidden md:block border border-stone-700">
+                <div className="flex items-center gap-4">
+                  <div className="bg-amber-500/20 p-3 rounded-full"><Users className="w-6 h-6 text-amber-400" /></div>
+                  <div>
+                    <p className="font-bold text-white">12 Nuovi Lead Acquisiti</p>
+                    <p className="text-sm text-stone-400">Dal matrimonio di ieri</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-8 order-1 lg:order-2">
+              <div className="w-16 h-16 bg-stone-800 border border-stone-700 rounded-2xl flex items-center justify-center mb-6">
+                <TrendingUp className="w-8 h-8 text-amber-400" />
+              </div>
+              <h2 className="text-4xl md:text-5xl font-serif text-white leading-tight">Il primo Viral Loop <br/>per fotografi.</h2>
+              <p className="text-xl text-stone-400 leading-relaxed font-light">
+                Perché lasciare i contatti sul tavolo quando puoi inserirli nel tuo database?
+              </p>
+              <p className="text-stone-300 leading-relaxed">
+                Ogni matrimonio ha mediamente 100-150 invitati. Molti di loro si sposeranno presto o avranno bisogno di un fotografo. WeddingSpace cattura automaticamente le loro email per fargli vedere le tue foto, costruendo la tua lista contatti per te in modo passivo e nel rispetto della privacy.
+              </p>
+            </div>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-stone-800 p-8 rounded-3xl border border-stone-700 hover:border-amber-500/30 transition-colors">
-              <div className="w-14 h-14 bg-stone-700 rounded-2xl flex items-center justify-center mb-6">
-                <Users className="w-7 h-7 text-amber-400" />
+        </div>
+      </section>
+
+      {/* FEATURE 2 - SPLIT */}
+      <section className="py-24 bg-stone-950">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <div className="w-16 h-16 bg-stone-800 border border-stone-700 rounded-2xl flex items-center justify-center mb-6">
+                <Printer className="w-8 h-8 text-blue-400" />
               </div>
-              <h3 className="text-2xl font-serif text-white mb-3">Lead Generation</h3>
-              <p className="text-stone-400 leading-relaxed">
-                Raccogli automaticamente le email degli invitati che vogliono vedere le foto. Costruisci il tuo database per marketing futuro.
+              <h2 className="text-4xl md:text-5xl font-serif text-white leading-tight">Upsell automatico. <br/>Vendi senza vendere.</h2>
+              <p className="text-xl text-stone-400 leading-relaxed font-light">
+                Aumenta lo scontrino medio senza fare nessuna fatica.
               </p>
+              <ul className="space-y-4 text-stone-300">
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Inserisci un listino prezzi per stampe, tele e fotolibri.</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Gli invitati possono ordinare le loro foto preferite con un clic.</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Ogni spazio che crei diventa la tua vetrina pubblica sul nostro portale.</span></li>
+              </ul>
             </div>
             
-            <div className="bg-stone-800 p-8 rounded-3xl border border-stone-700 hover:border-amber-500/30 transition-colors">
-              <div className="w-14 h-14 bg-stone-700 rounded-2xl flex items-center justify-center mb-6">
-                <TrendingUp className="w-7 h-7 text-emerald-400" />
-              </div>
-              <h3 className="text-2xl font-serif text-white mb-3">Vetrina Portfolio</h3>
-              <p className="text-stone-400 leading-relaxed">
-                Tutti i matrimoni a cui partecipi formano automaticamente la tua Vetrina Pubblica. Fatti trovare dalle future coppie.
-              </p>
-            </div>
-            
-            <div className="bg-stone-800 p-8 rounded-3xl border border-stone-700 hover:border-amber-500/30 transition-colors">
-              <div className="w-14 h-14 bg-stone-700 rounded-2xl flex items-center justify-center mb-6">
-                <Printer className="w-7 h-7 text-blue-400" />
-              </div>
-              <h3 className="text-2xl font-serif text-white mb-3">Upsell & Stampe</h3>
-              <p className="text-stone-400 leading-relaxed">
-                Inserisci pulsanti per richiedere stampe, scaricare file in alta risoluzione o lasciare recensioni su Google direttamente dall'app.
-              </p>
+            <div className="relative">
+              <div className="absolute -inset-4 bg-stone-800 rounded-[2rem] transform rotate-3"></div>
+              <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop" alt="Stampe e Fotolibri" className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[4/5] grayscale hover:grayscale-0 transition-all duration-700" />
             </div>
           </div>
         </div>
       </section>
 
       {/* PREZZI */}
-      <section className="py-24 bg-stone-950 border-t border-stone-800">
+      <section className="py-32 bg-[#1c1917] border-t border-stone-800">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl font-serif text-white">Un investimento nel tuo brand</h2>
-            <p className="text-lg text-stone-400 max-w-2xl mx-auto">
-              Recuperi il costo con il primo cliente acquisito.
+          <div className="text-center space-y-4 mb-20">
+            <h2 className="text-4xl md:text-5xl font-serif text-white">Un investimento sul tuo brand</h2>
+            <p className="text-xl text-stone-400 max-w-2xl mx-auto font-light">
+              Recuperi il costo dell'abbonamento chiudendo anche un solo cliente in più grazie alla nostra piattaforma.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* Entry */}
-            <div className="bg-stone-900 p-8 rounded-3xl border border-stone-800 shadow-sm hover:border-stone-700 transition-colors">
+            <div className="bg-stone-900 p-10 rounded-3xl border border-stone-800 shadow-xl hover:border-stone-700 transition-colors">
               <h4 className="font-bold text-2xl text-white mb-2">Entry</h4>
               <p className="text-stone-500 mb-6 h-10">Ideale per iniziare</p>
               <div className="mb-8">
-                <span className="text-4xl font-serif font-bold text-white">€ 150</span><span className="text-stone-500">/anno</span>
+                <span className="text-5xl font-serif font-bold text-white">€ 150</span><span className="text-stone-500">/anno</span>
               </div>
-              <ul className="text-stone-400 space-y-4 mb-8">
+              <ul className="text-stone-400 space-y-4 mb-10">
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Gestione fino a 5 Matrimoni</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Profilo base nella directory</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Lead generation standard</span></li>
               </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-12 rounded-full">Inizia Ora</Button></Link>
+              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Inizia Ora</Button></Link>
             </div>
 
             {/* Pro */}
-            <div className="bg-gradient-to-b from-stone-800 to-stone-900 text-white p-8 rounded-3xl border border-amber-500/50 shadow-2xl relative transform md:-translate-y-4">
+            <div className="bg-gradient-to-b from-stone-800 to-stone-900 text-white p-10 rounded-3xl border border-amber-500/50 shadow-2xl relative transform md:-translate-y-8">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-500 text-amber-950 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
                 Consigliato
               </div>
               <h4 className="font-bold text-2xl text-white mb-2">Pro</h4>
               <p className="text-stone-400 mb-6 h-10">Per chi vuole scalare il business</p>
               <div className="mb-8">
-                <span className="text-4xl font-serif font-bold text-white">€ 230</span><span className="text-stone-400">/anno</span>
+                <span className="text-5xl font-serif font-bold text-white">€ 230</span><span className="text-stone-400">/anno</span>
               </div>
-              <ul className="text-stone-300 space-y-4 mb-8">
+              <ul className="text-stone-300 space-y-4 mb-10">
                 <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0" /> <span>Matrimoni Illimitati</span></li>
                 <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0" /> <span>Vetrina Premium ad alta visibilità</span></li>
                 <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0" /> <span>Modulo Upsell e Richiesta Stampe</span></li>
               </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button className="w-full bg-amber-500 hover:bg-amber-600 text-amber-950 h-12 rounded-full font-bold">Diventa Pro</Button></Link>
+              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button className="w-full bg-amber-500 hover:bg-amber-600 text-amber-950 h-14 rounded-full font-bold text-lg">Diventa Pro</Button></Link>
             </div>
 
             {/* Diamond */}
-            <div className="bg-stone-900 p-8 rounded-3xl border border-stone-800 shadow-sm hover:border-stone-700 transition-colors">
+            <div className="bg-stone-900 p-10 rounded-3xl border border-stone-800 shadow-xl hover:border-stone-700 transition-colors">
               <h4 className="font-bold text-2xl text-white mb-2">Diamond</h4>
               <p className="text-stone-500 mb-6 h-10">Il top per grandi agenzie</p>
               <div className="mb-8">
-                <span className="text-4xl font-serif font-bold text-white">€ 450</span><span className="text-stone-500">/anno</span>
+                <span className="text-5xl font-serif font-bold text-white">€ 450</span><span className="text-stone-500">/anno</span>
               </div>
-              <ul className="text-stone-400 space-y-4 mb-8">
+              <ul className="text-stone-400 space-y-4 mb-10">
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Tutto il piano Pro</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Multi-account per collaboratori</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Analytics avanzati</span></li>
               </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-12 rounded-full">Contattaci</Button></Link>
+              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Contattaci</Button></Link>
             </div>
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }
