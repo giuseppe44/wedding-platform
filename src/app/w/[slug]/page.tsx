@@ -317,6 +317,24 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         </Link>
       </div>
 
+      {/* VIRAL LOOP BANNER (LATO INVITATI -> NUOVI UTENTI) */}
+      <div className="max-w-5xl mx-auto px-4 pb-24">
+        <div className="bg-stone-900 text-white p-10 md:p-14 rounded-3xl text-center shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop')] opacity-10 object-cover" />
+          <div className="relative z-10">
+            <h3 className="text-3xl md:text-4xl font-serif mb-4">La storia non finisce qui.</h3>
+            <p className="text-stone-300 text-lg md:text-xl mb-8 max-w-2xl mx-auto font-light">
+              Il prossimo grande evento potrebbe essere il tuo. Crea uno spazio per un Matrimonio, un Battesimo, una Laurea o un Anniversario, e inizia a collezionare ricordi.
+            </p>
+            <Link href="/sposi">
+              <Button size="lg" className="bg-white text-stone-900 hover:bg-stone-200 rounded-full h-14 px-8 text-lg font-bold shadow-xl transition-transform hover:scale-105">
+                Crea il tuo Spazio
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

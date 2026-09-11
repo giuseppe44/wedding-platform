@@ -93,10 +93,32 @@ export default async function DashboardPage() {
           </p>
         </div>
         <Link href="/dashboard/profile">
-          <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-full whitespace-nowrap">
-            Completa Vetrina
+          <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-full font-bold shadow-md whitespace-nowrap">
+            Completa la Vetrina
           </Button>
         </Link>
+      </div>
+
+      {/* REFERRAL SYSTEM: ESPANDI IL TUO NETWORK */}
+      <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white border border-stone-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <h3 className="font-bold text-lg text-stone-800 mb-2 font-serif">Invita gli Sposi</h3>
+          <p className="text-stone-500 text-sm mb-6">Fai registrare i tuoi prossimi sposi per creare il loro spazio su WeddingSpace. Sarai impostato come fotografo ufficiale.</p>
+          <a href={`https://wa.me/?text=${encodeURIComponent("Ciao! Per il vostro matrimonio useremo WeddingSpace, una piattaforma per raccogliere le foto di tutti gli invitati e la mia galleria ufficiale. Registratevi qui per creare il vostro spazio: https://wedding-platform-topwebsitee.vercel.app/sposi")}`} target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" className="w-full border-stone-300 text-stone-700 hover:bg-stone-50 rounded-full font-semibold">
+              <span className="text-emerald-500 mr-2">WhatsApp</span> Invia Link agli Sposi
+            </Button>
+          </a>
+        </div>
+        <div className="bg-white border border-stone-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <h3 className="font-bold text-lg text-stone-800 mb-2 font-serif">Invita un Collaboratore</h3>
+          <p className="text-stone-500 text-sm mb-6">Conosci altri fotografi o professionisti del wedding? Fai scoprire loro come generare contatti da ogni evento.</p>
+          <a href={`https://wa.me/?text=${encodeURIComponent("Ciao! Sto usando WeddingSpace per gestire le gallerie dei miei matrimoni e ricevere contatti dagli invitati. Dacci un'occhiata: https://wedding-platform-topwebsitee.vercel.app/professionisti")}`} target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" className="w-full border-stone-300 text-stone-700 hover:bg-stone-50 rounded-full font-semibold">
+              <span className="text-emerald-500 mr-2">WhatsApp</span> Invia Link al Collega
+            </Button>
+          </a>
+        </div>
       </div>
 
       <div className="mb-8">
