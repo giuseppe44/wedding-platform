@@ -9,8 +9,8 @@ export default function ProfessionistiLandingPage() {
       {/* HERO SECTION */}
       <section className="relative pt-40 pb-32 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
         <div className="absolute inset-0 bg-stone-950 z-0">
-          <img src="https://images.unsplash.com/photo-1554048612-b6a37e5cb23e?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover opacity-30 grayscale" alt="Fotografo" />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent" />
+          <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover opacity-70 mix-blend-overlay" alt="Fotografo al lavoro" />
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-950/70 via-stone-950/40 to-stone-950" />
         </div>
         
         <div className="relative z-10 max-w-4xl mx-auto text-white">
@@ -96,64 +96,19 @@ export default function ProfessionistiLandingPage() {
         </div>
       </section>
 
-      {/* PREZZI */}
-      <section className="py-32 bg-[#1c1917] border-t border-stone-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center space-y-4 mb-20">
-            <h2 className="text-4xl md:text-5xl font-serif text-white">Un investimento sul tuo brand</h2>
-            <p className="text-xl text-stone-400 max-w-2xl mx-auto font-light">
-              Recuperi il costo dell'abbonamento chiudendo anche un solo cliente in più grazie alla nostra piattaforma.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Entry */}
-            <div className="bg-stone-900 p-10 rounded-3xl border border-stone-800 shadow-xl hover:border-stone-700 transition-colors">
-              <h4 className="font-bold text-2xl text-white mb-2">Entry</h4>
-              <p className="text-stone-500 mb-6 h-10">Ideale per iniziare</p>
-              <div className="mb-8">
-                <span className="text-5xl font-serif font-bold text-white">€ 150</span><span className="text-stone-500">/anno</span>
-              </div>
-              <ul className="text-stone-400 space-y-4 mb-10">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Gestione fino a 5 Matrimoni</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Profilo base nella directory</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Lead generation standard</span></li>
-              </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Inizia Ora</Button></Link>
-            </div>
-
-            {/* Pro */}
-            <div className="bg-gradient-to-b from-stone-800 to-stone-900 text-white p-10 rounded-3xl border border-amber-500/50 shadow-2xl relative transform md:-translate-y-8">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-amber-500 text-amber-950 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
-                Consigliato
-              </div>
-              <h4 className="font-bold text-2xl text-white mb-2">Pro</h4>
-              <p className="text-stone-400 mb-6 h-10">Per chi vuole scalare il business</p>
-              <div className="mb-8">
-                <span className="text-5xl font-serif font-bold text-white">€ 230</span><span className="text-stone-400">/anno</span>
-              </div>
-              <ul className="text-stone-300 space-y-4 mb-10">
-                <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0" /> <span>Matrimoni Illimitati</span></li>
-                <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0" /> <span>Vetrina Premium ad alta visibilità</span></li>
-                <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0" /> <span>Modulo Upsell e Richiesta Stampe</span></li>
-              </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button className="w-full bg-amber-500 hover:bg-amber-600 text-amber-950 h-14 rounded-full font-bold text-lg">Diventa Pro</Button></Link>
-            </div>
-
-            {/* Diamond */}
-            <div className="bg-stone-900 p-10 rounded-3xl border border-stone-800 shadow-xl hover:border-stone-700 transition-colors">
-              <h4 className="font-bold text-2xl text-white mb-2">Diamond</h4>
-              <p className="text-stone-500 mb-6 h-10">Il top per grandi agenzie</p>
-              <div className="mb-8">
-                <span className="text-5xl font-serif font-bold text-white">€ 450</span><span className="text-stone-500">/anno</span>
-              </div>
-              <ul className="text-stone-400 space-y-4 mb-10">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Tutto il piano Pro</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Multi-account per collaboratori</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0" /> <span>Analytics avanzati</span></li>
-              </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Contattaci</Button></Link>
-            </div>
+      {/* CTA PREZZI */}
+      <section className="py-24 bg-stone-900 border-t border-stone-800">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Trasparenza totale. Nessun costo nascosto.</h2>
+          <p className="text-xl text-stone-400 mb-10 font-light">
+            Abbiamo creato piani su misura per far crescere la tua agenzia. Scopri tutte le funzionalità incluse e scegli l'investimento perfetto per il tuo business.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/prezzi#professionisti">
+              <Button size="lg" className="w-full sm:w-auto h-14 px-10 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 text-lg shadow-xl font-bold">
+                Scopri i nostri Piani <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

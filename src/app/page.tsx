@@ -1,289 +1,209 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Heart, Camera, MapPin, Users, CheckCircle2, Star, ArrowRight, UserCircle, Briefcase, Calendar } from "lucide-react";
+import { Heart, Camera, Search, MapPin, Users, ArrowRight, Briefcase, Calendar, Star, Menu } from "lucide-react";
 import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col">
       
-      {/* NAVBAR */}
-      <nav className="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center">
+      {/* NAVBAR (Portal Style) */}
+      <nav className="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center bg-gradient-to-b from-stone-900/80 to-transparent">
         <div className="flex items-center gap-2 text-white font-serif text-2xl drop-shadow-md">
           <Heart className="w-6 h-6 text-rose-500" />
           WeddingSpace
         </div>
-        <div className="hidden md:flex items-center gap-6">
-          <Link href="/professionisti" className="text-white/90 hover:text-white font-medium drop-shadow-sm flex items-center gap-2">
-            <Briefcase className="w-4 h-4" /> Sei un Professionista?
+        <div className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide text-white drop-shadow-md">
+          <Link href="#directory" className="hover:text-rose-300 transition-colors">TROVA FORNITORI</Link>
+          <Link href="#capitoli" className="hover:text-rose-300 transition-colors">I CAPITOLI</Link>
+          <Link href="/prezzi" className="hover:text-rose-300 transition-colors">TARIFFE</Link>
+          <Link href="/professionisti" className="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-2">
+            <Briefcase className="w-4 h-4" /> SEI UN PROFESSIONISTA?
           </Link>
-          <Link href="/login">
+        </div>
+        <div className="flex items-center gap-4">
+          <Link href="/login" className="hidden md:block">
             <Button className="bg-white text-stone-900 hover:bg-stone-200 rounded-full font-bold px-6">
               Accedi
             </Button>
           </Link>
+          <Button variant="ghost" size="icon" className="md:hidden text-white"><Menu /></Button>
         </div>
       </nav>
 
-      {/* 1. HERO SECTION (SPOSI) */}
-      <section className="relative pt-40 pb-32 px-4 flex flex-col items-center justify-center text-center overflow-hidden min-h-[90vh]">
-        <div className="absolute inset-0 bg-stone-900 z-0">
-          <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover opacity-40" alt="Sposi" />
-          <div className="absolute inset-0 bg-gradient-to-b from-stone-900/80 via-stone-900/60 to-[#faf9f8]" />
+      {/* 1. HERO PORTALE CON MOTORE DI RICERCA */}
+      <section className="relative pt-48 pb-32 px-4 flex flex-col items-center justify-center text-center overflow-hidden min-h-[85vh]">
+        <div className="absolute inset-0 z-0">
+          <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover opacity-60" alt="Matrimonio Ecosistema" />
+          <div className="absolute inset-0 bg-stone-950/40 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#faf9f8]" />
         </div>
         
-        <div className="relative z-10 max-w-4xl mx-auto text-white mt-12">
-          <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-8 backdrop-blur-sm border border-white/20 shadow-lg">
-            <Heart className="w-5 h-5 text-rose-400 mr-2" />
-            <span className="text-sm font-medium tracking-wide">La Piattaforma per il tuo Matrimonio</span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-serif tracking-tight mb-8 drop-shadow-lg leading-tight">
-            Crea il tuo spazio <br/><span className="italic font-light text-rose-200">per sempre.</span>
+        <div className="relative z-10 max-w-5xl mx-auto text-white w-full">
+          <h1 className="text-5xl md:text-7xl font-serif tracking-tight mb-6 drop-shadow-xl leading-tight">
+            Il tuo <span className="italic font-light text-rose-300">Ecosistema</span> <br/>per eventi indimenticabili.
           </h1>
-          <p className="text-xl md:text-2xl text-stone-200 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
-            Raccogli le foto degli invitati in tempo reale, ricevi dediche emozionanti e racconta la vostra storia, capitolo dopo capitolo.
+          <p className="text-xl md:text-2xl text-stone-100 max-w-3xl mx-auto mb-12 font-light drop-shadow-md">
+            Trova i migliori professionisti, crea lo spazio digitale per le tue foto e condividi ogni capitolo della tua storia. Tutto in un'unica piattaforma.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/login?role=COUPLE&mode=REGISTER">
-              <Button size="lg" className="w-full sm:w-auto h-16 px-10 text-lg rounded-full bg-rose-500 hover:bg-rose-600 text-white shadow-2xl transition-transform hover:scale-105 border-none">
-                Inizia Ora Gratuitamente <ArrowRight className="ml-2 w-5 h-5" />
+          
+          {/* BARRA DI RICERCA TIPO AIRBNB / MATRIMONIO.COM */}
+          <div className="bg-white p-2 md:p-3 rounded-3xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center w-full max-w-4xl mx-auto text-left transition-transform hover:scale-[1.01] duration-300">
+            <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-200 w-full group">
+              <label className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-stone-400 group-focus-within:text-rose-500 transition-colors">Cosa stai cercando?</label>
+              <input type="text" placeholder="Es. Fotografo, Location, Catering..." className="w-full focus:outline-none text-stone-900 font-medium bg-transparent text-lg placeholder-stone-300" />
+            </div>
+            <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-200 w-full group hidden md:block">
+              <label className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-stone-400 group-focus-within:text-rose-500 transition-colors">Dove?</label>
+              <input type="text" placeholder="Es. Roma, Milano, Napoli..." className="w-full focus:outline-none text-stone-900 font-medium bg-transparent text-lg placeholder-stone-300" />
+            </div>
+            <div className="px-2 py-2 w-full md:w-auto mt-2 md:mt-0">
+              <Button className="w-full md:w-auto h-14 md:h-16 px-8 rounded-2xl md:rounded-full bg-rose-500 hover:bg-rose-600 text-white font-bold text-lg shadow-lg flex items-center justify-center gap-2">
+                <Search className="w-5 h-5" /> Cerca
               </Button>
-            </Link>
+            </div>
+          </div>
+          
+          {/* QUICK CHIPS */}
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
+            <span className="bg-black/30 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/20 hover:bg-white/20 cursor-pointer transition-colors">📸 Fotografi</span>
+            <span className="bg-black/30 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/20 hover:bg-white/20 cursor-pointer transition-colors">🏰 Location</span>
+            <span className="bg-black/30 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/20 hover:bg-white/20 cursor-pointer transition-colors">🎵 Musica</span>
+            <span className="bg-rose-500/80 backdrop-blur-md px-4 py-2 rounded-full text-sm font-bold border border-rose-400 hover:bg-rose-500 cursor-pointer transition-colors shadow-lg shadow-rose-500/20">✨ Crea il tuo Spazio Sposi</span>
           </div>
         </div>
       </section>
 
-      {/* 2. DYNAMIC FEATURES (SPOSI) */}
-      <section className="py-24 bg-[#faf9f8]">
+      {/* 2. IL BIVIO (RI-PROGETTATO E PORTATO IN ALTO) */}
+      <section className="py-20 bg-[#faf9f8]" id="directory">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="relative order-2 lg:order-1">
-              <div className="absolute -inset-4 bg-rose-100 rounded-[2rem] transform -rotate-3"></div>
-              <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" alt="Raccolta Foto" className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[4/5]" />
-              <div className="absolute -bottom-10 -right-10 bg-white p-6 rounded-3xl shadow-xl hidden md:block border border-stone-100">
-                <div className="flex items-center gap-4">
-                  <div className="bg-emerald-100 p-3 rounded-full"><CheckCircle2 className="w-6 h-6 text-emerald-600" /></div>
-                  <div>
-                    <p className="font-bold text-stone-800">450+ Foto Ricevute</p>
-                    <p className="text-sm text-stone-500">Aggiornato ora</p>
-                  </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif text-stone-900 mb-4">Un unico portale, due mondi interconnessi.</h2>
+            <p className="text-stone-500 max-w-2xl mx-auto">La piattaforma che unisce chi celebra l'amore e chi lavora per renderlo perfetto.</p>
+          </div>
+          
+          <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
+            {/* CARD SPOSI */}
+            <div className="flex-1 relative flex flex-col justify-end p-10 overflow-hidden rounded-[2.5rem] min-h-[400px] group shadow-xl">
+              <div className="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" alt="Sposi Bivio" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/60 to-transparent" />
+              </div>
+              <div className="relative z-10 text-left">
+                <div className="w-14 h-14 bg-rose-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30">
+                  <Heart className="w-7 h-7 text-rose-400" />
                 </div>
+                <h2 className="text-4xl font-serif text-white mb-3">Siete gli Sposi?</h2>
+                <p className="text-stone-200 text-lg mb-8 font-light max-w-sm">
+                  Cercate i fornitori, raccogliete le foto degli invitati e condividete l'organizzazione.
+                </p>
+                <Link href="/login?role=COUPLE&mode=REGISTER">
+                  <Button size="lg" className="h-14 px-8 rounded-full bg-white text-stone-900 hover:bg-stone-200 shadow-xl transition-all hover:scale-105 border-none font-bold">
+                    Crea Area Sposi
+                  </Button>
+                </Link>
               </div>
             </div>
-            
-            <div className="space-y-8 order-1 lg:order-2">
-              <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-6">
-                <Camera className="w-8 h-8 text-rose-600" />
+
+            {/* CARD PROFESSIONISTI */}
+            <div className="flex-1 relative flex flex-col justify-end p-10 overflow-hidden rounded-[2.5rem] min-h-[400px] group shadow-xl">
+              <div className="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop" alt="Pro Bivio" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent" />
               </div>
-              <h2 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight">Il punto di vista <br/>dei tuoi invitati.</h2>
-              <p className="text-xl text-stone-600 leading-relaxed font-light">
-                Il fotografo ufficiale cattura la perfezione, ma i tuoi amici catturano il divertimento. 
-              </p>
-              <p className="text-stone-500 leading-relaxed">
-                Stampa un elegante QR code da mettere sui tavoli. Gli invitati lo inquadrano, scattano e la foto finisce immediatamente nella vostra galleria privata. Nessuna App da scaricare per loro, nessun gruppo WhatsApp intasato per voi.
-              </p>
+              <div className="relative z-10 text-left">
+                <div className="w-14 h-14 bg-amber-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-amber-500/30">
+                  <Camera className="w-7 h-7 text-amber-400" />
+                </div>
+                <h2 className="text-4xl font-serif text-white mb-3">Sei un Professionista?</h2>
+                <p className="text-stone-300 text-lg mb-8 font-light max-w-sm">
+                  Appari nelle ricerche, acquisisci i contatti degli invitati e vendi i tuoi servizi.
+                </p>
+                <Link href="/professionisti">
+                  <Button size="lg" className="h-14 px-8 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-xl transition-all hover:scale-105 border-none font-bold">
+                    Area Partner
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-6">
-                <Users className="w-8 h-8 text-amber-600" />
-              </div>
-              <h2 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight">Un unico luogo <br/>per tutta l'organizzazione.</h2>
-              <p className="text-xl text-stone-600 leading-relaxed font-light">
-                Dimentica fogli Excel e centinaia di chat separate. WeddingSpace e' il vostro quartier generale.
-              </p>
-              <ul className="space-y-4 text-stone-600">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Raccogli gli RSVP e le intolleranze alimentari in automatico.</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Condividi le mappe interattive della chiesa e della location.</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Ricevi dediche emozionanti sul guestbook digitale.</span></li>
-              </ul>
-            </div>
-            
-            <div className="relative">
-              <div className="absolute -inset-4 bg-amber-100 rounded-[2rem] transform rotate-3"></div>
-              <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" alt="Organizzazione" className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[4/5]" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. CAPITOLI / TIMELINE (VECCHIA HOMEPAGE RIVISITATA) */}
-      <section className="py-32 bg-stone-900 text-white relative overflow-hidden">
+      {/* 3. CAPITOLI / TIMELINE (L'EREDITÀ DIGITALE) */}
+      <section className="py-32 bg-stone-900 text-white relative overflow-hidden" id="capitoli">
         <div className="absolute inset-0 z-0">
-           <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover opacity-10" alt="Viaggio" />
+           <div className="absolute inset-0 bg-stone-950" />
         </div>
         <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
-          <h2 className="text-sm font-bold text-amber-500 uppercase tracking-widest mb-4">Un'Eredità Digitale</h2>
+          <h2 className="text-sm font-bold text-amber-500 uppercase tracking-widest mb-4">L'Ecosistema Cresce con Te</h2>
           <h3 className="text-4xl md:text-6xl font-serif mb-8 leading-tight">Il matrimonio è il primo capitolo.<br/>La vostra storia continua.</h3>
           <p className="text-xl text-stone-300 max-w-3xl mx-auto mb-16 font-light">
-            Con la funzione "I Vostri Capitoli", WeddingSpace cresce con la vostra famiglia. Continuate a raccogliere ricordi negli anni successivi, mantenendo lo stesso spazio sicuro per decenni.
+            Da noi non prenoti solo il fotografo del matrimonio. WeddingSpace è una timeline della tua vita. Riapri il tuo spazio per ogni nuovo grande traguardo.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
-              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" alt="Viaggio di Nozze" />
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100 mix-blend-overlay" alt="Viaggio di Nozze" />
               <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 text-left">
                 <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">1</div>
-                <h4 className="font-serif text-2xl font-bold text-white mb-1">Viaggio di Nozze</h4>
-                <p className="text-stone-300 text-sm">Il primo grande viaggio.</p>
+                <h4 className="font-serif text-2xl font-bold text-white mb-1">Matrimonio</h4>
+                <p className="text-stone-300 text-sm">Il giorno perfetto.</p>
               </div>
             </div>
             
             <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
-              <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" alt="Anniversario" />
+              <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100 mix-blend-overlay" alt="Anniversario" />
               <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 text-left">
                 <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">2</div>
-                <h4 className="font-serif text-2xl font-bold text-white mb-1">Anniversario</h4>
-                <p className="text-stone-300 text-sm">Festeggiate i traguardi.</p>
+                <h4 className="font-serif text-2xl font-bold text-white mb-1">Anniversari</h4>
+                <p className="text-stone-300 text-sm">Rinnova la magia.</p>
               </div>
             </div>
 
             <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
-              <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" alt="Nascita e Battesimo" />
+              <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100 mix-blend-overlay" alt="Nascita e Battesimo" />
               <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 text-left">
                 <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">3</div>
-                <h4 className="font-serif text-2xl font-bold text-white mb-1">Nascita</h4>
-                <p className="text-stone-300 text-sm">I nuovi capitoli.</p>
+                <h4 className="font-serif text-2xl font-bold text-white mb-1">Battesimo</h4>
+                <p className="text-stone-300 text-sm">Nuove vite, nuovi ricordi.</p>
               </div>
             </div>
 
             <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
-              <img src="https://images.unsplash.com/photo-1609220136736-443140cffec6?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" alt="Famiglia" />
+              <img src="https://images.unsplash.com/photo-1609220136736-443140cffec6?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100 mix-blend-overlay" alt="Famiglia" />
               <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 text-left">
                 <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">4</div>
-                <h4 className="font-serif text-2xl font-bold text-white mb-1">Famiglia</h4>
-                <p className="text-stone-300 text-sm">Ricordi nel tempo.</p>
+                <h4 className="font-serif text-2xl font-bold text-white mb-1">Feste Private</h4>
+                <p className="text-stone-300 text-sm">Un album infinito.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. IL BIVIO (LA SCELTA DEL PERCORSO) */}
-      <section className="flex flex-col md:flex-row w-full min-h-[60vh]">
-        {/* LATO SPOSI */}
-        <div className="flex-1 relative flex flex-col justify-center items-center p-12 overflow-hidden bg-stone-900 group border-b md:border-b-0 md:border-r border-stone-800 py-24">
-          <div className="absolute inset-0 z-0">
-            <img 
-              src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" 
-              alt="Matrimonio Bivio" 
-              className="w-full h-full object-cover opacity-20 group-hover:opacity-40 group-hover:scale-105 transition-all duration-1000" 
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/60 to-transparent" />
-          </div>
-          
-          <div className="relative z-10 text-center max-w-sm mx-auto flex flex-col items-center">
-            <div className="w-16 h-16 bg-rose-500/20 backdrop-blur-md rounded-full flex items-center justify-center mb-6 border border-rose-500/30">
-              <Heart className="w-8 h-8 text-rose-400" />
-            </div>
-            <h2 className="text-3xl font-serif text-white mb-4">Siete gli Sposi?</h2>
-            <p className="text-stone-300 text-base mb-8 font-light">
-              Create ora il vostro spazio digitale privato. Raccogliete le foto degli invitati e condividete ogni momento.
-            </p>
-            <Link href="/login?role=COUPLE&mode=REGISTER">
-              <Button size="lg" className="h-12 px-8 rounded-full bg-white text-stone-900 hover:bg-stone-200 shadow-xl transition-all hover:scale-105 border-none font-bold">
-                Inizia come Sposi
+      {/* CTA PREZZI */}
+      <section className="py-24 bg-white border-t border-stone-200">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-6">Trasparenza totale. Nessun costo nascosto.</h2>
+          <p className="text-xl text-stone-600 mb-10 font-light">
+            Abbiamo creato piani su misura sia per i futuri sposi che per i professionisti del settore. Scopri tutte le funzionalità incluse e scegli l'opzione perfetta per te.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/prezzi">
+              <Button size="lg" className="w-full sm:w-auto h-14 px-10 rounded-full bg-stone-900 hover:bg-stone-800 text-white text-lg shadow-xl">
+                Scopri i nostri Piani <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-          </div>
-        </div>
-
-        {/* LATO PROFESSIONISTI */}
-        <div className="flex-1 relative flex flex-col justify-center items-center p-12 overflow-hidden bg-stone-950 group py-24">
-          <div className="absolute inset-0 z-0">
-            <img 
-              src="https://images.unsplash.com/photo-1554048612-b6a37e5cb23e?q=80&w=2070&auto=format&fit=crop" 
-              alt="Fotografo Bivio" 
-              className="w-full h-full object-cover opacity-20 group-hover:opacity-30 group-hover:scale-105 transition-all duration-1000 grayscale group-hover:grayscale-0" 
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent" />
-          </div>
-          
-          <div className="relative z-10 text-center max-w-sm mx-auto flex flex-col items-center">
-            <div className="w-16 h-16 bg-amber-500/10 backdrop-blur-md rounded-full flex items-center justify-center mb-6 border border-amber-500/20">
-              <Camera className="w-8 h-8 text-amber-400" />
-            </div>
-            <h2 className="text-3xl font-serif text-white mb-4">Sei un Professionista?</h2>
-            <p className="text-stone-400 text-base mb-8 font-light">
-              Scopri il partner digitale per la tua agenzia. Genera contatti, vendi stampe e gestisci le tue gallery.
-            </p>
-            <Link href="/professionisti">
-              <Button size="lg" className="h-12 px-8 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-xl transition-all hover:scale-105 border-none font-bold">
-                Area Professionisti
+            <Link href="/login">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-10 rounded-full border-stone-300 text-stone-900 text-lg">
+                Accedi o Registrati
               </Button>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. PREZZI SPOSI */}
-      <section className="py-24 bg-[#faf9f8]">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif text-stone-900">Scegliete il vostro piano</h2>
-            <p className="text-xl text-stone-600 max-w-2xl mx-auto font-light">
-              Nessun abbonamento mensile, nessun costo nascosto. 
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Basic */}
-            <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm hover:shadow-xl transition-all">
-              <h4 className="font-bold text-2xl text-stone-800 mb-2">Basic</h4>
-              <p className="text-stone-500 mb-6 h-10">L'essenziale per il tuo evento</p>
-              <div className="mb-8">
-                <span className="text-4xl font-serif font-bold text-stone-900">€ 100</span><span className="text-stone-500">/anno</span>
-              </div>
-              <ul className="text-stone-600 space-y-4 mb-8">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span>Gestione di 1 Matrimonio</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span>Raccolta foto illimitate</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span>Guestbook digitale base</span></li>
-              </ul>
-              <Link href="/login?role=COUPLE&mode=REGISTER"><Button className="w-full bg-stone-900 hover:bg-stone-800 h-12 rounded-full text-white text-lg">Inizia Ora</Button></Link>
-            </div>
-
-            {/* Premium */}
-            <div className="bg-stone-900 text-white p-8 rounded-3xl border border-stone-800 shadow-2xl relative transform md:-translate-y-4">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
-                Il Più Scelto
-              </div>
-              <h4 className="font-bold text-2xl text-white mb-2">Premium</h4>
-              <p className="text-stone-400 mb-6 h-10">Estendi i ricordi nel tempo</p>
-              <div className="mb-8">
-                <span className="text-4xl font-serif font-bold text-white">€ 180</span><span className="text-stone-400">/anno</span>
-              </div>
-              <ul className="text-stone-300 space-y-4 mb-8">
-                <li className="flex items-start gap-3"><Star className="w-5 h-5 text-rose-400 shrink-0" /> <span>Tutto il piano Basic</span></li>
-                <li className="flex items-start gap-3"><Star className="w-5 h-5 text-rose-400 shrink-0" /> <span>Fino a 3 Capitoli della Vita</span></li>
-                <li className="flex items-start gap-3"><Star className="w-5 h-5 text-rose-400 shrink-0" /> <span>Timeline e mappe interattive</span></li>
-              </ul>
-              <Link href="/login?role=COUPLE&mode=REGISTER"><Button className="w-full bg-rose-500 hover:bg-rose-600 text-white h-12 rounded-full font-bold text-lg">Inizia Ora</Button></Link>
-            </div>
-
-            {/* Moon */}
-            <div className="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm hover:shadow-xl transition-all">
-              <h4 className="font-bold text-2xl text-stone-800 mb-2">Moon</h4>
-              <p className="text-stone-500 mb-6 h-10">L'esperienza di lusso definitiva</p>
-              <div className="mb-8">
-                <span className="text-4xl font-serif font-bold text-stone-900">€ 250</span><span className="text-stone-500">/anno</span>
-              </div>
-              <ul className="text-stone-600 space-y-4 mb-8">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span>Tutto il piano Premium</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span>Capitoli della Vita illimitati</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> <span>Nessuna filigrana o logo</span></li>
-              </ul>
-              <Link href="/login?role=COUPLE&mode=REGISTER"><Button variant="outline" className="w-full h-12 rounded-full border-stone-300 text-lg">Contattaci</Button></Link>
-            </div>
           </div>
         </div>
       </section>
