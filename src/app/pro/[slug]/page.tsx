@@ -52,6 +52,11 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
         </div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
+          {profile.logoUrl && (
+            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-stone-800 shadow-2xl mb-6 bg-stone-100">
+              <img src={profile.logoUrl} alt={profile.businessName} className="w-full h-full object-cover" />
+            </div>
+          )}
           <div className="inline-block bg-white/10 text-white border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm">
             {CATEGORY_LABELS[profile.category] || "Professionista"}
           </div>

@@ -77,19 +77,14 @@ export function PlanWidget({ role, currentPlanName, isActive, expiresAt, feature
             )}
 
             <div className="mt-auto">
-              {!isPremium && stripeConfigured ? (
+              {!isPremium && (
                 <Link href={upgradeLink}>
                   <Button className="w-full bg-stone-900 text-white rounded-xl shadow-sm hover:bg-stone-800 transition-all flex items-center gap-2">
                     Scopri i Piani Premium
                     <ArrowUpRight className="w-4 h-4" />
                   </Button>
                 </Link>
-              ) : !isPremium && !stripeConfigured ? (
-                <Button disabled className="w-full bg-stone-200 text-stone-500 rounded-xl shadow-sm flex items-center gap-2 cursor-not-allowed">
-                  Scopri i Piani Premium
-                  <ArrowUpRight className="w-4 h-4 opacity-50" />
-                </Button>
-              ) : null}
+              )}
               
               {!stripeConfigured && !isPremium && (
                 <p className="text-xs text-amber-600 mt-3 flex items-start gap-1">

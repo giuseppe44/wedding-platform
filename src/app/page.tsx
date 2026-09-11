@@ -30,32 +30,32 @@ export default function Home() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 px-4">
+      <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 px-4 bg-stone-950">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" 
             alt="Wedding Cover" 
-            className="w-full h-full object-cover opacity-[0.15]"
+            className="w-full h-full object-cover opacity-50"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#faf9f8] via-transparent to-[#faf9f8]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-950/80 via-stone-900/40 to-[#faf9f8]"></div>
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
-          <h1 className="text-5xl md:text-7xl font-serif font-medium tracking-tight text-stone-900 leading-[1.1]">
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8 mt-16">
+          <h1 className="text-5xl md:text-7xl font-serif font-medium tracking-tight text-white leading-[1.1] drop-shadow-lg">
             La Vostra Storia.<br/>Un Unico Spazio Digitale.
           </h1>
-          <p className="text-xl text-stone-600 max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-xl text-stone-200 max-w-2xl mx-auto font-light leading-relaxed drop-shadow">
             Dimentica le app complicate. Crea il tuo sito matrimoniale, raccogli foto in alta qualità, gestisci gli invitati e continua a scrivere i capitoli della tua vita.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             <Link href="/login?role=COUPLE">
-              <Button className="h-14 px-8 text-lg bg-stone-900 text-white rounded-full hover:bg-stone-800 hover:scale-105 transition-all shadow-xl">
+              <Button className="h-14 px-8 text-lg bg-white text-stone-900 rounded-full hover:bg-stone-200 hover:scale-105 transition-all shadow-2xl font-semibold">
                 Crea il tuo Spazio
               </Button>
             </Link>
             <Link href="/w/demo-chiara-e-matteo">
-              <Button variant="outline" className="h-14 px-8 text-lg border-stone-300 text-stone-800 rounded-full hover:bg-stone-100 transition-all flex items-center gap-2">
-                <Play className="w-5 h-5" /> Vedi una Demo
+              <Button variant="outline" className="h-14 px-8 text-lg border-white/50 text-white hover:bg-white/10 rounded-full transition-all flex items-center gap-2 backdrop-blur-sm">
+                <Play className="w-5 h-5 fill-current" /> Vedi una Demo
               </Button>
             </Link>
           </div>
@@ -72,23 +72,23 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto text-2xl font-serif">1</div>
-              <h4 className="text-xl font-bold">Crea</h4>
+              <div className="w-20 h-20 bg-stone-900 border border-amber-200/50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-100 shadow-xl shadow-stone-200">1</div>
+              <h4 className="text-xl font-bold font-serif text-stone-900">Crea</h4>
               <p className="text-stone-500 text-sm">Gli sposi o il fotografo creano lo spazio digitale del matrimonio in 2 minuti.</p>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto text-2xl font-serif">2</div>
-              <h4 className="text-xl font-bold">Invita</h4>
+              <div className="w-20 h-20 bg-stone-900 border border-amber-200/50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-100 shadow-xl shadow-stone-200">2</div>
+              <h4 className="text-xl font-bold font-serif text-stone-900">Invita</h4>
               <p className="text-stone-500 text-sm">Condividi l'accesso agli ospiti, gestisci le conferme e assegna i tavoli.</p>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto text-2xl font-serif">3</div>
-              <h4 className="text-xl font-bold">Raccogli</h4>
+              <div className="w-20 h-20 bg-stone-900 border border-amber-200/50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-100 shadow-xl shadow-stone-200">3</div>
+              <h4 className="text-xl font-bold font-serif text-stone-900">Raccogli</h4>
               <p className="text-stone-500 text-sm">Durante l'evento, gli ospiti scattano foto e lasciano dediche via QR Code.</p>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto text-2xl font-serif">4</div>
-              <h4 className="text-xl font-bold">Continua</h4>
+              <div className="w-20 h-20 bg-stone-900 border border-amber-200/50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-100 shadow-xl shadow-stone-200">4</div>
+              <h4 className="text-xl font-bold font-serif text-stone-900">Continua</h4>
               <p className="text-stone-500 text-sm">Il matrimonio è solo l'inizio. Aggiungi capitoli come Viaggio, Nascita, Anniversario.</p>
             </div>
           </div>
@@ -157,22 +157,41 @@ export default function Home() {
             Con la funzione "I Vostri Capitoli", WeddingSpace cresce con la vostra famiglia. Continuate a raccogliere ricordi negli anni successivi, mantenendo lo stesso spazio sicuro.
           </p>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl text-center hover:bg-white/20 transition-all">
-              <span className="text-3xl mb-4 block">✈️</span>
-              <h4 className="font-bold">Viaggio di Nozze</h4>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" alt="Viaggio di Nozze" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 text-left">
+                <h4 className="font-serif text-2xl font-bold text-white mb-2">Viaggio di Nozze</h4>
+                <p className="text-stone-300 text-sm">Il primo grande viaggio insieme.</p>
+              </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl text-center hover:bg-white/20 transition-all">
-              <span className="text-3xl mb-4 block">🥂</span>
-              <h4 className="font-bold">Anniversario</h4>
+            
+            <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
+              <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" alt="Anniversario" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 text-left">
+                <h4 className="font-serif text-2xl font-bold text-white mb-2">Anniversario</h4>
+                <p className="text-stone-300 text-sm">Festeggiate ogni traguardo.</p>
+              </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl text-center hover:bg-white/20 transition-all">
-              <span className="text-3xl mb-4 block">👶</span>
-              <h4 className="font-bold">Nascita & Battesimo</h4>
+
+            <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
+              <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" alt="Nascita e Battesimo" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 text-left">
+                <h4 className="font-serif text-2xl font-bold text-white mb-2">Nascita</h4>
+                <p className="text-stone-300 text-sm">Nuovi capitoli della famiglia.</p>
+              </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl text-center hover:bg-white/20 transition-all">
-              <span className="text-3xl mb-4 block">🎂</span>
-              <h4 className="font-bold">Compleanni</h4>
+
+            <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
+              <img src="https://images.unsplash.com/photo-1530103862676-de88924376c7?q=80&w=2062&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" alt="Famiglia" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 w-full p-6 text-left">
+                <h4 className="font-serif text-2xl font-bold text-white mb-2">Famiglia</h4>
+                <p className="text-stone-300 text-sm">Ricordi che crescono con voi.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -200,7 +219,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1 relative">
               <div className="absolute -inset-4 bg-stone-300 rounded-[2rem] transform -rotate-3"></div>
-              <img src="https://images.unsplash.com/photo-1554048665-86641fb1ec46?q=80&w=2070&auto=format&fit=crop" alt="Fotografi e Videomaker" className="relative rounded-[2rem] shadow-xl w-full object-cover aspect-[4/5]" />
+              <img src="https://images.unsplash.com/photo-1551000845-a74fcba9de68?q=80&w=2069&auto=format&fit=crop" alt="Fotografi e Videomaker" className="relative rounded-[2rem] shadow-xl w-full object-cover aspect-[4/5]" />
             </div>
             
             <div className="order-1 lg:order-2 space-y-8">
@@ -295,7 +314,7 @@ export default function Home() {
             <h5 className="font-bold text-white mb-4 uppercase tracking-widest text-xs">Supporto</h5>
             <ul className="space-y-3">
               <li><Link href="mailto:support@weddingspace.com" className="hover:text-white transition-colors">Contatti</Link></li>
-              <li><Link href="/login?role=ADMIN" className="hover:text-stone-600 text-stone-800 transition-colors">Accesso Amministratore</Link></li>
+              <li><Link href="/login?role=ADMIN" className="text-sky-400 hover:text-sky-300 transition-colors">Accesso Amministratore</Link></li>
             </ul>
           </div>
 

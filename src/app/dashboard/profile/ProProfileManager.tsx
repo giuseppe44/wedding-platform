@@ -84,6 +84,10 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
                   <Input value={profile.businessName} onChange={e => setProfile({...profile, businessName: e.target.value})} required />
                 </div>
                 <div className="space-y-2">
+                  <Label>Immagine / Logo (URL)</Label>
+                  <Input value={profile.logoUrl || ""} onChange={e => setProfile({...profile, logoUrl: e.target.value})} placeholder="https://images.unsplash.com/..." />
+                </div>
+                <div className="space-y-2 md:col-span-2">
                   <Label>Categoria</Label>
                   <select 
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"

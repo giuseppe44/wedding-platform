@@ -94,22 +94,38 @@ export default async function DashboardPage() {
           stripeConfigured={stripeConfigured}
         />
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <Card className="lg:col-span-1 h-fit shadow-md border-none">
-          <CardHeader className="bg-stone-800 text-white rounded-t-xl">
-            <CardTitle>Nuovo Matrimonio</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <form action={createWedding} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Nome Sposa</Label>
-                <Input name="brideName" required placeholder="Es. Laura" className="bg-stone-50" />
-              </div>
-              <div className="space-y-2">
-                <Label>Nome Sposo</Label>
-                <Input name="groomName" required placeholder="Es. Mario" className="bg-stone-50" />
-              </div>
+        <div className="lg:col-span-1 space-y-8">
+          {/* Profile Quick Link */}
+          <Card className="shadow-md border-none bg-stone-900 text-white">
+            <CardHeader className="rounded-t-xl pb-2">
+              <CardTitle className="text-xl">Vetrina Pubblica</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-stone-400 mb-4">Completa il tuo profilo pubblico e inserisci i tuoi servizi.</p>
+              <Link href="/dashboard/profile">
+                <Button className="w-full bg-white text-stone-900 hover:bg-stone-200">
+                  Modifica Profilo Pubblico
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Nuovo Matrimonio */}
+          <Card className="shadow-md border-none">
+            <CardHeader className="bg-stone-100 text-stone-800 rounded-t-xl">
+              <CardTitle>Nuovo Matrimonio</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <form action={createWedding} className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Nome Sposa</Label>
+                  <Input name="brideName" required placeholder="Es. Laura" className="bg-stone-50" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Nome Sposo</Label>
+                  <Input name="groomName" required placeholder="Es. Mario" className="bg-stone-50" />
+                </div>
               <div className="space-y-2">
                 <Label>Data</Label>
                 <Input name="date" type="date" required className="bg-stone-50" />
@@ -122,6 +138,7 @@ export default async function DashboardPage() {
             </form>
           </CardContent>
         </Card>
+        </div>
 
         <div className="lg:col-span-2 space-y-6">
           <h2 className="text-2xl font-bold flex items-center gap-2"><Users className="h-6 w-6"/> I tuoi Clienti</h2>
