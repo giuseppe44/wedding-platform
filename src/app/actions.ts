@@ -122,3 +122,42 @@ export async function deleteMediaAction(mediaId: string) {
   await prisma.media.delete({ where: { id: mediaId } });
   revalidatePath("/couple/[slug]", "layout");
 }
+export async function registerAction(role: string, data: any) {
+  const existing = await prisma.user.findFirst({ where: { email: data.email } });
+  if (existing) throw new Error("Email gia registrata.");
+
+  const user = await prisma.user.create({
+    data: {
+      email: data.email,
+      password: "hashed_password",
+      name: data.name || "Nuovo Utente",
+      role: role as any,
+    }
+  });
+
+  if (role === "PHOTOGRAPHER" && data.businessName) {
+    await prisma.professionalProfile.create({
+      data: {
+        userId: user.id,
+        businessName: data.businessName,
+        slug: data.businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + user.id.slice(0,4),
+        category: "PHOTOGRAPHER"
+      }
+    });
+  } else if (role === "COUPLE") {
+    // Optionally create a dummy wedding space
+    await prisma.timelineItem.create({
+      data: {
+        title: "Il nostro matrimonio",
+        slug: "nozze-" + user.id.slice(0,6),
+        type: "WEDDING",
+        ownerId: user.id,
+        coupleId: user.id,
+        brideName: data.name.split(" ")[0] || "Sposa",
+        groomName: "Sposo",
+      }
+    });
+  }
+
+  await setSession(user.id, role as any, false);
+}
