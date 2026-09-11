@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -9,167 +9,157 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { loginAction } from "@/app/actions";
 import Link from "next/link";
-import { Camera, Heart, Shield } from "lucide-react";
+import { Camera, Heart, Shield, ArrowLeft } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"COUPLE" | "PHOTOGRAPHER" | "ADMIN">("COUPLE");
+  const searchParams = useSearchParams();
+  const roleParam = searchParams.get("role")?.toUpperCase();
+  
+  const activeRole: "COUPLE" | "PHOTOGRAPHER" | "ADMIN" = 
+    (roleParam === "PHOTOGRAPHER" || roleParam === "ADMIN") ? roleParam : "COUPLE";
+
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Form states
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("password123");
+
+  useEffect(() => {
+    if (activeRole === "COUPLE") setEmail("sposi@demo.it");
+    if (activeRole === "PHOTOGRAPHER") setEmail("demo@fotografo.it");
+    if (activeRole === "ADMIN") setEmail("admin@weddingplatform.com");
+  }, [activeRole]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // In un'app reale passeremmo email e password. Qui usiamo il mock.
-    await loginAction(activeTab, email, password, rememberMe);
+    await loginAction(activeRole, email, password, rememberMe);
     
-    if (activeTab === "PHOTOGRAPHER") router.push("/dashboard");
-    else if (activeTab === "ADMIN") router.push("/admin");
+    if (activeRole === "PHOTOGRAPHER") router.push("/dashboard");
+    else if (activeRole === "ADMIN") router.push("/admin");
     else router.push("/couple/demo-chiara-e-matteo"); // Sposi DEMO
   };
 
-  const getRoleContent = () => {
-    switch (activeTab) {
+  const content = (() => {
+    switch (activeRole) {
       case "COUPLE":
         return {
           title: "Accesso Sposi",
-          desc: "Accedi alla tua area privata per gestire il tuo matrimonio.",
-          defaultEmail: "sposi@chiaraematteo.it"
+          desc: "Accedi alla tua area privata per gestire il tuo matrimonio, gli invitati, i tavoli e i professionisti.",
+          icon: <Heart className="h-6 w-6 text-rose-500" />
         };
       case "PHOTOGRAPHER":
         return {
-          title: "Accesso Professionisti",
-          desc: "Gestisci i tuoi servizi, i matrimoni e il tuo abbonamento.",
-          defaultEmail: "demo@fotografo.it"
+          title: "Area Professionisti",
+          desc: "Accedi alla tua area professionale per gestire il tuo profilo, i tuoi servizi, i matrimoni a cui sei collegato e tutte le funzionalità disponibili per il tuo piano.",
+          icon: <Camera className="h-6 w-6 text-stone-800" />
         };
       case "ADMIN":
         return {
-          title: "Super Admin",
-          desc: "Pannello di controllo globale della piattaforma.",
-          defaultEmail: "admin@weddingplatform.com"
+          title: "Accesso Amministratore",
+          desc: "Pannello di controllo globale della piattaforma e gestione utenti.",
+          icon: <Shield className="h-6 w-6 text-blue-600" />
         };
     }
-  };
-
-  const content = getRoleContent();
+  })();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-stone-100 p-4 relative">
-      {/* Background element */}
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop')] bg-cover bg-center opacity-5" />
-      
-      <Link href="/" className="mb-8 relative z-10 hover:opacity-80 transition-opacity">
-        <div className="font-serif text-3xl font-bold tracking-tighter text-stone-900 drop-shadow-sm">
-          Wedding<span className="font-light">Space</span>
+    <Card className="w-full shadow-lg border-stone-200">
+      <CardHeader className="text-center space-y-4 pt-8">
+        <div className="mx-auto bg-stone-50 p-4 rounded-full inline-block">
+          {content.icon}
         </div>
-      </Link>
-
-      <Card className="w-full max-w-md shadow-2xl border-none relative z-10 overflow-hidden rounded-2xl">
-        <div className="flex w-full bg-stone-100 border-b border-stone-200">
-          <button
-            type="button"
-            onClick={() => setActiveTab("COUPLE")}
-            className={`flex-1 py-4 text-sm font-medium transition-colors flex flex-col items-center gap-1 ${activeTab === "COUPLE" ? "bg-white text-stone-900 border-t-2 border-stone-900" : "text-stone-500 hover:text-stone-700"}`}
-          >
-            <Heart className="w-4 h-4" />
-            Sposi
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("PHOTOGRAPHER")}
-            className={`flex-1 py-4 text-sm font-medium transition-colors flex flex-col items-center gap-1 ${activeTab === "PHOTOGRAPHER" ? "bg-white text-stone-900 border-t-2 border-stone-900" : "text-stone-500 hover:text-stone-700"}`}
-          >
-            <Camera className="w-4 h-4" />
-            Professionisti
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("ADMIN")}
-            className={`flex-1 py-4 text-sm font-medium transition-colors flex flex-col items-center gap-1 ${activeTab === "ADMIN" ? "bg-white text-stone-900 border-t-2 border-stone-900" : "text-stone-500 hover:text-stone-700"}`}
-          >
-            <Shield className="w-4 h-4" />
-            Admin
-          </button>
+        <div className="space-y-2">
+          <CardTitle className="text-3xl font-serif text-stone-800">{content.title}</CardTitle>
+          <CardDescription className="text-stone-500">
+            {content.desc}
+          </CardDescription>
         </div>
-
-        <CardHeader className="text-center pt-8 pb-6 bg-white">
-          <CardTitle className="text-2xl font-serif text-stone-800">{content.title}</CardTitle>
-          <CardDescription className="text-stone-500 mt-2 px-4">{content.desc}</CardDescription>
-        </CardHeader>
-        
-        <CardContent className="pt-2 px-8 pb-10 bg-white">
-          <form onSubmit={handleLogin} className="space-y-5">
-            
-            <div className="space-y-2 text-left">
-              <Label className="text-stone-700 font-semibold">Email (Modalità Demo)</Label>
-              <Input 
-                type="email" 
-                required 
-                placeholder={content.defaultEmail}
-                defaultValue={content.defaultEmail} 
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-stone-50 p-3 h-12 border-stone-200 focus-visible:ring-stone-500" 
-              />
-            </div>
-
-            <div className="space-y-2 text-left">
-              <div className="flex items-center justify-between">
-                <Label className="text-stone-700 font-semibold">Password</Label>
-                {/* Dummy link for UI completeness */}
-                <a href="#" className="text-xs text-stone-500 hover:text-stone-800 transition-colors">
-                  Password dimenticata?
-                </a>
-              </div>
-              <Input 
-                type="password" 
-                required 
-                defaultValue="password123" 
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-stone-50 p-3 h-12 border-stone-200 focus-visible:ring-stone-500" 
-              />
-            </div>
-
-            <div className="flex items-center space-x-2 pt-2 pb-2">
-              <Checkbox 
-                id="rememberMe" 
-                checked={rememberMe}
-                onCheckedChange={(checked) => setRememberMe(checked === true)}
-                className="border-stone-300 data-[state=checked]:bg-stone-900 data-[state=checked]:text-white h-5 w-5"
-              />
-              <label
-                htmlFor="rememberMe"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-stone-600 cursor-pointer select-none"
-              >
-                Ricorda la mia password
-              </label>
-            </div>
-
-            <Button 
-              type="submit" 
-              className="w-full h-12 bg-stone-900 text-white rounded-xl text-lg font-medium hover:bg-stone-800 transition-all shadow-md"
-              disabled={loading}
-            >
-              {loading ? "Accesso in corso..." : "Accedi al Portale"}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center text-sm text-stone-500">
-            Non hai un account? <a href="#" className="text-stone-900 font-semibold hover:underline">Registrati ora</a>
+      </CardHeader>
+      <CardContent className="p-8 pt-4">
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input 
+              id="email" 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-stone-50 h-12" 
+              required 
+            />
           </div>
-        </CardContent>
-      </Card>
-      
-      <div className="mt-8 text-sm text-stone-500 relative z-10 flex gap-4">
-        <Link href="/" className="hover:text-stone-900 transition-colors">Torna alla Home</Link>
-        <span>•</span>
-        <Link href="/privacy" className="hover:text-stone-900 transition-colors">Privacy</Link>
-        <span>•</span>
-        <Link href="/terms" className="hover:text-stone-900 transition-colors">Termini</Link>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Password</Label>
+              {activeRole === "COUPLE" && (
+                <Link href="#" className="text-sm text-stone-500 hover:text-stone-800 transition-colors">
+                  Password dimenticata?
+                </Link>
+              )}
+            </div>
+            <Input 
+              id="password" 
+              type="password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-stone-50 h-12" 
+              required 
+            />
+          </div>
+
+          <div className="flex items-center space-x-2 py-2">
+            <Checkbox 
+              id="remember" 
+              checked={rememberMe}
+              onCheckedChange={(c) => setRememberMe(c as boolean)}
+            />
+            <Label
+              htmlFor="remember"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Ricorda la mia password
+            </Label>
+          </div>
+
+          <Button type="submit" className="w-full h-12 text-lg rounded-xl bg-stone-900 hover:bg-stone-800" disabled={loading}>
+            {loading ? "Accesso in corso..." : "Accedi alla Dashboard"}
+          </Button>
+
+          {activeRole === "COUPLE" && (
+            <div className="text-center pt-4 border-t border-stone-100">
+              <p className="text-sm text-stone-500">
+                Non hai ancora un account? <Link href="#" className="font-semibold text-stone-800 hover:underline">Registrati</Link>
+              </p>
+            </div>
+          )}
+          {activeRole === "PHOTOGRAPHER" && (
+            <div className="text-center pt-4 border-t border-stone-100">
+              <p className="text-sm text-stone-500">
+                Sei un nuovo professionista? <Link href="#" className="font-semibold text-stone-800 hover:underline">Unisciti a noi</Link>
+              </p>
+            </div>
+          )}
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <div className="min-h-screen bg-[#faf9f8] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full mx-auto mb-8">
+        <Link href="/" className="inline-flex items-center text-sm font-medium text-stone-500 hover:text-stone-800 transition-colors">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Torna alla Home
+        </Link>
+      </div>
+      <div className="max-w-md w-full mx-auto">
+        <Suspense fallback={<div className="text-center p-8 text-stone-500">Caricamento...</div>}>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );

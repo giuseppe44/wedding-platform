@@ -31,9 +31,30 @@ export async function loginAction(role: string, email?: string, password?: strin
       });
     }
     await setSession(user.id, "ADMIN", rememberMe);
-  } else {
+  } else if (role === "COUPLE") {
     // For MVP Demo Couple mode
-    await setSession("couple-demo-id", "COUPLE", rememberMe);
+    let user = await prisma.user.findFirst({ where: { role: "COUPLE" } });
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: "sposi@demo.it",
+          password: "hashed_password",
+          role: "COUPLE",
+          name: "Chiara e Matteo",
+        },
+      });
+      // Try to attach them to the demo wedding if it exists
+      await prisma.timelineItem.updateMany({
+        where: { slug: "demo-chiara-e-matteo" },
+        data: { coupleId: user.id }
+      });
+    }
+    // ensure attachment just in case
+    await prisma.timelineItem.updateMany({
+      where: { slug: "demo-chiara-e-matteo", coupleId: null },
+      data: { coupleId: user.id }
+    });
+    await setSession(user.id, "COUPLE", rememberMe);
   }
 }
 

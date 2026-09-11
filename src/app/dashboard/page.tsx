@@ -73,8 +73,11 @@ export default async function DashboardPage() {
           <form action={async () => {
             "use server";
           }}>
+            <Link href="/dashboard/profile">
+              <Button variant="outline" className="rounded-full bg-stone-100 hover:bg-stone-200">Il Mio Profilo</Button>
+            </Link>
             <Link href="/">
-              <Button variant="outline" className="rounded-full">Esci</Button>
+              <Button variant="outline" className="rounded-full ml-2">Esci</Button>
             </Link>
           </form>
         </div>
