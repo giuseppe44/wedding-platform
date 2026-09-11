@@ -7,22 +7,22 @@ export default function Home() {
     <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 selection:bg-stone-200">
       {/* HEADER */}
       <header className="absolute top-0 w-full px-6 py-6 flex flex-wrap justify-between items-center z-50">
-        <div className="font-serif text-2xl font-bold tracking-tighter text-stone-900 drop-shadow-sm mb-4 md:mb-0">
+        <div className="font-serif text-2xl font-bold tracking-tighter text-white drop-shadow-md mb-4 md:mb-0">
           Wedding<span className="font-light">Space</span>
         </div>
         <div className="flex gap-4 items-center flex-wrap">
           <Link href="/guest">
-            <Button variant="ghost" className="text-stone-700 hover:text-stone-900 hover:bg-stone-200 rounded-full font-medium transition-colors">
+            <Button variant="ghost" className="text-stone-200 hover:text-white hover:bg-white/10 rounded-full font-medium transition-colors">
               Sei un invitato?
             </Button>
           </Link>
           <Link href="/login?role=PHOTOGRAPHER">
-            <Button variant="ghost" className="text-stone-700 hover:text-stone-900 hover:bg-stone-200 rounded-full font-medium transition-colors">
+            <Button variant="ghost" className="text-stone-200 hover:text-white hover:bg-white/10 rounded-full font-medium transition-colors">
               Accesso Professionisti
             </Button>
           </Link>
           <Link href="/login?role=COUPLE">
-            <Button className="bg-stone-900 text-white hover:bg-stone-800 rounded-full font-semibold shadow-md">
+            <Button className="bg-white text-stone-900 hover:bg-stone-200 rounded-full font-semibold shadow-md">
               Sposi
             </Button>
           </Link>
@@ -54,7 +54,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/w/demo-chiara-e-matteo">
-              <Button variant="outline" className="h-14 px-8 text-lg border-white/50 text-white hover:bg-white/10 rounded-full transition-all flex items-center gap-2 backdrop-blur-sm">
+              <Button variant="outline" className="h-14 px-8 text-lg border-white/50 bg-transparent text-white hover:bg-white/20 hover:text-white rounded-full transition-all flex items-center gap-2 backdrop-blur-sm">
                 <Play className="w-5 h-5 fill-current" /> Vedi una Demo
               </Button>
             </Link>
@@ -63,31 +63,35 @@ export default function Home() {
       </section>
 
       {/* COME FUNZIONA SECTION */}
-      <section className="py-24 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="py-20 bg-white relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-50/40 via-white to-white pointer-events-none"></div>
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-sm font-bold text-stone-400 uppercase tracking-widest mb-2">Semplicità assoluta</h2>
             <h3 className="text-3xl md:text-4xl font-serif text-stone-900">Come Funziona</h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Timeline Line (Desktop Only) */}
+            <div className="hidden md:block absolute top-10 left-[12%] right-[12%] h-[2px] bg-gradient-to-r from-transparent via-amber-200 to-transparent"></div>
+
             <div className="text-center space-y-4">
-              <div className="w-20 h-20 bg-stone-900 border border-amber-200/50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-100 shadow-xl shadow-stone-200">1</div>
+              <div className="relative z-10 w-20 h-20 bg-stone-900 border-2 border-amber-300/60 ring-4 ring-amber-50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-200 shadow-xl shadow-amber-900/10">1</div>
               <h4 className="text-xl font-bold font-serif text-stone-900">Crea</h4>
               <p className="text-stone-500 text-sm">Gli sposi o il fotografo creano lo spazio digitale del matrimonio in 2 minuti.</p>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-20 h-20 bg-stone-900 border border-amber-200/50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-100 shadow-xl shadow-stone-200">2</div>
+              <div className="relative z-10 w-20 h-20 bg-stone-900 border-2 border-amber-300/60 ring-4 ring-amber-50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-200 shadow-xl shadow-amber-900/10">2</div>
               <h4 className="text-xl font-bold font-serif text-stone-900">Invita</h4>
               <p className="text-stone-500 text-sm">Condividi l'accesso agli ospiti, gestisci le conferme e assegna i tavoli.</p>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-20 h-20 bg-stone-900 border border-amber-200/50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-100 shadow-xl shadow-stone-200">3</div>
+              <div className="relative z-10 w-20 h-20 bg-stone-900 border-2 border-amber-300/60 ring-4 ring-amber-50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-200 shadow-xl shadow-amber-900/10">3</div>
               <h4 className="text-xl font-bold font-serif text-stone-900">Raccogli</h4>
               <p className="text-stone-500 text-sm">Durante l'evento, gli ospiti scattano foto e lasciano dediche via QR Code.</p>
             </div>
             <div className="text-center space-y-4">
-              <div className="w-20 h-20 bg-stone-900 border border-amber-200/50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-100 shadow-xl shadow-stone-200">4</div>
+              <div className="relative z-10 w-20 h-20 bg-stone-900 border-2 border-amber-300/60 ring-4 ring-amber-50 rounded-full flex items-center justify-center mx-auto text-3xl font-serif text-amber-200 shadow-xl shadow-amber-900/10">4</div>
               <h4 className="text-xl font-bold font-serif text-stone-900">Continua</h4>
               <p className="text-stone-500 text-sm">Il matrimonio è solo l'inizio. Aggiungi capitoli come Viaggio, Nascita, Anniversario.</p>
             </div>
@@ -159,8 +163,8 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
-              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" alt="Viaggio di Nozze" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90" alt="Viaggio di Nozze" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-900/10 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 text-left">
                 <h4 className="font-serif text-2xl font-bold text-white mb-2">Viaggio di Nozze</h4>
                 <p className="text-stone-300 text-sm">Il primo grande viaggio insieme.</p>
@@ -168,8 +172,8 @@ export default function Home() {
             </div>
             
             <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
-              <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" alt="Anniversario" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+              <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90" alt="Anniversario" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-900/10 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 text-left">
                 <h4 className="font-serif text-2xl font-bold text-white mb-2">Anniversario</h4>
                 <p className="text-stone-300 text-sm">Festeggiate ogni traguardo.</p>
@@ -177,8 +181,8 @@ export default function Home() {
             </div>
 
             <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
-              <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" alt="Nascita e Battesimo" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+              <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90" alt="Nascita e Battesimo" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-900/10 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 text-left">
                 <h4 className="font-serif text-2xl font-bold text-white mb-2">Nascita</h4>
                 <p className="text-stone-300 text-sm">Nuovi capitoli della famiglia.</p>
@@ -186,8 +190,8 @@ export default function Home() {
             </div>
 
             <div className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-lg border border-white/10">
-              <img src="https://images.unsplash.com/photo-1530103862676-de88924376c7?q=80&w=2062&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60" alt="Famiglia" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
+              <img src="https://images.unsplash.com/photo-1609220136736-443140cffec6?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90" alt="Famiglia" />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-900/10 to-transparent"></div>
               <div className="absolute bottom-0 left-0 w-full p-6 text-left">
                 <h4 className="font-serif text-2xl font-bold text-white mb-2">Famiglia</h4>
                 <p className="text-stone-300 text-sm">Ricordi che crescono con voi.</p>
@@ -219,7 +223,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1 relative">
               <div className="absolute -inset-4 bg-stone-300 rounded-[2rem] transform -rotate-3"></div>
-              <img src="https://images.unsplash.com/photo-1551000845-a74fcba9de68?q=80&w=2069&auto=format&fit=crop" alt="Fotografi e Videomaker" className="relative rounded-[2rem] shadow-xl w-full object-cover aspect-[4/5]" />
+              <img src="https://images.unsplash.com/photo-1537633552985-df8429e8048b?q=80&w=2070&auto=format&fit=crop" alt="Fotografi e Videomaker" className="relative rounded-[2rem] shadow-xl w-full object-cover aspect-[4/5]" />
             </div>
             
             <div className="order-1 lg:order-2 space-y-8">
