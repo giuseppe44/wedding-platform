@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Camera, Video, Heart, ShieldCheck, Zap, Users, Gift, MessageSquare, Star, ArrowRight, Play, BookOpen, Clock, HeartHandshake, UserPlus } from "lucide-react";
+import { Camera, Video, Heart, ShieldCheck, Zap, Users, Gift, MessageSquare, Star, ArrowRight, Play, BookOpen, Clock, HeartHandshake, UserPlus, CheckCircle2 } from "lucide-react";
 
 export default function Home() {
   return (
@@ -267,22 +267,157 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEZIONE PIANI */}
-      <section className="py-24 bg-white border-t border-stone-100">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-8">
-          <h2 className="text-3xl font-serif text-stone-900">Piani trasparenti per ogni esigenza</h2>
-          <p className="text-lg text-stone-600">
-            Che tu sia una coppia o un professionista, abbiamo il piano perfetto per te. Puoi iniziare gratuitamente e sbloccare le funzioni Premium solo se ne hai davvero bisogno.
-          </p>
-          <div className="pt-8">
-             <Link href="/dashboard/billing">
-                <Button variant="outline" className="h-14 px-8 text-lg border-stone-300 text-stone-800 rounded-full hover:bg-stone-100 transition-all">
-                  Scopri i Piani
-                </Button>
-             </Link>
+        {/* SEZIONE PIANI */}
+        <section className="py-24 bg-stone-50 border-t border-stone-200">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center space-y-4 mb-16">
+              <h2 className="text-4xl font-serif text-stone-900">Piani trasparenti per ogni esigenza</h2>
+              <p className="text-lg text-stone-600 max-w-2xl mx-auto">
+                Scegli l'abbonamento più adatto a te. Sblocca funzionalità esclusive per rendere il tuo matrimonio o il tuo business indimenticabile.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+              {/* PIANI SPOSI */}
+              <div>
+                <h3 className="text-2xl font-serif text-stone-800 mb-8 flex items-center justify-center gap-2">
+                  <Heart className="w-6 h-6 text-rose-500" /> Per gli Sposi
+                </h3>
+                <div className="space-y-6">
+                  {/* Basic */}
+                  <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h4 className="font-bold text-lg text-stone-800">Basic</h4>
+                        <p className="text-sm text-stone-500">L'essenziale per il tuo grande giorno</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-serif font-bold text-stone-900">€ 100</span><span className="text-stone-500 text-sm">/anno</span>
+                      </div>
+                    </div>
+                    <ul className="text-sm text-stone-600 space-y-2 mb-6">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Gestione di 1 Matrimonio</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Raccolta foto illimitate dagli ospiti</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Guestbook digitale</li>
+                    </ul>
+                    <Link href="/login?role=COUPLE"><Button className="w-full bg-stone-900 hover:bg-stone-800 rounded-full">Inizia Ora</Button></Link>
+                  </div>
+
+                  {/* Premium */}
+                  <div className="bg-stone-900 text-white p-6 rounded-2xl border border-stone-800 shadow-xl relative transform lg:-translate-x-4 lg:scale-[1.02]">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-amber-950 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      Più Scelto
+                    </div>
+                    <div className="flex justify-between items-start mb-4 mt-2">
+                      <div>
+                        <h4 className="font-bold text-lg text-white">Premium</h4>
+                        <p className="text-sm text-stone-400">Estendi i ricordi nel tempo</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-serif font-bold text-white">€ 180</span><span className="text-stone-400 text-sm">/anno</span>
+                      </div>
+                    </div>
+                    <ul className="text-sm text-stone-300 space-y-2 mb-6">
+                      <li className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-500" /> Tutto il piano Basic</li>
+                      <li className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-500" /> Fino a 3 Capitoli della Vita extra</li>
+                      <li className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-500" /> Timeline e mappe interattive</li>
+                    </ul>
+                    <Link href="/login?role=COUPLE"><Button className="w-full bg-amber-500 hover:bg-amber-600 text-amber-950 rounded-full font-bold">Inizia Ora</Button></Link>
+                  </div>
+
+                  {/* Moon */}
+                  <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h4 className="font-bold text-lg text-stone-800">Moon</h4>
+                        <p className="text-sm text-stone-500">L'esperienza di lusso definitiva</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-serif font-bold text-stone-900">€ 250</span><span className="text-stone-500 text-sm">/anno</span>
+                      </div>
+                    </div>
+                    <ul className="text-sm text-stone-600 space-y-2 mb-6">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Capitoli della Vita illimitati</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Export Album in Alta Risoluzione</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Nessuna filigrana o logo</li>
+                    </ul>
+                    <Link href="/login?role=COUPLE"><Button variant="outline" className="w-full rounded-full border-stone-300">Inizia Ora</Button></Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* PIANI PROFESSIONISTI */}
+              <div>
+                <h3 className="text-2xl font-serif text-stone-800 mb-8 flex items-center justify-center gap-2">
+                  <Camera className="w-6 h-6 text-stone-800" /> Per i Professionisti
+                </h3>
+                <div className="space-y-6">
+                  {/* Entry */}
+                  <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h4 className="font-bold text-lg text-stone-800">Entry</h4>
+                        <p className="text-sm text-stone-500">Per iniziare a farti conoscere</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-serif font-bold text-stone-900">€ 150</span><span className="text-stone-500 text-sm">/anno</span>
+                      </div>
+                    </div>
+                    <ul className="text-sm text-stone-600 space-y-2 mb-6">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Vetrina Pubblica Base</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Gestione fino a 5 eventi/anno</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Presenza nel motore di ricerca</li>
+                    </ul>
+                    <Link href="/login?role=PHOTOGRAPHER"><Button className="w-full bg-stone-900 hover:bg-stone-800 rounded-full">Diventa Partner</Button></Link>
+                  </div>
+
+                  {/* Pro */}
+                  <div className="bg-amber-600 text-white p-6 rounded-2xl border border-amber-700 shadow-xl relative transform lg:translate-x-4 lg:scale-[1.02]">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-stone-900 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      Ideale
+                    </div>
+                    <div className="flex justify-between items-start mb-4 mt-2">
+                      <div>
+                        <h4 className="font-bold text-lg text-white">Pro</h4>
+                        <p className="text-sm text-amber-200">Per professionisti affermati</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-serif font-bold text-white">€ 230</span><span className="text-amber-200 text-sm">/anno</span>
+                      </div>
+                    </div>
+                    <ul className="text-sm text-white/90 space-y-2 mb-6">
+                      <li className="flex items-center gap-2"><Star className="w-4 h-4 text-stone-900" /> Vetrina Premium in evidenza</li>
+                      <li className="flex items-center gap-2"><Star className="w-4 h-4 text-stone-900" /> Eventi illimitati</li>
+                      <li className="flex items-center gap-2"><Star className="w-4 h-4 text-stone-900" /> Ricevi contatti (Email/WhatsApp)</li>
+                      <li className="flex items-center gap-2"><Star className="w-4 h-4 text-stone-900" /> Pulsante per richiedere stampe</li>
+                    </ul>
+                    <Link href="/login?role=PHOTOGRAPHER"><Button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-full font-bold">Diventa Partner</Button></Link>
+                  </div>
+
+                  {/* Diamond */}
+                  <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h4 className="font-bold text-lg text-stone-800">Diamond</h4>
+                        <p className="text-sm text-stone-500">Massima visibilità sul network</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-serif font-bold text-stone-900">€ 450</span><span className="text-stone-500 text-sm">/anno</span>
+                      </div>
+                    </div>
+                    <ul className="text-sm text-stone-600 space-y-2 mb-6">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Tutto il piano Pro</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Badge "Diamond" di affidabilità</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Sponsorizzazione sui social</li>
+                    </ul>
+                    <Link href="/login?role=PHOTOGRAPHER"><Button variant="outline" className="w-full rounded-full border-stone-300">Diventa Partner</Button></Link>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* FOOTER RISCRITTO DA ZERO E ORDINATO */}
       <footer className="bg-stone-950 text-stone-400 py-16 px-6 text-sm">

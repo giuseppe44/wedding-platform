@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, MapPin } from "lucide-react";
+import { Camera, MapPin, MessageSquare } from "lucide-react";
 import GuestbookForm from "./GuestbookForm";
 import { getSession } from "@/lib/auth";
 import LoadMoreGallery from "@/components/LoadMoreGallery";
@@ -74,6 +74,18 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
   const initialCursor = initialMedia.length > 0 ? initialMedia[initialMedia.length - 1].id : null;
 
   const mainPro = wedding.assignments?.find((a: any) => a.status === "ACTIVE" && a.professionalProfile?.category === "PHOTOGRAPHER")?.professionalProfile || wedding.assignments?.find((a: any) => a.status === "ACTIVE")?.professionalProfile;
+
+  let canLeaveMessage = true;
+  if (wedding.type === "WEDDING" && wedding.date) {
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const eventDate = new Date(wedding.date.getFullYear(), wedding.date.getMonth(), wedding.date.getDate());
+    
+    // Il form messaggi si abilita solo dal giorno successivo all'evento
+    if (todayDate <= eventDate) {
+      canLeaveMessage = false;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
@@ -224,7 +236,16 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         </p>
         
         <div className="mb-16">
-          <GuestbookForm timelineItemId={wedding.id} buttonColor={themeColor} displayAuthorsLabel={config.authors} />
+          {canLeaveMessage ? (
+            <GuestbookForm timelineItemId={wedding.id} buttonColor={themeColor} displayAuthorsLabel={config.authors} />
+          ) : (
+            <div className="bg-white border border-stone-100 shadow-sm rounded-3xl p-10 text-center text-stone-600 max-w-2xl mx-auto">
+               <MessageSquare className="w-10 h-10 mx-auto text-stone-300 mb-6" />
+               <h3 className="font-serif text-2xl text-stone-800 mb-2">Sezione in anteprima</h3>
+               <p className="text-lg mb-4">In questa sezione, dal giorno dopo il matrimonio, potrete dedicare un'ulteriore dedica agli sposi.</p>
+               <p className="text-sm text-stone-400">Riceverete una notifica quando la raccolta dei messaggi sarà ufficialmente aperta!</p>
+            </div>
+          )}
         </div>
 
         {wedding.messages.length > 0 && (
