@@ -228,10 +228,10 @@ export default function Home() {
             
             <div className="order-1 lg:order-2 space-y-8">
               <h2 className="text-sm font-bold text-stone-500 uppercase tracking-widest">SaaS Per Fotografi e Videomaker</h2>
-              <h3 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight">Digitalizza la tua consegna. Fatti trovare da nuovi clienti.</h3>
-              <p className="text-lg text-stone-600">
-                Non limitarti a inviare un link Google Drive. Crea un'esperienza premium per i tuoi clienti e posizionati nella nostra vetrina esclusiva.
-              </p>
+                <h3 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight">Digitalizza la tua consegna. Fatti trovare da nuovi clienti.</h3>
+                <p className="text-lg text-stone-600">
+                  Trasforma ogni evento in una macchina trova-clienti. Invece di inviare un semplice link Google Drive, porta il tuo brand e i tuoi contatti sugli smartphone di centinaia di invitati. Crea un'esperienza premium per gli sposi e posizionati nella nostra vetrina esclusiva.
+                </p>
               
               <ul className="space-y-4">
                 <li className="flex items-start gap-4">

@@ -73,6 +73,8 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
   const initialMedia = initialHasMore ? wedding.media.slice(0, 30) : wedding.media;
   const initialCursor = initialMedia.length > 0 ? initialMedia[initialMedia.length - 1].id : null;
 
+  const mainPro = wedding.assignments?.find((a: any) => a.status === "ACTIVE" && a.professionalProfile?.category === "PHOTOGRAPHER")?.professionalProfile || wedding.assignments?.find((a: any) => a.status === "ACTIVE")?.professionalProfile;
+
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
       {/* 1. HERO */}
@@ -172,9 +174,21 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
       {/* 5. GALLERIA */}
       <div className="max-w-7xl mx-auto px-4 pt-24">
         <h2 className="text-3xl font-serif text-stone-800 mb-4 text-center">I vostri ricordi</h2>
-        <p className="text-center text-stone-500 mb-12 font-serif italic max-w-2xl mx-auto">
+        <p className="text-center text-stone-500 mb-8 font-serif italic max-w-2xl mx-auto">
           Ogni fotografia è un pezzo di questa storia.
         </p>
+
+        {mainPro && (
+          <div className="max-w-2xl mx-auto mb-12 bg-amber-50/50 border border-amber-100 rounded-2xl p-6 text-center">
+            <h4 className="font-serif text-xl text-stone-800 mb-2">Vuoi stampare questi ricordi?</h4>
+            <p className="text-stone-600 text-sm mb-4">Richiedi stampe ad alta qualità o l'album fotografico ufficiale direttamente a {mainPro.businessName}.</p>
+            <a href={mainPro.contactEmail ? `mailto:${mainPro.contactEmail}?subject=Richiesta stampe - ${displayTitle}` : `/pro/${mainPro.slug}`}>
+              <Button variant="outline" className="rounded-full border-amber-200 hover:bg-amber-100 text-amber-900">
+                Richiedi Stampe
+              </Button>
+            </a>
+          </div>
+        )}
 
         {wedding.externalGalleryUrl && (
           <div className="flex justify-center mb-12">
@@ -225,8 +239,22 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         )}
       </div>
 
-      {/* 7. CTA FINALE */}
+      {/* 7. REVIEWS & CTA FINALE */}
       <div className="max-w-4xl mx-auto px-4 pt-12 pb-24 text-center border-t border-stone-200 mt-12">
+        {mainPro && (
+          <div className="mb-16 bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+            <h3 className="text-2xl font-serif text-stone-800 mb-2">Ti è piaciuto il racconto di questa giornata?</h3>
+            <p className="text-stone-500 mb-6 max-w-lg mx-auto">
+              Supporta il lavoro di <strong className="text-stone-700">{mainPro.businessName}</strong> lasciando una recensione sulla sua vetrina. Ci vorrà solo un minuto!
+            </p>
+            <Link href={`/pro/${mainPro.slug}`}>
+              <Button variant="outline" className="rounded-full">
+                Lascia una recensione
+              </Button>
+            </Link>
+          </div>
+        )}
+
         <h3 className="text-2xl font-serif text-stone-800 mb-6">Grazie per essere parte di questa storia.</h3>
         <Link href={`/w/${wedding.slug}/upload`}>
           <Button size="lg" className="rounded-full shadow-lg text-white" style={{ backgroundColor: themeColor }}>

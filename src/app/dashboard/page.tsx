@@ -83,6 +83,22 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      <div className="mb-6 bg-gradient-to-r from-amber-500/10 to-amber-700/10 border border-amber-200/50 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-4 justify-between">
+        <div>
+          <h3 className="text-lg font-bold text-amber-900 font-serif flex items-center gap-2">
+            <Users className="w-5 h-5 text-amber-700" /> Trasforma i matrimoni in nuovi clienti
+          </h3>
+          <p className="text-amber-800/80 text-sm mt-1 max-w-2xl">
+            Ricorda: ogni spazio digitale che crei e condividi con gli sposi sarà visto da centinaia di invitati. È la tua vetrina perfetta. Completa il tuo profilo pubblico per convertire quegli ospiti nei tuoi prossimi clienti!
+          </p>
+        </div>
+        <Link href="/dashboard/profile">
+          <Button className="bg-amber-600 hover:bg-amber-700 text-white rounded-full whitespace-nowrap">
+            Completa Vetrina
+          </Button>
+        </Link>
+      </div>
+
       <div className="mb-8">
         <PlanWidget 
           role="PHOTOGRAPHER" 
