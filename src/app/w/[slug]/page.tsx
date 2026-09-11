@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Camera, MapPin, MessageSquare } from "lucide-react";
 import GuestbookForm from "./GuestbookForm";
+import GuestRegistrationForm from "./GuestRegistrationForm";
 import { getSession } from "@/lib/auth";
 import LoadMoreGallery from "@/components/LoadMoreGallery";
 import WeddingDetails from "./WeddingDetails";
@@ -123,14 +124,13 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
                 Condividi i tuoi ricordi di questo momento speciale.
               </p>
             )}
-            <Link href={`/w/${wedding.slug}/upload`} className="inline-block mt-4">
-              <Button size="lg" className="w-full sm:w-auto text-lg py-6 px-10 rounded-full shadow-xl hover:scale-105 transition-transform text-white" style={{ backgroundColor: themeColor }}>
-                <Camera className="mr-2 h-6 w-6" />
-                + Condividi le tue foto
-              </Button>
-            </Link>
           </CardContent>
         </Card>
+      </div>
+
+      {/* REGISTRAZIONE OSPITI (LEAD GENERATION) */}
+      <div className="max-w-7xl mx-auto px-4 mt-8">
+        <GuestRegistrationForm buttonColor={themeColor} />
       </div>
 
       {/* 2. STORIA */}
@@ -183,10 +183,43 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         </div>
       )}
 
-      {/* 5. GALLERIA */}
+      {/* 5. GALLERIA & UPLOAD BANNER */}
       <div className="max-w-7xl mx-auto px-4 pt-24">
-        <h2 className="text-3xl font-serif text-stone-800 mb-4 text-center">I vostri ricordi</h2>
-        <p className="text-center text-stone-500 mb-8 font-serif italic max-w-2xl mx-auto">
+        
+        <div className="bg-white border border-stone-100 shadow-xl rounded-3xl p-8 md:p-12 mb-16 max-w-4xl mx-auto text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2" style={{ backgroundColor: themeColor }} />
+          <h2 className="text-3xl md:text-4xl font-serif text-stone-800 mb-4">Condividi le tue foto</h2>
+          <p className="text-stone-500 mb-8 font-serif italic text-lg max-w-2xl mx-auto">
+            Aiuta gli sposi a collezionare ogni singolo istante. Scatta, carica e fai parte di questa storia.
+          </p>
+          
+          <div className="flex flex-col md:flex-row items-center justify-center gap-10">
+            <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col items-center">
+               <div className="w-32 h-32 relative">
+                 <Image 
+                   src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://wedding-platform-topwebsitee.vercel.app/w/${wedding.slug}/upload`} 
+                   alt="QR Code per caricare foto" 
+                   fill
+                   className="object-contain"
+                 />
+               </div>
+               <span className="text-xs text-stone-400 mt-3 font-semibold uppercase tracking-wider">Inquadra per caricare</span>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <span className="text-stone-400 font-serif italic hidden md:block">- oppure -</span>
+              <Link href={`/w/${wedding.slug}/upload`}>
+                <Button size="lg" className="w-full sm:w-auto text-xl py-8 px-12 rounded-full shadow-2xl hover:scale-105 transition-transform text-white font-bold" style={{ backgroundColor: themeColor }}>
+                  <Camera className="mr-3 h-8 w-8" />
+                  + Condividi le tue foto
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <h3 className="text-3xl font-serif text-stone-800 mb-4 text-center">I vostri ricordi</h3>
+        <p className="text-center text-stone-500 mb-12 font-serif italic max-w-2xl mx-auto">
           Ogni fotografia è un pezzo di questa storia.
         </p>
 
