@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Heart, Camera, Search, MapPin, Users, ArrowRight, Briefcase, Calendar, Star, Menu, Sparkles } from "lucide-react";
+import { Heart, Camera, Search, MapPin, Users, ArrowRight, Briefcase, Calendar, Star, Menu, Sparkles, CheckCircle, Gift, Share2 } from "lucide-react";
 import Footer from "@/components/Footer";
 import PortalSearch from "@/components/PortalSearch";
 import { motion, Variants } from "framer-motion";
@@ -152,6 +152,60 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* 1.5 LA TIMELINE DELL'ECOSISTEMA */}
+      <section className="py-24 bg-white relative">
+        <div className="max-w-4xl mx-auto px-4">
+          <motion.div 
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="text-center mb-20"
+          >
+            <motion.h2 variants={fadeUpVariant} className="text-[11px] md:text-xs font-semibold text-amber-500 uppercase tracking-[0.3em] mb-4">Come Funziona</motion.h2>
+            <motion.h3 variants={fadeUpVariant} className="text-4xl md:text-5xl font-serif text-stone-900 mb-6 tracking-tight leading-tight">I passi verso il vostro<br/>giorno perfetto</motion.h3>
+          </motion.div>
+
+          <div className="relative border-l border-amber-200/50 ml-4 md:ml-12 pl-10 md:pl-16 space-y-16">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              <div className="absolute -left-[60px] md:-left-[84px] top-0 w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg">1</div>
+              <h4 className="text-2xl font-serif text-stone-900 mb-2">Scoprite i professionisti</h4>
+              <p className="text-stone-500 font-light text-lg">Esplorate la directory dei migliori talenti, dai fotografi alle location, e contattateli direttamente.</p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="absolute -left-[60px] md:-left-[84px] top-0 w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg">2</div>
+              <h4 className="text-2xl font-serif text-stone-900 mb-2">Create la vostra Area Sposi</h4>
+              <p className="text-stone-500 font-light text-lg">Progettate il sito del vostro matrimonio, gestite gli inviti digitali e la disposizione dei tavoli in un unico ambiente.</p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="relative"
+            >
+              <div className="absolute -left-[60px] md:-left-[84px] top-0 w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg">3</div>
+              <h4 className="text-2xl font-serif text-stone-900 mb-2">Collezionate ricordi per sempre</h4>
+              <p className="text-stone-500 font-light text-lg">Il giorno dell'evento gli invitati caricano foto live via QR code, e la piattaforma conserva le emozioni in un album infinito.</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* 2. I BENEFIT PER GLI SPOSI (Staggered Animation) */}
       <section className="py-24 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4">
@@ -219,7 +273,7 @@ export default function Home() {
             {/* Feature 4 */}
             <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
               <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1606490204739-122e2361ef53?q=80&w=2069&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Album" />
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Album" />
               </div>
               <div className="p-8 flex-1 flex flex-col">
                 <h4 className="font-serif text-2xl text-stone-900 mb-3">Gestione completa dell'album</h4>
@@ -231,7 +285,7 @@ export default function Home() {
             {/* Feature 5 */}
             <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
               <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1577901089201-831e5f5223ab?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Inviti" />
+                <img src="https://images.unsplash.com/photo-1532152865780-3273e86c0e5a?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Inviti" />
               </div>
               <div className="p-8 flex-1 flex flex-col">
                 <h4 className="font-serif text-2xl text-stone-900 mb-3">Inviti digitali interattivi</h4>
@@ -395,6 +449,75 @@ export default function Home() {
                 </Link>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. CHECKLIST FUNZIONALITA */}
+      <section className="py-24 bg-[#faf9f8] border-t border-stone-200 overflow-hidden">
+        <div className="max-w-5xl mx-auto px-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-5xl font-serif text-stone-900 mb-6 tracking-tight">Tutto ciò che potrete fare</h2>
+            <p className="text-stone-500 text-lg font-light max-w-2xl mx-auto">Nessuna sorpresa, solo strumenti eleganti per organizzare e ricordare il vostro evento in ogni singolo dettaglio.</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl mx-auto">
+            {[
+              "Sito web personalizzato per il matrimonio",
+              "Inviti digitali interattivi (Email / WhatsApp)",
+              "Gestione RSVP e menù (intolleranze, scelte)",
+              "Disposizione interattiva dei tavoli",
+              "QR Code per raccogliere le foto live dagli invitati",
+              "Galleria fotografica privata e sicura",
+              "Guestbook digitale per auguri e video-dediche",
+              "Possibilità di nascondere o approvare le foto",
+              "Spazio per futuri traguardi (battesimi, feste)",
+              "Sconti esclusivi invitando i vostri fornitori"
+            ].map((feature, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white hover:shadow-lg transition-all border border-transparent hover:border-stone-100"
+              >
+                <div className="mt-1 flex-shrink-0">
+                  <CheckCircle className="w-6 h-6 text-emerald-500" />
+                </div>
+                <p className="text-stone-700 text-lg font-light leading-relaxed">{feature}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. SUGGERISCI PROFESSIONISTA */}
+      <section className="py-20 bg-stone-900 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop')] opacity-20 mix-blend-overlay bg-cover bg-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-transparent to-stone-900" />
+        <div className="max-w-4xl mx-auto px-4 relative z-10 text-center text-white">
+          <Gift className="w-12 h-12 text-rose-400 mx-auto mb-6" />
+          <h2 className="text-3xl md:text-4xl font-serif mb-4">Conoscete già i vostri fornitori?</h2>
+          <p className="text-stone-300 text-lg font-light mb-8 max-w-2xl mx-auto">
+            Suggerite ecos.com al vostro fotografo, fioraio o catering di fiducia. <br/>
+            <strong>Se si iscrivono, riceverete uno sconto esclusivo sul vostro piano Sposi!</strong>
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+            <input 
+              type="email" 
+              placeholder="Email del professionista..." 
+              className="px-6 py-4 rounded-full bg-white/10 text-white placeholder:text-stone-400 focus:outline-none focus:ring-2 ring-rose-400 w-full border border-white/20 backdrop-blur-md"
+            />
+            <Button size="lg" className="rounded-full h-[56px] px-8 bg-rose-500 text-white hover:bg-rose-600 flex-shrink-0 font-bold border-none shadow-[0_0_20px_rgba(244,63,94,0.4)]">
+              Suggerisci <Share2 className="ml-2 w-4 h-4" />
+            </Button>
           </div>
         </div>
       </section>
