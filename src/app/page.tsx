@@ -14,7 +14,7 @@ export default function Home() {
           <Heart className="w-6 h-6 text-rose-500" />
           WeddingSpace
         </div>
-        <div className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide text-white drop-shadow-md">
+        <div className="hidden md:flex items-center gap-8 text-[13px] font-semibold tracking-widest text-white/95 drop-shadow-md">
           <Link href="#directory" className="hover:text-rose-300 transition-colors">TROVA FORNITORI</Link>
           <Link href="#capitoli" className="hover:text-rose-300 transition-colors">I CAPITOLI</Link>
           <Link href="/professionisti" className="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-2">
@@ -60,63 +60,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. IL BIVIO (RI-PROGETTATO E PORTATO IN ALTO) */}
-      <section className="py-20 bg-[#faf9f8]" id="directory">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-stone-900 mb-4">Un unico portale, due mondi interconnessi.</h2>
-            <p className="text-stone-500 max-w-2xl mx-auto">La piattaforma che unisce chi celebra l'amore e chi lavora per renderlo perfetto.</p>
-          </div>
-          
-          <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
-            {/* CARD SPOSI */}
-            <div className="flex-1 relative flex flex-col justify-end p-10 overflow-hidden rounded-[2.5rem] min-h-[400px] group shadow-xl">
-              <div className="absolute inset-0 z-0">
-                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" alt="Sposi Bivio" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/60 to-transparent" />
-              </div>
-              <div className="relative z-10 text-left">
-                <div className="w-14 h-14 bg-rose-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30">
-                  <Heart className="w-7 h-7 text-rose-400" />
-                </div>
-                <h2 className="text-4xl font-serif text-white mb-3">Siete gli Sposi?</h2>
-                <p className="text-stone-200 text-lg mb-8 font-light max-w-sm">
-                  Cercate i fornitori, raccogliete le foto degli invitati e condividete l'organizzazione.
-                </p>
-                <Link href="/login?role=COUPLE&mode=REGISTER">
-                  <Button size="lg" className="h-14 px-8 rounded-full bg-white text-stone-900 hover:bg-stone-200 shadow-xl transition-all hover:scale-105 border-none font-bold">
-                    Crea Area Sposi
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* CARD PROFESSIONISTI */}
-            <div className="flex-1 relative flex flex-col justify-end p-10 overflow-hidden rounded-[2.5rem] min-h-[400px] group shadow-xl">
-              <div className="absolute inset-0 z-0">
-                <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop" alt="Pro Bivio" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent" />
-              </div>
-              <div className="relative z-10 text-left">
-                <div className="w-14 h-14 bg-amber-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-amber-500/30">
-                  <Camera className="w-7 h-7 text-amber-400" />
-                </div>
-                <h2 className="text-4xl font-serif text-white mb-3">Sei un Professionista?</h2>
-                <p className="text-stone-300 text-lg mb-8 font-light max-w-sm">
-                  Appari nelle ricerche, acquisisci i contatti degli invitati e vendi i tuoi servizi.
-                </p>
-                <Link href="/professionisti">
-                  <Button size="lg" className="h-14 px-8 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-xl transition-all hover:scale-105 border-none font-bold">
-                    Area Partner
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2.5 I BENEFIT PER GLI SPOSI */}
+      {/* 2. I BENEFIT PER GLI SPOSI (PORTATO IN ALTO) */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
@@ -242,6 +186,62 @@ export default function Home() {
                 <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">4</div>
                 <h4 className="font-serif text-2xl font-bold text-white mb-1">Feste Private</h4>
                 <p className="text-stone-300 text-sm">Un album infinito.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. IL BIVIO (PORTATO IN BASSO) */}
+      <section className="py-24 bg-[#faf9f8]" id="directory">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-serif text-stone-900 mb-4">Un unico portale, due mondi interconnessi.</h2>
+            <p className="text-stone-500 max-w-2xl mx-auto">La piattaforma che unisce chi celebra l'amore e chi lavora per renderlo perfetto.</p>
+          </div>
+          
+          <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
+            {/* CARD SPOSI */}
+            <div className="flex-1 relative flex flex-col justify-end p-10 overflow-hidden rounded-[2.5rem] min-h-[400px] group shadow-xl">
+              <div className="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" alt="Sposi Bivio" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/60 to-transparent" />
+              </div>
+              <div className="relative z-10 text-left">
+                <div className="w-14 h-14 bg-rose-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30">
+                  <Heart className="w-7 h-7 text-rose-400" />
+                </div>
+                <h2 className="text-4xl font-serif text-white mb-3">Siete gli Sposi?</h2>
+                <p className="text-stone-200 text-lg mb-8 font-light max-w-sm">
+                  Cercate i fornitori, raccogliete le foto degli invitati e condividete l'organizzazione.
+                </p>
+                <Link href="/login?role=COUPLE&mode=REGISTER">
+                  <Button size="lg" className="h-14 px-8 rounded-full bg-white text-stone-900 hover:bg-stone-200 shadow-xl transition-all hover:scale-105 border-none font-bold">
+                    Crea Area Sposi
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* CARD PROFESSIONISTI */}
+            <div className="flex-1 relative flex flex-col justify-end p-10 overflow-hidden rounded-[2.5rem] min-h-[400px] group shadow-xl">
+              <div className="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop" alt="Pro Bivio" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent" />
+              </div>
+              <div className="relative z-10 text-left">
+                <div className="w-14 h-14 bg-amber-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-amber-500/30">
+                  <Camera className="w-7 h-7 text-amber-400" />
+                </div>
+                <h2 className="text-4xl font-serif text-white mb-3">Sei un Professionista?</h2>
+                <p className="text-stone-300 text-lg mb-8 font-light max-w-sm">
+                  Appari nelle ricerche, acquisisci i contatti degli invitati e vendi i tuoi servizi.
+                </p>
+                <Link href="/professionisti">
+                  <Button size="lg" className="h-14 px-8 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-xl transition-all hover:scale-105 border-none font-bold">
+                    Area Partner
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
