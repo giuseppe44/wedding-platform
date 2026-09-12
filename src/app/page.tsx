@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Heart, Camera, Search, MapPin, Users, ArrowRight, Briefcase, Calendar, Star, Menu, Sparkles } from "lucide-react";
 import Footer from "@/components/Footer";
 import PortalSearch from "@/components/PortalSearch";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -17,12 +17,12 @@ const staggerContainer = {
   }
 };
 
-const fadeUpVariant = {
+const fadeUpVariant: Variants = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
-const scaleUpVariant = {
+const scaleUpVariant: Variants = {
   hidden: { opacity: 0, scale: 0.8 },
   show: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: "easeOut" } }
 };
