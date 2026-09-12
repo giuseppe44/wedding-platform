@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "@/components/CookieBanner";
 
@@ -13,8 +13,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "WeddingSpace | Il tuo matrimonio in digitale",
+  title: "ecos.com | Il tuo matrimonio in digitale",
   description: "La piattaforma che unisce sposi, invitati e professionisti in un unico racconto digitale.",
   manifest: "/manifest.json",
 };
@@ -27,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className={`min-h-full flex flex-col font-sans ${geistSans.className}`}>{children}<CookieBanner /></body>
     </html>

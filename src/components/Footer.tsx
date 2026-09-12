@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="col-span-1 md:col-span-2">
           <Link href="/" className="text-2xl font-serif text-white tracking-tight flex items-center gap-2 mb-4">
             <Heart className="w-6 h-6 text-rose-500" />
-            WeddingSpace
+            ecos.com
           </Link>
           <p className="text-sm max-w-sm leading-relaxed">
             La piattaforma digitale definitiva per sposi, invitati e professionisti. Raccogli ricordi, organizza il tuo evento e fai crescere il tuo business.
@@ -35,7 +35,7 @@ export default function Footer() {
       </div>
       
       <div className="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-stone-800 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-        <p>&copy; {new Date().getFullYear()} WeddingSpace. Tutti i diritti riservati.</p>
+        <p>&copy; {new Date().getFullYear()} ecos.com. Tutti i diritti riservati.</p>
         <p>Realizzato con cura per i tuoi momenti speciali.</p>
       </div>
     </footer>

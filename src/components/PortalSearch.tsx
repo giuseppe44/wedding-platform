@@ -52,13 +52,13 @@ export default function PortalSearch() {
         onClick={() => setIsOpen(true)}
         className="bg-stone-900/80 backdrop-blur-2xl p-2 md:p-3 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex flex-col md:flex-row items-center w-full max-w-4xl mx-auto text-left transition-all hover:bg-stone-900 hover:scale-[1.01] duration-300 border border-stone-600/50 cursor-text"
       >
-        <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-600/50 w-full group">
-          <label className="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-rose-300/80 group-hover:text-rose-400 transition-colors pointer-events-none drop-shadow-sm">Cosa stai cercando?</label>
-          <div className="w-full text-white/90 font-medium text-lg md:text-xl pt-1 h-8 flex items-center drop-shadow-sm">Es. Fotografo, Location, Catering...</div>
+        <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-600/50 w-full group overflow-hidden">
+          <label className="text-[9px] md:text-[10px] font-medium uppercase tracking-[0.2em] text-rose-300/80 group-hover:text-rose-400 transition-colors pointer-events-none drop-shadow-sm">Cosa stai cercando?</label>
+          <div className="w-full text-stone-200 font-light text-sm md:text-base pt-1 h-8 flex items-center drop-shadow-sm truncate">Es. Fotografo, Location, Catering...</div>
         </div>
-        <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-600/50 w-full group hidden md:block">
-          <label className="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-rose-300/80 group-hover:text-rose-400 transition-colors pointer-events-none drop-shadow-sm">Dove?</label>
-          <div className="w-full text-white/90 font-medium text-lg md:text-xl pt-1 h-8 flex items-center drop-shadow-sm">Es. Roma, Milano, Napoli...</div>
+        <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-600/50 w-full group hidden md:block overflow-hidden">
+          <label className="text-[9px] md:text-[10px] font-medium uppercase tracking-[0.2em] text-rose-300/80 group-hover:text-rose-400 transition-colors pointer-events-none drop-shadow-sm">Dove?</label>
+          <div className="w-full text-stone-200 font-light text-sm md:text-base pt-1 h-8 flex items-center drop-shadow-sm truncate">Es. Roma, Milano, Napoli...</div>
         </div>
         <div className="px-2 py-2 w-full md:w-auto mt-2 md:mt-0">
           <Button 
