@@ -38,7 +38,7 @@ export async function submitLead(formData: FormData) {
     try {
       // Usa onboarding@resend.dev finché non verifichi il dominio su Resend
       const { data, error } = await resend.emails.send({
-        from: 'WeddingSpace Leads <onboarding@resend.dev>',
+        from: 'ecos.com Leads <onboarding@resend.dev>',
         to: [process.env.ADMIN_EMAIL || "web@topwebsite.it"],
         subject: title,
         html: `
@@ -53,7 +53,7 @@ export async function submitLead(formData: FormData) {
                 <li style="margin-bottom: 12px;"><strong>Dettagli:</strong><br/> ${details.replace(/\n/g, '<br/>')}</li>
               </ul>
               <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-              <p style="font-size: 14px; color: #666; text-align: center;">Accedi al database di WeddingSpace per ulteriori informazioni.</p>
+              <p style="font-size: 14px; color: #666; text-align: center;">Accedi al database di ecos.com per ulteriori informazioni.</p>
             </div>
           </div>
         `,

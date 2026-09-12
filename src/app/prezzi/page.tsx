@@ -26,7 +26,7 @@ export default function PrezziPage() {
             <div className="bg-rose-50 border border-rose-100 p-6 rounded-2xl inline-block max-w-2xl">
               <h4 className="font-bold text-rose-800 mb-2">📸 Hai già un fotografo partner?</h4>
               <p className="text-rose-600 text-sm">
-                Se il tuo fotografo o professionista è già convenzionato con la piattaforma WeddingSpace, avrai diritto a un <strong>prezzo dedicato</strong> e vantaggioso (o incluso nel suo pacchetto). Chiedigli il codice invito!
+                Se il tuo fotografo o professionista è già convenzionato con la piattaforma ecos.com, avrai diritto a un <strong>prezzo dedicato</strong> e vantaggioso (o incluso nel suo pacchetto). Chiedigli il codice invito!
               </p>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function PrezziPage() {
               <ul className="text-stone-600 space-y-4 mb-10 flex-1">
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> <span className="font-bold text-stone-900">Tutto il piano Premium, più:</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> <span>Capitoli della Vita illimitati</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> <span>Nessuna filigrana o logo WeddingSpace</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> <span>Nessuna filigrana o logo ecos.com</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> <span>Dominio personalizzato (es. lucaemaria.it)</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> <span>Assistenza dedicata</span></li>
               </ul>

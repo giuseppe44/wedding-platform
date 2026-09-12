@@ -291,7 +291,7 @@ export default function Home() {
             {/* Feature 5 */}
             <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
               <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1606216491913-7186835a643f?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Inviti" />
+                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Inviti" />
               </div>
               <div className="p-8 flex-1 flex flex-col">
                 <h4 className="font-serif text-2xl text-stone-900 mb-3">Inviti digitali interattivi</h4>

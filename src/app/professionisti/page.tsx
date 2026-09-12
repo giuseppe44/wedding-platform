@@ -61,7 +61,7 @@ export default function ProfessionistiPage() {
               <div>
                 <h3 className="text-2xl font-bold text-white mb-4">L'unica Condizione?</h3>
                 <p className="text-stone-400 mb-6 leading-relaxed">
-                  Vogliamo professionisti veri. Ti chiediamo solo di usare WeddingSpace e i nostri QR Code per la raccolta foto in almeno <strong>3 matrimoni reali quest'anno</strong>. 
+                  Vogliamo professionisti veri. Ti chiediamo solo di usare ecos.com e i nostri QR Code per la raccolta foto in almeno <strong>3 matrimoni reali quest'anno</strong>. 
                 </p>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-center gap-3 text-stone-300"><CheckCircle2 className="w-5 h-5 text-emerald-500" /> Nessun vincolo di rinnovo</li>
@@ -94,7 +94,7 @@ export default function ProfessionistiPage() {
               In un matrimonio medio ci sono 100 invitati. Ognuno di loro fa foto, ognuno di loro guarda le tue foto, ma <strong>nessuno di loro conosce il tuo nome o ha il tuo bigliettino da visita.</strong>
             </p>
             <p className="text-lg text-stone-400 mb-8 leading-relaxed">
-              Con WeddingSpace, ogni invitato che inquadra il QR code per vedere o caricare le foto entra nel <strong>tuo database</strong>.
+              Con ecos.com, ogni invitato che inquadra il QR code per vedere o caricare le foto entra nel <strong>tuo database</strong>.
             </p>
             <ul className="space-y-4">
               <li className="flex items-center gap-3 text-stone-300"><CheckCircle2 className="w-6 h-6 text-emerald-500" /> Acquisizione contatti 100% GDPR compliant</li>
@@ -154,21 +154,26 @@ export default function ProfessionistiPage() {
             <p className="text-stone-400 max-w-2xl mx-auto text-lg">Abbiamo tolto tutto il superfluo per lasciarti solo le funzionalità che impattano direttamente sul tuo business.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-stone-900 border border-stone-800 p-8 rounded-3xl hover:border-amber-500/50 transition-colors group">
               <MonitorSmartphone className="w-10 h-10 text-amber-500 mb-6 group-hover:scale-110 transition-transform" />
-              <h3 className="text-2xl font-bold text-white mb-4">Vetrina Ottimizzata SEO</h3>
-              <p className="text-stone-400 leading-relaxed">Il tuo profilo sulla nostra directory è indicizzato su Google. Quando gli sposi cercano nella tua città, troveranno te.</p>
-            </div>
-            <div className="bg-stone-900 border border-stone-800 p-8 rounded-3xl hover:border-amber-500/50 transition-colors group">
-              <Users className="w-10 h-10 text-amber-500 mb-6 group-hover:scale-110 transition-transform" />
-              <h3 className="text-2xl font-bold text-white mb-4">Lead Gen dagli Invitati</h3>
-              <p className="text-stone-400 leading-relaxed">Gli invitati lasciano la mail per scaricare le foto. Tu usi quelle email per proporre i tuoi servizi per i loro futuri eventi.</p>
+              <h3 className="text-xl font-bold text-white mb-4">AI Matchmaking</h3>
+              <p className="text-stone-400 text-sm leading-relaxed">Gli sposi cercano con linguaggio naturale. La nostra intelligenza artificiale li collega direttamente a te se il tuo profilo combacia perfettamente.</p>
             </div>
             <div className="bg-stone-900 border border-stone-800 p-8 rounded-3xl hover:border-amber-500/50 transition-colors group">
               <Rocket className="w-10 h-10 text-amber-500 mb-6 group-hover:scale-110 transition-transform" />
-              <h3 className="text-2xl font-bold text-white mb-4">Upsell & E-Commerce</h3>
-              <p className="text-stone-400 leading-relaxed">Vendi foto in alta risoluzione, stampe o fotolibri in totale autonomia. Gli sposi ordinano dal loro pannello privato.</p>
+              <h3 className="text-xl font-bold text-white mb-4">CRM & Preventivi Digitali</h3>
+              <p className="text-stone-400 text-sm leading-relaxed">Crea, invia e fai firmare digitalmente preventivi spettacolari. Ricevi l'acconto istantaneamente via Stripe senza uscire dalla piattaforma.</p>
+            </div>
+            <div className="bg-stone-900 border border-stone-800 p-8 rounded-3xl hover:border-amber-500/50 transition-colors group">
+              <Users className="w-10 h-10 text-amber-500 mb-6 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-bold text-white mb-4">Lead Gen dagli Invitati</h3>
+              <p className="text-stone-400 text-sm leading-relaxed">Gli invitati lasciano la mail per scaricare le foto. Tu usi quelle email per proporre i tuoi servizi per i loro futuri eventi (battesimi, ecc).</p>
+            </div>
+            <div className="bg-stone-900 border border-stone-800 p-8 rounded-3xl hover:border-amber-500/50 transition-colors group">
+              <Camera className="w-10 h-10 text-amber-500 mb-6 group-hover:scale-110 transition-transform" />
+              <h3 className="text-xl font-bold text-white mb-4">Upsell & E-Commerce</h3>
+              <p className="text-stone-400 text-sm leading-relaxed">Vendi foto in alta risoluzione o fotolibri in autonomia tramite la gallery privata degli sposi. Trattieni l'intero margine.</p>
             </div>
           </div>
         </div>
@@ -226,19 +231,19 @@ export default function ProfessionistiPage() {
             {/* Diamond */}
             <div className="bg-stone-900 p-10 rounded-3xl border border-stone-800 shadow-xl flex flex-col hover:border-stone-700 transition-colors">
               <h4 className="font-bold text-2xl text-white mb-2">Diamond</h4>
-              <p className="text-stone-500 mb-6 h-10">Il top per grandi agenzie</p>
+              <p className="text-stone-500 mb-6 h-10">Ideale per Wedding Planner & Location</p>
               <div className="mb-8">
-                <span className="text-5xl font-serif font-bold text-white">€ 450</span><span className="text-stone-500">/anno</span>
+                <span className="text-5xl font-serif font-bold text-white">€ 490</span><span className="text-stone-500">/anno</span>
               </div>
               <ul className="text-stone-400 space-y-4 mb-10 flex-1">
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span className="font-semibold text-white">Tutto il piano Pro, più:</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Multi-account per collaboratori</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Analytics avanzati (Conversioni)</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Rimozione brand (White-label)</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Dominio personalizzato (es. eventi.it)</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Account Manager dedicato</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Multi-account per staff e collaboratori</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Pacchetti Sposi in stock da rivendere</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Piattaforma White-Label (Tuo Logo)</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Dominio personalizzato (es. portale.tuobrand.it)</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Account Manager ecos.com dedicato</span></li>
               </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Contattaci</Button></Link>
+              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Contattaci per Demo</Button></Link>
             </div>
           </div>
         </div>

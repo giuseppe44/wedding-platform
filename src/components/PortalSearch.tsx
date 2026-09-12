@@ -1,16 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Search, X, CheckCircle2 } from "lucide-react";
+import { Search, X, CheckCircle2, Sparkles, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { submitLead } from "@/app/actions/leadActions";
 
 export default function PortalSearch() {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"preventivo" | "segnala" | "success">("preventivo");
   const [isLoading, setIsLoading] = useState(false);
+  const [aiQuery, setAiQuery] = useState("");
+
+  const handleAiSearch = () => {
+    if(!aiQuery.trim()) return;
+    setIsOpen(true);
+    setView("preventivo");
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,9 +25,9 @@ export default function PortalSearch() {
     
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
-    const category = formData.get("category");
-    const city = formData.get("city");
-    const date = formData.get("date");
+    const category = formData.get("category") || aiQuery;
+    const city = formData.get("city") || "Da specificare";
+    const date = formData.get("date") || "Da specificare";
     const proName = formData.get("proName");
     const proLink = formData.get("proLink");
     
@@ -28,44 +35,47 @@ export default function PortalSearch() {
     const actionData = new FormData();
     actionData.append("email", email as string);
     actionData.append("intent", view === "preventivo" ? "SPOSI_CERCA" : "SEGNALAZIONE_PRO");
-    
-    if (view === "preventivo") {
-      actionData.append("details", `Categoria: ${category}, Città: ${city}, Data: ${date}`);
-    } else {
-      actionData.append("details", `Nome Pro: ${proName}, Link: ${proLink}`);
-    }
+    actionData.append("details", view === "preventivo" 
+      ? `CERCA (AI): ${category} | DOVE: ${city} | DATA: ${date}` 
+      : `SEGNALA PRO: ${proName} | SETTORE: ${formData.get("proCategory")} | SITO: ${proLink || "Non inserito"}`
+    );
 
-    try {
-      await submitLead(actionData);
-    } catch (err) {
-      console.error(err);
-    }
+    // Chiamo il Server Action
+    const result = await submitLead(actionData);
     
     setIsLoading(false);
-    setView("success");
+    if (result.success) {
+      setView("success");
+    } else {
+      alert("Errore durante l'invio. Riprova più tardi.");
+    }
   };
 
   return (
     <>
-      {/* BARRA DI RICERCA GLASSMORPHISM SCURA */}
+      {/* BARRA DI RICERCA INTELLIGENTE (AI MATCHMAKER) */}
       <div 
-        onClick={() => setIsOpen(true)}
-        className="bg-stone-900/80 backdrop-blur-2xl p-2 md:p-3 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex flex-col md:flex-row items-center w-full max-w-4xl mx-auto text-left transition-all hover:bg-stone-900 hover:scale-[1.01] duration-300 border border-stone-600/50 cursor-text"
+        className="bg-stone-900/80 backdrop-blur-2xl p-2 md:p-3 rounded-3xl md:rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.5)] flex flex-col md:flex-row items-center w-full max-w-4xl mx-auto text-left transition-all hover:bg-stone-900 duration-300 border border-stone-600/50 cursor-text focus-within:border-rose-400 focus-within:ring-4 ring-rose-500/20"
       >
-        <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-600/50 w-full group overflow-hidden">
-          <label className="text-[9px] md:text-[10px] font-medium uppercase tracking-[0.2em] text-rose-300/80 group-hover:text-rose-400 transition-colors pointer-events-none drop-shadow-sm">Cosa stai cercando?</label>
-          <div className="w-full text-stone-200 font-light text-sm md:text-base pt-1 h-8 flex items-center drop-shadow-sm truncate">Es. Fotografo, Location, Catering...</div>
+        <div className="px-4 hidden md:flex items-center justify-center">
+          <Sparkles className="w-5 h-5 text-rose-400" />
         </div>
-        <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-600/50 w-full group hidden md:block overflow-hidden">
-          <label className="text-[9px] md:text-[10px] font-medium uppercase tracking-[0.2em] text-rose-300/80 group-hover:text-rose-400 transition-colors pointer-events-none drop-shadow-sm">Dove?</label>
-          <div className="w-full text-stone-200 font-light text-sm md:text-base pt-1 h-8 flex items-center drop-shadow-sm truncate">Es. Roma, Milano, Napoli...</div>
+        <div className="flex-1 px-4 py-2 w-full">
+          <input 
+            type="text"
+            value={aiQuery}
+            onChange={(e) => setAiQuery(e.target.value)}
+            onKeyDown={(e) => { if(e.key === 'Enter') handleAiSearch(); }}
+            placeholder="Es. Cerco fotografo stile reportage in Toscana, budget max 2.500€..."
+            className="w-full bg-transparent border-none outline-none text-white placeholder-stone-400 text-sm md:text-lg font-light"
+          />
         </div>
         <div className="px-2 py-2 w-full md:w-auto mt-2 md:mt-0">
           <Button 
-            className="w-full md:w-auto h-14 md:h-16 px-8 rounded-2xl md:rounded-full bg-rose-500 hover:bg-rose-600 text-white font-bold text-lg shadow-[0_0_20px_rgba(244,63,94,0.4)] flex items-center justify-center gap-2 transition-all hover:scale-105"
-            onClick={(e) => { e.stopPropagation(); setIsOpen(true); }}
+            className="w-full md:w-auto h-14 md:h-14 px-8 rounded-2xl md:rounded-full bg-rose-500 hover:bg-rose-600 text-white font-bold text-lg shadow-[0_0_20px_rgba(244,63,94,0.4)] flex items-center justify-center gap-2 transition-all hover:scale-105 border-none"
+            onClick={handleAiSearch}
           >
-            <Search className="w-5 h-5" /> Cerca
+            <Wand2 className="w-5 h-5" /> Trova Match
           </Button>
         </div>
       </div>
@@ -79,34 +89,36 @@ export default function PortalSearch() {
           {view === "preventivo" && (
             <>
               <DialogHeader className="mb-6">
-                <DialogTitle className="text-2xl font-serif text-white">Stiamo selezionando i migliori</DialogTitle>
+                <DialogTitle className="text-2xl font-serif text-white flex items-center gap-2">
+                  <Sparkles className="w-6 h-6 text-rose-400" /> Analisi AI in corso...
+                </DialogTitle>
                 <DialogDescription className="text-stone-400 text-base mt-2">
-                  La nostra rete è in forte espansione. Lasciaci i tuoi dati: selezioneremo noi i migliori professionisti per te e ti invieremo <strong className="text-white">3 preventivi gratuiti entro 24 ore.</strong>
+                  Il nostro algoritmo sta analizzando la tua richiesta. Inserisci gli ultimi dati per ricevere <strong className="text-white">i 3 Match perfetti gratuiti.</strong>
                 </DialogDescription>
               </DialogHeader>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2 hidden">
+                  {/* Nascondiamo input testuale classico perché usiamo la query AI */}
+                  <Input name="category" value={aiQuery} readOnly />
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">Cosa cerchi?</label>
-                    <Input required name="category" placeholder="Es. Fotografo" className="bg-stone-900 border-stone-800 text-white placeholder-stone-600 h-12 rounded-xl" />
+                    <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">Provincia</label>
+                    <Input required name="city" placeholder="Es. Firenze" className="bg-stone-900 border-stone-800 text-white placeholder-stone-600 h-12 rounded-xl" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">Provincia</label>
-                    <Input required name="city" placeholder="Es. Roma" className="bg-stone-900 border-stone-800 text-white placeholder-stone-600 h-12 rounded-xl" />
+                    <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">Data (opzionale)</label>
+                    <Input type="date" name="date" className="bg-stone-900 border-stone-800 text-white h-12 rounded-xl" />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">Data dell'evento</label>
-                  <Input type="date" name="date" className="bg-stone-900 border-stone-800 text-white h-12 rounded-xl" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">La tua Email</label>
                   <Input required type="email" name="email" placeholder="tua@email.com" className="bg-stone-900 border-stone-800 text-white placeholder-stone-600 h-12 rounded-xl" />
                 </div>
 
-                <Button type="submit" disabled={isLoading} className="w-full h-14 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-lg font-bold mt-4 shadow-lg shadow-rose-500/20">
-                  {isLoading ? "Invio in corso..." : "Richiedi 3 Preventivi Gratis"}
+                <Button type="submit" disabled={isLoading} className="w-full h-14 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-lg font-bold mt-4 shadow-lg shadow-rose-500/20 border-none">
+                  {isLoading ? "Elaborazione in corso..." : "Scopri i tuoi Match"}
                 </Button>
               </form>
 
@@ -124,7 +136,7 @@ export default function PortalSearch() {
               <DialogHeader className="mb-6">
                 <DialogTitle className="text-2xl font-serif text-white">Segnala un Talento</DialogTitle>
                 <DialogDescription className="text-stone-400 text-base mt-2">
-                  L'ecosistema WeddingSpace cresce grazie alle raccomandazioni. Se conosci un professionista eccezionale, dicci chi è.
+                  L'ecosistema ecos.com cresce grazie alle raccomandazioni. Se conosci un professionista eccezionale, dicci chi è.
                 </DialogDescription>
               </DialogHeader>
 
@@ -151,7 +163,7 @@ export default function PortalSearch() {
                   <Button type="button" variant="ghost" onClick={() => setView("preventivo")} className="flex-1 h-14 text-stone-400 hover:text-white hover:bg-stone-900 rounded-xl">
                     Indietro
                   </Button>
-                  <Button type="submit" disabled={isLoading} className="flex-1 h-14 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold rounded-xl shadow-lg shadow-amber-500/20">
+                  <Button type="submit" disabled={isLoading} className="flex-1 h-14 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 border-none">
                     {isLoading ? "Invio in corso..." : "Invia Segnalazione"}
                   </Button>
                 </div>
@@ -166,7 +178,7 @@ export default function PortalSearch() {
               </div>
               <DialogTitle className="text-3xl font-serif text-white mb-4">Ricevuto!</DialogTitle>
               <DialogDescription className="text-stone-300 text-lg max-w-sm mx-auto">
-                La tua richiesta è stata registrata con successo nel nostro sistema. Il nostro team si metterà al lavoro immediatamente.
+                La tua richiesta è stata registrata con successo. L'intelligenza artificiale e il nostro team ti invieranno a breve i tuoi match!
               </DialogDescription>
               <Button onClick={() => setIsOpen(false)} className="mt-8 h-12 px-8 bg-stone-800 hover:bg-stone-700 text-white rounded-full">
                 Chiudi

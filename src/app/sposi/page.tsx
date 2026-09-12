@@ -78,7 +78,7 @@ export default function SposiLandingPage() {
               </div>
               <h2 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight">Un unico luogo <br/>per tutta l'organizzazione.</h2>
               <p className="text-xl text-stone-600 leading-relaxed font-light">
-                Dimentica fogli Excel e centinaia di chat separate. WeddingSpace e' il vostro quartier generale.
+                Dimentica fogli Excel e centinaia di chat separate. ecos.com e' il vostro quartier generale.
               </p>
               <ul className="space-y-4 text-stone-600">
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Raccogli gli RSVP e le intolleranze alimentari in automatico.</span></li>

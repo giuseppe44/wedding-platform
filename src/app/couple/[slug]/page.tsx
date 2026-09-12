@@ -296,10 +296,10 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
         <div className="mt-16 bg-white border border-stone-200 p-8 md:p-10 rounded-3xl shadow-sm text-center">
           <h3 className="text-2xl font-bold text-stone-800 mb-4 font-serif">Invita il tuo Fotografo</h3>
           <p className="text-stone-500 mb-8 max-w-2xl mx-auto">
-            Vuoi che il tuo fotografo ufficiale carichi l'album in alta qualità direttamente nel vostro WeddingSpace per farlo vedere a tutti gli invitati? Inviagli un link di invito.
+            Vuoi che il tuo fotografo ufficiale carichi l'album in alta qualità direttamente nel vostro ecos.com per farlo vedere a tutti gli invitati? Inviagli un link di invito.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={`https://wa.me/?text=${encodeURIComponent("Ciao! Stiamo organizzando il nostro WeddingSpace per condividere tutte le foto del matrimonio. Ti andrebbe di iscriverti come nostro fotografo ufficiale? Potrai caricare l'album direttamente lì e mostrare il tuo lavoro a tutti gli invitati! Ecco il link: https://wedding-platform-topwebsitee.vercel.app/professionisti")}`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/?text=${encodeURIComponent("Ciao! Stiamo organizzando il nostro ecos.com per condividere tutte le foto del matrimonio. Ti andrebbe di iscriverti come nostro fotografo ufficiale? Potrai caricare l'album direttamente lì e mostrare il tuo lavoro a tutti gli invitati! Ecco il link: https://wedding-platform-topwebsitee.vercel.app/professionisti")}`} target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-stone-300 text-stone-700 hover:bg-stone-50 rounded-full font-semibold px-8 h-12">
                 <span className="text-emerald-500 mr-2">WhatsApp</span> Invia Invito al Fotografo
               </Button>
