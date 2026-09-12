@@ -453,7 +453,7 @@ export default function Home() {
                 </div>
                 <h2 className="text-4xl font-serif text-white mb-3">Sei un Professionista?</h2>
                 <p className="text-stone-300 text-lg mb-8 font-light max-w-sm">
-                  Appari nelle ricerche, acquisisci i contatti degli invitati e vendi i tuoi servizi.
+                  Ricevi lead ultra-profilati tramite AI, invia preventivi digitali interattivi e scala il tuo business.
                 </p>
                 <Link href="/professionisti">
                   <Button size="lg" className="h-14 px-8 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all hover:scale-105 border-none font-bold">
@@ -486,7 +486,7 @@ export default function Home() {
               "Inviti digitali interattivi (Email / WhatsApp)",
               "Gestione RSVP e menù (intolleranze, scelte)",
               "Disposizione interattiva dei tavoli",
-              "QR Code per raccogliere le foto live dagli invitati",
+              "ecos.com LIVE (Modalità Proiettore per le foto)",
               "Galleria fotografica privata e sicura",
               "Guestbook digitale per auguri e video-dediche",
               "Possibilità di nascondere o approvare le foto",

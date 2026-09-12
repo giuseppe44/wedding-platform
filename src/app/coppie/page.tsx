@@ -127,7 +127,7 @@ export default function CoppiePage() {
             </motion.div>
 
             <motion.div variants={fadeUpVariant} className="relative h-[600px] rounded-3xl overflow-hidden shadow-2xl">
-               <img src="https://images.unsplash.com/photo-1522083165195-3444bed50be9?q=80&w=2070&auto=format&fit=crop" alt="Coppia felice" className="w-full h-full object-cover" />
+               <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=2070&auto=format&fit=crop" alt="Coppia felice" className="w-full h-full object-cover" />
                <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/20 to-transparent"></div>
                <div className="absolute bottom-10 left-10 right-10">
                  <div className="bg-white/20 backdrop-blur-md border border-white/30 p-6 rounded-2xl text-white">
