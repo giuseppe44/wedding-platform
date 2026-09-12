@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Camera, Users, Target, Rocket, ArrowRight, CheckCircle2, TrendingUp, BarChart, MonitorSmartphone, Star, Gift } from "lucide-react";
+import { Camera, Users, Target, Rocket, ArrowRight, CheckCircle2, TrendingUp, BarChart, MonitorSmartphone, Star, Gift, Heart } from "lucide-react";
 import Footer from "@/components/Footer";
 
 export default function ProfessionistiPage() {
