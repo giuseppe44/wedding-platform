@@ -48,6 +48,7 @@ export default function Home() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="hidden md:flex items-center gap-8 text-[12px] font-light tracking-[0.2em] text-white drop-shadow-md uppercase"
         >
+          <Link href="/coppie" className="text-rose-300 hover:text-rose-200 transition-colors font-semibold">PER LE COPPIE</Link>
           <Link href="#directory" className="hover:text-rose-300 transition-colors">TROVA FORNITORI</Link>
           <Link href="#capitoli" className="hover:text-rose-300 transition-colors">I CAPITOLI</Link>
           <Link href="/professionisti" className="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-2">
@@ -125,7 +126,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="text-xl md:text-2xl text-stone-100 max-w-3xl mx-auto mb-12 font-light drop-shadow-md"
           >
-            Trova i migliori professionisti, crea lo spazio digitale per le tue foto e condividi ogni capitolo della tua storia. Tutto in un'unica piattaforma.
+            Che siate una coppia o futuri sposi: create lo spazio digitale per le vostre foto, trovate i migliori professionisti e custodite ogni capitolo della vostra storia.
           </motion.p>
           
           {/* BARRA DI RICERCA INTERATTIVA */}
@@ -166,42 +167,47 @@ export default function Home() {
             <motion.h3 variants={fadeUpVariant} className="text-4xl md:text-5xl font-serif text-stone-900 mb-6 tracking-tight leading-tight">I passi verso il vostro<br/>giorno perfetto</motion.h3>
           </motion.div>
 
-          <div className="relative border-l border-amber-200/50 ml-4 md:ml-12 pl-10 md:pl-16 space-y-16">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative"
-            >
-              <div className="absolute -left-[60px] md:-left-[84px] top-0 w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg">1</div>
-              <h4 className="text-2xl font-serif text-stone-900 mb-2">Scoprite i professionisti</h4>
-              <p className="text-stone-500 font-light text-lg">Esplorate la directory dei migliori talenti, dai fotografi alle location, e contattateli direttamente.</p>
-            </motion.div>
+          <div className="relative max-w-5xl mx-auto">
+            {/* Linea orizzontale (solo desktop) */}
+            <div className="absolute top-[20px] left-[15%] right-[15%] h-[1px] bg-amber-200/80 hidden md:block z-0" />
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="text-center px-4"
+              >
+                <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 border border-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg mb-6 relative z-10">1</div>
+                <h4 className="text-2xl font-serif text-stone-900 mb-3">Scoprite i professionisti</h4>
+                <p className="text-stone-500 font-light text-base leading-relaxed">Esplorate la directory dei migliori talenti, dai fotografi alle location, e contattateli direttamente.</p>
+              </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="absolute -left-[60px] md:-left-[84px] top-0 w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg">2</div>
-              <h4 className="text-2xl font-serif text-stone-900 mb-2">Create la vostra Area Sposi</h4>
-              <p className="text-stone-500 font-light text-lg">Progettate il sito del vostro matrimonio, gestite gli inviti digitali e la disposizione dei tavoli in un unico ambiente.</p>
-            </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-center px-4"
+              >
+                <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 border border-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg mb-6 relative z-10">2</div>
+                <h4 className="text-2xl font-serif text-stone-900 mb-3">Create la vostra Area Sposi</h4>
+                <p className="text-stone-500 font-light text-base leading-relaxed">Progettate il sito del matrimonio, gestite gli inviti digitali e i tavoli in un unico ambiente.</p>
+              </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="relative"
-            >
-              <div className="absolute -left-[60px] md:-left-[84px] top-0 w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg">3</div>
-              <h4 className="text-2xl font-serif text-stone-900 mb-2">Collezionate ricordi per sempre</h4>
-              <p className="text-stone-500 font-light text-lg">Il giorno dell'evento gli invitati caricano foto live via QR code, e la piattaforma conserva le emozioni in un album infinito.</p>
-            </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="text-center px-4"
+              >
+                <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 border border-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg mb-6 relative z-10">3</div>
+                <h4 className="text-2xl font-serif text-stone-900 mb-3">Collezionate i ricordi</h4>
+                <p className="text-stone-500 font-light text-base leading-relaxed">Gli invitati caricano foto live via QR code, e la piattaforma conserva le emozioni in un album infinito.</p>
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -285,7 +291,7 @@ export default function Home() {
             {/* Feature 5 */}
             <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
               <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1532152865780-3273e86c0e5a?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Inviti" />
+                <img src="https://images.unsplash.com/photo-1606216491913-7186835a643f?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Inviti" />
               </div>
               <div className="p-8 flex-1 flex flex-col">
                 <h4 className="font-serif text-2xl text-stone-900 mb-3">Inviti digitali interattivi</h4>
@@ -410,15 +416,22 @@ export default function Home() {
                 <div className="w-14 h-14 bg-rose-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30 group-hover:bg-rose-500/40 transition-colors duration-500">
                   <Heart className="w-7 h-7 text-rose-400 group-hover:scale-110 transition-transform duration-500" />
                 </div>
-                <h2 className="text-4xl font-serif text-white mb-3">Siete gli Sposi?</h2>
+                <h2 className="text-4xl font-serif text-white mb-3">Siete una Coppia?</h2>
                 <p className="text-stone-200 text-lg mb-8 font-light max-w-sm">
-                  Cercate i fornitori, raccogliete le foto degli invitati e condividete l'organizzazione.
+                  Custodite i vostri ricordi nel Diario Privato o sbloccate gli strumenti per organizzare il vostro Evento.
                 </p>
-                <Link href="/login?role=COUPLE&mode=REGISTER">
-                  <Button size="lg" className="h-14 px-8 rounded-full bg-white text-stone-900 hover:bg-stone-200 shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all hover:scale-105 border-none font-bold">
-                    Crea Area Sposi
-                  </Button>
-                </Link>
+                <div className="flex flex-wrap gap-3">
+                  <Link href="/login?role=COUPLE&mode=REGISTER">
+                    <Button size="lg" className="h-14 px-8 rounded-full bg-white text-stone-900 hover:bg-stone-200 shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all hover:scale-105 border-none font-bold">
+                      Crea il vostro Spazio
+                    </Button>
+                  </Link>
+                  <Link href="/coppie">
+                    <Button size="lg" variant="outline" className="h-14 px-6 rounded-full border-white/50 text-white hover:bg-white/10 backdrop-blur-sm transition-all border font-medium">
+                      Scopri di più
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </motion.div>
 
