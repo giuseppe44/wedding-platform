@@ -28,6 +28,13 @@ export default function PrivacyPolicyPage() {
         <h2>5. I tuoi diritti</h2>
         <p>Ai sensi del GDPR, hai il diritto di accedere, rettificare o cancellare i tuoi dati, nonché opporti al loro trattamento. Puoi esercitare questi diritti dal pannello utente o contattandoci.</p>
 
+        <div className="bg-rose-50 border border-rose-100 p-6 rounded-2xl mt-8">
+          <h4 className="font-bold text-rose-800 mb-2">Integrazione Iubenda (Consiglio per il Lancio)</h4>
+          <p className="text-rose-600 text-sm">
+            Per essere al 100% a norma GDPR ed evitare sanzioni, consigliamo di sostituire questa pagina inserendo il codice di integrazione automatica fornito da <strong>Iubenda</strong>, che manterrà i testi aggiornati secondo le ultime normative.
+          </p>
+        </div>
+
         <div className="mt-12 text-sm text-stone-500 border-t border-stone-200 pt-6">
           <Link href="/" className="hover:underline">← Torna alla Home</Link>
         </div>

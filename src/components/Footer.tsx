@@ -20,6 +20,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link href="/sposi" className="hover:text-white transition-colors">Per gli Sposi</Link></li>
             <li><Link href="/professionisti" className="hover:text-white transition-colors">Per i Professionisti</Link></li>
+            <li><Link href="/prezzi" className="hover:text-white transition-colors">Tariffe Sposi</Link></li>
             <li><Link href="/login" className="hover:text-white transition-colors">Accedi / Registrati</Link></li>
           </ul>
         </div>

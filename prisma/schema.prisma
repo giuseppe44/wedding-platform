@@ -375,3 +375,11 @@ model Subscription {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
+
+model Lead {
+  id        String   @id @default(uuid())
+  email     String
+  intent    String // 'SPOSI_CERCA' o 'SEGNALAZIONE_PRO'
+  details   String? // JSON o testo con provincia, fotografo suggerito ecc.
+  createdAt DateTime @default(now())
+}

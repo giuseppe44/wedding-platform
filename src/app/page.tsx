@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart, Camera, Search, MapPin, Users, ArrowRight, Briefcase, Calendar, Star, Menu } from "lucide-react";
 import Footer from "@/components/Footer";
+import PortalSearch from "@/components/PortalSearch";
 
 export default function Home() {
   return (
@@ -16,7 +17,6 @@ export default function Home() {
         <div className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide text-white drop-shadow-md">
           <Link href="#directory" className="hover:text-rose-300 transition-colors">TROVA FORNITORI</Link>
           <Link href="#capitoli" className="hover:text-rose-300 transition-colors">I CAPITOLI</Link>
-          <Link href="/prezzi" className="hover:text-rose-300 transition-colors">TARIFFE</Link>
           <Link href="/professionisti" className="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-2">
             <Briefcase className="w-4 h-4" /> SEI UN PROFESSIONISTA?
           </Link>
@@ -47,22 +47,8 @@ export default function Home() {
             Trova i migliori professionisti, crea lo spazio digitale per le tue foto e condividi ogni capitolo della tua storia. Tutto in un'unica piattaforma.
           </p>
           
-          {/* BARRA DI RICERCA TIPO AIRBNB / MATRIMONIO.COM */}
-          <div className="bg-white p-2 md:p-3 rounded-3xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center w-full max-w-4xl mx-auto text-left transition-transform hover:scale-[1.01] duration-300">
-            <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-200 w-full group">
-              <label className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-stone-400 group-focus-within:text-rose-500 transition-colors">Cosa stai cercando?</label>
-              <input type="text" placeholder="Es. Fotografo, Location, Catering..." className="w-full focus:outline-none text-stone-900 font-medium bg-transparent text-lg placeholder-stone-300" />
-            </div>
-            <div className="flex-1 px-6 py-3 border-b md:border-b-0 md:border-r border-stone-200 w-full group hidden md:block">
-              <label className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-stone-400 group-focus-within:text-rose-500 transition-colors">Dove?</label>
-              <input type="text" placeholder="Es. Roma, Milano, Napoli..." className="w-full focus:outline-none text-stone-900 font-medium bg-transparent text-lg placeholder-stone-300" />
-            </div>
-            <div className="px-2 py-2 w-full md:w-auto mt-2 md:mt-0">
-              <Button className="w-full md:w-auto h-14 md:h-16 px-8 rounded-2xl md:rounded-full bg-rose-500 hover:bg-rose-600 text-white font-bold text-lg shadow-lg flex items-center justify-center gap-2">
-                <Search className="w-5 h-5" /> Cerca
-              </Button>
-            </div>
-          </div>
+          {/* BARRA DI RICERCA INTERATTIVA */}
+          <PortalSearch />
           
           {/* QUICK CHIPS */}
           <div className="flex flex-wrap justify-center gap-3 mt-8">
@@ -125,6 +111,82 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2.5 I BENEFIT PER GLI SPOSI */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-sm font-bold text-rose-500 uppercase tracking-widest mb-4">L'Area Sposi</h2>
+            <h3 className="text-3xl md:text-5xl font-serif text-stone-900 mb-6">Tutto quello che vi serve per un evento perfetto</h3>
+            <p className="text-xl text-stone-500 max-w-2xl mx-auto font-light">
+              Dimentica i vecchi siti per matrimoni. Ti diamo una vera app web per gestire ospiti, ricordi e tavoli in un unico posto.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Feature 1 */}
+            <div className="bg-[#faf9f8] p-8 rounded-3xl border border-stone-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                <Camera className="w-6 h-6 text-rose-500" />
+              </div>
+              <h4 className="font-bold text-xl text-stone-900 mb-3">Raccolta foto dagli invitati</h4>
+              <p className="text-stone-600 leading-relaxed">
+                Gli invitati scansionano un QR code e caricano le foto in diretta senza scaricare app. Raccogli istantaneamente ricordi inediti.
+              </p>
+            </div>
+            {/* Feature 2 */}
+            <div className="bg-[#faf9f8] p-8 rounded-3xl border border-stone-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                <Users className="w-6 h-6 text-rose-500" />
+              </div>
+              <h4 className="font-bold text-xl text-stone-900 mb-3">Disposizione tavoli e RSVP</h4>
+              <p className="text-stone-600 leading-relaxed">
+                Gestisci le conferme degli ospiti e crea la mappa interattiva dei tavoli per il ristorante direttamente dal tuo spazio privato.
+              </p>
+            </div>
+            {/* Feature 3 */}
+            <div className="bg-[#faf9f8] p-8 rounded-3xl border border-stone-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                <Heart className="w-6 h-6 text-rose-500" />
+              </div>
+              <h4 className="font-bold text-xl text-stone-900 mb-3">Guestbook e Video-dediche</h4>
+              <p className="text-stone-600 leading-relaxed">
+                Lascia che parenti e amici registrino messaggi vocali, dediche scritte o brevi video-auguri che conserverai per sempre.
+              </p>
+            </div>
+            {/* Feature 4 */}
+            <div className="bg-[#faf9f8] p-8 rounded-3xl border border-stone-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                <Star className="w-6 h-6 text-rose-500" />
+              </div>
+              <h4 className="font-bold text-xl text-stone-900 mb-3">Gestione completa dell'album</h4>
+              <p className="text-stone-600 leading-relaxed">
+                Il tuo fotografo carica qui le foto ufficiali in alta risoluzione. Decidi tu quali foto rendere pubbliche o nascondere agli ospiti.
+              </p>
+            </div>
+            {/* Feature 5 */}
+            <div className="bg-[#faf9f8] p-8 rounded-3xl border border-stone-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                <MapPin className="w-6 h-6 text-rose-500" />
+              </div>
+              <h4 className="font-bold text-xl text-stone-900 mb-3">Inviti digitali interattivi</h4>
+              <p className="text-stone-600 leading-relaxed">
+                Invia partecipazioni digitali tramite WhatsApp o Email con mappe, programma della giornata e link diretto per l'RSVP.
+              </p>
+            </div>
+            {/* Feature 6 */}
+            <div className="bg-[#faf9f8] p-8 rounded-3xl border border-stone-100 hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center mb-6 shadow-md shadow-rose-500/20">
+                <Briefcase className="w-6 h-6 text-white" />
+              </div>
+              <h4 className="font-bold text-xl text-stone-900 mb-3">Una pagina tutta vostra</h4>
+              <p className="text-stone-600 leading-relaxed">
+                La vostra storia racchiusa in una pagina web bellissima e personalizzata, protetta da password per la massima privacy.
+              </p>
             </div>
           </div>
         </div>

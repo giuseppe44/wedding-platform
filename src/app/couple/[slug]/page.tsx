@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import Link from "next/link";
-import { Plus, ArrowRight, Calendar } from "lucide-react";
+import { Plus, ArrowRight, Calendar, Check, X, Camera } from "lucide-react";
+import { approveMedia, rejectMedia } from "@/app/actions";
 import { PlanWidget } from "@/components/PlanWidget";
 
 export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
@@ -57,6 +58,16 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
     const dateA = a.date ? new Date(a.date).getTime() : 0;
     const dateB = b.date ? new Date(b.date).getTime() : 0;
     return dateA - dateB;
+  });
+
+  const pendingMediaGlobally = await prisma.media.findMany({
+    where: {
+      timelineItemId: { in: allChapters.map(c => c.id) },
+      status: "PENDING"
+    },
+    include: {
+      timelineItem: true
+    }
   });
 
   const CHAPTER_TYPES: Record<string, string> = {
@@ -127,7 +138,42 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
         )}
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {isOwner && pendingMediaGlobally.length > 0 && (
+          <div className="bg-white rounded-3xl border border-rose-200 p-8 shadow-sm mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center">
+                <Camera className="w-6 h-6 text-rose-500" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-serif text-stone-900">Foto in attesa di approvazione</h3>
+                <p className="text-stone-500">I vostri invitati hanno caricato {pendingMediaGlobally.length} nuove foto! Scegliete quali rendere pubbliche nell'album.</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+              {pendingMediaGlobally.map((m: any) => (
+                <div key={m.id} className="relative group rounded-2xl overflow-hidden shadow-sm aspect-square bg-stone-100">
+                  <img src={m.url} alt="Da approvare" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-stone-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
+                    <span className="text-white text-xs font-bold px-2 py-1 bg-black/40 rounded-full mb-1">
+                      {m.timelineItem.title || "Evento"}
+                    </span>
+                    <div className="flex gap-2">
+                      <form action={approveMedia.bind(null, m.id)}>
+                        <Button type="submit" size="icon" className="bg-emerald-500 hover:bg-emerald-600 rounded-full h-10 w-10 text-white"><Check className="h-5 w-5" /></Button>
+                      </form>
+                      <form action={rejectMedia.bind(null, m.id)}>
+                        <Button type="submit" variant="destructive" size="icon" className="rounded-full h-10 w-10"><X className="h-5 w-5" /></Button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
         <h2 className="text-2xl font-serif text-stone-800 mb-12 text-center md:text-left">I Vostri Capitoli</h2>
 
         {/* 2. Cronostoria (Timeline Verticale) */}
