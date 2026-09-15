@@ -9,13 +9,23 @@ import Link from "next/link";
 
 export default function UploadClient({ timelineItemId, displayTitle, displayType, slug, buttonColor }: { timelineItemId: string, displayTitle: string, displayType: string, slug: string, buttonColor?: string }) {
   const [files, setFiles] = useState<File[]>([]);
+  const [guestName, setGuestName] = useState("");
+  const [guestMessage, setGuestMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFiles(prev => [...prev, ...Array.from(e.target.files!)]);
+      const newFiles = Array.from(e.target.files);
+      setFiles(prev => {
+        const total = [...prev, ...newFiles];
+        if (total.length > 20) {
+          alert("Puoi caricare un massimo di 20 foto/video alla volta.");
+          return total.slice(0, 20);
+        }
+        return total;
+      });
     }
   };
 
@@ -74,6 +84,10 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (files.length === 0) return;
+    if (!guestName.trim()) {
+      alert("Per favore, inserisci il tuo nome in modo che gli sposi sappiano chi ha caricato le foto.");
+      return;
+    }
     
     setUploading(true);
     try {
@@ -82,6 +96,10 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
       compressedFiles.forEach((file) => {
         formData.append("files", file);
       });
+      formData.append("guestName", guestName);
+      if (guestMessage.trim()) {
+        formData.append("guestMessage", guestMessage);
+      }
       
       const result = await uploadMediaAction(timelineItemId, formData);
       if (result.success) {
@@ -125,6 +143,28 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
       </CardHeader>
       <CardContent className="p-6">
         <form onSubmit={handleUpload} className="space-y-6">
+          <div className="space-y-2 text-left">
+            <label className="text-sm font-semibold text-stone-700">Il tuo nome (chi sei?)</label>
+            <input 
+              type="text" 
+              required
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+              placeholder="es. Zio Marco"
+              className="w-full border border-stone-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500"
+            />
+          </div>
+
+          <div className="space-y-2 text-left">
+            <label className="text-sm font-semibold text-stone-700">Dedica un messaggio agli sposi (Opzionale)</label>
+            <textarea 
+              value={guestMessage}
+              onChange={(e) => setGuestMessage(e.target.value)}
+              placeholder="Scrivi qui il tuo messaggio... apparirà sul maxischermo!"
+              className="w-full border border-stone-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 min-h-[80px]"
+            />
+          </div>
+
           <div 
             className="border-2 border-dashed border-stone-300 rounded-2xl p-8 text-center bg-stone-50 hover:bg-stone-100 transition-colors cursor-pointer"
             onClick={() => fileInputRef.current?.click()}

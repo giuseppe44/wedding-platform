@@ -1,17 +1,21 @@
 "use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/SubmitButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { createTable, deleteTable, createGuest, deleteGuest, assignGuestToTable, updateGuest } from "@/app/seatingActions";
-import { Trash2, Users, Printer } from "lucide-react";
+import { Trash2, Users, Printer, LayoutGrid, List } from "lucide-react";
+import SeatingVisualizer from "./SeatingVisualizer";
 
 export default function SeatingManager({ chapter, guests, tables }: { chapter: any, guests: any[], tables: any[] }) {
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<"LIST" | "MAP">("LIST");
+  
   const [newTableName, setNewTableName] = useState("");
   const [newTableCap, setNewTableCap] = useState("10");
+  const [newTableShape, setNewTableShape] = useState("ROUND");
 
   const [newGuestName, setNewGuestName] = useState("");
   const [newGuestSurname, setNewGuestSurname] = useState("");
@@ -21,7 +25,7 @@ export default function SeatingManager({ chapter, guests, tables }: { chapter: a
     e.preventDefault();
     if (!newTableName) return;
     setLoading(true);
-    await createTable(chapter.id, { name: newTableName, capacity: newTableCap, type: "ROUND" }, chapter.slug);
+    await createTable(chapter.id, { name: newTableName, capacity: newTableCap, type: newTableShape }, chapter.slug);
     setNewTableName("");
     setLoading(false);
   };
@@ -72,12 +76,26 @@ export default function SeatingManager({ chapter, guests, tables }: { chapter: a
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-2xl font-serif text-stone-800">Gestione Ospiti e Tavoli</h2>
-        <Button onClick={printSummary} variant="outline" className="gap-2"><Printer className="w-4 h-4"/> Stampa Riepilogo Ristorante</Button>
+        <div className="flex items-center gap-2">
+          <div className="bg-stone-100 p-1 rounded-md flex border border-stone-200">
+            <Button variant={viewMode === "LIST" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("LIST")} className={viewMode === "LIST" ? "bg-white text-stone-800 shadow-sm" : "text-stone-500"}>
+              <List className="w-4 h-4 mr-2" /> Liste
+            </Button>
+            <Button variant={viewMode === "MAP" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("MAP")} className={viewMode === "MAP" ? "bg-white text-stone-800 shadow-sm" : "text-stone-500"}>
+              <LayoutGrid className="w-4 h-4 mr-2" /> Piantina
+            </Button>
+          </div>
+          <Button onClick={printSummary} variant="outline" className="gap-2"><Printer className="w-4 h-4"/> Stampa Liste</Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {viewMode === "MAP" ? (
+        <SeatingVisualizer tables={tables} guests={guests} title={chapter.title || 'Matrimonio'} />
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Aggiungi Ospite */}
         <Card>
           <CardHeader>
@@ -121,6 +139,18 @@ export default function SeatingManager({ chapter, guests, tables }: { chapter: a
                   <Input type="number" value={newTableCap} onChange={(e) => setNewTableCap(e.target.value)} required min="1" />
                 </div>
               </div>
+              <div className="space-y-2">
+                <Label>Forma del Tavolo</Label>
+                <select 
+                  value={newTableShape} 
+                  onChange={(e) => setNewTableShape(e.target.value)}
+                  className="w-full flex h-10 rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800"
+                >
+                  <option value="ROUND">Rotondo</option>
+                  <option value="RECTANGULAR">Rettangolare (Imperiale)</option>
+                  <option value="SQUARE">Quadrato</option>
+                </select>
+              </div>
               <Button type="submit" disabled={loading} className="w-full">Aggiungi Tavolo</Button>
             </form>
           </CardContent>
@@ -150,9 +180,32 @@ export default function SeatingManager({ chapter, guests, tables }: { chapter: a
                       <p className="font-medium">{g.name} {g.surname}</p>
                       {g.dietaryNotes && <p className="text-xs text-red-600">{g.dietaryNotes}</p>}
                     </div>
-                    <form action={assignGuestToTable.bind(null, g.id, null, chapter.slug)}>
-                      <Button variant="ghost" size="icon" className="h-6 w-6"><Trash2 className="w-4 h-4 text-stone-400"/></Button>
-                    </form>
+                    <div className="flex items-center gap-2">
+                      <select 
+                        className="text-xs border p-1 rounded-md text-stone-500 max-w-[80px]"
+                        onChange={async (e) => {
+                          if (!e.target.value) return;
+                          setLoading(true);
+                          await assignGuestToTable(g.id, e.target.value, chapter.slug);
+                          setLoading(false);
+                        }}
+                        value={table.id}
+                        disabled={loading}
+                      >
+                        {tables.map((t: any) => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                      <form action={assignGuestToTable.bind(null, g.id, null, chapter.slug)}>
+                        <SubmitButton 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-6 w-6 hover:bg-red-50"
+                          defaultText={<Trash2 className="w-4 h-4 text-stone-400 hover:text-red-500"/>}
+                          loadingText={<Trash2 className="w-4 h-4 text-stone-200 animate-pulse"/>}
+                        />
+                      </form>
+                    </div>
                   </div>
                 ))}
                 
@@ -194,14 +247,22 @@ export default function SeatingManager({ chapter, guests, tables }: { chapter: a
                   <p className="font-medium">{g.name} {g.surname}</p>
                   {g.dietaryNotes && <p className="text-xs text-red-600">{g.dietaryNotes}</p>}
                 </div>
-                <form action={deleteGuest.bind(null, g.id, chapter.slug)}>
-                  <Button variant="ghost" size="icon" className="text-red-500 h-8 w-8"><Trash2 className="w-4 h-4"/></Button>
-                </form>
+                  <form action={deleteGuest.bind(null, g.id, chapter.slug)}>
+                    <SubmitButton 
+                      variant="ghost" 
+                      size="icon" 
+                      className="text-red-500 hover:bg-red-50 h-8 w-8"
+                      defaultText={<Trash2 className="w-4 h-4" />}
+                      loadingText={<Trash2 className="w-4 h-4 text-stone-200 animate-pulse" />}
+                    />
+                  </form>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+      </>
+      )}
     </div>
   );
 }

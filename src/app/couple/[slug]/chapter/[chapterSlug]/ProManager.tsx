@@ -193,6 +193,44 @@ export default function ProManager({ chapter, assignments }: { chapter: any, ass
               )}
             </CardContent>
           </Card>
+
+          {/* Invite Custom Pro */}
+          <Card className="border-stone-200 bg-stone-50 shadow-inner">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-stone-800">Non trovi il tuo fornitore?</CardTitle>
+              <CardDescription className="text-stone-600">
+                Se il tuo fotografo, videomaker o location non è ancora su ecos.com, puoi invitarlo ad iscriversi gratuitamente.
+                Una volta iscritto, potrai aggiungerlo al tuo team!
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col sm:flex-row gap-3 mt-2">
+                <Button 
+                  className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white border-none shadow-sm"
+                  onClick={() => {
+                    const baseUrl = window.location.origin;
+                    const text = `Ciao! Per il nostro matrimonio stiamo usando ecos.com, una vetrina digitale esclusiva. Ci piacerebbe molto aggiungerti al nostro Team Professionisti! Puoi iscriverti gratuitamente da qui: ${baseUrl}/professionisti`;
+                    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                  }}
+                >
+                  Invita con WhatsApp
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-stone-300 text-stone-700 bg-white hover:bg-stone-100"
+                  onClick={() => {
+                    const baseUrl = window.location.origin;
+                    const text = `Ciao! Per il nostro matrimonio stiamo usando ecos.com, una vetrina digitale esclusiva. Ci piacerebbe molto aggiungerti al nostro Team Professionisti! Puoi iscriverti gratuitamente da qui: ${baseUrl}/professionisti`;
+                    navigator.clipboard.writeText(text);
+                    alert("Testo e link copiati negli appunti! Ora puoi incollarli in una email o dove preferisci.");
+                  }}
+                >
+                  Copia Link
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
         </div>
 
       </div>

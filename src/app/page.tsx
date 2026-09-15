@@ -2,9 +2,13 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Heart, Camera, Search, MapPin, Users, ArrowRight, Briefcase, Calendar, Star, Menu, Sparkles, CheckCircle, Gift, Share2 } from "lucide-react";
+import { 
+  Heart, Camera, Search, MapPin, Users, ArrowRight, 
+  Briefcase, Calendar, Star, Menu, Sparkles, CheckCircle, 
+  Gift, Share2, Image as ImageIcon, MessageCircle, Map,
+  Infinity, LayoutDashboard
+} from "lucide-react";
 import Footer from "@/components/Footer";
-import PortalSearch from "@/components/PortalSearch";
 import { motion, Variants } from "framer-motion";
 
 const staggerContainer: Variants = {
@@ -22,17 +26,12 @@ const fadeUpVariant: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
 };
 
-const scaleUpVariant: Variants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  show: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: "easeOut" } }
-};
-
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
       
-      {/* NAVBAR (Portal Style) */}
-      <nav className="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center bg-gradient-to-b from-stone-900/80 to-transparent">
+      {/* NAVBAR */}
+      <nav className="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center bg-gradient-to-b from-stone-900/50 to-transparent">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -42,445 +41,247 @@ export default function Home() {
           <Heart className="w-6 h-6 text-rose-500" />
           ecos.com
         </motion.div>
+        
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="hidden md:flex items-center gap-8 text-[12px] font-light tracking-[0.2em] text-white drop-shadow-md uppercase"
         >
-          <Link href="/coppie" className="text-rose-300 hover:text-rose-200 transition-colors font-semibold">PER LE COPPIE</Link>
-          <Link href="#directory" className="hover:text-rose-300 transition-colors">TROVA FORNITORI</Link>
-          <Link href="#capitoli" className="hover:text-rose-300 transition-colors">I CAPITOLI</Link>
-          <Link href="/professionisti" className="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-2">
+          <Link href="/sposi" className="text-white hover:text-rose-300 transition-colors font-semibold">AREA SPOSI</Link>
+          <Link href="/fornitori" className="hover:text-rose-300 transition-colors">FORNITORI</Link>
+          <Link href="#pricing" className="hover:text-rose-300 transition-colors">ABBONAMENTI</Link>
+          <Link href="/professionisti" className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-2">
             <Briefcase className="w-4 h-4" /> SEI UN PROFESSIONISTA?
           </Link>
         </motion.div>
+
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           className="flex items-center gap-4"
         >
-          <Link href="/login" className="hidden md:block">
-            <Button className="bg-white text-stone-900 hover:bg-stone-200 rounded-full font-bold px-6">
+          <Link href="/login">
+            <Button className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-stone-900 rounded-full font-bold px-4 md:px-6">
               Accedi
             </Button>
           </Link>
-          <Button variant="ghost" size="icon" className="md:hidden text-white"><Menu /></Button>
+          <div className="md:hidden text-white ml-2">
+            <Menu className="w-8 h-8" />
+          </div>
         </motion.div>
       </nav>
 
-      {/* 1. HERO PORTALE CON MOTORE DI RICERCA */}
-      <section className="relative pt-48 pb-32 px-4 flex flex-col items-center justify-center text-center overflow-hidden min-h-[85vh]">
+      {/* HERO SECTION */}
+      <header className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden bg-stone-950">
         <div className="absolute inset-0 z-0">
-          <motion.img 
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.6 }}
-            transition={{ duration: 2, ease: "easeOut" }}
-            src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" 
-            className="w-full h-full object-cover" 
-            alt="Matrimonio Ecosistema" 
+          <img 
+            src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" 
+            alt="Wedding Memories"
+            className="w-full h-full object-cover opacity-60 scale-105"
           />
-          <div className="absolute inset-0 bg-stone-950/40 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#faf9f8]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent" />
         </div>
-        
-        {/* ELEMENTI FLUTTUANTI (Floating Widgets) */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: [0, -15, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[20%] left-[5%] xl:left-[15%] bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl hidden lg:flex items-center gap-3 shadow-2xl z-20"
-        >
-          <div className="bg-rose-500 rounded-full p-2"><Camera className="w-4 h-4 text-white"/></div>
-          <div className="text-white text-sm font-medium pr-2">+12 Foto caricate</div>
-        </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: [0, 20, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute top-[40%] right-[5%] xl:right-[15%] bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-2xl hidden lg:flex items-center gap-3 shadow-2xl z-20"
-        >
-          <div className="bg-emerald-500 rounded-full p-2"><Users className="w-4 h-4 text-white"/></div>
-          <div className="text-white text-sm font-medium pr-2">Tavolo 4 Confermato</div>
-        </motion.div>
-
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
-          className="relative z-10 max-w-5xl mx-auto text-white w-full"
-        >
-          <motion.h1 
+        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 text-center">
+          <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-5xl md:text-7xl font-serif tracking-tight mb-6 drop-shadow-xl leading-tight"
+            transition={{ duration: 1, delay: 0.2 }}
           >
-            Il tuo <span className="italic font-light text-rose-300">Ecosistema</span> <br/>per eventi indimenticabili.
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="text-xl md:text-2xl text-stone-100 max-w-3xl mx-auto mb-12 font-light drop-shadow-md"
-          >
-            Che siate una coppia o futuri sposi: create lo spazio digitale per le vostre foto, trovate i migliori professionisti e custodite ogni capitolo della vostra storia.
-          </motion.p>
-          
-          {/* BARRA DI RICERCA INTERATTIVA */}
-          <motion.div 
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-          >
-            <PortalSearch />
+            <span className="inline-block py-1 px-3 rounded-full border border-rose-500/30 bg-rose-500/20 text-rose-300 text-xs font-bold tracking-[0.2em] mb-6 backdrop-blur-md">
+              MOLTO PIÙ DI UN SITO WEB
+            </span>
+            <h1 className="text-5xl md:text-7xl font-serif text-white mb-6 leading-tight drop-shadow-xl">
+              Una Vetrina Unica <br className="hidden md:block" />
+              <span className="text-stone-400 italic font-light">per Tutta la Vita.</span>
+            </h1>
+            <p className="text-lg md:text-2xl text-stone-300 font-light max-w-3xl mx-auto mb-10 leading-relaxed drop-shadow-md">
+              Il vostro matrimonio è solo l'inizio della vostra vita insieme. 
+              Da lì in avanti, tutto quello che farete lo ritroverete qua.
+            </p>
           </motion.div>
-          
-          {/* QUICK CHIPS */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.2 }}
-            className="flex flex-wrap justify-center gap-3 mt-8"
-          >
-            <span className="bg-black/30 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/20 hover:bg-white/20 cursor-pointer transition-colors">📸 Fotografi</span>
-            <span className="bg-black/30 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/20 hover:bg-white/20 cursor-pointer transition-colors">🏰 Location</span>
-            <span className="bg-black/30 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium border border-white/20 hover:bg-white/20 cursor-pointer transition-colors">🎵 Musica</span>
-            <span className="bg-rose-500/80 backdrop-blur-md px-4 py-2 rounded-full text-sm font-bold border border-rose-400 hover:bg-rose-500 cursor-pointer transition-colors shadow-lg shadow-rose-500/20">✨ Crea il tuo Spazio Sposi</span>
-          </motion.div>
-        </motion.div>
-      </section>
+        </div>
+      </header>
 
-      {/* 1.5 LA TIMELINE DELL'ECOSISTEMA */}
-      <section className="py-24 bg-white relative">
-        <div className="max-w-4xl mx-auto px-4">
+      {/* THREE MAIN GATEWAYS */}
+      <section className="py-20 bg-stone-950 relative z-20 -mt-10">
+        <div className="max-w-7xl mx-auto px-6">
           <motion.div 
+            variants={staggerContainer}
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="text-center mb-20"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
-            <motion.h2 variants={fadeUpVariant} className="text-[11px] md:text-xs font-semibold text-amber-500 uppercase tracking-[0.3em] mb-4">Come Funziona</motion.h2>
-            <motion.h3 variants={fadeUpVariant} className="text-4xl md:text-5xl font-serif text-stone-900 mb-6 tracking-tight leading-tight">I passi verso il vostro<br/>giorno perfetto</motion.h3>
+            {/* 1. Organizza il tuo matrimonio */}
+            <Link href="/sposi" className="block group">
+              <motion.div variants={fadeUpVariant} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-all h-full flex flex-col justify-between group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(244,63,94,0.3)]">
+                <div>
+                  <div className="w-14 h-14 bg-rose-500/20 rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30 group-hover:scale-110 transition-transform">
+                    <Heart className="w-7 h-7 text-rose-400" />
+                  </div>
+                  <h3 className="text-2xl font-serif text-white mb-3">Organizza il tuo Matrimonio</h3>
+                  <p className="text-stone-400 font-light leading-relaxed">
+                    Un portale esclusivo per gli sposi. Iscriviti, accedi all'Area Sposi e organizza l'intero evento in ogni singolo dettaglio, condividendolo con i tuoi ospiti.
+                  </p>
+                </div>
+                <div className="mt-8 flex items-center text-rose-400 font-semibold group-hover:gap-2 transition-all">
+                  Inizia ora <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
+              </motion.div>
+            </Link>
+
+            {/* 2. Fornitori */}
+            <Link href="/fornitori" className="block group">
+              <motion.div variants={fadeUpVariant} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-all h-full flex flex-col justify-between group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)]">
+                <div>
+                  <div className="w-14 h-14 bg-stone-800 rounded-2xl flex items-center justify-center mb-6 border border-stone-700 group-hover:scale-110 transition-transform">
+                    <Search className="w-7 h-7 text-stone-300" />
+                  </div>
+                  <h3 className="text-2xl font-serif text-white mb-3">Fornitori & Top Pro</h3>
+                  <p className="text-stone-400 font-light leading-relaxed">
+                    Ricerca tra i migliori professionisti del settore. Esplora l'elenco generale dei nostri iscritti e trova fotografo, location, e molto altro per il grande giorno.
+                  </p>
+                </div>
+                <div className="mt-8 flex items-center text-stone-300 font-semibold group-hover:gap-2 transition-all">
+                  Cerca Fornitori <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
+              </motion.div>
+            </Link>
+
+            {/* 3. Abbonamenti e Promozioni */}
+            <Link href="#pricing" className="block group">
+              <motion.div variants={fadeUpVariant} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-all h-full flex flex-col justify-between group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(251,191,36,0.2)]">
+                <div>
+                  <div className="w-14 h-14 bg-amber-500/20 rounded-2xl flex items-center justify-center mb-6 border border-amber-500/30 group-hover:scale-110 transition-transform">
+                    <Gift className="w-7 h-7 text-amber-400" />
+                  </div>
+                  <h3 className="text-2xl font-serif text-white mb-3">Pacchetti & Promozioni</h3>
+                  <p className="text-stone-400 font-light leading-relaxed">
+                    Scopri cosa possiamo offrirti. Visualizza i pacchetti, gli abbonamenti e le promozioni in corso, sia per i futuri sposi che per i professionisti del wedding.
+                  </p>
+                </div>
+                <div className="mt-8 flex items-center text-amber-400 font-semibold group-hover:gap-2 transition-all">
+                  Vedi Piani <ArrowRight className="w-4 h-4 ml-2" />
+                </div>
+              </motion.div>
+            </Link>
           </motion.div>
+        </div>
+      </section>
 
-          <div className="relative max-w-5xl mx-auto">
-            {/* Linea orizzontale (solo desktop) */}
-            <div className="absolute top-[20px] left-[15%] right-[15%] h-[1px] bg-amber-200/80 hidden md:block z-0" />
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="text-center px-4"
-              >
-                <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 border border-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg mb-6 relative z-10">1</div>
-                <h4 className="text-2xl font-serif text-stone-900 mb-3">Scoprite i professionisti</h4>
-                <p className="text-stone-500 font-light text-base leading-relaxed">Esplorate la directory dei migliori talenti, dai fotografi alle location, e contattateli direttamente.</p>
-              </motion.div>
+      {/* CORE FEATURES GRID */}
+      <section className="py-24 bg-white relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-4">La Vostra Piattaforma</h2>
+            <p className="text-xl text-stone-500 font-light max-w-2xl mx-auto">Tutto ciò di cui avete bisogno in un unico posto per un intrattenimento unico e memorabile.</p>
+          </div>
 
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-center px-4"
-              >
-                <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 border border-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg mb-6 relative z-10">2</div>
-                <h4 className="text-2xl font-serif text-stone-900 mb-3">Create la vostra Area Sposi</h4>
-                <p className="text-stone-500 font-light text-base leading-relaxed">Progettate il sito del matrimonio, gestite gli inviti digitali e i tavoli in un unico ambiente.</p>
-              </motion.div>
-
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-center px-4"
-              >
-                <div className="w-10 h-10 mx-auto rounded-full bg-amber-50 border border-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/10 text-amber-600 font-serif font-bold text-lg mb-6 relative z-10">3</div>
-                <h4 className="text-2xl font-serif text-stone-900 mb-3">Collezionate i ricordi</h4>
-                <p className="text-stone-500 font-light text-base leading-relaxed">Gli invitati caricano foto live via QR code, e la piattaforma conserva le emozioni in un album infinito.</p>
-              </motion.div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
+              <Camera className="w-10 h-10 text-rose-500 mb-6" />
+              <h3 className="text-xl font-bold mb-3">Raccolta foto dagli invitati</h3>
+              <p className="text-stone-600 font-light">Gli invitati scansionano un QR code e caricano le foto in diretta senza scaricare app. Raccogli istantaneamente ricordi inediti.</p>
+            </div>
+            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
+              <Map className="w-10 h-10 text-emerald-500 mb-6" />
+              <h3 className="text-xl font-bold mb-3">Disposizione tavoli e RSVP</h3>
+              <p className="text-stone-600 font-light">Gestisci le conferme degli ospiti e crea la mappa interattiva dei tavoli per il ristorante direttamente dal tuo spazio privato.</p>
+            </div>
+            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
+              <MessageCircle className="w-10 h-10 text-amber-500 mb-6" />
+              <h3 className="text-xl font-bold mb-3">Guestbook e Video-dediche</h3>
+              <p className="text-stone-600 font-light">Lascia che parenti e amici registrino messaggi vocali, dediche scritte o brevi video-auguri che conserverai per sempre.</p>
+            </div>
+            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
+              <ImageIcon className="w-10 h-10 text-indigo-500 mb-6" />
+              <h3 className="text-xl font-bold mb-3">Gestione completa dell'album</h3>
+              <p className="text-stone-600 font-light">Il tuo fotografo carica qui le foto ufficiali in alta risoluzione. Decidi tu quali foto rendere pubbliche o nascondere.</p>
+            </div>
+            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
+              <Share2 className="w-10 h-10 text-blue-500 mb-6" />
+              <h3 className="text-xl font-bold mb-3">Inviti digitali interattivi</h3>
+              <p className="text-stone-600 font-light">Invia partecipazioni digitali tramite WhatsApp o Email con mappe, programma della giornata e link diretto per l'RSVP.</p>
+            </div>
+            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
+              <Sparkles className="w-10 h-10 text-rose-400 mb-6" />
+              <h3 className="text-xl font-bold mb-3">Una pagina tutta vostra</h3>
+              <p className="text-stone-600 font-light">La vostra storia racchiusa in una pagina web bellissima e personalizzata, protetta da password per la massima privacy.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. I BENEFIT PER GLI SPOSI (Staggered Animation) */}
-      <section className="py-24 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div 
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="text-center mb-16"
-          >
-            <motion.h2 variants={fadeUpVariant} className="text-[11px] md:text-xs font-semibold text-rose-400 uppercase tracking-[0.3em] mb-4 flex justify-center items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5"/> Il Vostro Spazio
-            </motion.h2>
-            <motion.h3 variants={fadeUpVariant} className="text-4xl md:text-6xl font-serif text-stone-900 mb-6 tracking-tight leading-tight">
-              L'eleganza di un'esperienza <br className="hidden md:block" />senza compromessi.
-            </motion.h3>
-            <motion.p variants={fadeUpVariant} className="text-lg md:text-xl text-stone-500 max-w-2xl mx-auto font-light leading-relaxed">
-              Un ambiente digitale su misura, disegnato per custodire le emozioni e orchestrare ogni dettaglio del vostro matrimonio con la massima cura.
-            </motion.p>
-          </motion.div>
+      {/* TWO WORLDS & TIMELINE SECTION */}
+      <section className="py-24 bg-stone-100 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
           <motion.div 
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
-          >
-            {/* Feature 1 */}
-            <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
-              <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=2071&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Raccolta foto" />
-              </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h4 className="font-serif text-2xl text-stone-900 mb-3">Raccolta foto dagli invitati</h4>
-                <p className="text-stone-600 leading-relaxed font-light">
-                  Gli invitati scansionano un QR code e caricano le foto in diretta senza scaricare app. Raccogli istantaneamente ricordi inediti.
-                </p>
-              </div>
-            </motion.div>
-            {/* Feature 2 */}
-            <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
-              <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Tavoli" />
-              </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h4 className="font-serif text-2xl text-stone-900 mb-3">Disposizione tavoli e RSVP</h4>
-                <p className="text-stone-600 leading-relaxed font-light">
-                  Gestisci le conferme degli ospiti e crea la mappa interattiva dei tavoli per il ristorante direttamente dal tuo spazio privato.
-                </p>
-              </div>
-            </motion.div>
-            {/* Feature 3 */}
-            <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
-              <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2064&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Guestbook" />
-              </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h4 className="font-serif text-2xl text-stone-900 mb-3">Guestbook e Video-dediche</h4>
-                <p className="text-stone-600 leading-relaxed font-light">
-                  Lascia che parenti e amici registrino messaggi vocali, dediche scritte o brevi video-auguri che conserverai per sempre.
-                </p>
-              </div>
-            </motion.div>
-            {/* Feature 4 */}
-            <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
-              <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Album" />
-              </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h4 className="font-serif text-2xl text-stone-900 mb-3">Gestione completa dell'album</h4>
-                <p className="text-stone-600 leading-relaxed font-light">
-                  Il tuo fotografo carica qui le foto ufficiali in alta risoluzione. Decidi tu quali foto rendere pubbliche o nascondere.
-                </p>
-              </div>
-            </motion.div>
-            {/* Feature 5 */}
-            <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
-              <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Inviti" />
-              </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h4 className="font-serif text-2xl text-stone-900 mb-3">Inviti digitali interattivi</h4>
-                <p className="text-stone-600 leading-relaxed font-light">
-                  Invia partecipazioni digitali tramite WhatsApp o Email con mappe, programma della giornata e link diretto per l'RSVP.
-                </p>
-              </div>
-            </motion.div>
-            {/* Feature 6 */}
-            <motion.div variants={fadeUpVariant} className="bg-[#faf9f8] rounded-3xl border border-stone-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group flex flex-col">
-              <div className="w-full h-56 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Sposi" />
-              </div>
-              <div className="p-8 flex-1 flex flex-col">
-                <h4 className="font-serif text-2xl text-stone-900 mb-3">Una pagina tutta vostra</h4>
-                <p className="text-stone-600 leading-relaxed font-light">
-                  La vostra storia racchiusa in una pagina web bellissima e personalizzata, protetta da password per la massima privacy.
-                </p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* 3. CAPITOLI / TIMELINE (L'EREDITÀ DIGITALE - Parallax feel) */}
-      <section className="py-32 bg-stone-900 text-white relative overflow-hidden" id="capitoli">
-        <div className="absolute inset-0 z-0">
-           <div className="absolute inset-0 bg-stone-950" />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
-          <motion.div 
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-          >
-            <motion.h2 variants={fadeUpVariant} className="text-sm font-bold text-amber-500 uppercase tracking-widest mb-4">L'Ecosistema Cresce con Te</motion.h2>
-            <motion.h3 variants={fadeUpVariant} className="text-4xl md:text-6xl font-serif mb-8 leading-tight">Il matrimonio è il primo capitolo.<br/>La vostra storia continua.</motion.h3>
-            <motion.p variants={fadeUpVariant} className="text-xl text-stone-300 max-w-3xl mx-auto mb-16 font-light">
-              Da noi non prenoti solo il fotografo del matrimonio. ecos.com è una timeline della tua vita. Riapri il tuo spazio per ogni nuovo grande traguardo.
-            </motion.p>
-          </motion.div>
-          
-          <motion.div 
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-4 gap-6"
-          >
-            <motion.div variants={scaleUpVariant} className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-2xl border border-white/10">
-              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100 mix-blend-overlay" alt="Viaggio di Nozze" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 text-left">
-                <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">1</div>
-                <h4 className="font-serif text-2xl font-bold text-white mb-1">Matrimonio</h4>
-                <p className="text-stone-300 text-sm">Il giorno perfetto.</p>
-              </div>
-            </motion.div>
-            
-            <motion.div variants={scaleUpVariant} className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-2xl border border-white/10">
-              <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100 mix-blend-overlay" alt="Anniversario" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 text-left">
-                <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">2</div>
-                <h4 className="font-serif text-2xl font-bold text-white mb-1">Anniversari</h4>
-                <p className="text-stone-300 text-sm">Rinnova la magia.</p>
-              </div>
-            </motion.div>
-
-            <motion.div variants={scaleUpVariant} className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-2xl border border-white/10">
-              <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100 mix-blend-overlay" alt="Nascita e Battesimo" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 text-left">
-                <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">3</div>
-                <h4 className="font-serif text-2xl font-bold text-white mb-1">Battesimo</h4>
-                <p className="text-stone-300 text-sm">Nuove vite, nuovi ricordi.</p>
-              </div>
-            </motion.div>
-
-            <motion.div variants={scaleUpVariant} className="relative group overflow-hidden rounded-2xl aspect-[4/5] shadow-2xl border border-white/10">
-              <img src="https://images.unsplash.com/photo-1609220136736-443140cffec6?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100 mix-blend-overlay" alt="Famiglia" />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/40 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 w-full p-6 text-left">
-                <div className="w-8 h-8 rounded-full bg-white text-stone-900 flex items-center justify-center font-bold text-sm mb-3">4</div>
-                <h4 className="font-serif text-2xl font-bold text-white mb-1">Feste Private</h4>
-                <p className="text-stone-300 text-sm">Un album infinito.</p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* 4. IL BIVIO (Magnetic / Hover scale effects) */}
-      <section className="py-24 bg-[#faf9f8]" id="directory">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-serif text-stone-900 mb-4">Un unico portale, due mondi interconnessi.</h2>
-            <p className="text-stone-500 max-w-2xl mx-auto">La piattaforma che unisce chi celebra l'amore e chi lavora per renderlo perfetto.</p>
-          </motion.div>
-          
-          <div className="flex flex-col md:flex-row gap-8 w-full max-w-6xl mx-auto">
-            {/* CARD SPOSI */}
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="flex-1 relative flex flex-col justify-end p-10 overflow-hidden rounded-[2.5rem] min-h-[400px] group shadow-xl hover:shadow-2xl transition-shadow duration-500"
-            >
-              <div className="absolute inset-0 z-0">
-                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" alt="Sposi Bivio" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out" />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/60 to-transparent" />
-              </div>
-              <div className="relative z-10 text-left">
-                <div className="w-14 h-14 bg-rose-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30 group-hover:bg-rose-500/40 transition-colors duration-500">
-                  <Heart className="w-7 h-7 text-rose-400 group-hover:scale-110 transition-transform duration-500" />
-                </div>
-                <h2 className="text-4xl font-serif text-white mb-3">Siete una Coppia?</h2>
-                <p className="text-stone-200 text-lg mb-8 font-light max-w-sm">
-                  Custodite i vostri ricordi nel Diario Privato o sbloccate gli strumenti per organizzare il vostro Evento.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Link href="/login?role=COUPLE&mode=REGISTER">
-                    <Button size="lg" className="h-14 px-8 rounded-full bg-white text-stone-900 hover:bg-stone-200 shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all hover:scale-105 border-none font-bold">
-                      Crea il vostro Spazio
-                    </Button>
-                  </Link>
-                  <Link href="/coppie">
-                    <Button size="lg" variant="outline" className="h-14 px-6 rounded-full border-white/50 text-white hover:bg-white/10 backdrop-blur-sm transition-all border font-medium">
-                      Scopri di più
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
+            <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-6 leading-tight">
+              Un unico portale, <br/>
+              <span className="text-rose-500 italic">due mondi interconnessi.</span>
+            </h2>
+            <p className="text-xl text-stone-600 font-light mb-10 leading-relaxed">
+              La piattaforma che unisce chi celebra l'amore e chi lavora per renderlo perfetto.
+            </p>
 
-            {/* CARD PROFESSIONISTI */}
-            <motion.div 
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex-1 relative flex flex-col justify-end p-10 overflow-hidden rounded-[2.5rem] min-h-[400px] group shadow-xl hover:shadow-2xl transition-shadow duration-500"
-            >
-              <div className="absolute inset-0 z-0">
-                <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=2070&auto=format&fit=crop" alt="Pro Bivio" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out" />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/80 to-transparent" />
+            <div className="bg-white p-8 rounded-3xl shadow-lg border border-stone-100 relative">
+              <div className="absolute top-0 right-0 p-6 opacity-10">
+                <Infinity className="w-32 h-32 text-stone-900" />
               </div>
-              <div className="relative z-10 text-left">
-                <div className="w-14 h-14 bg-amber-500/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-amber-500/30 group-hover:bg-amber-500/40 transition-colors duration-500">
-                  <Camera className="w-7 h-7 text-amber-400 group-hover:scale-110 transition-transform duration-500" />
-                </div>
-                <h2 className="text-4xl font-serif text-white mb-3">Sei un Professionista?</h2>
-                <p className="text-stone-300 text-lg mb-8 font-light max-w-sm">
-                  Ricevi lead ultra-profilati tramite AI, invia preventivi digitali interattivi e scala il tuo business.
-                </p>
-                <Link href="/professionisti">
-                  <Button size="lg" className="h-14 px-8 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all hover:scale-105 border-none font-bold">
-                    Area Partner
-                  </Button>
-                </Link>
+              <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                <Calendar className="text-rose-500 w-6 h-6" /> Il matrimonio è il primo capitolo.
+              </h3>
+              <p className="text-lg text-stone-600 font-light mb-6">
+                La vostra storia continua. Da noi non prenoti solo il fotografo del matrimonio. ecos.com è una timeline della tua vita.
+              </p>
+              <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
+                <p className="text-stone-800 font-medium">Riapri il tuo spazio per ogni nuovo grande traguardo.</p>
               </div>
-            </motion.div>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            <div className="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative">
+              <img 
+                src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" 
+                alt="Couple smiling" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 to-transparent flex items-end p-10">
+                <p className="text-white text-2xl font-serif italic drop-shadow-md">"Una vetrina che durerà in eterno."</p>
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
+      </section>
+
+      {/* CHECKLIST SECTION */}
+      <section className="py-24 bg-stone-950 text-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-serif mb-6">Tutto ciò che potrete fare</h2>
+            <p className="text-xl text-stone-400 font-light max-w-2xl mx-auto">
+              Nessuna sorpresa, solo strumenti eleganti per organizzare e ricordare il vostro evento in ogni singolo dettaglio.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* 5. CHECKLIST FUNZIONALITA */}
-      <section className="py-24 bg-[#faf9f8] border-t border-stone-200 overflow-hidden">
-        <div className="max-w-5xl mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-5xl font-serif text-stone-900 mb-6 tracking-tight">Tutto ciò che potrete fare</h2>
-            <p className="text-stone-500 text-lg font-light max-w-2xl mx-auto">Nessuna sorpresa, solo strumenti eleganti per organizzare e ricordare il vostro evento in ogni singolo dettaglio.</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 max-w-4xl mx-auto">
             {[
               "Sito web personalizzato per il matrimonio",
               "Inviti digitali interattivi (Email / WhatsApp)",
@@ -499,68 +300,78 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white hover:shadow-lg transition-all border border-transparent hover:border-stone-100"
+                className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
               >
-                <div className="mt-1 flex-shrink-0">
-                  <CheckCircle className="w-6 h-6 text-emerald-500" />
+                <div className="shrink-0 w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
                 </div>
-                <p className="text-stone-700 text-lg font-light leading-relaxed">{feature}</p>
+                <p className="text-stone-200 text-lg font-light">{feature}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 6. SUGGERISCI PROFESSIONISTA */}
-      <section className="py-20 bg-stone-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop')] opacity-20 mix-blend-overlay bg-cover bg-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-transparent to-stone-900" />
-        <div className="max-w-4xl mx-auto px-4 relative z-10 text-center text-white">
-          <Gift className="w-12 h-12 text-rose-400 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-4xl font-serif mb-4">Conoscete già i vostri fornitori?</h2>
-          <p className="text-stone-300 text-lg font-light mb-8 max-w-2xl mx-auto">
-            Suggerite ecos.com al vostro fotografo, fioraio o catering di fiducia. <br/>
-            <strong>Se si iscrivono, riceverete uno sconto esclusivo sul vostro piano Sposi!</strong>
+      {/* PRICING / PACCHETTI PLACEHOLDER */}
+      <section id="pricing" className="py-24 bg-[#faf9f8] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-6">Piani e Promozioni</h2>
+          <p className="text-xl text-stone-500 font-light max-w-2xl mx-auto mb-16">
+            Scegliete l'abbonamento perfetto per le vostre esigenze o per il vostro business.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
-            <input 
-              type="email" 
-              placeholder="Email del professionista..." 
-              className="px-6 py-4 rounded-full bg-white/10 text-white placeholder:text-stone-400 focus:outline-none focus:ring-2 ring-rose-400 w-full border border-white/20 backdrop-blur-md"
-            />
-            <Button size="lg" className="rounded-full h-[56px] px-8 bg-rose-500 text-white hover:bg-rose-600 flex-shrink-0 font-bold border-none shadow-[0_0_20px_rgba(244,63,94,0.4)]">
-              Suggerisci <Share2 className="ml-2 w-4 h-4" />
-            </Button>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* SPOSI ENTRY */}
+            <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
+              <div className="text-rose-500 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
+              <h3 className="text-3xl font-serif text-stone-900 mb-2">Piano Base</h3>
+              <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita, gratis.</p>
+              <div className="text-4xl font-bold mb-8">Gratis</div>
+              <ul className="space-y-4 mb-8 flex-grow">
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Galleria foto e video</li>
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 10 GB di spazio privato</li>
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Sito web personalizzato</li>
+              </ul>
+              <Link href="/sposi">
+                <Button className="w-full h-12 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-semibold">Iscriviti Ora</Button>
+              </Link>
+            </div>
+
+            {/* SPOSI PREMIUM */}
+            <div className="bg-stone-900 p-8 rounded-3xl shadow-xl border border-stone-800 flex flex-col text-left text-white hover:-translate-y-2 transition-transform relative overflow-hidden">
+              <div className="absolute top-0 right-0 bg-rose-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl">CONSIGLIATO</div>
+              <div className="text-rose-400 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
+              <h3 className="text-3xl font-serif mb-2">Piano Premium</h3>
+              <p className="text-stone-400 mb-6 line-clamp-2">Sblocca tutte le funzionalità organizzative per un matrimonio perfetto.</p>
+              <div className="text-4xl font-bold mb-8">€ 99<span className="text-xl text-stone-500 font-light">/vita</span></div>
+              <ul className="space-y-4 mb-8 flex-grow text-stone-300">
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Spazio Illimitato</li>
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Disposizione Tavoli & RSVP</li>
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> ecos.com LIVE (Proiettore)</li>
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Inviti digitali illimitati</li>
+              </ul>
+              <Link href="/sposi">
+                <Button className="w-full h-12 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold border-none">Passa a Premium</Button>
+              </Link>
+            </div>
+
+            {/* PROFESSIONISTI */}
+            <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
+              <div className="text-amber-500 font-bold tracking-widest text-sm mb-4 uppercase">Per i Professionisti</div>
+              <h3 className="text-3xl font-serif text-stone-900 mb-2">Pro & Partner</h3>
+              <p className="text-stone-500 mb-6 line-clamp-2">Ottieni visibilità, consegne digitali perfette e acquisisci nuovi clienti.</p>
+              <div className="text-4xl font-bold mb-8">da € 15<span className="text-xl text-stone-400 font-light">/mese</span></div>
+              <ul className="space-y-4 mb-8 flex-grow">
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Vetrina nella directory Top Pro</li>
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Consegna album in alta qualità</li>
+                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Ricevi recensioni e contatti diretti</li>
+              </ul>
+              <Link href="/professionisti">
+                <Button className="w-full h-12 rounded-full bg-amber-400 hover:bg-amber-500 text-stone-900 font-bold border-none shadow-sm">Scopri i Piani Pro</Button>
+              </Link>
+            </div>
           </div>
         </div>
-      </section>
-
-      {/* CTA PREZZI */}
-      <section className="py-24 bg-white border-t border-stone-200">
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto px-4 text-center"
-        >
-          <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-6">Trasparenza totale. Nessun costo nascosto.</h2>
-          <p className="text-xl text-stone-600 mb-10 font-light">
-            Abbiamo creato piani su misura sia per i futuri sposi che per i professionisti del settore. Scopri tutte le funzionalità incluse e scegli l'opzione perfetta per te.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/prezzi">
-              <Button size="lg" className="w-full sm:w-auto h-14 px-10 rounded-full bg-stone-900 hover:bg-stone-800 text-white text-lg shadow-xl hover:-translate-y-1 transition-all">
-                Scopri i nostri Piani <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-10 rounded-full border-stone-300 text-stone-900 text-lg hover:bg-stone-50 transition-colors">
-                Accedi o Registrati
-              </Button>
-            </Link>
-          </div>
-        </motion.div>
       </section>
 
       <Footer />

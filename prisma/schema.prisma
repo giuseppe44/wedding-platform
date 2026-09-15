@@ -60,6 +60,9 @@ model TimelineItem {
   usefulInfo         String?
   ceremonyType       String  @default("CIVIL")
   professionalsJson  String?
+  showGuestbook      Boolean @default(true)
+  showSeating        Boolean @default(false)
+  showGifts          Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -186,6 +189,9 @@ model Media {
   guestId String?
   guest   Guest?  @relation(fields: [guestId], references: [id], onDelete: SetNull)
 
+  uploaderName String?
+  guestMessage String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -235,6 +241,12 @@ model ProfessionalProfile {
   instagram    String?
   contactEmail String?
   contactPhone String?
+  coverImage   String?
+  profileImage String?
+  gallery      String[]
+  video1       String?
+  video2       String?
+  serviceArea  String?
   isActive     Boolean @default(true)
 
   userId String @unique

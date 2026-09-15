@@ -25,6 +25,9 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
   const targetStatus = isOwner ? "APPROVED" : "PENDING";
 
   const albumId = formData.get("albumId") as string | null;
+  const guestName = formData.get("guestName") as string | null;
+  const guestMessage = formData.get("guestMessage") as string | null;
+
   if (albumId) {
     const album = await prisma.album.findUnique({ where: { id: albumId } });
     if (!album || album.timelineItemId !== timelineItemId) throw new Error("Album non valido o incrociato");
@@ -42,25 +45,41 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
     if (file.size === 0) continue;
     if (file.size > 100 * 1024 * 1024) continue; // max 100MB per file
     
+    let mimeType = file.type;
+    const nameLower = file.name.toLowerCase();
+    
+    // Fix missing mime types for webp/heic/heif from some browsers/devices
+    if (!mimeType || mimeType === "application/octet-stream") {
+      if (nameLower.endsWith(".webp")) mimeType = "image/webp";
+      else if (nameLower.endsWith(".heic")) mimeType = "image/heic";
+      else if (nameLower.endsWith(".heif")) mimeType = "image/heif";
+      else if (nameLower.endsWith(".jpg") || nameLower.endsWith(".jpeg")) mimeType = "image/jpeg";
+      else if (nameLower.endsWith(".png")) mimeType = "image/png";
+      else if (nameLower.endsWith(".mp4")) mimeType = "video/mp4";
+      else if (nameLower.endsWith(".mov")) mimeType = "video/quicktime";
+    }
+    
     // Security: Only allow images and videos
-    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+    if (!mimeType.startsWith("image/") && !mimeType.startsWith("video/")) {
       continue;
     }
     
     const buffer = Buffer.from(await file.arrayBuffer());
     const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2,7)}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     
-    const fileUrl = await uploadFile(timelineItemId, uniqueName, buffer, file.type);
+    const fileUrl = await uploadFile(timelineItemId, uniqueName, buffer, mimeType);
     
     await prisma.media.create({
       data: {
         url: fileUrl,
         timelineItemId,
-        type: file.type.startsWith("video/") ? "VIDEO" : "IMAGE",
-        mimeType: file.type,
+        type: mimeType.startsWith("video/") ? "VIDEO" : "IMAGE",
+        mimeType: mimeType,
         size: file.size,
         status: targetStatus,
         albumId: albumId || null,
+        uploaderName: guestName || null,
+        guestMessage: guestMessage || null,
       }
     });
     uploadedCount++;

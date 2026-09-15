@@ -18,6 +18,7 @@ import ChapterGallery from "./ChapterGallery";
 import ExtendedDetailsForm from "./ExtendedDetailsForm";
 import SeatingManager from "./SeatingManager";
 import GiftManager from "./GiftManager";
+import ShareVetrinaButtons from "./ShareVetrinaButtons";
 import ProManager from "./ProManager";
 
 export default async function ChapterDetailPage({ params, searchParams }: { params: Promise<{ slug: string, chapterSlug: string }>, searchParams: Promise<{ albumId?: string }> }) {
@@ -165,14 +166,16 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
               <p className="text-stone-500 text-sm mt-1">Gestisci le foto in attesa, le dediche e le impostazioni del capitolo.</p>
             </div>
 
-            <div className="flex gap-2">
-              <Link href={`/w/${chapter.slug}`}>
-                <Button className="bg-stone-800 hover:bg-stone-700 text-white rounded-full">
-                  Sito Pubblico / Carica
-                </Button>
-              </Link>
+          <div className="flex gap-2 items-center flex-wrap">
+            <Link href={`/w/${chapter.slug}`}>
+              <Button className="bg-stone-800 hover:bg-stone-700 text-white rounded-full">
+                Sito Pubblico / Carica
+              </Button>
+            </Link>
+            
+            <ShareVetrinaButtons slug={chapter.slug} />
 
-              {!isWedding && (
+            {!isWedding && (
                 <>
                   <Dialog>
                     <DialogTrigger className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border bg-background shadow-sm rounded-full border-stone-300 text-stone-800 hover:bg-stone-200 h-10 w-10 p-0" title="Modifica">

@@ -1,18 +1,25 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { verifyProAssignment } from "@/app/proAssignmentActions";
+import { headers } from "next/headers";
 import { requireAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { createChapter } from "@/app/chapterActions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import Link from "next/link";
-import { Plus, ArrowRight, Calendar, Check, X, Camera, QrCode } from "lucide-react";
-import { approveMedia, rejectMedia } from "@/app/actions";
+import { createChapter, deleteChapter, updateChapter } from "@/app/chapterActions";
+import { Plus, ArrowRight, Calendar, Check, X, Camera, QrCode, Trash2, Edit2, LogOut } from "lucide-react";
+import { approveMedia, rejectMedia, logoutAction } from "@/app/actions";
 import { PlanWidget } from "@/components/PlanWidget";
+import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
+  const headersList = headers();
+  const host = headersList.get("x-forwarded-host") || headersList.get("host") || "localhost:3000";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
+
   const { slug } = await params;
   
   const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
@@ -113,13 +120,28 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
   const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
   return (
-    <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 font-sans pb-24 relative">
+      {/* Top Navbar */}
+      <div className="absolute top-0 right-0 w-full z-20 flex justify-end p-4">
+        <form action={logoutAction}>
+          <Button variant="ghost" className="text-stone-600 hover:text-stone-900 bg-white/50 backdrop-blur-sm gap-2 font-medium rounded-full hover:bg-white/80">
+            <LogOut className="w-4 h-4" /> Esci
+          </Button>
+        </form>
+      </div>
+
       {/* 1. Header Emozionale */}
-      <div className="bg-white shadow-sm border-b border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-serif text-stone-800 tracking-tight mb-4">La Nostra Storia</h1>
-          <p className="text-lg text-stone-500 font-light italic max-w-2xl mx-auto">
-            Il vostro matrimonio è il primo capitolo. La vostra storia continua qui.
+      <div className="bg-white/60 backdrop-blur-md shadow-sm border-b border-rose-100 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30"></div>
+        <div className="max-w-7xl mx-auto px-4 py-16 text-center relative z-10">
+          <div className="inline-flex items-center justify-center p-3 bg-rose-100 rounded-full mb-6 text-rose-500 shadow-inner">
+             <span className="text-3xl">✨</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-serif text-stone-800 tracking-tight mb-4 drop-shadow-sm">
+            La Vostra Storia
+          </h1>
+          <p className="text-lg md:text-xl text-stone-600 font-medium max-w-2xl mx-auto leading-relaxed">
+            Il matrimonio è solo il primo, bellissimo capitolo.<br />Da qui inizia la magia di tutta una vita insieme.
           </p>
         </div>
       </div>
@@ -189,7 +211,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
               <div key={chapter.id} className="relative group">
                 <div className="absolute -left-[49px] md:-left-[65px] flex items-center justify-center w-8 h-8 rounded-full border-4 border-[#faf9f8] bg-stone-800 text-white text-sm font-serif z-10 shadow-sm transition-transform group-hover:scale-110">{nodeNumber}</div>
                 
-                <div className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden hover:shadow-md transition-shadow">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-rose-100 overflow-hidden hover:shadow-md transition-shadow hover:border-rose-200">
                   <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
                     {chapter.coverImage && (
                       <div className="absolute inset-0 w-full h-full opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-20">
@@ -202,7 +224,93 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
                        {chapter.date && <p className="text-stone-600 flex items-center gap-2 font-medium"><Calendar className="w-4 h-4"/> {new Date(chapter.date).toLocaleDateString('it-IT')}</p>}
                     </div>
                     
-                    <div className="relative z-10 shrink-0">
+                      <div className="relative z-10 shrink-0 flex items-center gap-3">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="icon" className="h-14 w-14 rounded-full border-stone-300 hover:bg-stone-50 hover:border-stone-400">
+                              <Edit2 className="w-5 h-5 text-stone-600" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-[500px]">
+                            <DialogHeader>
+                              <DialogTitle className="font-serif text-2xl">{isWedding ? "Impostazioni Matrimonio" : "Modifica Capitolo"}</DialogTitle>
+                            </DialogHeader>
+                            <form encType="multipart/form-data" action={updateChapter.bind(null, chapter.id, wedding.slug)} className="space-y-4 pt-4">
+                              {isWedding ? (
+                                <>
+                                  <input type="hidden" name="type" value="WEDDING" />
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                      <Label>Nome Sposo/a 1</Label>
+                                      <Input name="brideName" defaultValue={chapter.brideName} required />
+                                    </div>
+                                    <div className="space-y-2">
+                                      <Label>Nome Sposo/a 2</Label>
+                                      <Input name="groomName" defaultValue={chapter.groomName} required />
+                                    </div>
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="space-y-2">
+                                  <Label>Tipo di Evento</Label>
+                                  <select name="type" defaultValue={chapter.type} className="w-full flex h-10 rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800" required>
+                                    {Object.entries(CHAPTER_TYPES).map(([val, label]) => (
+                                      <option key={val} value={val}>{label}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                              )}
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                  <Label>Data Evento</Label>
+                                  <Input type="date" name="date" defaultValue={chapter.date ? new Date(chapter.date).toISOString().split('T')[0] : ''} required />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label>Visibilità</Label>
+                                  <select name="visibility" defaultValue={chapter.visibility} className="w-full flex h-10 rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800">
+                                    <option value="PRIVATE">Solo per noi</option>
+                                    <option value="FAMILY">Condiviso con la famiglia</option>
+                                    <option value="PUBLIC">Pubblico</option>
+                                  </select>
+                                </div>
+                              </div>
+                              
+                              {!isWedding && (
+                                <div className="space-y-2">
+                                  <Label>Titolo del Capitolo</Label>
+                                  <Input name="title" defaultValue={chapter.title || ''} required />
+                                </div>
+                              )}
+                              <div className="space-y-2">
+                                <Label>Descrizione (opzionale)</Label>
+                                <textarea name="description" defaultValue={chapter.description || ''} className="w-full min-h-24 p-3 border border-stone-300 rounded-md resize-none text-sm focus:outline-none focus:ring-2 focus:ring-stone-800" />
+                              </div>
+                              <div className="space-y-2 pb-4">
+                                <Label>{isWedding ? "Immagine di Sfondo (Vetrina Pubblica)" : "Nuova Immagine di Copertina"} (opzionale)</Label>
+                                <Input name="coverFile" type="file" accept="image/*" />
+                              </div>
+                              <DialogFooter>
+                                <DialogClose type="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                                  Annulla
+                                </DialogClose>
+                                <SubmitButton defaultText="Salva Modifiche" loadingText="Salvataggio..." className="bg-stone-800 hover:bg-stone-700 text-white rounded-md" />
+                              </DialogFooter>
+                            </form>
+                          </DialogContent>
+                        </Dialog>
+
+                        {!isWedding && (
+                          <form action={deleteChapter.bind(null, chapter.id, wedding.slug)}>
+                            <SubmitButton 
+                              variant="outline" 
+                              size="icon" 
+                              defaultText={<Trash2 className="w-5 h-5 text-rose-500" />} 
+                              loadingText={<Trash2 className="w-5 h-5 text-stone-300 animate-pulse" />} 
+                              className="h-14 w-14 rounded-full border-stone-300 hover:bg-rose-50 hover:border-rose-200"
+                            />
+                          </form>
+                        )}
                       <Link href={`/couple/${wedding.slug}/chapter/${chapter.slug}`}>
                         <Button className="bg-stone-800 hover:bg-stone-700 text-white gap-2 rounded-full px-6 py-6 h-auto text-lg">
                           Apri Capitolo <ArrowRight className="w-5 h-5" />
@@ -281,9 +389,11 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
                        <DialogClose type="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
                          Annulla
                        </DialogClose>
-                       <Button type="submit" className="bg-stone-800 hover:bg-stone-700 text-white rounded-md">
-                         Salva Capitolo
-                       </Button>
+                       <SubmitButton 
+                         defaultText="Salva Capitolo" 
+                         loadingText="Salvataggio..." 
+                         className="bg-stone-800 hover:bg-stone-700 text-white rounded-md" 
+                       />
                      </DialogFooter>
                    </form>
                  </DialogContent>
@@ -302,7 +412,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                 <a 
-                  href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=https://wedding-platform-topwebsitee.vercel.app/w/${wedding.slug}/upload`}
+                  href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${baseUrl}/w/${wedding.slug}/upload`}
                   download="QR_Code_Matrimonio.png"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -321,7 +431,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
             <div className="shrink-0 bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-inner flex flex-col items-center">
               <div className="w-40 h-40 relative">
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://wedding-platform-topwebsitee.vercel.app/w/${wedding.slug}/upload`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${baseUrl}/w/${wedding.slug}/upload`}
                   alt="QR Code Matrimonio"
                   className="w-full h-full object-contain"
                 />
@@ -338,7 +448,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
             Vuoi che il tuo fotografo ufficiale carichi l'album in alta qualità direttamente nel vostro ecos.com per farlo vedere a tutti gli invitati? Inviagli un link di invito.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={`https://wa.me/?text=${encodeURIComponent("Ciao! Stiamo organizzando il nostro ecos.com per condividere tutte le foto del matrimonio. Ti andrebbe di iscriverti come nostro fotografo ufficiale? Potrai caricare l'album direttamente lì e mostrare il tuo lavoro a tutti gli invitati! Ecco il link: https://wedding-platform-topwebsitee.vercel.app/professionisti")}`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/?text=${encodeURIComponent(`Ciao! Stiamo organizzando il nostro ecos.com per condividere tutte le foto del matrimonio. Ti andrebbe di iscriverti come nostro fotografo ufficiale? Potrai caricare l'album direttamente lì e mostrare il tuo lavoro a tutti gli invitati! Ecco il link: ${baseUrl}/professionisti`)}`} target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-stone-300 text-stone-700 hover:bg-stone-50 rounded-full font-semibold px-8 h-12">
                 <span className="text-emerald-500 mr-2">WhatsApp</span> Invia Invito al Fotografo
               </Button>

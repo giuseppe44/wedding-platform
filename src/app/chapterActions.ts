@@ -98,6 +98,8 @@ export async function updateChapter(chapterId: string, baseSlug: string, formDat
 
   const type = formData.get("type") as string;
   const title = formData.get("title") as string;
+  const brideName = formData.get("brideName") as string;
+  const groomName = formData.get("groomName") as string;
   const dateStr = formData.get("date") as string;
   const description = formData.get("description") as string;
   const visibility = formData.get("visibility") as string;
@@ -106,13 +108,16 @@ export async function updateChapter(chapterId: string, baseSlug: string, formDat
   const isPublic = visibility === "PUBLIC" || visibility === "INVITED";
   
   const dataToUpdate: any = {
-    title,
     date: dateStr ? new Date(dateStr) : null,
     description,
     isPublic,
     visibility,
     audience,
   };
+  
+  if (title) dataToUpdate.title = title;
+  if (brideName) dataToUpdate.brideName = brideName;
+  if (groomName) dataToUpdate.groomName = groomName;
   
   if (chapter.type !== "WEDDING" && type) {
     dataToUpdate.type = type;

@@ -5,7 +5,26 @@ import Footer from "@/components/Footer";
 
 export default function ProfessionistiPage() {
   return (
-    <div className="min-h-screen bg-stone-950 font-sans text-stone-100 flex flex-col">
+    <div className="min-h-screen bg-stone-950 font-sans text-stone-100 flex flex-col relative">
+      
+      {/* NAVBAR SEZIONE PROFESSIONISTI */}
+      <nav className="absolute top-0 w-full z-50 flex items-center justify-between px-6 md:px-12 py-6">
+        <Link href="/" className="flex items-center gap-2 text-2xl font-serif text-white tracking-tight">
+          <Heart className="w-6 h-6 text-amber-500" />
+          ecos.com <span className="text-amber-500 font-sans text-sm tracking-widest font-bold ml-2 mt-1">PRO</span>
+        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/">
+            <Button variant="ghost" className="text-stone-300 hover:text-white hidden md:flex hover:bg-white/10 rounded-full">Torna alla Home</Button>
+          </Link>
+          <Link href="/login">
+            <Button className="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold rounded-full px-8 shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all hover:scale-105">
+              Accedi
+            </Button>
+          </Link>
+        </div>
+      </nav>
+
       {/* 1. HERO - ALTO IMPATTO */}
       <section className="relative pt-40 pb-32 px-4 flex flex-col items-center justify-center text-center overflow-hidden min-h-[90vh]">
         <div className="absolute inset-0 z-0">
@@ -31,7 +50,7 @@ export default function ProfessionistiPage() {
               </Button>
             </Link>
             <Link href="#pricing">
-              <Button size="lg" variant="outline" className="h-16 px-10 rounded-full border-stone-700 hover:bg-stone-800 text-stone-300 text-xl">
+              <Button size="lg" variant="outline" className="bg-transparent h-16 px-10 rounded-full border-stone-700 hover:bg-stone-800 text-stone-300 hover:text-white text-xl">
                 Vedi i Piani Normali
               </Button>
             </Link>
@@ -204,7 +223,7 @@ export default function ProfessionistiPage() {
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Galleria privata per gli sposi</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Assistenza via email</span></li>
               </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Seleziona Entry</Button></Link>
+              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="bg-transparent w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Seleziona Entry</Button></Link>
             </div>
 
             {/* Pro */}
@@ -243,7 +262,7 @@ export default function ProfessionistiPage() {
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Dominio personalizzato (es. portale.tuobrand.it)</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Account Manager ecos.com dedicato</span></li>
               </ul>
-              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Contattaci per Demo</Button></Link>
+              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="bg-transparent w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Contattaci per Demo</Button></Link>
             </div>
           </div>
         </div>

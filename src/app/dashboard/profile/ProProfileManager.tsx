@@ -15,8 +15,10 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(initialProfile || {
-    businessName: "", slug: "", category: "PHOTOGRAPHER", description: "", website: "", whatsapp: "", instagram: "", contactEmail: "", contactPhone: "", isActive: true
+    businessName: "", slug: "", category: "PHOTOGRAPHER", description: "", website: "", whatsapp: "", instagram: "", contactEmail: "", contactPhone: "", isActive: true, coverImage: "", profileImage: "", video1: "", video2: "", serviceArea: ""
   });
+  
+  const [galleryText, setGalleryText] = useState(initialProfile?.gallery?.join('\n') || "");
 
   const [serviceForm, setServiceForm] = useState({ id: "", name: "", description: "", priceIndicative: "", order: "0" });
   const [isEditingService, setIsEditingService] = useState(false);
@@ -25,7 +27,11 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
     e.preventDefault();
     setLoading(true);
     try {
-      const updated = await upsertProfile(profile);
+      const dataToSave = {
+        ...profile,
+        gallery: galleryText.split('\n').map(url => url.trim()).filter(url => url !== "")
+      };
+      const updated = await upsertProfile(dataToSave);
       setProfile({ ...updated, services: profile.services || [] });
       alert("Profilo salvato!");
     } catch (err: any) {
@@ -73,10 +79,18 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
       <div className="lg:col-span-2 space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>Informazioni Profilo</CardTitle>
-            {initialProfile?.slug && (
-              <a href={`/pro/${initialProfile.slug}`} target="_blank" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-fit mt-2 h-9 px-3"><ExternalLink className="w-4 h-4 mr-2"/> Visualizza Vetrina</a>
-            )}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <CardTitle>Informazioni Profilo</CardTitle>
+              {initialProfile?.slug && (
+                <a 
+                  href={`/pro/${initialProfile.slug}`} 
+                  target="_blank" 
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-bold transition-all shadow-md bg-amber-500 hover:bg-amber-600 text-stone-950 h-10 px-6 hover:scale-105"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2"/> Visualizza Vetrina
+                </a>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleProfileSubmit} className="space-y-4">
@@ -138,9 +152,42 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
                 </div>
               </div>
               
-              <div className="space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Immagine / Logo (URL)</Label>
+                  <Input value={profile.logoUrl || ""} onChange={e => setProfile({...profile, logoUrl: e.target.value})} placeholder="https://..." />
+                </div>
+                <div className="space-y-2">
+                  <Label>Foto Profilo (URL)</Label>
+                  <Input value={profile.profileImage || ""} onChange={e => setProfile({...profile, profileImage: e.target.value})} placeholder="https://..." />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label>Immagine di Sottofondo / Copertina (URL)</Label>
+                  <Input value={profile.coverImage || ""} onChange={e => setProfile({...profile, coverImage: e.target.value})} placeholder="Sfondo orizzontale in alta risoluzione..." />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label>Area / Zona di Lavoro</Label>
+                  <Input value={profile.serviceArea || ""} onChange={e => setProfile({...profile, serviceArea: e.target.value})} placeholder="es. Sassari e provincia, Sardegna" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Link Video Vimeo / YouTube (1)</Label>
+                  <Input value={profile.video1 || ""} onChange={e => setProfile({...profile, video1: e.target.value})} placeholder="https://youtube.com/..." />
+                </div>
+                <div className="space-y-2">
+                  <Label>Link Video Vimeo / YouTube (2)</Label>
+                  <Input value={profile.video2 || ""} onChange={e => setProfile({...profile, video2: e.target.value})} placeholder="https://vimeo.com/..." />
+                </div>
+              </div>
+              
+              <div className="space-y-2 mt-6">
                 <Label>Descrizione</Label>
                 <Textarea className="min-h-32" value={profile.description || ""} onChange={e => setProfile({...profile, description: e.target.value})} placeholder="Racconta la tua attività..." />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Galleria Professionale (Fino a 20 immagini)</Label>
+                <p className="text-xs text-stone-500 mb-2">Incolla qui gli URL delle tue migliori foto, uno per riga.</p>
+                <Textarea className="min-h-48 whitespace-pre" value={galleryText} onChange={e => setGalleryText(e.target.value)} placeholder="https://...&#10;https://..." />
               </div>
 
               <div className="space-y-2">

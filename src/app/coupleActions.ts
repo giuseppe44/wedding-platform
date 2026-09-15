@@ -104,6 +104,9 @@ export async function updateExtendedDetails(timelineItemId: string, data: any, s
       usefulInfo: data.usefulInfo,
       ceremonyType: data.ceremonyType || "CIVIL",
       professionalsJson: data.professionalsJson,
+      showGuestbook: data.showGuestbook ?? true,
+      showSeating: data.showSeating ?? false,
+      showGifts: data.showGifts ?? true,
     },
   });
 

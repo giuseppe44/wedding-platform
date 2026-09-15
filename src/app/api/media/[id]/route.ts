@@ -49,9 +49,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     // Local development proxy stream
     const buffer = await downloadFileBuffer(media.url);
     if (!buffer) return new NextResponse("File not found locally", { status: 404 });
+    
+    let contentType = media.mimeType;
+    if (!contentType || contentType === "application/octet-stream") {
+      const urlLower = media.url.toLowerCase();
+      if (urlLower.endsWith(".webp")) contentType = "image/webp";
+      else if (urlLower.endsWith(".png")) contentType = "image/png";
+      else if (urlLower.endsWith(".mp4")) contentType = "video/mp4";
+      else if (urlLower.endsWith(".mov")) contentType = "video/quicktime";
+      else contentType = "image/jpeg";
+    }
+
     return new NextResponse(buffer as any, {
       headers: {
-        "Content-Type": media.mimeType || "application/octet-stream",
+        "Content-Type": contentType,
         "Cache-Control": "public, max-age=3600"
       }
     });

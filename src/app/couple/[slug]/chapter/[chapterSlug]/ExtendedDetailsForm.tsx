@@ -21,6 +21,9 @@ export default function ExtendedDetailsForm({ chapter, locations }: { chapter: a
     usefulInfo: chapter.usefulInfo || "",
     ceremonyType: chapter.ceremonyType || "CIVIL",
     professionalsJson: chapter.professionalsJson || "",
+    showGuestbook: chapter.showGuestbook ?? true,
+    showSeating: chapter.showSeating ?? false,
+    showGifts: chapter.showGifts ?? true,
     bridePrep: getLoc("BRIDE_PREP"),
     groomPrep: getLoc("GROOM_PREP"),
     ceremony: getLoc("CEREMONY"),
@@ -51,6 +54,9 @@ export default function ExtendedDetailsForm({ chapter, locations }: { chapter: a
       usefulInfo: formData.usefulInfo,
       ceremonyType: formData.ceremonyType,
       professionalsJson: formData.professionalsJson,
+      showGuestbook: formData.showGuestbook,
+      showSeating: formData.showSeating,
+      showGifts: formData.showGifts,
       locations: [
         formData.bridePrep,
         formData.groomPrep,
@@ -157,9 +163,39 @@ export default function ExtendedDetailsForm({ chapter, locations }: { chapter: a
         </CardContent>
       </Card>
 
-      <div className="flex justify-end gap-4">
+      <Card className="border-rose-100 bg-rose-50/20">
+        <CardHeader>
+          <CardTitle>Visibilità Sezioni Vetrina Pubblica</CardTitle>
+          <CardDescription>Scegli cosa mostrare agli ospiti nella tua vetrina pubblica.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-3 bg-white p-3 rounded border border-stone-200">
+            <input type="checkbox" id="showGuestbook" name="showGuestbook" className="w-5 h-5 accent-rose-500" checked={formData.showGuestbook} onChange={e => {setFormData({...formData, showGuestbook: e.target.checked}); setSaved(false)}} />
+            <div className="flex flex-col">
+              <Label htmlFor="showGuestbook" className="font-bold text-stone-800 cursor-pointer">Mostra Dediche (Guestbook)</Label>
+              <span className="text-xs text-stone-500">Permetti agli ospiti di leggere e lasciare messaggi.</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 bg-white p-3 rounded border border-stone-200">
+            <input type="checkbox" id="showSeating" name="showSeating" className="w-5 h-5 accent-rose-500" checked={formData.showSeating} onChange={e => {setFormData({...formData, showSeating: e.target.checked}); setSaved(false)}} />
+            <div className="flex flex-col">
+              <Label htmlFor="showSeating" className="font-bold text-stone-800 cursor-pointer">Mostra Disposizione Tavoli</Label>
+              <span className="text-xs text-stone-500">Gli ospiti potranno cercare il loro tavolo direttamente dalla home.</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 bg-white p-3 rounded border border-stone-200">
+            <input type="checkbox" id="showGifts" name="showGifts" className="w-5 h-5 accent-rose-500" checked={formData.showGifts} onChange={e => {setFormData({...formData, showGifts: e.target.checked}); setSaved(false)}} />
+            <div className="flex flex-col">
+              <Label htmlFor="showGifts" className="font-bold text-stone-800 cursor-pointer">Mostra Lista Nozze / Regali</Label>
+              <span className="text-xs text-stone-500">Mostra l'IBAN e le coordinate per i regali.</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-end gap-4 mt-6">
         {saved && <span className="text-green-600 font-medium self-center">Salvato con successo!</span>}
-        <Button type="submit" disabled={loading}>{loading ? "Salvataggio..." : "Salva Dettagli"}</Button>
+        <Button type="submit" size="lg" className="bg-stone-800 hover:bg-stone-700 font-bold px-8" disabled={loading}>{loading ? "Salvataggio..." : "Salva Tutto"}</Button>
       </div>
     </form>
   );

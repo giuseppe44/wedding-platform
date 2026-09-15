@@ -2,6 +2,7 @@ import GuestLogin from "./GuestLogin";
 import { verifyTimelineAccess } from "@/lib/accessControl";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,11 @@ import PublicProsSection from "./PublicProsSection";
 import TimelineSection from "./TimelineSection";
 
 export default async function PublicTimelinePage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const headersList = headers();
+  const host = headersList.get("x-forwarded-host") || headersList.get("host") || "localhost:3000";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
+
   const { slug } = await params;
   const resolvedParams = await searchParams;
   const token = resolvedParams?.token ? String(resolvedParams.token) : undefined;
@@ -128,11 +134,6 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         </Card>
       </div>
 
-      {/* REGISTRAZIONE OSPITI (LEAD GENERATION) */}
-      <div className="max-w-7xl mx-auto px-4 mt-8">
-        <GuestRegistrationForm buttonColor={themeColor} />
-      </div>
-
       {/* 2. STORIA */}
       {wedding.description && (
         <div className="max-w-3xl mx-auto px-4 pt-24 text-center">
@@ -183,6 +184,32 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         </div>
       )}
 
+      {/* DISPOSIZIONE TAVOLI (Opzionale) */}
+      {wedding.showSeating && (
+        <div className="max-w-5xl mx-auto px-4 pt-16">
+          <div className="bg-white border border-stone-100 shadow-sm rounded-3xl p-8 md:p-10 text-center relative overflow-hidden">
+             <div className="absolute top-0 left-0 w-full h-2" style={{ backgroundColor: themeColor }} />
+             <Users className="w-12 h-12 mx-auto text-stone-300 mb-4" />
+             <h3 className="text-2xl md:text-3xl font-serif text-stone-800 mb-4">Disposizione Tavoli</h3>
+             <p className="text-stone-500 mb-8 max-w-xl mx-auto">
+               Scopri dove sei stato posizionato per il ricevimento e chi saranno i tuoi compagni di tavolo.
+             </p>
+             <Link href={`/w/${wedding.slug}/seating`}>
+               <Button size="lg" className="rounded-full shadow-md text-white px-8" style={{ backgroundColor: themeColor }}>
+                 Cerca il tuo tavolo
+               </Button>
+             </Link>
+          </div>
+        </div>
+      )}
+
+      {/* LISTA NOZZE / REGALI (Opzionale) */}
+      {wedding.showGifts && wedding.giftOptions && wedding.giftOptions.length > 0 && (
+        <div className="pt-12">
+          <GiftSection slug={wedding.slug} options={wedding.giftOptions} />
+        </div>
+      )}
+
       {/* 5. GALLERIA & UPLOAD BANNER */}
       <div className="max-w-7xl mx-auto px-4 pt-24">
         
@@ -197,7 +224,7 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
             <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col items-center">
                <div className="w-32 h-32 relative">
                  <Image 
-                   src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://wedding-platform-topwebsitee.vercel.app/w/${wedding.slug}/upload`} 
+                   src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${baseUrl}/w/${wedding.slug}/upload`} 
                    alt="QR Code per caricare foto" 
                    fill
                    className="object-contain"
@@ -262,36 +289,38 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
       </div>
 
       {/* 6. DEDICHE */}
-      <div className="max-w-3xl mx-auto px-4 pt-24 pb-12">
-        <h2 className="text-3xl font-serif text-stone-800 mb-4 text-center">Lascia un messaggio</h2>
-        <p className="text-center text-stone-500 mb-12 font-serif italic">
-          Scrivi un pensiero da conservare nella storia.
-        </p>
-        
-        <div className="mb-16">
-          {canLeaveMessage ? (
-            <GuestbookForm timelineItemId={wedding.id} buttonColor={themeColor} displayAuthorsLabel={config.authors} />
-          ) : (
-            <div className="bg-white border border-stone-100 shadow-sm rounded-3xl p-10 text-center text-stone-600 max-w-2xl mx-auto">
-               <MessageSquare className="w-10 h-10 mx-auto text-stone-300 mb-6" />
-               <h3 className="font-serif text-2xl text-stone-800 mb-2">Sezione in anteprima</h3>
-               <p className="text-lg mb-4">In questa sezione, dal giorno dopo il matrimonio, potrete dedicare un'ulteriore dedica agli sposi.</p>
-               <p className="text-sm text-stone-400">Riceverete una notifica quando la raccolta dei messaggi sarà ufficialmente aperta!</p>
+      {wedding.showGuestbook && (
+        <div className="max-w-3xl mx-auto px-4 pt-24 pb-12">
+          <h2 className="text-3xl font-serif text-stone-800 mb-4 text-center">Lascia un messaggio</h2>
+          <p className="text-center text-stone-500 mb-12 font-serif italic">
+            Scrivi un pensiero da conservare nella storia.
+          </p>
+          
+          <div className="mb-16">
+            {canLeaveMessage ? (
+              <GuestbookForm timelineItemId={wedding.id} buttonColor={themeColor} displayAuthorsLabel={config.authors} />
+            ) : (
+              <div className="bg-white border border-stone-100 shadow-sm rounded-3xl p-10 text-center text-stone-600 max-w-2xl mx-auto">
+                 <MessageSquare className="w-10 h-10 mx-auto text-stone-300 mb-6" />
+                 <h3 className="font-serif text-2xl text-stone-800 mb-2">Sezione in anteprima</h3>
+                 <p className="text-lg mb-4">In questa sezione, dal giorno dopo il matrimonio, potrete dedicare un'ulteriore dedica agli sposi.</p>
+                 <p className="text-sm text-stone-400">Riceverete una notifica quando la raccolta dei messaggi sarà ufficialmente aperta!</p>
+              </div>
+            )}
+          </div>
+
+          {wedding.messages.length > 0 && (
+            <div className="space-y-8">
+              {wedding.messages.map((msg: any) => (
+                <div key={msg.id} className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 relative">
+                  <p className="text-xl italic text-stone-700 font-serif leading-relaxed">"{msg.text}"</p>
+                  <p className="text-right text-stone-400 font-medium mt-4">— {msg.guestName || "Anonimo"}</p>
+                </div>
+              ))}
             </div>
           )}
         </div>
-
-        {wedding.messages.length > 0 && (
-          <div className="space-y-8">
-            {wedding.messages.map((msg: any) => (
-              <div key={msg.id} className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 relative">
-                <p className="text-xl italic text-stone-700 font-serif leading-relaxed">"{msg.text}"</p>
-                <p className="text-right text-stone-400 font-medium mt-4">— {msg.guestName || "Anonimo"}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      )}
 
       {/* 7. REVIEWS & CTA FINALE */}
       <div className="max-w-4xl mx-auto px-4 pt-12 pb-24 text-center border-t border-stone-200 mt-12">
@@ -315,6 +344,11 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
             <Camera className="mr-2 h-5 w-5" /> Condividi altri ricordi
           </Button>
         </Link>
+      </div>
+
+      {/* REGISTRAZIONE OSPITI (LEAD GENERATION) */}
+      <div className="max-w-4xl mx-auto px-4 pb-24">
+        <GuestRegistrationForm buttonColor={themeColor} />
       </div>
 
       {/* VIRAL LOOP BANNER (LATO INVITATI -> NUOVI UTENTI) */}

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ExternalLink, Camera, Mail, Phone, MessageCircle, MapPin, Lock, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import PublicReviewForm from "./PublicReviewForm";
 
 const CATEGORY_LABELS: Record<string, string> = {
   PHOTOGRAPHER: "Fotografo",
@@ -42,30 +43,47 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
     <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
       {/* Header Profilo */}
       <div className="bg-stone-900 text-stone-100 pt-24 pb-16 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
-              <path d="M 8 0 L 0 0 0 8" fill="none" stroke="currentColor" strokeWidth="0.5"/>
-            </pattern>
-            <rect width="100" height="100" fill="url(#grid)"/>
-          </svg>
-        </div>
+        {profile.coverImage ? (
+          <>
+            <div className="absolute inset-0">
+              <img src={profile.coverImage} alt="Cover" className="w-full h-full object-cover opacity-30" />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/60 to-transparent" />
+          </>
+        ) : (
+          <div className="absolute inset-0 opacity-[0.03]">
+            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+                <path d="M 8 0 L 0 0 0 8" fill="none" stroke="currentColor" strokeWidth="0.5"/>
+              </pattern>
+              <rect width="100" height="100" fill="url(#grid)"/>
+            </svg>
+          </div>
+        )}
         
         <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
-          {profile.logoUrl && (
+          {(profile.profileImage || profile.logoUrl) && (
             <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-stone-800 shadow-2xl mb-6 bg-stone-100">
-              <img src={profile.logoUrl} alt={profile.businessName} className="w-full h-full object-cover" />
+              <img src={profile.profileImage || profile.logoUrl || ''} alt={profile.businessName} className="w-full h-full object-cover" />
             </div>
           )}
-          <div className="inline-block bg-white/10 text-white border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm">
-            {CATEGORY_LABELS[profile.category] || "Professionista"}
+          <div className="flex justify-center items-center gap-3">
+            <div className="inline-block bg-white/10 text-white border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm">
+              {CATEGORY_LABELS[profile.category] || "Professionista"}
+            </div>
+            {profile.serviceArea && (
+              <div className="inline-flex items-center gap-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm">
+                <MapPin className="w-3.5 h-3.5" />
+                {profile.serviceArea}
+              </div>
+            )}
           </div>
           
           <h1 className="text-4xl md:text-6xl font-serif">{profile.businessName}</h1>
           
           <div className="flex flex-wrap justify-center gap-4 text-sm font-medium pt-4">
             {profile.website && (
-              <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-stone-800/50 hover:bg-stone-700/50 rounded-full px-3 py-1 transition-colors">
+              <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-stone-800/50 hover:bg-stone-700/50 rounded-full px-3 py-1 transition-colors">
                 <ExternalLink className="w-4 h-4"/> Sito Web
               </a>
             )}
@@ -110,6 +128,48 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
               <p className="text-stone-600 whitespace-pre-wrap leading-relaxed">
                 {profile.description}
               </p>
+            </section>
+          )}
+
+          {/* Galleria (se presente) */}
+          {profile.gallery && profile.gallery.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-serif text-stone-800 mb-6">Gallery Professionale</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {profile.gallery.map((imgUrl, i) => (
+                  <div key={i} className="aspect-square rounded-xl overflow-hidden bg-stone-100 shadow-sm">
+                    <img src={imgUrl} alt={`Gallery ${i+1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500 cursor-pointer" />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Video (se presenti) */}
+          {(profile.video1 || profile.video2) && (
+            <section>
+              <h2 className="text-2xl font-serif text-stone-800 mb-6">I Nostri Video</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {profile.video1 && (
+                  <div className="aspect-video rounded-xl overflow-hidden bg-stone-900 shadow-sm relative group">
+                    <a href={profile.video1.startsWith('http') ? profile.video1 : `https://${profile.video1}`} target="_blank" rel="noopener noreferrer" className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-white ml-1"></div>
+                      </div>
+                    </a>
+                  </div>
+                )}
+                {profile.video2 && (
+                  <div className="aspect-video rounded-xl overflow-hidden bg-stone-900 shadow-sm relative group">
+                    <a href={profile.video2.startsWith('http') ? profile.video2 : `https://${profile.video2}`} target="_blank" rel="noopener noreferrer" className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-white ml-1"></div>
+                      </div>
+                    </a>
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-stone-400 mt-3 italic">Clicca per visualizzare i video completi.</p>
             </section>
           )}
 
@@ -166,9 +226,13 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
           </section>
 
           {/* Recensioni */}
-          {profile.reviews && profile.reviews.length > 0 && (
-            <section className="mt-12 pt-12 border-t border-stone-200">
-              <h2 className="text-2xl font-serif text-stone-800 mb-6">Dicono di noi</h2>
+          <section className="mt-12 pt-12 border-t border-stone-200">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+              <h2 className="text-2xl font-serif text-stone-800">Dicono di noi</h2>
+              <PublicReviewForm proId={profile.id} proName={profile.businessName} />
+            </div>
+            
+            {profile.reviews && profile.reviews.length > 0 ? (
               <div className="space-y-4">
                 {profile.reviews.map(r => (
                   <Card key={r.id} className="border-stone-200 shadow-sm bg-stone-50/50">
@@ -190,8 +254,10 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
                   </Card>
                 ))}
               </div>
-            </section>
-          )}
+            ) : (
+              <p className="text-stone-500 italic">Ancora nessuna recensione. Sii il primo a raccontare la tua esperienza!</p>
+            )}
+          </section>
         </div>
 
         {/* Info Laterali */}
@@ -225,11 +291,11 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
                   )}
                 </>
               )}
-              {profile.website && (
-                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-stone-600 hover:text-stone-900 transition-colors">
-                  <ExternalLink className="w-5 h-5 text-stone-400" /> Sito Web
-                </a>
-              )}
+                {profile.website && (
+                  <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-stone-600 hover:text-stone-900 transition-colors">
+                    <ExternalLink className="w-5 h-5 text-stone-400" /> Sito Web
+                  </a>
+                )}
               {profile.instagram && (
                 <a href={`https://instagram.com/${profile.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-stone-600 hover:text-stone-900 transition-colors">
                   <Camera className="w-5 h-5 text-stone-400" /> Instagram

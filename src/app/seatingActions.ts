@@ -25,7 +25,7 @@ export async function createGuest(timelineItemId: string, data: any, slug: strin
     }
   });
 
-  revalidatePath(`/couple/${slug}/chapter/[chapterSlug]`, "page");
+  revalidatePath(`/couple/${slug}`, "layout");
 }
 
 export async function updateGuest(guestId: string, data: any, slug: string) {
@@ -48,7 +48,7 @@ export async function updateGuest(guestId: string, data: any, slug: string) {
     }
   });
 
-  revalidatePath(`/couple/${slug}/chapter/[chapterSlug]`, "page");
+  revalidatePath(`/couple/${slug}`, "layout");
 }
 
 export async function deleteGuest(guestId: string, slug: string) {
@@ -57,7 +57,7 @@ export async function deleteGuest(guestId: string, slug: string) {
   if (!guest || (guest.timelineItem.ownerId !== session.userId && guest.timelineItem.coupleId !== session.userId && session.role !== "ADMIN")) throw new Error("Non autorizzato");
 
   await prisma.guest.delete({ where: { id: guestId } });
-  revalidatePath(`/couple/${slug}/chapter/[chapterSlug]`, "page");
+  revalidatePath(`/couple/${slug}`, "layout");
 }
 
 // Gestione Tavoli
@@ -75,7 +75,7 @@ export async function createTable(timelineItemId: string, data: any, slug: strin
     }
   });
 
-  revalidatePath(`/couple/${slug}/chapter/[chapterSlug]`, "page");
+  revalidatePath(`/couple/${slug}`, "layout");
 }
 
 export async function updateTable(tableId: string, data: any, slug: string) {
@@ -92,7 +92,7 @@ export async function updateTable(tableId: string, data: any, slug: string) {
     }
   });
 
-  revalidatePath(`/couple/${slug}/chapter/[chapterSlug]`, "page");
+  revalidatePath(`/couple/${slug}`, "layout");
 }
 
 export async function deleteTable(tableId: string, slug: string) {
@@ -101,7 +101,7 @@ export async function deleteTable(tableId: string, slug: string) {
   if (!table || (table.timelineItem.ownerId !== session.userId && table.timelineItem.coupleId !== session.userId && session.role !== "ADMIN")) throw new Error("Non autorizzato");
 
   await prisma.table.delete({ where: { id: tableId } });
-  revalidatePath(`/couple/${slug}/chapter/[chapterSlug]`, "page");
+  revalidatePath(`/couple/${slug}`, "layout");
 }
 
 export async function assignGuestToTable(guestId: string, tableId: string | null, slug: string) {
@@ -124,7 +124,7 @@ export async function assignGuestToTable(guestId: string, tableId: string | null
     data: { tableId }
   });
 
-  revalidatePath(`/couple/${slug}/chapter/[chapterSlug]`, "page");
+  revalidatePath(`/couple/${slug}`, "layout");
 }
 
 export async function searchGuestSeating(timelineItemId: string, name: string, surname: string) {
