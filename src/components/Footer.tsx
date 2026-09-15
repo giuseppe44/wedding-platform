@@ -30,6 +30,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
             <li><Link href="/terms" className="hover:text-white transition-colors">Termini e Condizioni</Link></li>
+            <li><Link href="/login?role=ADMIN" className="hover:text-rose-500 transition-colors">Amministrazione</Link></li>
           </ul>
         </div>
       </div>

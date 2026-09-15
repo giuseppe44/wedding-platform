@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +12,7 @@ import { ExternalLink, Plus, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 export default function ProProfileManager({ initialProfile }: { initialProfile: any }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(initialProfile || {
     businessName: "", slug: "", category: "PHOTOGRAPHER", description: "", website: "", whatsapp: "", instagram: "", contactEmail: "", contactPhone: "", isActive: true
@@ -48,9 +50,9 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
         await createService(serviceForm);
       }
       resetServiceForm();
-      // To properly refresh services without full reload, one would ideally use a router.refresh() 
-      // but Server Actions auto-revalidate the page, so it will update on next server render.
-      window.location.reload(); 
+      // The path is revalidated in the server action, so we just ask the router to refresh 
+      // the server components without losing the client state (unsaved profile edits).
+      router.refresh(); 
     } catch (err: any) {
       alert("Errore nel salvataggio del servizio");
     } finally {
@@ -62,7 +64,7 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
     if (!confirm("Sei sicuro?")) return;
     setLoading(true);
     await deleteService(id);
-    window.location.reload();
+    router.refresh();
   };
 
   return (

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import Link from "next/link";
-import { Plus, ArrowRight, Calendar, Check, X, Camera } from "lucide-react";
+import { Plus, ArrowRight, Calendar, Check, X, Camera, QrCode } from "lucide-react";
 import { approveMedia, rejectMedia } from "@/app/actions";
 import { PlanWidget } from "@/components/PlanWidget";
 
@@ -92,8 +92,8 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
 
   const coupleFeatures = {
     included: isCouplePremium ? [
-      "Timeline illimitata per i capitoli di vita",
-      "Foto e Video in altissima qualità e senza limiti",
+      "Tutti i Capitoli sbloccati (Viaggi, Anniversari, Eventi)",
+      "10 GB per migliaia di foto e video ad alta risoluzione",
       "Possibilità di rimuovere il marchio della piattaforma",
       "Gestione avanzata per migliaia di invitati"
     ] : [
@@ -103,7 +103,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
       "Digital Guestbook"
     ],
     missing: isCouplePremium ? [] : [
-      "Spazio illimitato per migliaia di foto e video ad alta risoluzione",
+      "10 GB per migliaia di foto e video ad alta risoluzione",
       "Capitoli di vita infiniti (Viaggi, Anniversari, Famiglia)",
       "Gestione di oltre 50 invitati",
       "Rimozione del logo della piattaforma"
@@ -292,8 +292,40 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
           </div>
         </div>
 
+        {/* QR CODE DA TAVOLO SECTION */}
+        <div className="mt-16 bg-white border border-stone-200 p-8 md:p-10 rounded-3xl shadow-sm">
+          <div className="flex flex-col md:flex-row gap-8 items-center justify-between">
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="text-2xl font-bold text-stone-800 mb-2 font-serif">QR Code per i Tavoli</h3>
+              <p className="text-stone-500 max-w-lg mb-6">
+                Salva questo QR code o stampalo per metterlo sui tavoli del tuo matrimonio. I tuoi invitati dovranno semplicemente inquadrarlo con il loro telefono per inviarvi foto e video in diretta!
+              </p>
+              <a 
+                href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=https://wedding-platform-topwebsitee.vercel.app/w/${wedding.slug}/upload`}
+                download="QR_Code_Matrimonio.png"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="lg" className="w-full sm:w-auto bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold px-8 h-12 shadow-md">
+                  <QrCode className="mr-2 h-5 w-5" /> Scarica QR Code in Alta Qualità
+                </Button>
+              </a>
+            </div>
+            <div className="shrink-0 bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-inner flex flex-col items-center">
+              <div className="w-40 h-40 relative">
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://wedding-platform-topwebsitee.vercel.app/w/${wedding.slug}/upload`}
+                  alt="QR Code Matrimonio"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-xs text-stone-400 mt-3 font-semibold uppercase tracking-widest">Anteprima</span>
+            </div>
+          </div>
+        </div>
+
         {/* INVITE PROS SECTION */}
-        <div className="mt-16 bg-white border border-stone-200 p-8 md:p-10 rounded-3xl shadow-sm text-center">
+        <div className="mt-8 bg-white border border-stone-200 p-8 md:p-10 rounded-3xl shadow-sm text-center">
           <h3 className="text-2xl font-bold text-stone-800 mb-4 font-serif">Invita il tuo Fotografo</h3>
           <p className="text-stone-500 mb-8 max-w-2xl mx-auto">
             Vuoi che il tuo fotografo ufficiale carichi l'album in alta qualità direttamente nel vostro ecos.com per farlo vedere a tutti gli invitati? Inviagli un link di invito.
