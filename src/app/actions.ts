@@ -161,3 +161,19 @@ export async function registerAction(role: string, data: any) {
 
   await setSession(user.id, role as any, false);
 }
+
+export async function getLiveMedia(slug: string) {
+  const wedding = await prisma.timelineItem.findUnique({ where: { slug } });
+  if (!wedding) return [];
+  
+  const media = await prisma.media.findMany({
+    where: { 
+      timelineItemId: wedding.id,
+      type: "IMAGE"
+    },
+    orderBy: { createdAt: "desc" },
+    take: 50 // Prende le ultime 50 foto
+  });
+  
+  return media.map((m: any) => m.url);
+}

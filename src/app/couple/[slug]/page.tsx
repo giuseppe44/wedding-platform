@@ -300,16 +300,23 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
               <p className="text-stone-500 max-w-lg mb-6">
                 Salva questo QR code o stampalo per metterlo sui tavoli del tuo matrimonio. I tuoi invitati dovranno semplicemente inquadrarlo con il loro telefono per inviarvi foto e video in diretta!
               </p>
-              <a 
-                href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=https://wedding-platform-topwebsitee.vercel.app/w/${wedding.slug}/upload`}
-                download="QR_Code_Matrimonio.png"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button size="lg" className="w-full sm:w-auto bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold px-8 h-12 shadow-md">
-                  <QrCode className="mr-2 h-5 w-5" /> Scarica QR Code in Alta Qualità
-                </Button>
-              </a>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <a 
+                  href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=https://wedding-platform-topwebsitee.vercel.app/w/${wedding.slug}/upload`}
+                  download="QR_Code_Matrimonio.png"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button size="lg" className="w-full sm:w-auto bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold px-8 h-12 shadow-md">
+                    <QrCode className="mr-2 h-5 w-5" /> Scarica in Alta Qualità
+                  </Button>
+                </a>
+                <Link href={`/live/${wedding.slug}`} target="_blank">
+                  <Button size="lg" className="w-full sm:w-auto bg-stone-900 hover:bg-stone-800 text-white rounded-full font-semibold px-8 h-12 shadow-md border-2 border-stone-800 hover:border-stone-700">
+                    Avvia ecos.com LIVE 🚀
+                  </Button>
+                </Link>
+              </div>
             </div>
             <div className="shrink-0 bg-stone-50 p-4 rounded-2xl border border-stone-200 shadow-inner flex flex-col items-center">
               <div className="w-40 h-40 relative">
