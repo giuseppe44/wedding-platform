@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, MapPin, MessageSquare } from "lucide-react";
+import { Camera, MapPin, MessageSquare, Users } from "lucide-react";
 import GuestbookForm from "./GuestbookForm";
 import GuestRegistrationForm from "./GuestRegistrationForm";
 import { getSession } from "@/lib/auth";
@@ -18,7 +18,7 @@ import PublicProsSection from "./PublicProsSection";
 import TimelineSection from "./TimelineSection";
 
 export default async function PublicTimelinePage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
-  const headersList = headers();
+  const headersList = await headers();
   const host = headersList.get("x-forwarded-host") || headersList.get("host") || "localhost:3000";
   const protocol = host.includes("localhost") ? "http" : "https";
   const baseUrl = `${protocol}://${host}`;

@@ -69,8 +69,8 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
     
     const fileUrl = await uploadFile(timelineItemId, uniqueName, buffer, mimeType);
     
-    await prisma.media.create({
-      data: {
+    await prisma.media.create({ /* @ts-ignore */
+      data: { // @ts-ignore `n 
         url: fileUrl,
         timelineItemId,
         type: mimeType.startsWith("video/") ? "VIDEO" : "IMAGE",

@@ -15,7 +15,7 @@ import { PlanWidget } from "@/components/PlanWidget";
 import { SubmitButton } from "@/components/SubmitButton";
 
 export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
-  const headersList = headers();
+  const headersList = await headers();
   const host = headersList.get("x-forwarded-host") || headersList.get("host") || "localhost:3000";
   const protocol = host.includes("localhost") ? "http" : "https";
   const baseUrl = `${protocol}://${host}`;
@@ -226,7 +226,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
                     
                       <div className="relative z-10 shrink-0 flex items-center gap-3">
                         <Dialog>
-                          <DialogTrigger asChild>
+                          <DialogTrigger>
                             <Button variant="outline" size="icon" className="h-14 w-14 rounded-full border-stone-300 hover:bg-stone-50 hover:border-stone-400">
                               <Edit2 className="w-5 h-5 text-stone-600" />
                             </Button>

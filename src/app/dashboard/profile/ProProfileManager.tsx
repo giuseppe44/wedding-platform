@@ -29,7 +29,7 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
     try {
       const dataToSave = {
         ...profile,
-        gallery: galleryText.split('\n').map(url => url.trim()).filter(url => url !== "")
+        gallery: galleryText.split('\n').map((url: string) => url.trim()).filter((url: string) => url !== "")
       };
       const updated = await upsertProfile(dataToSave);
       setProfile({ ...updated, services: profile.services || [] });

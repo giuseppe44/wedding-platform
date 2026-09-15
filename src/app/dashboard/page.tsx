@@ -11,7 +11,7 @@ import { Camera, HardDrive, Users, Settings, CreditCard } from "lucide-react";
 import { PlanWidget } from "@/components/PlanWidget";
 
 export default async function DashboardPage() {
-  const headersList = headers();
+  const headersList = await headers();
   const host = headersList.get("x-forwarded-host") || headersList.get("host") || "localhost:3000";
   const protocol = host.includes("localhost") ? "http" : "https";
   const baseUrl = `${protocol}://${host}`;

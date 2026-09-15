@@ -59,9 +59,9 @@ export default function SeatingVisualizer({ tables, guests, title }: { tables: a
             return (
               <div key={table.id} className="relative flex items-center justify-center print-break-inside-avoid m-6" style={{ width: width + 120, height: height + 120 }}>
                 <div 
-                  className={\`absolute bg-stone-100 border-4 border-stone-300 shadow-md flex flex-col items-center justify-center z-0 transition-all hover:border-stone-400
-                    \${isRound ? 'rounded-full' : 'rounded-2xl'}
-                  \`}
+                  className={`absolute bg-stone-100 border-4 border-stone-300 shadow-md flex flex-col items-center justify-center z-0 transition-all hover:border-stone-400
+                    ${isRound ? 'rounded-full' : 'rounded-2xl'}
+                  `}
                   style={{ width, height }}
                 >
                   <span className="font-serif text-2xl text-stone-800 text-center px-4 font-bold leading-tight">{table.name}</span>
@@ -110,11 +110,11 @@ export default function SeatingVisualizer({ tables, guests, title }: { tables: a
                     <div 
                       key={guest.id} 
                       className="absolute flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 z-10 hover:z-20 group"
-                      style={{ top: \`\${top}px\`, left: \`\${left}px\`, width: '100px' }}
+                      style={{ top: `${top}px`, left: `${left}px`, width: '100px' }}
                     >
-                      <div className={\`w-10 h-10 rounded-full flex items-center justify-center shadow-md border-2 transition-transform group-hover:scale-125
-                        \${hasDiet ? 'bg-amber-100 border-amber-300 text-amber-700' : 'bg-white border-stone-200 text-stone-500'}
-                      \`}>
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md border-2 transition-transform group-hover:scale-125
+                        ${hasDiet ? 'bg-amber-100 border-amber-300 text-amber-700' : 'bg-white border-stone-200 text-stone-500'}
+                      `}>
                         {hasDiet ? <Utensils className="w-5 h-5" /> : <User className="w-5 h-5" />}
                       </div>
                       <div className="bg-white/90 print:bg-white px-2 py-1 rounded shadow-sm border border-stone-100 mt-1">
