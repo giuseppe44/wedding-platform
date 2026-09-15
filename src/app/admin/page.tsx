@@ -99,7 +99,7 @@ export default async function AdminPage() {
             <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm relative overflow-hidden">
               <div className="absolute top-0 right-0 p-6 opacity-10"><CreditCard className="w-16 h-16 text-emerald-500"/></div>
               <p className="text-sm text-stone-500 uppercase tracking-wider font-semibold mb-1">Fatturato Stimato</p>
-              <h3 className="text-4xl font-bold text-stone-900">€ {monthlyRevenue.toLocaleString('it-IT')}</h3>
+              <h3 className="text-4xl font-bold text-stone-900">â‚¬ {monthlyRevenue.toLocaleString('it-IT')}</h3>
               <p className="text-emerald-500 text-sm font-semibold mt-2 flex items-center gap-1"><TrendingUp className="w-4 h-4"/> MRR in crescita</p>
             </div>
 
@@ -138,7 +138,7 @@ export default async function AdminPage() {
                         <td className="py-3 font-medium text-stone-800">{w.brideName} & {w.groomName}</td>
                         <td className="py-3 text-stone-500">{w.date ? new Date(w.date).toLocaleDateString("it-IT") : "TBD"}</td>
                         <td className="py-3 text-right">
-                          <Link href={/w/${w.slug}} target="_blank" className="text-rose-500 hover:text-rose-600 font-semibold bg-rose-50 px-3 py-1.5 rounded-full inline-block">
+                          <Link href={`/w/${w.slug}`} target="_blank" className="text-rose-500 hover:text-rose-600 font-semibold bg-rose-50 px-3 py-1.5 rounded-full inline-block">
                             Visita
                           </Link>
                         </td>
