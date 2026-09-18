@@ -7,7 +7,7 @@ export default async function UploadPage({ params }: { params: Promise<{ slug: s
   const { slug } = await params;
   const wedding = await prisma.timelineItem.findUnique({
     where: { slug: slug },
-    select: { id: true, brideName: true, groomName: true, title: true, slug: true, themeColor: true, visibility: true, type: true }
+    select: { id: true, brideName: true, groomName: true, title: true, slug: true, themeColor: true, visibility: true, type: true, giftOptions: { where: { isTravelStage: true, isActive: true } } }
   });
 
   if (!wedding) {
@@ -40,7 +40,7 @@ export default async function UploadPage({ params }: { params: Promise<{ slug: s
 
   return (
     <div className="min-h-screen bg-stone-50 p-4 flex items-center justify-center">
-      <UploadClient timelineItemId={wedding.id} displayTitle={displayTitle} displayType={config.type} slug={wedding.slug} buttonColor={wedding.themeColor || undefined} />
+      <UploadClient timelineItemId={wedding.id} displayTitle={displayTitle} displayType={config.type} slug={wedding.slug} buttonColor={wedding.themeColor || undefined} travelStages={wedding.giftOptions} />
     </div>
   );
 }

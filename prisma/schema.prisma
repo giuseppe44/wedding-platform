@@ -76,19 +76,20 @@ model TimelineItem {
   familyId String?
   family   Family? @relation(fields: [familyId], references: [id])
 
-  albums         Album[]
-  media          Media[]
-  guests         Guest[]
-  locations      Location[]
-  schedule       ScheduleItem[]
-  messages       Message[]
-  tables         Table[]
-  giftOptions    GiftOption[]
-  assignments    EventAssignment[]
-  reviews        Review[]
-  selectedGuests ChapterSelectedGuest[]
-  conversations  Conversation[]
-  audience       String?                @default("ALL_GUESTS")
+  albums          Album[]
+  media           Media[]
+  guests          Guest[]
+  locations       Location[]
+  schedule        ScheduleItem[]
+  messages        Message[]
+  tables          Table[]
+  giftOptions     GiftOption[]
+  assignments     EventAssignment[]
+  reviews         Review[]
+  selectedGuests  ChapterSelectedGuest[]
+  conversations   Conversation[]
+  travelDocuments TravelDocument[]
+  audience        String?                @default("ALL_GUESTS")
 
   @@map("Wedding")
 }
@@ -189,6 +190,9 @@ model Media {
   guestId String?
   guest   Guest?  @relation(fields: [guestId], references: [id], onDelete: SetNull)
 
+  giftOptionId String?
+  giftOption   GiftOption? @relation(fields: [giftOptionId], references: [id], onDelete: SetNull)
+
   uploaderName String?
   guestMessage String?
 
@@ -222,18 +226,26 @@ model GiftOption {
   order        Int     @default(0)
   isActive     Boolean @default(true)
 
+  isTravelStage Boolean   @default(false)
+  stageDate     DateTime?
+  location      String?
+  targetAmount  Float?
+  raisedAmount  Float     @default(0)
+
   timelineItemId String       @map("weddingId")
   timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+
+  medias Media[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model ProfessionalProfile {
-  id           String  @id @default(cuid())
-  category     String  @default("OTHER") // PHOTOGRAPHER, VIDEOMAKER, WEDDING_PLANNER, DJ, MUSICIAN, LOCATION, CATERING, FLORIST, MAKEUP_ARTIST, HAIR_STYLIST, OTHER
+  id           String   @id @default(cuid())
+  category     String   @default("OTHER") // PHOTOGRAPHER, VIDEOMAKER, WEDDING_PLANNER, DJ, MUSICIAN, LOCATION, CATERING, FLORIST, MAKEUP_ARTIST, HAIR_STYLIST, OTHER
   businessName String
-  slug         String  @unique
+  slug         String   @unique
   description  String?
   logoUrl      String?
   website      String?
@@ -247,7 +259,7 @@ model ProfessionalProfile {
   video1       String?
   video2       String?
   serviceArea  String?
-  isActive     Boolean @default(true)
+  isActive     Boolean  @default(true)
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -362,30 +374,30 @@ model ChatMessage {
 }
 
 model Plan {
-  id        String   @id @default(cuid())
-  name      String   @unique // FREE, PREMIUM, DIAMOND
-  features  String // JSON string of allowed features
-  price     Int      @default(0) // Prezzo in centesimi
-  interval  String   @default("month") // month, year
+  id            String   @id @default(cuid())
+  name          String   @unique // FREE, PREMIUM, DIAMOND
+  features      String // JSON string of allowed features
+  price         Int      @default(0) // Prezzo in centesimi
+  interval      String   @default("month") // month, year
   stripePriceId String? // ID del Price in Stripe
-  createdAt DateTime @default(now())
+  createdAt     DateTime @default(now())
 
   subscriptions Subscription[]
 }
 
 model Subscription {
-  id        String    @id @default(cuid())
-  userId    String    @unique
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  planId    String
-  plan      Plan      @relation(fields: [planId], references: [id], onDelete: Restrict)
-  status    String    @default("ACTIVE") // ACTIVE, CANCELED, EXPIRED
-  stripeSubscriptionId String? @unique
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId               String
+  plan                 Plan      @relation(fields: [planId], references: [id], onDelete: Restrict)
+  status               String    @default("ACTIVE") // ACTIVE, CANCELED, EXPIRED
+  stripeSubscriptionId String?   @unique
   stripeCustomerId     String?
   currentPeriodEnd     DateTime?
-  expiresAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  expiresAt            DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 }
 
 model Lead {
@@ -394,4 +406,13 @@ model Lead {
   intent    String // 'SPOSI_CERCA' o 'SEGNALAZIONE_PRO'
   details   String? // JSON o testo con provincia, fotografo suggerito ecc.
   createdAt DateTime @default(now())
+}
+
+model TravelDocument {
+  id             String       @id @default(cuid())
+  title          String
+  url            String
+  timelineItemId String       @map("weddingId")
+  timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
 }

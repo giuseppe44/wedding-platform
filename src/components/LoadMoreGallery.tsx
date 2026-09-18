@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Loader2, Trash2, FolderOpen, MoreHorizontal } from "lucide-react";
+import { Loader2, Trash2, FolderOpen, MoreHorizontal, Send, Plane } from "lucide-react";
 import { fetchMoreMediaAction } from "@/app/mediaActions";
 
 import { deleteMediaAction } from "@/app/actions";
@@ -46,15 +47,18 @@ export default function LoadMoreGallery({
   };
 
   const handleRemoveMedia = (mediaId: string) => {
-    // Optimistic UI update
     setMedia(prev => prev.filter(m => m.id !== mediaId));
   };
 
   const handleChangeAlbum = (mediaId: string, newAlbumId: string | null) => {
-    // If we are currently filtered by an album, moving the media out of it should remove it from the view
     if (albumId && newAlbumId !== albumId) {
       setMedia(prev => prev.filter(m => m.id !== mediaId));
     }
+  };
+
+  const handleSendPostcard = (m: any) => {
+    const waText = encodeURIComponent(`Ciao ${m.uploaderName || "Caro Amico"}! Guardaci mentre ci godiamo il regalo che ci hai fatto! 📸✈️ Un abbraccio, gli Sposi.\n\nGuarda la foto: ${window.location.origin}/api/media/${m.id}`);
+    window.open("https://wa.me/?text=" + waText, "_blank");
   };
 
   return (
@@ -74,82 +78,110 @@ export default function LoadMoreGallery({
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             )}
+
+            {/* Travel Postcard overlay */}
+            {!isPublicView && item.giftOptionId && item.uploaderName && (
+              <div className="absolute bottom-2 left-2 right-2 flex justify-between items-end pointer-events-none">
+                <div className="bg-amber-600/90 text-white text-xs px-2 py-1 rounded backdrop-blur-sm pointer-events-auto shadow-sm">
+                  <span className="font-semibold block truncate">Da: {item.uploaderName}</span>
+                </div>
+                <Button 
+                  size="sm" 
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg pointer-events-auto flex items-center gap-1 rounded-full px-3 h-8"
+                  onClick={() => handleSendPostcard(item)}
+                >
+                  <Send className="w-3 h-3" /> Cartolina
+                </Button>
+              </div>
+            )}
             
             {/* Context Menu for Private View Only */}
             {!isPublicView && (
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button 
-                  variant="secondary" 
-                  size="icon" 
-                  className="h-8 w-8 rounded-full shadow-lg bg-white/90 backdrop-blur-sm hover:bg-white text-stone-700"
-                  onClick={() => setOpenMenuId(openMenuId === item.id ? null : item.id)}
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
+                <div className="relative">
+                  <Button 
+                    variant="secondary" 
+                    size="icon" 
+                    className="w-8 h-8 rounded-full bg-white/90 shadow-sm hover:bg-white text-stone-700 backdrop-blur-sm"
+                    onClick={() => setOpenMenuId(openMenuId === item.id ? null : item.id)}
+                  >
+                    <MoreHorizontal className="w-4 h-4" />
+                  </Button>
 
-                {openMenuId === item.id && (
-                  <div className="absolute top-10 right-0 w-48 bg-white border border-stone-200 shadow-xl rounded-lg p-1 z-10 animate-in fade-in zoom-in-95">
-                    <div className="px-2 py-1.5 text-xs font-semibold text-stone-500">Sposta in...</div>
-                    
-                    <button 
-                      onClick={() => { 
-                        setOpenMenuId(null); 
-                        handleChangeAlbum(item.id, null);
-                        startTransition(() => assignMediaToAlbumAction(item.id, null)); 
-                      }}
-                      className={`w-full text-left px-2 py-1.5 text-sm rounded-md flex items-center gap-2 hover:bg-stone-100 ${item.albumId === null ? 'font-bold bg-stone-50' : ''}`}
-                    >
-                      <FolderOpen className="h-4 w-4" /> Tutte le foto
-                    </button>
-                    
-                    {albums.map(a => (
-                      <button 
-                        key={a.id}
-                        onClick={() => { 
-                          setOpenMenuId(null); 
-                          handleChangeAlbum(item.id, a.id);
-                          startTransition(() => assignMediaToAlbumAction(item.id, a.id)); 
-                        }}
-                        className={`w-full text-left px-2 py-1.5 text-sm rounded-md flex items-center gap-2 hover:bg-stone-100 ${item.albumId === a.id ? 'font-bold bg-stone-50' : ''}`}
-                      >
-                        <FolderOpen className="h-4 w-4" /> {a.name}
-                      </button>
-                    ))}
-                    
-                    <div className="h-px bg-stone-200 my-1 mx-2" />
-                    
-                    <button 
-                      onClick={() => { 
-                        setOpenMenuId(null); 
-                        handleRemoveMedia(item.id);
-                        startTransition(() => deleteMediaAction(item.id)); 
-                      }}
-                      className="w-full text-left px-2 py-1.5 text-sm rounded-md flex items-center gap-2 text-red-600 hover:bg-red-50"
-                    >
-                      <Trash2 className="h-4 w-4" /> Elimina foto
-                    </button>
-                  </div>
-                )}
+                  {openMenuId === item.id && (
+                    <div className="absolute right-0 top-10 w-48 bg-white rounded-xl shadow-xl border border-stone-100 overflow-hidden z-50">
+                      <div className="p-1">
+                        {albums.length > 0 && (
+                          <div className="mb-1 pb-1 border-b border-stone-100">
+                            <div className="px-2 py-1.5 text-xs font-semibold text-stone-500 flex items-center gap-2">
+                              <FolderOpen className="w-3 h-3" /> Sposta in Album
+                            </div>
+                            {albums.map((a: any) => (
+                              <button
+                                key={a.id}
+                                onClick={async () => {
+                                  await assignMediaToAlbumAction(item.id, a.id);
+                                  handleChangeAlbum(item.id, a.id);
+                                  setOpenMenuId(null);
+                                }}
+                                className={`w-full text-left px-2 py-1.5 text-sm rounded hover:bg-stone-100 transition-colors ${item.albumId === a.id ? "bg-stone-50 text-stone-900 font-medium" : "text-stone-600"}`}
+                              >
+                                {a.name}
+                              </button>
+                            ))}
+                            {item.albumId && (
+                              <button
+                                onClick={async () => {
+                                  await assignMediaToAlbumAction(item.id, null);
+                                  handleChangeAlbum(item.id, null);
+                                  setOpenMenuId(null);
+                                }}
+                                className="w-full text-left px-2 py-1.5 text-sm rounded hover:bg-stone-100 transition-colors text-stone-600 italic"
+                              >
+                                Rimuovi dall"album
+                              </button>
+                            )}
+                          </div>
+                        )}
+                        <button
+                          onClick={async () => {
+                            if (confirm("Sei sicuro di voler eliminare questa foto?")) {
+                              await deleteMediaAction(item.id);
+                              handleRemoveMedia(item.id);
+                            }
+                            setOpenMenuId(null);
+                          }}
+                          className="w-full text-left px-2 py-1.5 text-sm rounded hover:bg-red-50 text-red-600 transition-colors flex items-center gap-2"
+                        >
+                          <Trash2 className="w-4 h-4" /> Elimina
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
         ))}
       </div>
-
+      
       {hasMore && (
-        <div className="flex justify-center mt-12 mb-8">
+        <div className="mt-8 text-center">
           <Button 
-            variant="outline" 
-            size="lg" 
-            onClick={() => startTransition(() => loadMore())}
+            onClick={() => startTransition(() => loadMore())} 
             disabled={isPending}
-            className="rounded-full shadow-sm hover:bg-stone-50 text-stone-700 font-serif"
+            variant="outline"
+            className="rounded-full px-8 bg-white border-stone-200 text-stone-700 hover:bg-stone-50 hover:text-stone-900 shadow-sm"
           >
-            {isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
-            Carica altre foto
+            {isPending ? (
+              <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Caricamento...</>
+            ) : (
+              "Carica Altre Foto"
+            )}
           </Button>
         </div>
       )}
     </div>
   );
 }
+

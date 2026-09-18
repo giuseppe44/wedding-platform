@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, MessageSquareHeart, Settings, Clock, Download, Check, X, ArrowLeft, Trash2, Edit2, Users, Gift } from "lucide-react";
+import { Camera, MessageSquareHeart, Settings, Clock, Download, Check, X, ArrowLeft, Trash2, Edit2, Users, Gift, Wallet } from "lucide-react";
 import { approveMedia, rejectMedia, deleteMediaAction } from "@/app/actions";
 import { updateBranding, addTimelineItem, deleteTimelineItem, approveMessage, rejectMessage } from "@/app/coupleActions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
@@ -18,6 +18,7 @@ import ChapterGallery from "./ChapterGallery";
 import ExtendedDetailsForm from "./ExtendedDetailsForm";
 import SeatingManager from "./SeatingManager";
 import GiftManager from "./GiftManager";
+import WalletManager from "./WalletManager";
 import ShareVetrinaButtons from "./ShareVetrinaButtons";
 import ProManager from "./ProManager";
 
@@ -50,6 +51,7 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
       media: { where: { status: "PENDING" }, orderBy: { createdAt: "desc" } },
       schedule: { orderBy: { order: "asc" } },
       messages: { orderBy: { createdAt: "desc" } },
+      travelDocuments: { orderBy: { createdAt: "desc" } },
       locations: true, guests: true, tables: true, giftOptions: true, assignments: { include: { professionalProfile: true } }, selectedGuests: true,
       albums: { orderBy: { createdAt: "asc" } },
     },
@@ -253,6 +255,8 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
               {isOwner && <TabsTrigger value="seating" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Users className="h-4 w-4"/> Tavoli</TabsTrigger>}
 
               {isOwner && <TabsTrigger value="gifts" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Gift className="h-4 w-4"/> Regali</TabsTrigger>}
+
+              {isOwner && <TabsTrigger value="wallet" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Wallet className="h-4 w-4"/> Documenti</TabsTrigger>}
 
               {isOwner && <TabsTrigger value="pros" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Camera className="h-4 w-4"/> Team</TabsTrigger>}
 
@@ -459,6 +463,10 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
           
             <TabsContent value="gifts" className="animate-in fade-in">
               <GiftManager chapter={chapter} giftOptions={chapter.giftOptions || []} />
+            </TabsContent>
+
+            <TabsContent value="wallet" className="animate-in fade-in">
+              <WalletManager documents={chapter.travelDocuments || []} weddingId={wedding.id} isProOrAdmin={isAssigned || session.role === "ADMIN"} />
             </TabsContent>
   
           

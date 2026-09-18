@@ -27,6 +27,7 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
   const albumId = formData.get("albumId") as string | null;
   const guestName = formData.get("guestName") as string | null;
   const guestMessage = formData.get("guestMessage") as string | null;
+  const giftOptionId = formData.get("giftOptionId") as string | null;
 
   if (albumId) {
     const album = await prisma.album.findUnique({ where: { id: albumId } });
@@ -80,6 +81,7 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
         albumId: albumId || null,
         uploaderName: guestName || null,
         guestMessage: guestMessage || null,
+        giftOptionId: giftOptionId || null,
       }
     });
     uploadedCount++;

@@ -1,16 +1,18 @@
+﻿
 "use client";
 
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, CheckCircle2, Loader2, UploadCloud, X, Film, Image as ImageIcon } from "lucide-react";
+import { Camera, CheckCircle2, Loader2, UploadCloud, X, Film, Image as ImageIcon, MapPin } from "lucide-react";
 import { uploadMediaAction } from "@/app/uploadAction";
 import Link from "next/link";
 
-export default function UploadClient({ timelineItemId, displayTitle, displayType, slug, buttonColor }: { timelineItemId: string, displayTitle: string, displayType: string, slug: string, buttonColor?: string }) {
+export default function UploadClient({ timelineItemId, displayTitle, displayType, slug, buttonColor, travelStages }: { timelineItemId: string, displayTitle: string, displayType: string, slug: string, buttonColor?: string, travelStages?: any[] }) {
   const [files, setFiles] = useState<File[]>([]);
   const [guestName, setGuestName] = useState("");
   const [guestMessage, setGuestMessage] = useState("");
+  const [selectedStage, setSelectedStage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +36,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
   };
 
   const compressImage = async (file: File): Promise<File> => {
-    if (!file.type.startsWith('image/')) return file;
+    if (!file.type.startsWith("image/")) return file;
     
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -43,7 +45,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
         const img = new Image();
         img.src = event.target?.result as string;
         img.onload = () => {
-          const canvas = document.createElement('canvas');
+          const canvas = document.createElement("canvas");
           const MAX_WIDTH = 1920;
           const MAX_HEIGHT = 1080;
           let width = img.width;
@@ -63,19 +65,19 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
 
           canvas.width = width;
           canvas.height = height;
-          const ctx = canvas.getContext('2d');
+          const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, width, height);
 
           canvas.toBlob((blob) => {
             if (blob) {
               resolve(new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
-                type: 'image/jpeg',
+                type: "image/jpeg",
                 lastModified: Date.now(),
               }));
             } else {
               resolve(file);
             }
-          }, 'image/jpeg', 0.8); // 80% quality compression
+          }, "image/jpeg", 0.8);
         };
       };
     });
@@ -100,6 +102,9 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
       if (guestMessage.trim()) {
         formData.append("guestMessage", guestMessage);
       }
+      if (selectedStage) {
+        formData.append("giftOptionId", selectedStage);
+      }
       
       const result = await uploadMediaAction(timelineItemId, formData);
       if (result.success) {
@@ -107,8 +112,8 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
         setFiles([]);
       }
     } catch (error) {
-      console.error("Errore durante l'upload", error);
-      alert("C'è stato un problema durante l'upload. Riprova con file più piccoli o meno file alla volta.");
+      console.error("Errore durante l`upload", error);
+      alert("C`è stato un problema durante l`upload. Riprova con file più piccoli o meno file alla volta.");
     } finally {
       setUploading(false);
     }
@@ -118,7 +123,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
     return (
       <Card className="w-full max-w-md text-center p-8 shadow-2xl border-none">
         <CheckCircle2 className="mx-auto h-20 w-20 text-green-500 mb-6" />
-        <h2 className="text-3xl font-bold mb-4">Grazie! ❤️</h2>
+        <h2 className="text-3xl font-bold mb-4">Grazie! 🎉</h2>
         <p className="text-stone-600 mb-8 text-lg">
           I tuoi ricordi sono stati caricati con successo.
         </p>
@@ -127,7 +132,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
             Carica altre foto
           </Button>
           <Link href={`/w/${slug}`} className="block">
-            <Button className="w-full py-6 text-lg rounded-full text-white hover:opacity-90" style={{ backgroundColor: buttonColor || '#000' }}>
+            <Button className="w-full py-6 text-lg rounded-full text-white hover:opacity-90" style={{ backgroundColor: buttonColor || "#000" }}>
               Torna alla pagina
             </Button>
           </Link>
@@ -165,6 +170,23 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
             />
           </div>
 
+          {travelStages && travelStages.length > 0 && (
+            <div className="space-y-2 text-left bg-amber-50 p-4 rounded-xl border border-amber-100">
+              <label className="text-sm font-semibold text-amber-900 flex items-center gap-2"><MapPin className="w-4 h-4" /> Quale tappa del viaggio è questa?</label>
+              <p className="text-xs text-amber-700 mb-2">Seleziona il regalo/tappa così gli sposi potranno inviare una cartolina a chi gliel"ha regalata!</p>
+              <select 
+                value={selectedStage}
+                onChange={(e) => setSelectedStage(e.target.value)}
+                className="w-full border border-amber-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+              >
+                <option value="">Nessuna tappa in particolare</option>
+                {travelStages.map(stage => (
+                  <option key={stage.id} value={stage.id}>{stage.title} {stage.location ? `(${stage.location})` : ""}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div 
             className="border-2 border-dashed border-stone-300 rounded-2xl p-8 text-center bg-stone-50 hover:bg-stone-100 transition-colors cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
@@ -191,7 +213,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
               {files.map((file, i) => (
                 <div key={i} className="flex items-center justify-between bg-stone-100 p-3 rounded-lg">
                   <div className="flex items-center gap-3 overflow-hidden">
-                    {file.type.startsWith('video') ? <Film className="text-stone-500 shrink-0" /> : <ImageIcon className="text-stone-500 shrink-0" />}
+                    {file.type.startsWith("video") ? <Film className="text-stone-500 shrink-0" /> : <ImageIcon className="text-stone-500 shrink-0" />}
                     <span className="text-sm truncate w-40">{file.name}</span>
                   </div>
                   <button type="button" onClick={() => removeFile(i)} className="text-stone-400 hover:text-red-500 p-1">
@@ -206,7 +228,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
             type="submit" 
             className="w-full h-14 text-lg rounded-full shadow-lg text-white hover:opacity-90" 
             disabled={files.length === 0 || uploading}
-            style={{ backgroundColor: buttonColor || '#000' }}
+            style={{ backgroundColor: buttonColor || "#000" }}
           >
             {uploading ? (
               <>
@@ -216,7 +238,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
             ) : (
               <>
                 <Camera className="mr-2 h-6 w-6" />
-                Carica {files.length} {files.length === 1 ? 'file' : 'file'}
+                Carica {files.length} {files.length === 1 ? "file" : "file"}
               </>
             )}
           </Button>
@@ -229,3 +251,4 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
     </Card>
   );
 }
+

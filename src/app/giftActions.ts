@@ -20,7 +20,11 @@ export async function createGiftOption(timelineItemId: string, data: any, slug: 
       paypalLink: data.paypalLink,
       externalLink: data.externalLink,
       isActive: data.isActive ?? true,
-      order: parseInt(data.order) || 0
+      order: parseInt(data.order) || 0,
+      isTravelStage: data.isTravelStage || false,
+      stageDate: data.stageDate ? new Date(data.stageDate) : null,
+      location: data.location || null,
+      targetAmount: data.targetAmount ? parseFloat(data.targetAmount) : null
     }
   });
 
@@ -43,7 +47,11 @@ export async function updateGiftOption(optionId: string, data: any, slug: string
       paypalLink: data.paypalLink,
       externalLink: data.externalLink,
       isActive: data.isActive,
-      order: parseInt(data.order) || 0
+      order: parseInt(data.order) || 0,
+      isTravelStage: data.isTravelStage || false,
+      stageDate: data.stageDate ? new Date(data.stageDate) : null,
+      location: data.location || null,
+      targetAmount: data.targetAmount ? parseFloat(data.targetAmount) : null
     }
   });
 
