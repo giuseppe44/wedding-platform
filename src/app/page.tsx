@@ -345,16 +345,16 @@ export default function Home() {
                 <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita.</p>
                 
                 <div className="text-4xl font-bold mb-2">
-                  {isTriennial ? '� 99,50' : '� 99'}
+                  {isTriennial ? '€ 99,50' : '€ 99'}
                 </div>
                 {!isTriennial ? (
                   <div className="text-sm text-stone-500 mb-6 min-h-[40px]">
                     il primo anno<br/>
-                    <span className="italic">rinnovo dal secondo anno � 50 all'anno</span>
+                    <span className="italic">rinnovo dal secondo anno € 50 all'anno</span>
                   </div>
                 ) : (
                   <div className="text-sm text-emerald-600 font-bold mb-6 min-h-[40px]">
-                    Pagamento anticipato 3 anni.<br/>Risparmi � 99,50
+                    Pagamento anticipato 3 anni.<br/>Risparmi € 99,50
                   </div>
                 )}
 
@@ -373,19 +373,19 @@ export default function Home() {
                 <div className="absolute top-0 right-0 bg-rose-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl">CONSIGLIATO</div>
                 <div className="text-rose-400 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
                 <h3 className="text-3xl font-serif mb-2">Piano Premium</h3>
-                <p className="text-stone-400 mb-6 line-clamp-2">Sblocca tutte le funzionalit� organizzative per un matrimonio perfetto.</p>
+                <p className="text-stone-400 mb-6 line-clamp-2">Sblocca tutte le funzionalità organizzative per un matrimonio perfetto.</p>
                 
                 <div className="text-4xl font-bold mb-2">
-                  {isTriennial ? '� 209,50' : '� 299'}
+                  {isTriennial ? '€ 209,50' : '€ 299'}
                 </div>
                 {!isTriennial ? (
                   <div className="text-sm text-stone-400 mb-6 min-h-[40px]">
                     il primo anno<br/>
-                    <span className="italic text-stone-500">rinnovo dal secondo anno � 60 all'anno</span>
+                    <span className="italic text-stone-500">rinnovo dal secondo anno € 60 all'anno</span>
                   </div>
                 ) : (
                   <div className="text-sm text-emerald-400 font-bold mb-6 min-h-[40px]">
-                    Pagamento anticipato 3 anni.<br/>Risparmi � 209,50
+                    Pagamento anticipato 3 anni.<br/>Risparmi € 209,50
                   </div>
                 )}
 
@@ -404,12 +404,12 @@ export default function Home() {
               <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
                 <div className="text-amber-500 font-bold tracking-widest text-sm mb-4 uppercase">Per i Professionisti</div>
                 <h3 className="text-3xl font-serif text-stone-900 mb-2">Pro & Partner</h3>
-                <p className="text-stone-500 mb-6 line-clamp-2">Ottieni visibilit�, consegne digitali perfette e acquisisci nuovi clienti.</p>
-                <div className="text-4xl font-bold mb-2">da � 15<span className="text-xl text-stone-400 font-light">/mese</span></div>
+                <p className="text-stone-500 mb-6 line-clamp-2">Ottieni visibilità, consegne digitali perfette e acquisisci nuovi clienti.</p>
+                <div className="text-4xl font-bold mb-2">da € 15<span className="text-xl text-stone-400 font-light">/mese</span></div>
                 <div className="text-sm text-stone-500 mb-6 min-h-[40px]">Fatturazione annuale</div>
                 <ul className="space-y-4 mb-8 flex-grow">
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Vetrina nella directory Top Pro</li>
-                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Consegna album in alta qualit�</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Consegna album in alta qualità</li>
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Ricevi recensioni e contatti diretti</li>
                 </ul>
                 <Link href="/professionisti">
