@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -65,7 +65,7 @@ export default function PrezziPage() {
                   {isTriennial ? (
                     <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-600 font-bold">Risparmi € 99,50</span></>
                   ) : (
-                    "Primo anno (rinnovo a € 50/anno)"
+                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno € 50 all'anno</span></>
                   )}
                 </p>
                 <ul className="text-stone-600 space-y-4 mb-10 flex-1">
@@ -99,7 +99,7 @@ export default function PrezziPage() {
                   {isTriennial ? (
                     <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-400 font-bold">Risparmi € 209,50</span></>
                   ) : (
-                    "Primo anno (rinnovo a € 60/anno)"
+                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno € 60 all'anno</span></>
                   )}
                 </p>
                 <ul className="text-stone-300 space-y-4 mb-10 flex-1">
@@ -130,7 +130,7 @@ export default function PrezziPage() {
                   {isTriennial ? (
                     <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-600 font-bold">Risparmi € 294,50</span></>
                   ) : (
-                    "Primo anno (rinnovo a € 70/anno)"
+                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno € 70 all'anno</span></>
                   )}
                 </p>
                 <ul className="text-stone-600 space-y-4 mb-10 flex-1">

@@ -1,5 +1,6 @@
-﻿"use client";
+"use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { 
@@ -27,6 +28,7 @@ const fadeUpVariant: Variants = {
 };
 
 export default function Home() {
+  const [isTriennial, setIsTriennial] = useState(false);
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
       
@@ -312,71 +314,118 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PRICING / PACCHETTI PLACEHOLDER */}
-      <section id="pricing" className="py-24 bg-[#faf9f8] relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-6">Piani e Promozioni</h2>
-          <p className="text-xl text-stone-500 font-light max-w-2xl mx-auto mb-16">
-            Scegliete l'abbonamento perfetto per le vostre esigenze o per il vostro business.
-          </p>
+      
+        {/* PRICING / PACCHETTI PLACEHOLDER */}
+        <section id="pricing" className="py-24 bg-[#faf9f8] relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-6">Piani e Promozioni</h2>
+            <p className="text-xl text-stone-500 font-light max-w-2xl mx-auto mb-10">
+              Scegliete l'abbonamento perfetto per le vostre esigenze o per il vostro business.
+            </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* SPOSI ENTRY */}
-            <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
-              <div className="text-rose-500 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
-              <h3 className="text-3xl font-serif text-stone-900 mb-2">Piano Base</h3>
-              <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita.</p>
-              <div className="text-4xl font-bold mb-8">€ 99</div>
-              <ul className="space-y-4 mb-8 flex-grow">
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Galleria foto e video</li>
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 10 GB di spazio privato</li>
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Sito web personalizzato</li>
-              </ul>
-              <Link href="/sposi">
-                <Button className="w-full h-12 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-semibold">Iscriviti Ora</Button>
-              </Link>
+            <div className="flex justify-center items-center gap-4 mb-12">
+              <span className={"text-lg font-medium " + (!isTriennial ? "text-stone-900" : "text-stone-400")}>Annuale</span>
+              <button 
+                onClick={() => setIsTriennial(!isTriennial)}
+                className="w-16 h-8 bg-rose-500 rounded-full relative p-1 transition-colors"
+              >
+                <div className={"w-6 h-6 bg-white rounded-full shadow-sm transition-transform " + (isTriennial ? "translate-x-8" : "translate-x-0")} />
+              </button>
+              <span className={"text-lg font-medium flex items-center gap-2 " + (isTriennial ? "text-stone-900" : "text-stone-400")}>
+                Triennale 
+                <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-full">-50%</span>
+              </span>
             </div>
+  
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {/* SPOSI ENTRY */}
+              <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
+                <div className="text-rose-500 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
+                <h3 className="text-3xl font-serif text-stone-900 mb-2">Piano Base</h3>
+                <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita.</p>
+                
+                <div className="text-4xl font-bold mb-2">
+                  {isTriennial ? '� 99,50' : '� 99'}
+                </div>
+                {!isTriennial ? (
+                  <div className="text-sm text-stone-500 mb-6 min-h-[40px]">
+                    il primo anno<br/>
+                    <span className="italic">rinnovo dal secondo anno � 50 all'anno</span>
+                  </div>
+                ) : (
+                  <div className="text-sm text-emerald-600 font-bold mb-6 min-h-[40px]">
+                    Pagamento anticipato 3 anni.<br/>Risparmi � 99,50
+                  </div>
+                )}
 
-            {/* SPOSI PREMIUM */}
-            <div className="bg-stone-900 p-8 rounded-3xl shadow-xl border border-stone-800 flex flex-col text-left text-white hover:-translate-y-2 transition-transform relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-rose-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl">CONSIGLIATO</div>
-              <div className="text-rose-400 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
-              <h3 className="text-3xl font-serif mb-2">Piano Premium</h3>
-              <p className="text-stone-400 mb-6 line-clamp-2">Sblocca tutte le funzionalità organizzative per un matrimonio perfetto.</p>
-              <div className="text-4xl font-bold mb-8">€ 299<span className="text-xl text-stone-500 font-light">/anno</span></div>
-              <ul className="space-y-4 mb-8 flex-grow text-stone-300">
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Spazio Illimitato</li>
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Disposizione Tavoli & RSVP</li>
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> ecos.com LIVE (Proiettore)</li>
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Inviti digitali illimitati</li>
-              </ul>
-              <Link href="/sposi">
-                <Button className="w-full h-12 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold border-none">Passa a Premium</Button>
-              </Link>
-            </div>
+                <ul className="space-y-4 mb-8 flex-grow">
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Galleria foto e video</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 10 GB di spazio privato</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Sito web personalizzato</li>
+                </ul>
+                <Link href="/prezzi">
+                  <Button className="w-full h-12 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-semibold">Scopri i Piani</Button>
+                </Link>
+              </div>
+  
+              {/* SPOSI PREMIUM */}
+              <div className="bg-stone-900 p-8 rounded-3xl shadow-xl border border-stone-800 flex flex-col text-left text-white hover:-translate-y-2 transition-transform relative overflow-hidden">
+                <div className="absolute top-0 right-0 bg-rose-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl">CONSIGLIATO</div>
+                <div className="text-rose-400 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
+                <h3 className="text-3xl font-serif mb-2">Piano Premium</h3>
+                <p className="text-stone-400 mb-6 line-clamp-2">Sblocca tutte le funzionalit� organizzative per un matrimonio perfetto.</p>
+                
+                <div className="text-4xl font-bold mb-2">
+                  {isTriennial ? '� 209,50' : '� 299'}
+                </div>
+                {!isTriennial ? (
+                  <div className="text-sm text-stone-400 mb-6 min-h-[40px]">
+                    il primo anno<br/>
+                    <span className="italic text-stone-500">rinnovo dal secondo anno � 60 all'anno</span>
+                  </div>
+                ) : (
+                  <div className="text-sm text-emerald-400 font-bold mb-6 min-h-[40px]">
+                    Pagamento anticipato 3 anni.<br/>Risparmi � 209,50
+                  </div>
+                )}
 
-            {/* PROFESSIONISTI */}
-            <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
-              <div className="text-amber-500 font-bold tracking-widest text-sm mb-4 uppercase">Per i Professionisti</div>
-              <h3 className="text-3xl font-serif text-stone-900 mb-2">Pro & Partner</h3>
-              <p className="text-stone-500 mb-6 line-clamp-2">Ottieni visibilità, consegne digitali perfette e acquisisci nuovi clienti.</p>
-              <div className="text-4xl font-bold mb-8">da € 15<span className="text-xl text-stone-400 font-light">/mese</span></div>
-              <ul className="space-y-4 mb-8 flex-grow">
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Vetrina nella directory Top Pro</li>
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Consegna album in alta qualità</li>
-                <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Ricevi recensioni e contatti diretti</li>
-              </ul>
-              <Link href="/professionisti">
-                <Button className="w-full h-12 rounded-full bg-amber-400 hover:bg-amber-500 text-stone-900 font-bold border-none shadow-sm">Scopri i Piani Pro</Button>
-              </Link>
+                <ul className="space-y-4 mb-8 flex-grow text-stone-300">
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Spazio Illimitato</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Disposizione Tavoli & RSVP</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> ecos.com LIVE (Proiettore)</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Inviti digitali illimitati</li>
+                </ul>
+                <Link href="/prezzi">
+                  <Button className="w-full h-12 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold border-none">Scopri i Piani</Button>
+                </Link>
+              </div>
+  
+              {/* PROFESSIONISTI */}
+              <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
+                <div className="text-amber-500 font-bold tracking-widest text-sm mb-4 uppercase">Per i Professionisti</div>
+                <h3 className="text-3xl font-serif text-stone-900 mb-2">Pro & Partner</h3>
+                <p className="text-stone-500 mb-6 line-clamp-2">Ottieni visibilit�, consegne digitali perfette e acquisisci nuovi clienti.</p>
+                <div className="text-4xl font-bold mb-2">da � 15<span className="text-xl text-stone-400 font-light">/mese</span></div>
+                <div className="text-sm text-stone-500 mb-6 min-h-[40px]">Fatturazione annuale</div>
+                <ul className="space-y-4 mb-8 flex-grow">
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Vetrina nella directory Top Pro</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Consegna album in alta qualit�</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Ricevi recensioni e contatti diretti</li>
+                </ul>
+                <Link href="/professionisti">
+                  <Button className="w-full h-12 rounded-full bg-amber-400 hover:bg-amber-500 text-stone-900 font-bold border-none shadow-sm">Scopri i Piani Pro</Button>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+
+        </section>
 
       <Footer />
     </div>
   );
 }
+
+
 
 
