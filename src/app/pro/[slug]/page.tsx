@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExternalLink, Camera, Mail, Phone, MessageCircle, MapPin, Lock, ArrowUpRight } from "lucide-react";
@@ -138,7 +138,7 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {profile.gallery.map((imgUrl, i) => (
                   <div key={i} className="aspect-square rounded-xl overflow-hidden bg-stone-100 shadow-sm">
-                    <img src={imgUrl} alt={`Gallery ${i+1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500 cursor-pointer" />
+                    <img src={imgUrl} alt={`Gallery ${i+1}`} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500 cursor-pointer" />
                   </div>
                 ))}
               </div>

@@ -1,7 +1,8 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
+import { uploadFile } from "@/lib/storage";
 import { revalidatePath } from "next/cache";
 
 export async function upsertProfile(data: any) {
@@ -31,7 +32,7 @@ export async function upsertProfile(data: any) {
       logoUrl: data.logoUrl, // Media upload handled separately via Supabase proxy
       coverImage: data.coverImage,
       profileImage: data.profileImage,
-      gallery: data.gallery || [],
+      gallery: (data.gallery || []).slice(0, 15),
       video1: data.video1,
       video2: data.video2,
       serviceArea: data.serviceArea,
@@ -51,7 +52,7 @@ export async function upsertProfile(data: any) {
       logoUrl: data.logoUrl,
       coverImage: data.coverImage,
       profileImage: data.profileImage,
-      gallery: data.gallery || [],
+      gallery: (data.gallery || []).slice(0, 15),
       video1: data.video1,
       video2: data.video2,
       serviceArea: data.serviceArea,
@@ -160,3 +161,33 @@ export async function leavePublicReview(proId: string, rating: number, text: str
 
   revalidatePath('/pro/[slug]', 'layout');
 }
+
+
+export async function uploadProMedia(formData: FormData) {
+  const session = await requireAuth(["PHOTOGRAPHER", "ADMIN"]);
+  const file = formData.get("file") as File;
+  if (!file || file.size === 0) throw new Error("Nessun file selezionato");
+  
+  if (!file.type.startsWith("image/")) throw new Error("Sono consentite solo immagini");
+  if (file.size > 5 * 1024 * 1024) throw new Error("Immagine troppo grande (max 5MB)");
+  
+  
+    const buffer = Buffer.from(await file.arrayBuffer());
+    // Basic verification of file signatures
+    const magic = buffer.toString('hex', 0, 4).toUpperCase();
+    const isJPEG = magic.startsWith('FFD8FF');
+    const isPNG = magic === '89504E47';
+    const isGIF = magic.startsWith('47494638');
+    const isWebP = magic.startsWith('52494646') && buffer.toString('hex', 8, 12).toUpperCase() === '57454250';
+    if (!isJPEG && !isPNG && !isGIF && !isWebP) {
+      throw new Error("Formato file non supportato o invalido. Verifica che il file sia un'immagine reale.");
+    }
+
+  const uniqueName = `pro-${Date.now()}-${Math.random().toString(36).substring(2,7)}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+  
+  // Reuse storage upload. The folder will be uploads/pro-userId/...
+  const url = await uploadFile(`pro-${session.userId}`, uniqueName, buffer, file.type);
+  
+  return url;
+}
+

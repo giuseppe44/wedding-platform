@@ -18,7 +18,11 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files && e.target.files.length > 0) {
+      if (!window.confirm("ATTENZIONE - DIRITTI E PRIVACY\nConfermi di avere l'autorizzazione per condividere queste immagini/video con gli sposi e gli invitati, assumendoti la responsabilità per il caricamento?")) {
+        e.target.value = "";
+        return;
+      }
       const newFiles = Array.from(e.target.files);
       setFiles(prev => {
         const total = [...prev, ...newFiles];
@@ -113,7 +117,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
       }
     } catch (error) {
       console.error("Errore durante l`upload", error);
-      alert("C`è stato un problema durante l`upload. Riprova con file più piccoli o meno file alla volta.");
+      alert("C`� stato un problema durante l`upload. Riprova con file pi� piccoli o meno file alla volta.");
     } finally {
       setUploading(false);
     }
@@ -123,7 +127,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
     return (
       <Card className="w-full max-w-md text-center p-8 shadow-2xl border-none">
         <CheckCircle2 className="mx-auto h-20 w-20 text-green-500 mb-6" />
-        <h2 className="text-3xl font-bold mb-4">Grazie! 🎉</h2>
+        <h2 className="text-3xl font-bold mb-4">Grazie! ??</h2>
         <p className="text-stone-600 mb-8 text-lg">
           I tuoi ricordi sono stati caricati con successo.
         </p>
@@ -165,27 +169,12 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
             <textarea 
               value={guestMessage}
               onChange={(e) => setGuestMessage(e.target.value)}
-              placeholder="Scrivi qui il tuo messaggio... apparirà sul maxischermo!"
+              placeholder="Scrivi qui il tuo messaggio... apparir� sul maxischermo!"
               className="w-full border border-stone-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-stone-500 min-h-[80px]"
             />
           </div>
 
-          {travelStages && travelStages.length > 0 && (
-            <div className="space-y-2 text-left bg-amber-50 p-4 rounded-xl border border-amber-100">
-              <label className="text-sm font-semibold text-amber-900 flex items-center gap-2"><MapPin className="w-4 h-4" /> Quale tappa del viaggio è questa?</label>
-              <p className="text-xs text-amber-700 mb-2">Seleziona il regalo/tappa così gli sposi potranno inviare una cartolina a chi gliel"ha regalata!</p>
-              <select 
-                value={selectedStage}
-                onChange={(e) => setSelectedStage(e.target.value)}
-                className="w-full border border-amber-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
-              >
-                <option value="">Nessuna tappa in particolare</option>
-                {travelStages.map(stage => (
-                  <option key={stage.id} value={stage.id}>{stage.title} {stage.location ? `(${stage.location})` : ""}</option>
-                ))}
-              </select>
-            </div>
-          )}
+          
 
           <div 
             className="border-2 border-dashed border-stone-300 rounded-2xl p-8 text-center bg-stone-50 hover:bg-stone-100 transition-colors cursor-pointer"
@@ -203,7 +192,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
               <UploadCloud className="h-16 w-16 text-stone-400 mb-4" />
               <span className="text-lg font-semibold text-stone-700">Tocca per selezionare</span>
               <span className="text-sm text-stone-500 mt-2">
-                Puoi selezionare più foto e video insieme
+                Puoi selezionare pi� foto e video insieme
               </span>
             </div>
           </div>

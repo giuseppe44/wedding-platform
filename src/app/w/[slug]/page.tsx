@@ -1,4 +1,4 @@
-import GuestLogin from "./GuestLogin";
+﻿import GuestLogin from "./GuestLogin";
 import { verifyTimelineAccess } from "@/lib/accessControl";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
@@ -16,6 +16,11 @@ import WeddingDetails from "./WeddingDetails";
 import GiftSection from "./GiftSection";
 import PublicProsSection from "./PublicProsSection";
 import TimelineSection from "./TimelineSection";
+import EnvelopeOpening from "@/components/w/EnvelopeOpening";
+import ScratchDate from "@/components/w/ScratchDate";
+import Countdown from "@/components/w/Countdown";
+import MusicPlayer from "@/components/w/MusicPlayer";
+import ScrollReveal from "@/components/w/ScrollReveal";
 
 export default async function PublicTimelinePage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const headersList = await headers();
@@ -57,6 +62,30 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
     }
   }
 
+  
+  let allChapters = [];
+  if (wedding.familyId) {
+    allChapters = await prisma.timelineItem.findMany({
+      where: { familyId: wedding.familyId },
+      orderBy: { date: "asc" }
+    });
+  } else if (wedding.coupleId) {
+    allChapters = await prisma.timelineItem.findMany({
+      where: { coupleId: wedding.coupleId },
+      orderBy: { date: "asc" }
+    });
+  } else {
+    allChapters = [wedding];
+  }
+
+  const authorizedChapters = [];
+  for (const chap of allChapters) {
+    const chapAccess = await verifyTimelineAccess(chap, "VIEW_PUBLIC");
+    if (chapAccess) {
+      authorizedChapters.push(chap);
+    }
+  }
+
   const CHAPTER_TYPES: Record<string, { type: string, authors: string }> = {
     "WEDDING": { type: "Il nostro matrimonio", authors: "gli sposi" },
     "ANNIVERSARY": { type: "Anniversario", authors: "la coppia" },
@@ -95,7 +124,9 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
   }
 
   return (
-    <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
+    <EnvelopeOpening initials={`${wedding.brideName?.[0] || "E"}&${wedding.groomName?.[0] || "C"}`}>
+      <MusicPlayer src="/music/audio-test.mp3" />
+      <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
       {/* 1. HERO */}
       <div className="relative w-full h-[60vh] md:h-[70vh] bg-stone-900 flex items-center justify-center overflow-hidden">
         {wedding.coverImage ? (
@@ -110,11 +141,7 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
           <h1 className="text-4xl md:text-6xl font-serif text-white tracking-tight mb-6 drop-shadow-lg">
             {displayTitle}
           </h1>
-          {wedding.date && (
-            <p className="text-stone-200 text-lg md:text-xl font-light italic drop-shadow-md">
-              {new Date(wedding.date).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" })}
-            </p>
-          )}
+          {wedding.date && <ScratchDate date={wedding.date} />}
         </div>
       </div>
 
@@ -134,54 +161,98 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         </Card>
       </div>
 
+      {authorizedChapters.length > 1 && (
+        <div className="max-w-6xl mx-auto px-4 pt-16">
+          <h3 className="text-center font-serif text-2xl text-stone-700 mb-8">Esplora la nostra storia</h3>
+          <div className="flex flex-wrap justify-center gap-4">
+            {authorizedChapters.map((c: any, index: number) => {
+              const chapConfig = CHAPTER_TYPES[c.type] || CHAPTER_TYPES["CUSTOM"];
+              const cTitle = c.type === "WEDDING" ? "Il Matrimonio" : (c.title || chapConfig.type);
+              const isActive = c.id === wedding.id;
+              
+              return (
+                <Link key={c.id} href={`/w/${c.slug}`}><Button variant={isActive ? "default" : "outline"} className={`rounded-full px-6 py-6 h-auto flex flex-col gap-1 transition-all ${isActive ? "shadow-md scale-105 pointer-events-none" : "hover:scale-105 hover:bg-stone-50 border-stone-200"}`} style={isActive ? { backgroundColor: themeColor } : {}}><span className="text-xs font-semibold tracking-wider uppercase opacity-70">Capitolo {index + 1}</span><span className="text-lg font-serif">{cTitle}</span></Button></Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {wedding.date && <Countdown date={wedding.date} />}
+
       {/* 2. STORIA */}
       {wedding.description && (
-        <div className="max-w-3xl mx-auto px-4 pt-24 text-center">
-          <h2 className="text-3xl font-serif text-stone-800 mb-8">La Storia</h2>
-          <p className="text-lg md:text-xl text-stone-600 leading-relaxed font-light">
-            {wedding.description}
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="max-w-3xl mx-auto px-4 pt-24 text-center">
+            <h2 className="text-3xl font-serif text-stone-800 mb-8">La Storia</h2>
+            <p className="text-lg md:text-xl text-stone-600 leading-relaxed font-light">
+              {wedding.description}
+            </p>
+          </div>
+        </ScrollReveal>
       )}
 
       {/* 3. PROGRAMMA */}
       {wedding.schedule.length > 0 && (
         <div className="max-w-3xl mx-auto px-4 pt-24">
-          <h2 className="text-3xl font-serif text-stone-800 mb-12 text-center">Programma</h2>
+          <ScrollReveal>
+            <h2 className="text-3xl font-serif text-stone-800 mb-12 text-center">Programma</h2>
+          </ScrollReveal>
           <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-stone-300 before:to-transparent">
             {wedding.schedule.map((item: any, idx: number) => (
-              <div key={item.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-stone-300 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2" style={{ backgroundColor: themeColor }}></div>
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
-                  <div className="font-bold text-xl mb-1" style={{ color: themeColor }}>{item.time}</div>
-                  <h4 className="text-xl font-semibold text-stone-800 mb-2">{item.title}</h4>
-                  {item.description && <p className="text-stone-500 leading-relaxed">{item.description}</p>}
+              <ScrollReveal key={item.id} delay={idx * 0.1}>
+                <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-stone-300 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2" style={{ backgroundColor: themeColor }}></div>
+                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+                    <div className="font-bold text-xl mb-1" style={{ color: themeColor }}>{item.time}</div>
+                    <h4 className="text-xl font-semibold text-stone-800 mb-2">{item.title}</h4>
+                    {item.description && <p className="text-stone-500 leading-relaxed">{item.description}</p>}
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       )}
 
+      {/* DRESS CODE */}
+      {wedding.dressCode && (
+        <ScrollReveal>
+          <div className="max-w-3xl mx-auto px-4 pt-24 text-center">
+            <h2 className="text-3xl font-serif text-stone-800 mb-6">Dress Code</h2>
+            <p className="text-lg text-stone-600 mb-8 font-light">{wedding.dressCode}</p>
+            <div className="flex justify-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-[#fcf9f2] border border-stone-200 shadow-sm" title="Ivory"></div>
+              <div className="w-10 h-10 rounded-full bg-[#f4ebd0] border border-stone-200 shadow-sm" title="Champagne"></div>
+              <div className="w-10 h-10 rounded-full bg-[#dca8a9] border border-stone-200 shadow-sm" title="Dusty Rose"></div>
+              <div className="w-10 h-10 rounded-full bg-[#c2ceba] border border-stone-200 shadow-sm" title="Sage"></div>
+              <div className="w-10 h-10 rounded-full bg-[#b5c2d1] border border-stone-200 shadow-sm" title="Soft Blue"></div>
+            </div>
+          </div>
+        </ScrollReveal>
+      )}
+
       {/* 4. LOCATION */}
       {wedding.locations.length > 0 && (
-        <div className="max-w-5xl mx-auto px-4 pt-24">
-          <h2 className="text-3xl font-serif text-stone-800 mb-12 text-center">Luoghi</h2>
-          <div className="grid gap-8 md:grid-cols-2">
-            {wedding.locations.map((loc: any) => (
-              <div key={loc.id} className="bg-white p-8 rounded-3xl text-center shadow-sm border border-stone-100 transition-transform hover:-translate-y-1">
-                <MapPin className="h-10 w-10 mx-auto mb-4 text-stone-400" />
-                <h4 className="font-serif text-2xl text-stone-800 mb-2">{loc.name}</h4>
-                <p className="text-stone-500 mb-6">{loc.address}</p>
-                {loc.address && (
-                  <a href={`https://maps.google.com/?q=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer">
-                    <Button variant="outline" className="w-full rounded-full border-stone-300 hover:bg-stone-50">Apri in Google Maps</Button>
-                  </a>
-                )}
-              </div>
-            ))}
+        <ScrollReveal>
+          <div className="max-w-5xl mx-auto px-4 pt-24">
+            <h2 className="text-3xl font-serif text-stone-800 mb-12 text-center">Luoghi</h2>
+            <div className="grid gap-8 md:grid-cols-2">
+              {wedding.locations.map((loc: any) => (
+                <div key={loc.id} className="bg-white p-8 rounded-3xl text-center shadow-sm border border-stone-100 transition-transform hover:-translate-y-1">
+                  <MapPin className="h-10 w-10 mx-auto mb-4 text-stone-400" />
+                  <h4 className="font-serif text-2xl text-stone-800 mb-2">{loc.name}</h4>
+                  <p className="text-stone-500 mb-6">{loc.address}</p>
+                  {loc.address && (
+                    <a href={`https://maps.google.com/?q=${encodeURIComponent(loc.address)}`} target="_blank" rel="noreferrer">
+                      <Button variant="outline" className="w-full rounded-full border-stone-300 hover:bg-stone-50">Apri in Google Maps</Button>
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       )}
 
       {/* DISPOSIZIONE TAVOLI (Opzionale) */}
@@ -196,7 +267,7 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
              </p>
              <Link href={`/w/${wedding.slug}/seating`}>
                <Button size="lg" className="rounded-full shadow-md text-white px-8" style={{ backgroundColor: themeColor }}>
-                 Cerca il tuo tavolo
+                 Tableau dei tavoli
                </Button>
              </Link>
           </div>
@@ -339,11 +410,7 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         )}
 
         <h3 className="text-2xl font-serif text-stone-800 mb-6">Grazie per essere parte di questa storia.</h3>
-        <Link href={`/w/${wedding.slug}/upload`}>
-          <Button size="lg" className="rounded-full shadow-lg text-white" style={{ backgroundColor: themeColor }}>
-            <Camera className="mr-2 h-5 w-5" /> Condividi altri ricordi
-          </Button>
-        </Link>
+        
       </div>
 
       {/* REGISTRAZIONE OSPITI (LEAD GENERATION) */}
@@ -356,7 +423,7 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         <div className="bg-stone-900 text-white p-10 md:p-14 rounded-3xl text-center shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop')] opacity-10 object-cover" />
           <div className="relative z-10">
-            <h3 className="text-3xl md:text-4xl font-serif mb-4">La storia non finisce qui.</h3>
+            <h3 className="text-3xl md:text-4xl font-serif mb-4">Questa è la nostra storia. Vuoi raccontare la tua?</h3>
             <p className="text-stone-300 text-lg md:text-xl mb-8 max-w-2xl mx-auto font-light">
               Il prossimo grande evento potrebbe essere il tuo. Crea uno spazio per un Matrimonio, un Battesimo, una Laurea o un Anniversario, e inizia a collezionare ricordi.
             </p>
@@ -370,5 +437,6 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
       </div>
 
     </div>
+    </EnvelopeOpening>
   );
 }

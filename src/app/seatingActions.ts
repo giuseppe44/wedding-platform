@@ -1,14 +1,24 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { getUserEntitlements } from "@/lib/entitlementHelper";
+
+async function verifySeatingAccess(timelineItemId: string) {
+  const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
+  if (!wedding) throw new Error("Evento non trovato");
+  const entitlements = await getUserEntitlements(wedding.ownerId);
+  if (!entitlements.canManageSeating) {
+    throw new Error("Funzionalità non inclusa: La gestione dei tavoli richiede il piano Premium o superiore.");
+  }
+  return wedding;
+}
 
 // Gestione Ospiti
 export async function createGuest(timelineItemId: string, data: any, slug: string) {
   const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
-  const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
-  if (!wedding || (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN")) throw new Error("Non autorizzato");
+  const wedding = await verifySeatingAccess(timelineItemId); if (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN") throw new Error("Non autorizzato");
 
   await prisma.guest.create({
     data: {
@@ -63,8 +73,7 @@ export async function deleteGuest(guestId: string, slug: string) {
 // Gestione Tavoli
 export async function createTable(timelineItemId: string, data: any, slug: string) {
   const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
-  const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
-  if (!wedding || (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN")) throw new Error("Non autorizzato");
+  const wedding = await verifySeatingAccess(timelineItemId); if (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN") throw new Error("Non autorizzato");
 
   await prisma.table.create({
     data: {
@@ -155,3 +164,5 @@ export async function searchGuestSeating(timelineItemId: string, name: string, s
     tablemates: guest.table.guests.map(g => `${g.name} ${g.surname}`)
   };
 }
+
+

@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
@@ -27,6 +27,48 @@ export async function assignProfessional(weddingId: string, proId: string, role:
   
   if (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN") {
     throw new Error("Non autorizzato ad assegnare professionisti a questo evento");
+  }
+
+    const proProfile = await prisma.professionalProfile.findUnique({ where: { id: proId } });
+  if (!proProfile) throw new Error("Professionista non trovato");
+
+  // Check professional's plan and enforce max events
+  const sub = await prisma.subscription.findFirst({
+    where: { 
+      userId: proProfile.userId,
+      status: "ACTIVE",
+      OR: [
+        { expiresAt: null },
+        { expiresAt: { gt: new Date() } }
+      ]
+    },
+    include: { plan: true },
+    orderBy: { createdAt: "desc" }
+  });
+
+  const planName = sub?.plan?.name?.toUpperCase() || "ENTRY";
+  
+  if (planName === "ENTRY") {
+    const activeAssignments = await prisma.eventAssignment.count({
+      where: {
+        professionalProfileId: proId,
+        status: "ACTIVE"
+      }
+    });
+
+    // We check if this specific assignment already exists so we don't count it twice for updates
+    const existing = await prisma.eventAssignment.findUnique({
+      where: {
+        timelineItemId_professionalProfileId: {
+          timelineItemId: weddingId,
+          professionalProfileId: proId
+        }
+      }
+    });
+
+    if (!existing && activeAssignments >= 3) {
+      throw new Error("Questo professionista ha raggiunto il limite di 3 eventi gestibili col piano Entry.");
+    }
   }
 
   // Upsert assignment to handle re-assignment or update
@@ -146,3 +188,4 @@ export async function verifyProAssignment(weddingId: string, userId: string) {
   });
   return assignment?.status === 'ACTIVE';
 }
+

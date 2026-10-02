@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -65,7 +65,7 @@ export default function GiftSection({ slug, options }: { slug: string, options: 
 
       {otherGifts.length > 0 && (
         <div>
-          {travelStages.length > 0 && <h3 className="text-2xl font-serif text-center text-stone-800 mb-8 mt-12">Altri Pensieri</h3>}
+          {travelStages.length > 0 && <h3 className="text-2xl font-serif text-center text-stone-800 mb-8 mt-12">Partecipa al regalo di nozze</h3>}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center max-w-3xl mx-auto">
             {otherGifts.map(opt => (
               <Card key={opt.id} className="border-stone-100 shadow-sm hover:shadow-md transition-shadow">
@@ -97,7 +97,7 @@ export default function GiftSection({ slug, options }: { slug: string, options: 
 }
 
 function GiftInteractions({ option, slug, btnClass = "w-full" }: { option: any, slug: string, btnClass?: string }) {
-  const [iban, setIban] = useState<string | null>(null);
+  const [ibanData, setIbanData] = useState<{ iban: string | null, accountHolder: string | null }>({ iban: null, accountHolder: null });
   const [loadingIban, setLoadingIban] = useState(false);
   const [error, setError] = useState("");
 
@@ -106,8 +106,8 @@ function GiftInteractions({ option, slug, btnClass = "w-full" }: { option: any, 
     setError("");
     try {
       const result = await revealIban(option.id, slug);
-      if (result) {
-        setIban(result as string);
+      if (result && result.iban) {
+        setIbanData({ iban: result.iban, accountHolder: result.accountHolder });
       } else {
         setError("Impossibile recuperare l'IBAN");
       }
@@ -120,16 +120,16 @@ function GiftInteractions({ option, slug, btnClass = "w-full" }: { option: any, 
 
   return (
     <div className="space-y-3">
-      {option.iban && !iban && (
+      {option.iban && !ibanData.iban && (
         <Button onClick={handleRevealIban} variant="outline" className={btnClass} disabled={loadingIban}>
           {loadingIban ? "Verifica in corso..." : <><CreditCard className="w-4 h-4 mr-2" /> Mostra IBAN per Bonifico</>}
         </Button>
       )}
 
-      {iban && (
+      {ibanData.iban && (
         <div className="bg-stone-50 p-4 rounded-lg border border-stone-200 text-center animate-in fade-in">
-          <p className="text-xs text-stone-500 mb-1 font-semibold uppercase">IBAN Intestato a</p>
-          <p className="font-mono text-sm md:text-base font-bold text-stone-800 break-all">{iban}</p>
+          {ibanData.accountHolder && <p className="text-xs text-stone-500 mb-1 font-semibold uppercase">Intestatario: {ibanData.accountHolder}</p>}
+          <p className="font-mono text-sm md:text-base font-bold text-stone-800 break-all">{ibanData.iban}</p>
         </div>
       )}
 

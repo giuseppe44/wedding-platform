@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { verifyTimelineAccess } from "@/lib/accessControl";
-import SeatingSearchClient from "./SeatingSearchClient";
+import SeatingVisualizer from "@/app/couple/[slug]/chapter/[chapterSlug]/SeatingVisualizer";
 
 export default async function GuestSeatingPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const { slug } = await params;
@@ -12,7 +12,7 @@ export default async function GuestSeatingPage({ params, searchParams }: { param
     where: { slug: slug },
   });
 
-  if (!wedding) notFound();
+  if (!wedding || !wedding.showSeating) notFound();
 
   // Seating requires authorization
   let hasAccess = await verifyTimelineAccess(wedding, "VIEW_PUBLIC");
@@ -27,17 +27,27 @@ export default async function GuestSeatingPage({ params, searchParams }: { param
   }
 
   if (!hasAccess) {
-    redirect(`/w/${slug}`);
+    redirect(/w/ + slug);
   }
+
+  const tables = await prisma.table.findMany({
+    where: { timelineItemId: wedding.id }
+  });
+
+  const guests = await prisma.guest.findMany({
+    where: { timelineItemId: wedding.id, tableId: { not: null } }
+  });
 
   return (
     <div className="min-h-screen bg-stone-50 py-16 px-4">
-      <div className="max-w-2xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-serif text-stone-800 mb-4">Trova il tuo Tavolo</h1>
-        <p className="text-stone-600">Inserisci il tuo nome e cognome per scoprire dove sei seduto al ricevimento di {wedding.brideName} e {wedding.groomName}.</p>
-      </div>
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-serif text-stone-800 mb-4">Tableau dei Tavoli</h1>
+          <p className="text-stone-600">Scopri la disposizione dei tavoli per il ricevimento di {wedding.brideName} e {wedding.groomName}.</p>
+        </div>
 
-      <SeatingSearchClient timelineItemId={wedding.id} />
+        <SeatingVisualizer tables={tables} guests={guests} title={`Ricevimento di ${wedding.brideName} e ${wedding.groomName}`} />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -325,8 +325,8 @@ export default function Home() {
             <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
               <div className="text-rose-500 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
               <h3 className="text-3xl font-serif text-stone-900 mb-2">Piano Base</h3>
-              <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita, gratis.</p>
-              <div className="text-4xl font-bold mb-8">Gratis</div>
+              <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita.</p>
+              <div className="text-4xl font-bold mb-8">€ 99</div>
               <ul className="space-y-4 mb-8 flex-grow">
                 <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Galleria foto e video</li>
                 <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 10 GB di spazio privato</li>
@@ -343,7 +343,7 @@ export default function Home() {
               <div className="text-rose-400 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
               <h3 className="text-3xl font-serif mb-2">Piano Premium</h3>
               <p className="text-stone-400 mb-6 line-clamp-2">Sblocca tutte le funzionalità organizzative per un matrimonio perfetto.</p>
-              <div className="text-4xl font-bold mb-8">€ 99<span className="text-xl text-stone-500 font-light">/vita</span></div>
+              <div className="text-4xl font-bold mb-8">€ 299<span className="text-xl text-stone-500 font-light">/anno</span></div>
               <ul className="space-y-4 mb-8 flex-grow text-stone-300">
                 <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Spazio Illimitato</li>
                 <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Disposizione Tavoli & RSVP</li>
@@ -378,3 +378,5 @@ export default function Home() {
     </div>
   );
 }
+
+

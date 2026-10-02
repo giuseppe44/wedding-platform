@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Camera, Users, Target, Rocket, ArrowRight, CheckCircle2, TrendingUp, BarChart, MonitorSmartphone, Star, Gift, Heart } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -17,7 +17,7 @@ export default function ProfessionistiPage() {
           <Link href="/">
             <Button variant="ghost" className="text-stone-300 hover:text-white hidden md:flex hover:bg-white/10 rounded-full">Torna alla Home</Button>
           </Link>
-          <Link href="/login">
+          <Link href="/login?role=PHOTOGRAPHER">
             <Button className="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold rounded-full px-8 shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all hover:scale-105">
               Accedi
             </Button>
@@ -89,7 +89,7 @@ export default function ProfessionistiPage() {
                 </ul>
               </div>
               <div className="text-center bg-stone-900 p-8 rounded-2xl border border-stone-800 relative">
-                <div className="text-stone-500 line-through text-2xl mb-2 font-serif">€ 230,00</div>
+                <div className="text-stone-500 line-through text-2xl mb-2 font-serif">€ 299,00</div>
                 <div className="text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 mb-2">€ 0,00</div>
                 <div className="text-stone-400 mb-8 uppercase tracking-widest text-sm font-bold">Per i primi 12 Mesi</div>
                 <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER">
@@ -214,14 +214,14 @@ export default function ProfessionistiPage() {
               <h4 className="font-bold text-2xl text-white mb-2">Entry</h4>
               <p className="text-stone-500 mb-6 h-10">Ideale per iniziare</p>
               <div className="mb-8">
-                <span className="text-5xl font-serif font-bold text-white">€ 150</span><span className="text-stone-500">/anno</span>
+                <span className="text-5xl font-serif font-bold text-white">€ 120</span><span className="text-stone-500">/anno</span>
               </div>
               <ul className="text-stone-400 space-y-4 mb-10 flex-1">
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Gestione fino a 5 Eventi</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Gestione fino a 3 Eventi</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Profilo base nella directory</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Lead generation standard (Email)</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Galleria privata per gli sposi</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Assistenza via email</span></li>
+                
               </ul>
               <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="bg-transparent w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Seleziona Entry</Button></Link>
             </div>
@@ -234,7 +234,7 @@ export default function ProfessionistiPage() {
               <h4 className="font-bold text-2xl text-white mb-2">Pro</h4>
               <p className="text-stone-400 mb-6 h-10">Per chi vuole scalare il business</p>
               <div className="mb-8">
-                <span className="text-5xl font-serif font-bold text-white">€ 230</span><span className="text-stone-400">/anno</span>
+                <span className="text-5xl font-serif font-bold text-white">€ 299</span><span className="text-stone-400">/anno</span>
               </div>
               <ul className="text-stone-300 space-y-4 mb-10 flex-1">
                 <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" /> <span className="font-semibold text-white">Tutto il piano Entry, più:</span></li>
@@ -244,7 +244,7 @@ export default function ProfessionistiPage() {
                 <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" /> <span>Download album in Alta Risoluzione</span></li>
                 <li className="flex items-start gap-3"><Star className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" /> <span>Personalizzazione colori e logo galleria</span></li>
               </ul>
-              <Link href="#founders"><Button className="w-full bg-amber-500 hover:bg-amber-600 text-amber-950 h-14 rounded-full font-bold text-lg">Provalo Gratis</Button></Link>
+              <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button className="w-full bg-amber-500 hover:bg-amber-600 text-amber-950 h-14 rounded-full font-bold text-lg">Seleziona Pro</Button></Link>
             </div>
 
             {/* Diamond */}
@@ -252,11 +252,11 @@ export default function ProfessionistiPage() {
               <h4 className="font-bold text-2xl text-white mb-2">Diamond</h4>
               <p className="text-stone-500 mb-6 h-10">Ideale per Wedding Planner & Location</p>
               <div className="mb-8">
-                <span className="text-5xl font-serif font-bold text-white">€ 490</span><span className="text-stone-500">/anno</span>
+                <span className="text-5xl font-serif font-bold text-white">€ 449</span><span className="text-stone-500">/anno</span>
               </div>
               <ul className="text-stone-400 space-y-4 mb-10 flex-1">
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span className="font-semibold text-white">Tutto il piano Pro, più:</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Multi-account per staff e collaboratori</span></li>
+                
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Pacchetti Sposi in stock da rivendere</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Piattaforma White-Label (Tuo Logo)</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Dominio personalizzato (es. portale.tuobrand.it)</span></li>
@@ -272,3 +272,4 @@ export default function ProfessionistiPage() {
     </div>
   );
 }
+
