@@ -9,7 +9,7 @@ import { createTable, deleteTable, createGuest, deleteGuest, assignGuestToTable,
 import { Trash2, Users, Printer, LayoutGrid, List } from "lucide-react";
 import SeatingVisualizer from "./SeatingVisualizer";
 
-export default function SeatingManager({ chapter, guests, tables }: { chapter: any, guests: any[], tables: any[] }) {
+export default function SeatingManager({ chapter, guests, tables, entitlements }: { chapter: any, guests: any[], tables: any[], entitlements?: any }) {
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<"LIST" | "MAP">("LIST");
   
@@ -92,7 +92,7 @@ export default function SeatingManager({ chapter, guests, tables }: { chapter: a
       </div>
 
       {viewMode === "MAP" ? (
-        <SeatingVisualizer tables={tables} guests={guests} title={chapter.title || 'Matrimonio'} />
+        <SeatingVisualizer tables={tables} guests={guests} title={chapter.title || 'Matrimonio'} entitlements={entitlements} />
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -162,9 +162,36 @@ export default function SeatingManager({ chapter, guests, tables }: { chapter: a
           const tableGuests = guests.filter(g => g.tableId === table.id);
           const isFull = tableGuests.length >= table.capacity;
 
-          return (
-            <Card key={table.id} className="border-stone-200 shadow-sm relative">
-              <CardHeader className="pb-2">
+                      return (
+              <Card 
+                key={table.id} 
+                className="border-stone-200 shadow-sm relative transition-colors duration-200"
+                onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('bg-stone-50', 'border-stone-400'); }}
+                onDragLeave={(e) => { e.currentTarget.classList.remove('bg-stone-50', 'border-stone-400'); }}
+                onDrop={async (e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove('bg-stone-50', 'border-stone-400');
+                  const guestId = e.dataTransfer.getData("guestId");
+                  const currentTableId = e.dataTransfer.getData("currentTableId");
+                  if (!guestId || currentTableId === table.id) return;
+                  
+                  const guestName = e.dataTransfer.getData("guestName");
+                  if (tableGuests.length >= table.capacity) {
+                    alert("Questo tavolo e' pieno!");
+                    return;
+                  }
+                  if (window.confirm("Vuoi spostare " + guestName + " al tavolo " + table.name + "?")) {
+                    setLoading(true);
+                    try {
+                      await assignGuestToTable(guestId, table.id, chapter.slug);
+                    } catch (error) {
+                      alert("Errore durante lo spostamento.");
+                    }
+                    setLoading(false);
+                  }
+                }}
+              >
+                <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-lg">{table.name}</CardTitle>
                   <form action={deleteTable.bind(null, table.id, chapter.slug)}>

@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
@@ -16,7 +16,7 @@ export async function createGiftOption(timelineItemId: string, data: any, slug: 
       type: data.type || "CASH_GIFT",
       title: data.title,
       description: data.description,
-      iban: data.iban,
+      iban: data.iban, accountHolder: data.accountHolder,
       paypalLink: data.paypalLink,
       externalLink: data.externalLink,
       isActive: data.isActive ?? true,
@@ -43,7 +43,7 @@ export async function updateGiftOption(optionId: string, data: any, slug: string
       type: data.type,
       title: data.title,
       description: data.description,
-      iban: data.iban,
+      iban: data.iban, accountHolder: data.accountHolder,
       paypalLink: data.paypalLink,
       externalLink: data.externalLink,
       isActive: data.isActive,
@@ -93,5 +93,5 @@ export async function revealIban(optionId: string, slug: string) {
   const option = await prisma.giftOption.findUnique({ where: { id: optionId } });
   if (!option || option.timelineItemId !== wedding.id) throw new Error("Opzione non valida");
 
-  return option.iban;
+  return { iban: option.iban, accountHolder: option.accountHolder };
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { upsertProfile, createService, updateService, deleteService } from "@/app/proActions";
+import { upsertProfile, createService, updateService, deleteService, uploadProMedia } from "@/app/proActions";
+import Image from "next/image";
 import { ExternalLink, Plus, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 
@@ -22,6 +23,41 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
 
   const [serviceForm, setServiceForm] = useState({ id: "", name: "", description: "", priceIndicative: "", order: "0" });
   const [isEditingService, setIsEditingService] = useState(false);
+
+  
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Warning UI as requested by prompt
+    if (!window.confirm("ATTENZIONE - DIRITTI D'AUTORE\nConfermi di possedere i diritti o le autorizzazioni per caricare e mostrare questa immagine nel tuo profilo e portfolio?")) {
+      e.target.value = "";
+      return;
+    }
+    
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const url = await uploadProMedia(formData);
+      if (field === "gallery") {
+        const currentGallery = galleryText.split('\n').map((u: string) => u.trim()).filter((u: string) => u !== "");
+        if (currentGallery.length >= 15) {
+          alert("Puoi caricare un massimo di 15 immagini nel portfolio.");
+          return;
+        }
+        currentGallery.push(url);
+        setGalleryText(currentGallery.join('\n'));
+      } else {
+        setProfile({...profile, [field]: url});
+      }
+    } catch (err: any) {
+      alert(err.message || "Errore nel caricamento");
+    } finally {
+      setLoading(false);
+      e.target.value = "";
+    }
+  };
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,8 +136,14 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
                   <Input value={profile.businessName} onChange={e => setProfile({...profile, businessName: e.target.value})} required />
                 </div>
                 <div className="space-y-2">
-                  <Label>Immagine / Logo (URL)</Label>
-                  <Input value={profile.logoUrl || ""} onChange={e => setProfile({...profile, logoUrl: e.target.value})} placeholder="https://images.unsplash.com/..." />
+                  <Label>Logo (URL o Carica File)</Label>
+  <div className="flex flex-col gap-2">
+    <div className="flex gap-2">
+      <Input value={profile.logoUrl || ""} onChange={e => setProfile({...profile, logoUrl: e.target.value})} placeholder="https://..." />
+      <Input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'logoUrl')} className="max-w-[200px]" disabled={loading} />
+    </div>
+    {profile.logoUrl && <img src={profile.logoUrl} alt="Logo preview" className="h-16 w-16 object-contain border rounded" />}
+  </div>
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label>Categoria</Label>
@@ -158,12 +200,24 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
                   <Input value={profile.logoUrl || ""} onChange={e => setProfile({...profile, logoUrl: e.target.value})} placeholder="https://..." />
                 </div>
                 <div className="space-y-2">
-                  <Label>Foto Profilo (URL)</Label>
-                  <Input value={profile.profileImage || ""} onChange={e => setProfile({...profile, profileImage: e.target.value})} placeholder="https://..." />
+                  <Label>Foto Profilo (URL o Carica File)</Label>
+  <div className="flex flex-col gap-2">
+    <div className="flex gap-2">
+      <Input value={profile.profileImage || ""} onChange={e => setProfile({...profile, profileImage: e.target.value})} placeholder="https://..." />
+      <Input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'profileImage')} className="max-w-[200px]" disabled={loading} />
+    </div>
+    {profile.profileImage && <img src={profile.profileImage} alt="Profile preview" className="h-20 w-20 object-cover border rounded-full" />}
+  </div>
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Immagine di Sottofondo / Copertina (URL)</Label>
-                  <Input value={profile.coverImage || ""} onChange={e => setProfile({...profile, coverImage: e.target.value})} placeholder="Sfondo orizzontale in alta risoluzione..." />
+                  <Label>Copertina (URL o Carica File)</Label>
+  <div className="flex flex-col gap-2">
+    <div className="flex gap-2">
+      <Input value={profile.coverImage || ""} onChange={e => setProfile({...profile, coverImage: e.target.value})} placeholder="https://..." />
+      <Input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'coverImage')} className="max-w-[200px]" disabled={loading} />
+    </div>
+    {profile.coverImage && <img src={profile.coverImage} alt="Cover preview" className="h-32 w-full object-cover border rounded-md" />}
+  </div>
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <Label>Area / Zona di Lavoro</Label>
@@ -185,9 +239,28 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
               </div>
 
               <div className="space-y-2">
-                <Label>Galleria Professionale (Fino a 20 immagini)</Label>
-                <p className="text-xs text-stone-500 mb-2">Incolla qui gli URL delle tue migliori foto, uno per riga.</p>
-                <Textarea className="min-h-48 whitespace-pre" value={galleryText} onChange={e => setGalleryText(e.target.value)} placeholder="https://...&#10;https://..." />
+                <Label>Portfolio Fotografico (Fino a 15 immagini)</Label>
+  <p className="text-xs text-stone-500 mb-2">Incolla URL esterni (uno per riga) o usa il pulsante per caricare direttamente (saranno aggiunti in fondo).</p>
+  <div className="flex flex-col gap-3">
+    <Textarea className="min-h-48 whitespace-pre" value={galleryText} onChange={e => setGalleryText(e.target.value)} placeholder="https://...\nhttps://..." />
+    <div className="flex items-center gap-4 border p-4 bg-stone-50 rounded-md">
+      <Label className="shrink-0 font-bold">Carica Immagine:</Label>
+      <Input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'gallery')} disabled={loading} />
+      <p className="text-xs text-stone-500 shrink-0">Max 5MB. Sarà aggiunta in automatico.</p>
+    </div>
+    {galleryText && (
+      <div className="grid grid-cols-3 md:grid-cols-5 gap-2 mt-4">
+        {galleryText.split('\n').map((u: string, i: number) => u.trim() ? (
+          <div key={i} className="relative group aspect-square">
+            <img src={u.trim()} alt="Gallery preview" className="w-full h-full object-cover border rounded-sm" />
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+              <span className="text-white text-xs">{i+1}</span>
+            </div>
+          </div>
+        ) : null)}
+      </div>
+    )}
+  </div>
               </div>
 
               <div className="space-y-2">
@@ -266,3 +339,4 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
     </div>
   );
 }
+

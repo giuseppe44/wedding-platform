@@ -18,7 +18,7 @@ export default function GiftManager({ chapter, giftOptions }: { chapter: any, gi
     type: "CASH_GIFT",
     title: "",
     description: "",
-    iban: "",
+    iban: "", accountHolder: "",
     paypalLink: "",
     externalLink: "",
     order: "0",
@@ -31,7 +31,7 @@ export default function GiftManager({ chapter, giftOptions }: { chapter: any, gi
   const [isEditing, setIsEditing] = useState(false);
 
   const resetForm = () => {
-    setFormData({ id: "", type: "CASH_GIFT", title: "", description: "", iban: "", paypalLink: "", externalLink: "", order: "0", isTravelStage: false, location: "", stageDate: "", targetAmount: "" });
+    setFormData({ id: "", type: "CASH_GIFT", title: "", description: "", iban: "", accountHolder: "", paypalLink: "", externalLink: "", order: "0", isTravelStage: false, location: "", stageDate: "", targetAmount: "" });
     setIsEditing(false);
   };
 
@@ -41,7 +41,7 @@ export default function GiftManager({ chapter, giftOptions }: { chapter: any, gi
       type: opt.type,
       title: opt.title || "",
       description: opt.description || "",
-      iban: opt.iban || "",
+      iban: opt.iban || "", accountHolder: opt.accountHolder || "",
       paypalLink: opt.paypalLink || "",
       externalLink: opt.externalLink || "",
       order: opt.order?.toString() || "0",

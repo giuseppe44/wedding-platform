@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { verifyProAssignment } from "@/app/proAssignmentActions";
 import { headers } from "next/headers";
@@ -124,7 +124,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
       {/* Top Navbar */}
       <div className="absolute top-0 right-0 w-full z-20 flex justify-end p-4">
         <form action={logoutAction}>
-          <Button variant="ghost" className="text-stone-600 hover:text-stone-900 bg-white/50 backdrop-blur-sm gap-2 font-medium rounded-full hover:bg-white/80">
+          <Button type="submit" variant="ghost" className="text-stone-600 hover:text-stone-900 bg-white/50 backdrop-blur-sm gap-2 font-medium rounded-full hover:bg-white/80">
             <LogOut className="w-4 h-4" /> Esci
           </Button>
         </form>

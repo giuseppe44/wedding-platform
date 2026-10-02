@@ -76,6 +76,7 @@ export default function LoadMoreGallery({
                 height={800} 
                 className="w-full h-auto object-cover rounded-xl transition-transform duration-500 group-hover:scale-[1.02]" 
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                unoptimized={true}
               />
             )}
 

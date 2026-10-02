@@ -221,6 +221,7 @@ model GiftOption {
   title        String?
   description  String?
   iban         String?
+  accountHolder String?
   paypalLink   String?
   externalLink String?
   order        Int     @default(0)

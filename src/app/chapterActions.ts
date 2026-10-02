@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -11,10 +11,22 @@ async function processCoverUpload(weddingId: string, file: File | null): Promise
   if (!file.type.startsWith("image/")) throw new Error("Only images are allowed for covers");
   if (file.size > 20 * 1024 * 1024) throw new Error("Cover image too large");
   
-  const buffer = Buffer.from(await file.arrayBuffer());
+  
+    const buffer = Buffer.from(await file.arrayBuffer());
+    // Basic verification of file signatures
+    const magic = buffer.toString('hex', 0, 4).toUpperCase();
+    const isJPEG = magic.startsWith('FFD8FF');
+    const isPNG = magic === '89504E47';
+    const isGIF = magic.startsWith('47494638');
+    const isWebP = magic.startsWith('52494646') && buffer.toString('hex', 8, 12).toUpperCase() === '57454250';
+    if (!isJPEG && !isPNG && !isGIF && !isWebP) {
+      throw new Error("Formato file non supportato o invalido. Verifica che il file sia un'immagine reale.");
+    }
+
   const uniqueName = `cover-${Date.now()}-${Math.random().toString(36).substring(2,7)}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
   return await uploadFile(weddingId, uniqueName, buffer, file.type);
 }
+
 
 export async function createChapter(weddingId: string, formData: FormData) {
   const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
@@ -26,7 +38,21 @@ export async function createChapter(weddingId: string, formData: FormData) {
   if (!baseWedding) throw new Error("Base wedding not found");
   if (baseWedding.ownerId !== session.userId && baseWedding.coupleId !== session.userId) throw new Error("Non autorizzato");
 
+  // --- ENFORCE MAX CHAPTERS LIMIT ---
+  const { getUserEntitlements } = await import("@/lib/entitlementHelper");
+  const entitlements = await getUserEntitlements(session.userId);
+  
+  const chapterCount = await prisma.timelineItem.count({
+    where: baseWedding.familyId ? { familyId: baseWedding.familyId } : { id: baseWedding.id }
+  });
+
+  if (chapterCount >= entitlements.maxChapters) {
+    throw new Error(`Limite raggiunto: Il tuo piano ti permette di avere al massimo ${entitlements.maxChapters} capitoli. Effettua l'upgrade per aggiungerne altri.`);
+  }
+  // ----------------------------------
+
   let familyId = baseWedding.familyId;
+
   if (!familyId) {
     const familySlug = `${baseWedding.brideName}-${baseWedding.groomName}-family-${Date.now()}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const newFamily = await prisma.family.create({
@@ -164,3 +190,4 @@ export async function deleteChapter(chapterId: string, baseSlug: string) {
   revalidatePath(`/couple/${baseSlug}`, "layout");
   redirect(`/couple/${baseSlug}`);
 }
+

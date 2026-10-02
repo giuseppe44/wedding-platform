@@ -1,11 +1,20 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/lib/auth";
 
 export async function updateBranding(timelineItemId: string, formData: FormData) {
-  await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
+  if (!wedding) throw new Error("Evento non trovato");
+
+  const { getUserEntitlements } = await import("@/lib/entitlementHelper");
+  const entitlements = await getUserEntitlements(wedding.ownerId);
+  if (!entitlements.canCustomizeTableau) { // Used generic custom branding flag
+    throw new Error("La personalizzazione dei colori e della vetrina richiede il piano Diamond.");
+  }
+
   const themeColor = formData.get("themeColor") as string;
   const welcomeMessage = formData.get("welcomeMessage") as string;
   const externalGalleryUrl = formData.get("externalGalleryUrl") as string;
@@ -143,3 +152,25 @@ export async function updateExtendedDetails(timelineItemId: string, data: any, s
   revalidatePath(`/couple/${slug}`, "page");
   revalidatePath(`/w/${slug}`, "page");
 }
+
+export async function updateTimelineItem(itemId: string, slug: string, formData: FormData) {
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const item = await prisma.scheduleItem.findUnique({ where: { id: itemId }, include: { timelineItem: true } });
+  if (!item || (item.timelineItem.ownerId !== session.userId && item.timelineItem.coupleId !== session.userId)) {
+    throw new Error("Non autorizzato");
+  }
+
+  const time = formData.get("time") as string;
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+
+  await prisma.scheduleItem.update({
+    where: { id: itemId },
+    data: { time, title, description },
+  });
+
+  revalidatePath(/couple/ + slug + /chapter/ + item.timelineItem.slug, "page");
+  revalidatePath(/couple/ + slug, "page");
+  revalidatePath(/w/ + slug, "page");
+}
+

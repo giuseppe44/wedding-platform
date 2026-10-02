@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+﻿import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
 
@@ -124,3 +124,19 @@ export async function downloadFileBuffer(rawUrl: string): Promise<Buffer | null>
     }
   }
 }
+
+export async function deleteFile(rawUrl: string): Promise<void> {
+  const filePath = parseStoragePath(rawUrl);
+  if (!filePath) return;
+
+  if (isCloudStorage && supabase) {
+    const { error } = await supabase.storage.from(bucketName).remove([filePath]);
+    if (error) { console.error("Failed to delete cloud file:", error); throw new Error(`Supabase deletion failed: ${error.message}`); }
+  } else {
+    try {
+      const localPath = path.join(process.cwd(), ".data", filePath.replace(/\//g, path.sep));
+      if (fs.existsSync(localPath)) await fs.promises.unlink(localPath);
+    } catch (e: any) { console.error("Failed to delete local file:", e); throw new Error(`Local deletion failed: ${e.message}`); }
+  }
+}
+

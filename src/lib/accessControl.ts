@@ -54,14 +54,20 @@ export async function verifyTimelineAccess(timelineItem: any, action: "VIEW_PUBL
 
   // Phase 19: Chapter logic
   let weddingId = timelineItem.id;
-  if (timelineItem.type !== "WEDDING" && timelineItem.familyId) {
-    const weddingTimelineItem = await prisma.timelineItem.findFirst({
+  if (timelineItem.familyId) {
+    let mainTimelineItem = await prisma.timelineItem.findFirst({
       where: { familyId: timelineItem.familyId, type: "WEDDING" }
     });
-    if (weddingTimelineItem) {
-      weddingId = weddingTimelineItem.id;
+    if (!mainTimelineItem) {
+      mainTimelineItem = await prisma.timelineItem.findFirst({
+        where: { familyId: timelineItem.familyId },
+        orderBy: { date: 'asc' }
+      });
+    }
+    if (mainTimelineItem) {
+      weddingId = mainTimelineItem.id;
     } else {
-      return false; // Cannot verify without a parent wedding
+      return false;
     }
   }
 

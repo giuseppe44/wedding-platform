@@ -2,7 +2,7 @@
 import { User, Printer, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function SeatingVisualizer({ tables, guests, title }: { tables: any[], guests: any[], title: string }) {
+export default function SeatingVisualizer({ tables, guests, title, entitlements }: { tables: any[], guests: any[], title: string, entitlements?: any }) {
 
   const printVisualMap = () => {
     window.print();
@@ -12,9 +12,13 @@ export default function SeatingVisualizer({ tables, guests, title }: { tables: a
     <div className="space-y-8 relative">
       <style>{`
         @media print {
+          @page { size: landscape; margin: 10mm; }
           body * {
             visibility: hidden;
           }
+          /* Collapse layout spacing that causes blank pages */
+          header, aside, footer { display: none !important; }
+          
           #printable-map, #printable-map * {
             visibility: visible;
           }
@@ -26,6 +30,7 @@ export default function SeatingVisualizer({ tables, guests, title }: { tables: a
           }
           .print-break-inside-avoid {
             break-inside: avoid;
+            page-break-inside: avoid;
           }
         }
       `}</style>
@@ -35,9 +40,11 @@ export default function SeatingVisualizer({ tables, guests, title }: { tables: a
           <h3 className="text-xl font-serif text-stone-800">Piantina Sala / Grafico Tavoli</h3>
           <p className="text-sm text-stone-500">Visualizza la disposizione degli ospiti. Le persone in giallo hanno esigenze alimentari.</p>
         </div>
-        <Button onClick={printVisualMap} className="gap-2 bg-stone-800 hover:bg-stone-700 text-white shadow-lg">
+        {(entitlements?.canExportSeatingPDF !== false) ? (<Button onClick={printVisualMap} className="gap-2 bg-stone-800 hover:bg-stone-700 text-white shadow-lg">
           <Printer className="w-4 h-4"/> Esporta PDF / Stampa
-        </Button>
+        </Button>) : (<div className="p-2 border border-stone-200 bg-stone-50 rounded-lg text-sm text-stone-500">L'esportazione PDF è disponibile col piano Diamond.</div>)}
+        
+        
       </div>
 
       <div className="print:block" id="printable-map">

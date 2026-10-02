@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,11 @@ export default function ChapterUploader({ chapterId, albums }: { chapterId: stri
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
+    
+    if (!window.confirm("ATTENZIONE - DIRITTI D'AUTORE E PRIVACY\nConfermi di avere i diritti e il consenso per caricare queste immagini/video, rispettando la privacy delle persone ritratte e il diritto d'autore del fotografo/videomaker?")) {
+      e.target.value = "";
+      return;
+    }
     
     setIsUploading(true);
     const formData = new FormData();

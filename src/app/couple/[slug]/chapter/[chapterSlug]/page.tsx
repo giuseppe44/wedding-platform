@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { verifyProAssignment } from "@/app/proAssignmentActions";
 import { requireAuth } from "@/lib/auth";
@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, MessageSquareHeart, Settings, Clock, Download, Check, X, ArrowLeft, Trash2, Edit2, Users, Gift, Wallet } from "lucide-react";
 import { approveMedia, rejectMedia, deleteMediaAction } from "@/app/actions";
-import { updateBranding, addTimelineItem, deleteTimelineItem, approveMessage, rejectMessage } from "@/app/coupleActions";
+import { updateBranding, addTimelineItem, deleteTimelineItem, updateTimelineItem, approveMessage, rejectMessage } from "@/app/coupleActions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { updateChapter, deleteChapter } from "@/app/chapterActions";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ import GiftManager from "./GiftManager";
 import WalletManager from "./WalletManager";
 import ShareVetrinaButtons from "./ShareVetrinaButtons";
 import ProManager from "./ProManager";
+import { getUserEntitlements } from "@/lib/entitlementHelper";
 
 export default async function ChapterDetailPage({ params, searchParams }: { params: Promise<{ slug: string, chapterSlug: string }>, searchParams: Promise<{ albumId?: string }> }) {
   const { slug, chapterSlug } = await params;
@@ -33,6 +34,9 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
     where: { slug: slug },
     include: { guests: { orderBy: { name: "asc" } } },
   });
+  
+  if (!wedding) { notFound(); return; }
+  const entitlements = await getUserEntitlements(wedding.ownerId);
 
   if (!wedding) notFound();
 
@@ -457,7 +461,7 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
   
           
             <TabsContent value="seating" className="animate-in fade-in">
-              <SeatingManager chapter={chapter} guests={chapter.guests || []} tables={chapter.tables || []} />
+              <SeatingManager chapter={chapter} guests={chapter.guests || []} tables={chapter.tables || []} entitlements={entitlements} />
             </TabsContent>
   
           

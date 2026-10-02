@@ -1,5 +1,4 @@
-﻿
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -8,7 +7,10 @@ export default function ScratchDate({ date }: { date: Date }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isRevealed, setIsRevealed] = useState(false);
-  const [isDrawing, setIsDrawing] = useState(false);
+  
+  // Use refs for values that change frequently to avoid re-running useEffect and resetting canvas
+  const isDrawingRef = useRef(false);
+  const isRevealedRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -18,22 +20,19 @@ export default function ScratchDate({ date }: { date: Date }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Setup canvas size
-    const resizeCanvas = () => {
+    // Only init the canvas once
+    const initCanvas = () => {
       canvas.width = container.offsetWidth;
       canvas.height = container.offsetHeight;
       
-      // Fill with gold/champagne texture
       ctx.fillStyle = "#d4af37";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Add some noise/texture
       for (let i = 0; i < 500; i++) {
         ctx.fillStyle = Math.random() > 0.5 ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.05)";
         ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
       }
       
-      // Write hint text
       ctx.fillStyle = "rgba(255,255,255,0.7)";
       ctx.font = "italic 16px serif";
       ctx.textAlign = "center";
@@ -41,13 +40,11 @@ export default function ScratchDate({ date }: { date: Date }) {
       ctx.fillText("Scopri la data", canvas.width / 2, canvas.height / 2);
     };
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    initCanvas();
 
-    // Drawing logic
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-    ctx.lineWidth = 40; // Brush size
+    ctx.lineWidth = 40;
 
     const getPosition = (e: MouseEvent | TouchEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -68,52 +65,49 @@ export default function ScratchDate({ date }: { date: Date }) {
     };
 
     const startDrawing = (e: MouseEvent | TouchEvent) => {
-      if (isRevealed) return;
-      setIsDrawing(true);
+      if (isRevealedRef.current) return;
+      isDrawingRef.current = true;
       const { x, y } = getPosition(e);
       ctx.globalCompositeOperation = "destination-out";
       ctx.beginPath();
       ctx.moveTo(x, y);
       
-      // Prevent scrolling when scratching on mobile
-      if ("touches" in e && e.cancelable) {
+      if (e.cancelable) {
         e.preventDefault();
       }
     };
 
     const draw = (e: MouseEvent | TouchEvent) => {
-      if (!isDrawing || isRevealed) return;
+      if (!isDrawingRef.current || isRevealedRef.current) return;
       const { x, y } = getPosition(e);
       ctx.lineTo(x, y);
       ctx.stroke();
       
-      if ("touches" in e && e.cancelable) {
+      if (e.cancelable) {
         e.preventDefault();
       }
-
-      checkReveal();
+      
+      // Throttle reveal check
+      if (Math.random() < 0.1) checkReveal();
     };
 
     const stopDrawing = () => {
-      setIsDrawing(false);
+      isDrawingRef.current = false;
     };
 
     const checkReveal = () => {
-      // Simple heuristic: if we stroked enough times (or randomly over time), reveal it
-      // A full pixel check is expensive, so we just use a timeout or a counter in a real app,
-      // but let"s do a fast stride pixel check
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const pixels = imageData.data;
       let transparentPixels = 0;
       const totalPixels = pixels.length / 4;
       
-      // Check every 10th pixel for performance
       for (let i = 3; i < pixels.length; i += 40) {
         if (pixels[i] < 128) transparentPixels++;
       }
       
       const percent = transparentPixels / (totalPixels / 10);
-      if (percent > 0.4) { // If 40% is revealed, auto-reveal the rest
+      if (percent > 0.4 && !isRevealedRef.current) {
+        isRevealedRef.current = true;
         setIsRevealed(true);
       }
     };
@@ -128,7 +122,6 @@ export default function ScratchDate({ date }: { date: Date }) {
     canvas.addEventListener("touchend", stopDrawing);
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
       canvas.removeEventListener("mousedown", startDrawing);
       canvas.removeEventListener("mousemove", draw);
       canvas.removeEventListener("mouseup", stopDrawing);
@@ -137,7 +130,7 @@ export default function ScratchDate({ date }: { date: Date }) {
       canvas.removeEventListener("touchmove", draw);
       canvas.removeEventListener("touchend", stopDrawing);
     };
-  }, [isDrawing, isRevealed]);
+  }, []);
 
   const parsedDate = new Date(date);
   const day = parsedDate.getDate();
@@ -146,14 +139,12 @@ export default function ScratchDate({ date }: { date: Date }) {
 
   return (
     <div className="relative w-full max-w-sm mx-auto my-8 select-none" ref={containerRef}>
-      {/* Hidden Text underneath */}
       <div className="flex flex-col items-center justify-center p-8 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-xl">
         <span className="text-5xl font-serif text-white tracking-widest">{day}</span>
         <span className="text-2xl font-light tracking-[0.3em] text-stone-200 my-2">{month}</span>
         <span className="text-xl text-stone-300 font-serif italic">{year}</span>
       </div>
 
-      {/* Canvas Overlay */}
       <motion.canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full rounded-2xl cursor-pointer touch-none"
@@ -168,4 +159,3 @@ export default function ScratchDate({ date }: { date: Date }) {
     </div>
   );
 }
-

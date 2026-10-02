@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -6,58 +6,65 @@ import { requireAuth, setSession } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function loginAction(role: string, email?: string, password?: string, rememberMe: boolean = false) {
-  if (role === "PHOTOGRAPHER") {
-    let user = await prisma.user.findFirst({ where: { role: "PHOTOGRAPHER" } });
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          email: "demo@fotografo.it",
-          password: "hashed_password",
-          role: "PHOTOGRAPHER",
-          name: "Studio Fotografico Demo",
-        },
-      });
-    }
-    await setSession(user.id, "PHOTOGRAPHER", rememberMe);
-  } else if (role === "ADMIN") {
-    let user = await prisma.user.findFirst({ where: { role: "ADMIN" } });
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          email: "admin@weddingplatform.com",
-          password: "hashed_password",
-          role: "ADMIN",
-          name: "Super Admin",
-        },
-      });
-    }
-    await setSession(user.id, "ADMIN", rememberMe);
-  } else if (role === "COUPLE") {
-    // For MVP Demo Couple mode
-    let user = await prisma.user.findFirst({ where: { role: "COUPLE" } });
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          email: "sposi@demo.it",
-          password: "hashed_password",
-          role: "COUPLE",
-          name: "Chiara e Matteo",
-        },
-      });
-      // Try to attach them to the demo wedding if it exists
+export async function loginAction(requestedRole: string, email?: string, password?: string, rememberMe: boolean = false) {
+  let user;
+  
+  if (email) {
+    user = await prisma.user.findUnique({ where: { email } });
+  }
+
+  // Fallback for demo accounts if no email was provided or user not found
+  if (!user) {
+    if (requestedRole === "PHOTOGRAPHER") {
+      user = await prisma.user.findFirst({ where: { role: "PHOTOGRAPHER" } });
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email: "demo@fotografo.it",
+            password: "hashed_password",
+            role: "PHOTOGRAPHER",
+            name: "Studio Fotografico Demo",
+          },
+        });
+      }
+    } else if (requestedRole === "ADMIN") {
+      user = await prisma.user.findFirst({ where: { role: "ADMIN" } });
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email: "admin@weddingplatform.com",
+            password: "hashed_password",
+            role: "ADMIN",
+            name: "Super Admin",
+          },
+        });
+      }
+    } else {
+      user = await prisma.user.findFirst({ where: { role: "COUPLE" } });
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email: "sposi@demo.it",
+            password: "hashed_password",
+            role: "COUPLE",
+            name: "Chiara e Matteo",
+          },
+        });
+        await prisma.timelineItem.updateMany({
+          where: { slug: "demo-chiara-e-matteo" },
+          data: { coupleId: user.id }
+        });
+      }
       await prisma.timelineItem.updateMany({
-        where: { slug: "demo-chiara-e-matteo" },
+        where: { slug: "demo-chiara-e-matteo", coupleId: null },
         data: { coupleId: user.id }
       });
     }
-    // ensure attachment just in case
-    await prisma.timelineItem.updateMany({
-      where: { slug: "demo-chiara-e-matteo", coupleId: null },
-      data: { coupleId: user.id }
-    });
-    await setSession(user.id, "COUPLE", rememberMe);
   }
+
+  // Authorize based on actual DB role, NOT the requested URL role
+  const actualRole = user.role;
+  await setSession(user.id, actualRole, rememberMe);
 }
 
 
@@ -168,6 +175,12 @@ export async function getLiveMedia(slug: string) {
   const wedding = await prisma.timelineItem.findUnique({ where: { slug } });
   if (!wedding) return [];
   
+  const { getUserEntitlements } = await import("@/lib/entitlementHelper");
+  const entitlements = await getUserEntitlements(wedding.ownerId);
+  if (!entitlements.canUseLiveProjection) {
+    throw new Error("La proiezione live è disponibile solo col piano Diamond.");
+  }
+  
   const media = await prisma.media.findMany({
     where: { 
       timelineItemId: wedding.id,
@@ -189,3 +202,4 @@ export async function logoutAction() {
   cookieStore.delete('session');
   redirect('/');
 }
+
