@@ -90,10 +90,57 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
           </Button>
         </Link>
       </div>
-  
-  
 
-      {wedding.date && <Countdown date={wedding.date} />}
+
+      
+      {/* 1. HERO DEL CAPITOLO */}
+      <div className="relative min-h-[50vh] md:min-h-[60vh] flex flex-col items-center justify-center p-6 text-center overflow-hidden bg-stone-900 text-white shadow-xl">
+        {wedding.coverImage ? (
+          <div 
+            className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
+            style={{ backgroundImage: `url(/api/media/cover/${wedding.id})` }}
+          />
+        ) : (
+          <div className="absolute inset-0 z-0 opacity-20 bg-gradient-to-tr from-stone-800 to-stone-600" />
+        )}
+        
+        <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-4 drop-shadow-lg tracking-tight">
+            {displayTitle}
+          </h1>
+          {wedding.brideName && wedding.groomName && wedding.title !== `${wedding.brideName} & ${wedding.groomName}` && (
+            <p className="text-2xl md:text-3xl text-stone-200 font-serif italic mt-2 drop-shadow-md">
+              {wedding.brideName} & {wedding.groomName}
+            </p>
+          )}
+          {wedding.type === 'WEDDING' && wedding.date && (
+            <div className="mt-8 mb-4">
+              <ScratchDate date={wedding.date} />
+            </div>
+          )}
+
+          {wedding.welcomeMessage && (
+            <p className="text-lg md:text-2xl text-stone-200 max-w-2xl font-light leading-relaxed drop-shadow-md mt-6">
+              {wedding.welcomeMessage}
+            </p>
+          )}
+
+          {wedding.locations && wedding.locations.length > 0 && (
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 text-stone-300">
+              {wedding.locations.map((loc: any, idx: number) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5" />
+                  <span className="font-medium text-lg">{loc.name}</span>
+                  {loc.address && <span className="font-light opacity-80">- {loc.address}</span>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+
+{wedding.date && <Countdown date={wedding.date} />}
 
       {/* 2. STORIA */}
       {wedding.description && (

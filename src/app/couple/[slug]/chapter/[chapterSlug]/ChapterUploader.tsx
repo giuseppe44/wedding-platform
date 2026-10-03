@@ -12,7 +12,7 @@ export default function ChapterUploader({ chapterId, albums }: { chapterId: stri
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     
-    if (!window.confirm("ATTENZIONE - DIRITTI D'AUTORE E PRIVACY\nConfermi di avere i diritti e il consenso per caricare queste immagini/video, rispettando la privacy delle persone ritratte e il diritto d'autore del fotografo/videomaker?")) {
+    if (!window.confirm("ATTENZIONE - DIRITTI D'AUTORE E PRIVACY\nConfermi di avere i diritti per caricare queste foto/video, e di possedere licenza o diritti dimostrabili per eventuali brani musicali (MP3) caricati, esonerando la piattaforma da ogni responsabilità?")) {
       e.target.value = "";
       return;
     }
@@ -71,7 +71,7 @@ export default function ChapterUploader({ chapterId, albums }: { chapterId: stri
             <input 
               type="file" 
               multiple 
-              accept="image/*,video/*" 
+              accept="image/*,video/*,audio/*" 
               onChange={handleUpload}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               disabled={isUploading}

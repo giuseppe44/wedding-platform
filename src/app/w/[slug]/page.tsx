@@ -93,11 +93,11 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
               {wedding.brideName} <span style={{ color: themeColor }}>&</span> {wedding.groomName}
             </h1>
             
-            {wedding.date && (
-              <div className="mb-8">
-                <ScratchDate date={wedding.date} />
-              </div>
-            )}
+            {wedding.type === 'WEDDING' && wedding.date && (
+                <div className="mb-8">
+                  <ScratchDate date={wedding.date} />
+                </div>
+              )}
             
             {wedding.welcomeMessage && (
               <p className="text-lg md:text-2xl text-stone-200 max-w-2xl font-light leading-relaxed drop-shadow-md">

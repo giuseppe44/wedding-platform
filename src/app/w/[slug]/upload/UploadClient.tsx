@@ -20,7 +20,7 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      if (!window.confirm("ATTENZIONE - DIRITTI E PRIVACY\nConfermi di avere l'autorizzazione per condividere queste immagini/video con gli sposi e gli invitati, assumendoti la responsabilità per il caricamento?")) {
+      if (!window.confirm("ATTENZIONE - DIRITTI E PRIVACY\nConfermi di possedere i diritti d'autore e le necessarie autorizzazioni per queste foto/video, sollevando la piattaforma da qualsiasi responsabilità per violazioni di copyright o privacy?")) {
         e.target.value = "";
         return;
       }

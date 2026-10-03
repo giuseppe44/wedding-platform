@@ -27,7 +27,7 @@ export default function PrezziPage() {
             <div className="inline-flex items-center justify-center p-3 bg-rose-100 rounded-full mb-6">
               <Heart className="w-6 h-6 text-rose-500" />
             </div>
-            <h2 className="text-4xl font-serif text-stone-900 mb-4">Piani per gli Sposi</h2>
+            <h2 className="text-4xl font-serif text-stone-900 mb-4">Piani per i tuoi Eventi</h2>
             
             <div className="flex justify-center items-center gap-4 mb-8">
               <span className={`font-bold ${!isTriennial ? 'text-stone-900' : 'text-stone-400'}`}>Annuale</span>

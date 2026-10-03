@@ -99,10 +99,17 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
       else if (nameLower.endsWith(".mov")) mimeType = "video/quicktime";
     }
     
-    // Security: Only allow images and videos
-    if (!mimeType.startsWith("image/") && !mimeType.startsWith("video/")) {
-      continue;
-    }
+          // Controlli di sicurezza e Copyright
+      const isAudio = mimeType.startsWith("audio/");
+      
+      const isPro = session && session.role === "PROFESSIONAL";
+      if (isAudio && !isPro) {
+         throw new Error("ATTENZIONE: L'upload di file audio (es. MP3) è riservato esclusivamente al professionista incaricato (Fotografo/Videomaker) per tutelare i diritti di copyright e licenze d'uso.");
+      }
+
+      if (!mimeType.startsWith("image/") && !mimeType.startsWith("video/") && !isAudio) {
+        continue;
+      }
     
         const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -131,7 +138,7 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
       data: {
         url: fileUrl,
         timelineItemId,
-        type: mimeType.startsWith("video/") ? "VIDEO" : "IMAGE",
+        type: mimeType.startsWith("video/") ? "VIDEO" : (mimeType.startsWith("audio/") ? "AUDIO" : "IMAGE"),
         mimeType: mimeType,
         size: file.size,
         status: isOwnerCheck ? "APPROVED" : "PENDING",

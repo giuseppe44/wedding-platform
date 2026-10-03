@@ -176,7 +176,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
               {pendingMediaGlobally.map((m: any) => (
                 <div key={m.id} className="relative group rounded-2xl overflow-hidden shadow-sm aspect-square bg-stone-100">
-                  <img src={m.url} alt="Da approvare" className="w-full h-full object-cover" />
+                  <img src={`/api/media/${m.id}`} alt="Da approvare" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-stone-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
                     <span className="text-white text-xs font-bold px-2 py-1 bg-black/40 rounded-full mb-1">
                       {m.timelineItem.title || "Evento"}
@@ -215,7 +215,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
                   <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
                     {chapter.coverImage && (
                       <div className="absolute inset-0 w-full h-full opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-20">
-                        <img src={chapter.coverImage} className="w-full h-full object-cover" alt="" />
+                        <img src={`/api/media/cover/${chapter.id}`} className="w-full h-full object-cover" alt="" />
                       </div>
                     )}
                     <div className="relative z-10 flex-1">

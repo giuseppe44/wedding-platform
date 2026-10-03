@@ -274,7 +274,7 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {pendingMedia.map((m: any) => (
                       <div key={m.id} className="relative group rounded-xl overflow-hidden shadow-sm aspect-square bg-white">
-                        <img src={m.url} alt="Da approvare" className="w-full h-full object-cover" />
+                        <img src={`/api/media/${m.id}`} alt="Da approvare" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                           <form action={approveMedia.bind(null, m.id)}>
                             <Button type="submit" size="icon" className="bg-green-500 hover:bg-green-600 rounded-full h-10 w-10"><Check className="h-5 w-5" /></Button>
@@ -304,7 +304,7 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {approvedMedia.map((m: any) => (
                       <div key={m.id} className="relative group rounded-xl overflow-hidden shadow-sm aspect-square bg-stone-100">
-                        <img src={m.url} alt="Approvata" className="w-full h-full object-cover" />
+                        <img src={`/api/media/${m.id}`} alt="Approvata" className="w-full h-full object-cover" />
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                           {/* Owner can delete directly from here as well */}
                           <form action={deleteMediaAction.bind(null, m.id)}>

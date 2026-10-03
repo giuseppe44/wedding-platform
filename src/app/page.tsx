@@ -107,74 +107,144 @@ export default function Home() {
         </div>
       </header>
 
-      {/* THREE MAIN GATEWAYS */}
-      <section className="py-20 bg-stone-950 relative z-20 -mt-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div 
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          >
-            {/* 1. Organizza il tuo matrimonio */}
-            <Link href="/sposi" className="block group">
-              <motion.div variants={fadeUpVariant} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-all h-full flex flex-col justify-between group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(244,63,94,0.3)]">
-                <div>
-                  <div className="w-14 h-14 bg-rose-500/20 rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30 group-hover:scale-110 transition-transform">
-                    <Heart className="w-7 h-7 text-rose-400" />
-                  </div>
-                  <h3 className="text-2xl font-serif text-white mb-3">Organizza il tuo Matrimonio</h3>
-                  <p className="text-stone-400 font-light leading-relaxed">
-                    Un portale esclusivo per gli sposi. Iscriviti, accedi all'Area Sposi e organizza l'intero evento in ogni singolo dettaglio, condividendolo con i tuoi ospiti.
-                  </p>
+      
+        {/* THREE MAIN GATEWAYS - LUMINOSO E PREMIUM */}
+        <section className="pt-32 pb-32 bg-gradient-to-b from-stone-50 via-white to-white relative z-20 -mt-20 rounded-t-[3rem] sm:rounded-t-[4rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)]">
+          <div className="max-w-7xl mx-auto px-6">
+            
+            {/* Animazione introduttiva capitoli */}
+            <div className="flex justify-center mb-20 relative z-30">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="flex items-center gap-4 bg-white/80 backdrop-blur-md px-8 py-4 rounded-full shadow-2xl border border-stone-200"
+              >
+                <div className="flex -space-x-4">
+                  {[1, 2, 3].map((i) => (
+                    <motion.div 
+                      key={i}
+                      animate={{ 
+                        y: [0, -8, 0],
+                        rotate: [0, 5, -5, 0]
+                      }}
+                      transition={{ 
+                        duration: 3,
+                        delay: i * 0.4,
+                        repeat: Number.POSITIVE_INFINITY,
+                        ease: "easeInOut"
+                      }}
+                      className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-100 to-rose-200 border-4 border-white flex items-center justify-center shadow-md relative z-10"
+                    >
+                      <Heart className="w-5 h-5 text-rose-500" />
+                    </motion.div>
+                  ))}
                 </div>
-                <div className="mt-8 flex items-center text-rose-400 font-semibold group-hover:gap-2 transition-all">
-                  Inizia ora <ArrowRight className="w-4 h-4 ml-2" />
-                </div>
+                <div className="text-stone-700 font-serif italic text-lg ml-2">I Capitoli della vostra Storia</div>
               </motion.div>
-            </Link>
+            </div>
 
-            {/* 2. Fornitori */}
-            <Link href="/fornitori" className="block group">
-              <motion.div variants={fadeUpVariant} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-all h-full flex flex-col justify-between group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)]">
-                <div>
-                  <div className="w-14 h-14 bg-stone-800 rounded-2xl flex items-center justify-center mb-6 border border-stone-700 group-hover:scale-110 transition-transform">
-                    <Search className="w-7 h-7 text-stone-300" />
+            <motion.div 
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-20"
+            >
+              {/* 1. Organizza il tuo matrimonio */}
+              <Link href="/sposi" className="block group h-full">
+                <motion.div variants={fadeUpVariant} className="bg-white border border-stone-100 p-10 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(244,63,94,0.2)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-rose-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="w-20 h-20 bg-gradient-to-br from-rose-100 to-rose-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative group-hover:scale-110 transition-transform duration-500">
+                      <motion.div
+                        animate={{ scale: [1, 1.15, 1] }}
+                        transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      >
+                        <Heart className="w-9 h-9 text-rose-500" fill="currentColor" />
+                      </motion.div>
+                      {/* Floating particles */}
+                      <motion.div animate={{ y: [-5, -20], opacity: [0, 1, 0] }} transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: 0.5 }} className="absolute top-2 right-2 w-2 h-2 bg-rose-400 rounded-full"></motion.div>
+                      <motion.div animate={{ y: [-5, -25], opacity: [0, 1, 0] }} transition={{ duration: 2.5, repeat: Number.POSITIVE_INFINITY, delay: 1 }} className="absolute top-4 left-2 w-1.5 h-1.5 bg-rose-300 rounded-full"></motion.div>
+                    </div>
+                    <h3 className="text-3xl font-serif text-stone-900 mb-4 group-hover:text-rose-600 transition-colors">Organizza il tuo Evento</h3>
+                    <p className="text-stone-500 font-light leading-relaxed text-[1.1rem]">
+                      Un portale esclusivo per i tuoi momenti speciali. Iscriviti, accedi alla tua Area Personale e organizza l'intero evento in ogni singolo dettaglio, condividendolo con i tuoi ospiti.
+                    </p>
                   </div>
-                  <h3 className="text-2xl font-serif text-white mb-3">Fornitori & Top Pro</h3>
-                  <p className="text-stone-400 font-light leading-relaxed">
-                    Ricerca tra i migliori professionisti del settore. Esplora l'elenco generale dei nostri iscritti e trova fotografo, location, e molto altro per il grande giorno.
-                  </p>
-                </div>
-                <div className="mt-8 flex items-center text-stone-300 font-semibold group-hover:gap-2 transition-all">
-                  Cerca Fornitori <ArrowRight className="w-4 h-4 ml-2" />
-                </div>
-              </motion.div>
-            </Link>
-
-            {/* 3. Abbonamenti e Promozioni */}
-            <Link href="#pricing" className="block group">
-              <motion.div variants={fadeUpVariant} className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-3xl hover:bg-white/10 transition-all h-full flex flex-col justify-between group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-15px_rgba(251,191,36,0.2)]">
-                <div>
-                  <div className="w-14 h-14 bg-amber-500/20 rounded-2xl flex items-center justify-center mb-6 border border-amber-500/30 group-hover:scale-110 transition-transform">
-                    <Gift className="w-7 h-7 text-amber-400" />
+                  <div className="mt-12 flex items-center text-rose-500 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
+                    Inizia ora <ArrowRight className="w-5 h-5 ml-2" />
                   </div>
-                  <h3 className="text-2xl font-serif text-white mb-3">Pacchetti & Promozioni</h3>
-                  <p className="text-stone-400 font-light leading-relaxed">
-                    Scopri cosa possiamo offrirti. Visualizza i pacchetti, gli abbonamenti e le promozioni in corso, sia per i futuri sposi che per i professionisti del wedding.
-                  </p>
-                </div>
-                <div className="mt-8 flex items-center text-amber-400 font-semibold group-hover:gap-2 transition-all">
-                  Vedi Piani <ArrowRight className="w-4 h-4 ml-2" />
-                </div>
-              </motion.div>
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CORE FEATURES GRID */}
+                </motion.div>
+              </Link>
+  
+              {/* 2. Fornitori */}
+              <Link href="/fornitori" className="block group h-full">
+                <motion.div variants={fadeUpVariant} className="bg-white border border-stone-100 p-10 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(41,37,36,0.15)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-stone-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="w-20 h-20 bg-gradient-to-br from-stone-100 to-stone-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative overflow-hidden group-hover:scale-110 transition-transform duration-500">
+                      <motion.div
+                        animate={{ rotate: [0, 15, 0, -15, 0], scale: [1, 1.1, 1] }}
+                        transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      >
+                        <Search className="w-9 h-9 text-stone-700" strokeWidth={2.5} />
+                      </motion.div>
+                      {/* Scanning line effect */}
+                      <motion.div 
+                        animate={{ y: ['-100%', '200%'] }} 
+                        transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                        className="absolute inset-0 w-full h-1/2 bg-gradient-to-b from-transparent via-stone-300/40 to-transparent"
+                      ></motion.div>
+                    </div>
+                    <h3 className="text-3xl font-serif text-stone-900 mb-4 group-hover:text-stone-700 transition-colors">Fornitori & Top Pro</h3>
+                    <p className="text-stone-500 font-light leading-relaxed text-[1.1rem]">
+                      Ricerca tra i migliori professionisti del settore. Esplora l'elenco generale dei nostri iscritti e trova fotografo, location, e molto altro.
+                    </p>
+                  </div>
+                  <div className="mt-12 flex items-center text-stone-700 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
+                    Cerca Fornitori <ArrowRight className="w-5 h-5 ml-2" />
+                  </div>
+                </motion.div>
+              </Link>
+  
+              {/* 3. Abbonamenti e Promozioni */}
+              <Link href="#pricing" className="block group h-full">
+                <motion.div variants={fadeUpVariant} className="bg-white border border-stone-100 p-10 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(245,158,11,0.2)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-amber-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-amber-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative group-hover:scale-110 transition-transform duration-500">
+                      <motion.div
+                        animate={{ y: [0, -6, 0], rotate: [0, 5, -5, 0] }}
+                        transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      >
+                        <Gift className="w-9 h-9 text-amber-500" strokeWidth={2.5} />
+                      </motion.div>
+                      <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0, 1, 0] }} transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }} className="absolute top-3 right-3">
+                        <div className="w-2.5 h-2.5 bg-amber-400 rotate-45 rounded-sm"></div>
+                      </motion.div>
+                      <motion.div animate={{ scale: [1, 1.5, 1], opacity: [0, 1, 0] }} transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: 1 }} className="absolute bottom-3 left-3">
+                        <div className="w-2 h-2 bg-amber-300 rotate-45 rounded-sm"></div>
+                      </motion.div>
+                    </div>
+                    <h3 className="text-3xl font-serif text-stone-900 mb-4 group-hover:text-amber-600 transition-colors">Pacchetti & Promozioni</h3>
+                    <p className="text-stone-500 font-light leading-relaxed text-[1.1rem]">
+                      Scopri cosa possiamo offrirti. Visualizza i pacchetti, gli abbonamenti e le promozioni in corso, sia per sposi che per professionisti.
+                    </p>
+                  </div>
+                  <div className="mt-12 flex items-center text-amber-500 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
+                    Vedi Piani <ArrowRight className="w-5 h-5 ml-2" />
+                  </div>
+                </motion.div>
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+  
+        {/* CORE FEATURES GRID */}
       <section className="py-24 bg-white relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
