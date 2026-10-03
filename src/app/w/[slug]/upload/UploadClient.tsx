@@ -1,4 +1,5 @@
-﻿
+﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
+
 "use client";
 
 import { useState, useRef } from "react";

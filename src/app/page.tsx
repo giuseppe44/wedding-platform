@@ -345,16 +345,16 @@ export default function Home() {
                 <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita.</p>
                 
                 <div className="text-4xl font-bold mb-2">
-                  {isTriennial ? '€ 99,50' : '€ 99'}
+                  {isTriennial ? '148,50 €' : '99,00 €'}
                 </div>
                 {!isTriennial ? (
                   <div className="text-sm text-stone-500 mb-6 min-h-[40px]">
                     il primo anno<br/>
-                    <span className="italic">rinnovo dal secondo anno € 50 all'anno</span>
+                    <span className="italic">rinnovo dal secondo anno 50,00 € all'anno</span>
                   </div>
                 ) : (
                   <div className="text-sm text-emerald-600 font-bold mb-6 min-h-[40px]">
-                    Pagamento anticipato 3 anni.<br/>Risparmi € 99,50
+                    Pagamento anticipato 3 anni.<br/>Risparmi 148,50 €
                   </div>
                 )}
 
@@ -376,16 +376,16 @@ export default function Home() {
                 <p className="text-stone-400 mb-6 line-clamp-2">Sblocca tutte le funzionalità organizzative per un matrimonio perfetto.</p>
                 
                 <div className="text-4xl font-bold mb-2">
-                  {isTriennial ? '€ 209,50' : '€ 299'}
+                  {isTriennial ? '448,50 €' : '299,00 €'}
                 </div>
                 {!isTriennial ? (
                   <div className="text-sm text-stone-400 mb-6 min-h-[40px]">
                     il primo anno<br/>
-                    <span className="italic text-stone-500">rinnovo dal secondo anno € 60 all'anno</span>
+                    <span className="italic text-stone-500">rinnovo dal secondo anno 60,00 € all'anno</span>
                   </div>
                 ) : (
                   <div className="text-sm text-emerald-400 font-bold mb-6 min-h-[40px]">
-                    Pagamento anticipato 3 anni.<br/>Risparmi € 209,50
+                    Pagamento anticipato 3 anni.<br/>Risparmi 448,50 €
                   </div>
                 )}
 

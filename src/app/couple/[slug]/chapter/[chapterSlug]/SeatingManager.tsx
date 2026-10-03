@@ -87,7 +87,7 @@ export default function SeatingManager({ chapter, guests, tables, entitlements }
               <LayoutGrid className="w-4 h-4 mr-2" /> Piantina
             </Button>
           </div>
-          <Button onClick={printSummary} variant="outline" className="gap-2"><Printer className="w-4 h-4"/> Stampa Liste</Button>
+          <Button onClick={printSummary} variant="outline" className="gap-2" disabled={!entitlements?.canExportPdf} title={!entitlements?.canExportPdf ? "Richiede il piano Diamond" : ""}><Printer className="w-4 h-4"/> Stampa Liste</Button>
         </div>
       </div>
 
@@ -122,37 +122,33 @@ export default function SeatingManager({ chapter, guests, tables, entitlements }
           </CardContent>
         </Card>
 
-        {/* Aggiungi Tavolo */}
+                {/* Aggiungi Tavolo */}
         <Card>
           <CardHeader>
             <CardTitle>Aggiungi Tavolo</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleAddTable} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
+            {!entitlements?.canManageSeating ? (
+              <div className="p-4 bg-rose-50 rounded-xl text-rose-800 text-sm border border-rose-200">
+                La gestione dei tavoli richiede il piano Premium o Diamond. Esegui l'upgrade per sbloccare questa funzionalità.
+              </div>
+            ) : (
+              <form onSubmit={handleAddTable} className="space-y-4">
+                <div>
                   <Label>Nome Tavolo</Label>
                   <Input value={newTableName} onChange={(e) => setNewTableName(e.target.value)} placeholder="es. Tavolo Sposi, Tavolo 1" required />
                 </div>
-                <div className="space-y-2">
-                  <Label>Numero Posti</Label>
-                  <Input type="number" value={newTableCap} onChange={(e) => setNewTableCap(e.target.value)} required min="1" />
+                <div>
+                  <Label>Forma del Tavolo</Label>
+                  <select className="w-full p-2 border rounded-md" value={newTableShape} onChange={(e) => setNewTableShape(e.target.value as "ROUND" | "RECTANGLE" | "SQUARE")}>
+                    <option value="ROUND">Rotondo</option>
+                    <option value="RECTANGLE">Rettangolare</option>
+                    <option value="SQUARE">Quadrato</option>
+                  </select>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Forma del Tavolo</Label>
-                <select 
-                  value={newTableShape} 
-                  onChange={(e) => setNewTableShape(e.target.value)}
-                  className="w-full flex h-10 rounded-md border border-stone-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-800"
-                >
-                  <option value="ROUND">Rotondo</option>
-                  <option value="RECTANGULAR">Rettangolare (Imperiale)</option>
-                  <option value="SQUARE">Quadrato</option>
-                </select>
-              </div>
-              <Button type="submit" disabled={loading} className="w-full">Aggiungi Tavolo</Button>
-            </form>
+                <Button type="submit" disabled={loading} className="w-full">Aggiungi Tavolo</Button>
+              </form>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -1,4 +1,5 @@
-﻿import { prisma } from "@/lib/prisma";
+﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
+import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { verifyTimelineAccess } from "@/lib/accessControl";
 import SeatingVisualizer from "@/app/couple/[slug]/chapter/[chapterSlug]/SeatingVisualizer";

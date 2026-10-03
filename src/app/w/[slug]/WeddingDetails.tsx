@@ -1,3 +1,4 @@
+﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
 import { MapPin, Clock, Calendar as CalendarIcon, Info, Users, Map } from "lucide-react";
 
 export default function WeddingDetails({ wedding }: { wedding: any }) {

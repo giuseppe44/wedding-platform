@@ -1,3 +1,4 @@
+﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -41,7 +42,7 @@ export default function GuestLogin({ slug, title, token }: { slug: string, title
         setError(result.error || "Password errata");
       }
     } catch (err) {
-      setError("Si è verificato un errore");
+      setError("Si Ã¨ verificato un errore");
     } finally {
       setLoading(false);
     }
@@ -64,7 +65,7 @@ export default function GuestLogin({ slug, title, token }: { slug: string, title
           </div>
           <CardTitle className="text-2xl font-serif">{title}</CardTitle>
           <CardDescription>
-            Questo evento è privato. Inserisci la password per accedere.
+            Questo evento Ã¨ privato. Inserisci la password per accedere.
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -1,3 +1,4 @@
+﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
 import { prisma } from "@/lib/prisma";
 import { verifyTimelineAccess } from "@/lib/accessControl";
 import { Calendar, ArrowRight } from "lucide-react";

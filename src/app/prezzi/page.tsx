@@ -59,13 +59,13 @@ export default function PrezziPage() {
                 <h4 className="font-bold text-2xl text-stone-800 mb-2">Base</h4>
                 <p className="text-stone-500 mb-6 h-10">L'essenziale per il tuo matrimonio</p>
                 <div className="mb-2">
-                  <span className="text-5xl font-serif font-bold text-stone-900">{isTriennial ? '€ 99,50' : '€ 99'}</span>
+                  <span className="text-5xl font-serif font-bold text-stone-900">{isTriennial ? '148,50 €' : '99,00 €'}</span>
                 </div>
                 <p className="text-sm text-stone-500 mb-6 min-h-[40px]">
                   {isTriennial ? (
-                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-600 font-bold">Risparmi € 99,50</span></>
+                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-600 font-bold">Risparmi 148,50 €</span></>
                   ) : (
-                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno € 50 all'anno</span></>
+                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno 50,00 € all'anno</span></>
                   )}
                 </p>
                 <ul className="text-stone-600 space-y-4 mb-10 flex-1">
@@ -93,13 +93,13 @@ export default function PrezziPage() {
                 <h4 className="font-bold text-2xl text-white mb-2">Premium</h4>
                 <p className="text-stone-400 mb-6 h-10">Ideale per l'organizzazione completa</p>
                 <div className="mb-2">
-                  <span className="text-5xl font-serif font-bold text-white">{isTriennial ? '€ 209,50' : '€ 299'}</span>
+                  <span className="text-5xl font-serif font-bold text-white">{isTriennial ? '448,50 €' : '299,00 €'}</span>
                 </div>
                 <p className="text-sm text-stone-400 mb-6 min-h-[40px]">
                   {isTriennial ? (
-                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-400 font-bold">Risparmi € 209,50</span></>
+                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-400 font-bold">Risparmi 448,50 €</span></>
                   ) : (
-                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno € 60 all'anno</span></>
+                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno 60,00 € all'anno</span></>
                   )}
                 </p>
                 <ul className="text-stone-300 space-y-4 mb-10 flex-1">
@@ -124,13 +124,13 @@ export default function PrezziPage() {
                 <h4 className="font-bold text-2xl text-stone-800 mb-2">Diamond</h4>
                 <p className="text-stone-500 mb-6 h-10">L'esperienza di lusso definitiva</p>
                 <div className="mb-2">
-                  <span className="text-5xl font-serif font-bold text-stone-900">{isTriennial ? '€ 294,50' : '€ 449'}</span>
+                  <span className="text-5xl font-serif font-bold text-stone-900">{isTriennial ? '673,50 €' : '449,00 €'}</span>
                 </div>
                 <p className="text-sm text-stone-500 mb-6 min-h-[40px]">
                   {isTriennial ? (
-                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-600 font-bold">Risparmi € 294,50</span></>
+                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-600 font-bold">Risparmi 673,50 €</span></>
                   ) : (
-                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno € 70 all'anno</span></>
+                    <>il primo anno<br/><span className="italic">rinnovo dal secondo anno 70,00 € all'anno</span></>
                   )}
                 </p>
                 <ul className="text-stone-600 space-y-4 mb-10 flex-1">
