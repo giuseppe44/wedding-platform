@@ -112,37 +112,77 @@ export default function Home() {
         <section className="pt-32 pb-32 bg-gradient-to-b from-stone-50 via-white to-white relative z-20 -mt-20 rounded-t-[3rem] sm:rounded-t-[4rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)]">
           <div className="max-w-7xl mx-auto px-6">
             
-            {/* Animazione introduttiva capitoli */}
-            <div className="flex justify-center mb-20 relative z-30">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="flex items-center gap-4 bg-white/80 backdrop-blur-md px-8 py-4 rounded-full shadow-2xl border border-stone-200"
-              >
-                <div className="flex -space-x-4">
-                  {[1, 2, 3].map((i) => (
-                    <motion.div 
-                      key={i}
-                      animate={{ 
-                        y: [0, -8, 0],
-                        rotate: [0, 5, -5, 0]
-                      }}
-                      transition={{ 
-                        duration: 3,
-                        delay: i * 0.4,
-                        repeat: Number.POSITIVE_INFINITY,
-                        ease: "easeInOut"
-                      }}
-                      className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-100 to-rose-200 border-4 border-white flex items-center justify-center shadow-md relative z-10"
-                    >
-                      <Heart className="w-5 h-5 text-rose-500" />
-                    </motion.div>
-                  ))}
+            
+              {/* Animazione introduttiva capitoli ESPANSA */}
+              <div className="relative z-30 mb-24 max-w-5xl mx-auto text-center px-4 pt-10">
+                <div className="absolute inset-0 pointer-events-none hidden md:block">
+                  {/* Elementi fluttuanti di background */}
+                  <motion.div 
+                    animate={{ y: [0, -15, 0], rotate: [0, 5, -5, 0] }} 
+                    transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                    className="absolute top-0 left-0 lg:-left-20 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-rose-50 flex items-center gap-3"
+                  >
+                    <span className="text-3xl">💍</span> <span className="font-serif text-stone-700 font-medium">Il Matrimonio</span>
+                  </motion.div>
+                  
+                  <motion.div 
+                    animate={{ y: [0, 20, 0], rotate: [0, -5, 5, 0] }} 
+                    transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1 }}
+                    className="absolute top-20 right-0 lg:-right-10 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-stone-100 flex items-center gap-3"
+                  >
+                    <span className="text-3xl">✈️</span> <span className="font-serif text-stone-700 font-medium">Luna di Miele</span>
+                  </motion.div>
+                  
+                  <motion.div 
+                    animate={{ y: [0, -25, 0], rotate: [0, 10, -5, 0] }} 
+                    transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 2 }}
+                    className="absolute bottom-10 left-10 lg:left-0 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-blue-50 flex items-center gap-3"
+                  >
+                    <span className="text-3xl">🍼</span> <span className="font-serif text-stone-700 font-medium">La Nascita</span>
+                  </motion.div>
+
+                  <motion.div 
+                    animate={{ y: [0, 15, 0], rotate: [0, -8, 8, 0] }} 
+                    transition={{ duration: 4.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1.5 }}
+                    className="absolute -bottom-5 right-20 lg:right-10 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-amber-50 flex items-center gap-3"
+                  >
+                    <span className="text-3xl">🎓</span> <span className="font-serif text-stone-700 font-medium">Traguardi</span>
+                  </motion.div>
                 </div>
-                <div className="text-stone-700 font-serif italic text-lg ml-2">I Capitoli della vostra Storia</div>
-              </motion.div>
-            </div>
+
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="inline-flex items-center gap-4 bg-rose-50/80 backdrop-blur-md px-6 py-2 rounded-full shadow-inner border border-rose-100 mb-8 mt-12 relative z-10"
+                >
+                  <div className="flex -space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-rose-400 flex items-center justify-center text-white text-xs border-2 border-white shadow-sm z-30">M</div>
+                    <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white text-xs border-2 border-white shadow-sm z-20">L</div>
+                    <div className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-white text-xs border-2 border-white shadow-sm z-10">F</div>
+                  </div>
+                  <span className="text-stone-600 font-serif italic text-sm tracking-wide">I Capitoli della Vostra Vita</span>
+                </motion.div>
+                
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="text-4xl md:text-5xl lg:text-6xl font-serif text-stone-900 mb-6 relative z-10 leading-tight drop-shadow-sm"
+                >
+                  Custodisci ogni <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-amber-500 italic">momento prezioso</span>
+                </motion.h2>
+                
+                <motion.p 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  className="text-lg md:text-xl text-stone-600 max-w-2xl mx-auto font-light leading-relaxed relative z-10"
+                >
+                  Da un matrimonio indimenticabile al primo sorriso di tuo figlio. Crea un portale privato, raccogli le foto degli invitati e costruisci una linea del tempo interattiva che durerà per sempre.
+                </motion.p>
+              </div>
 
             <motion.div 
               variants={staggerContainer}
@@ -153,7 +193,7 @@ export default function Home() {
             >
               {/* 1. Organizza il tuo matrimonio */}
               <Link href="/sposi" className="block group h-full">
-                <motion.div variants={fadeUpVariant} className="bg-white border border-stone-100 p-10 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(244,63,94,0.2)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden">
+                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-rose-50/60 via-white to-white border border-rose-100/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(244,63,94,0.25)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-rose-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   
                   <div className="relative z-10">
@@ -181,7 +221,7 @@ export default function Home() {
   
               {/* 2. Fornitori */}
               <Link href="/fornitori" className="block group h-full">
-                <motion.div variants={fadeUpVariant} className="bg-white border border-stone-100 p-10 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(41,37,36,0.15)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden">
+                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-stone-100/60 via-white to-white border border-stone-200/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(41,37,36,0.2)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-stone-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   
                   <div className="relative z-10">
@@ -212,7 +252,7 @@ export default function Home() {
   
               {/* 3. Abbonamenti e Promozioni */}
               <Link href="#pricing" className="block group h-full">
-                <motion.div variants={fadeUpVariant} className="bg-white border border-stone-100 p-10 rounded-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(245,158,11,0.2)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden">
+                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-amber-50/60 via-white to-white border border-amber-100/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(245,158,11,0.25)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-amber-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   
                   <div className="relative z-10">
@@ -244,50 +284,117 @@ export default function Home() {
           </div>
         </section>
   
-        {/* CORE FEATURES GRID */}
-      <section className="py-24 bg-white relative">
+        
+      {/* CORE FEATURES BENTO GRID (PREMIUM) */}
+      <section className="py-32 bg-stone-50 relative">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-4">La Vostra Piattaforma</h2>
-            <p className="text-xl text-stone-500 font-light max-w-2xl mx-auto">Tutto ciò di cui avete bisogno in un unico posto per un intrattenimento unico e memorabile.</p>
+          <div className="text-center mb-20">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl lg:text-6xl font-serif text-stone-900 mb-6"
+            >
+              Le Funzioni <span className="italic text-rose-500">Premium</span>
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-stone-500 font-light max-w-2xl mx-auto"
+            >
+              Non solo estetica. Una suite potente per gestire ogni aspetto del tuo evento con una facilità incredibile.
+            </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
-              <Camera className="w-10 h-10 text-rose-500 mb-6" />
-              <h3 className="text-xl font-bold mb-3">Raccolta foto dagli invitati</h3>
-              <p className="text-stone-600 font-light">Gli invitati scansionano un QR code e caricano le foto in diretta senza scaricare app. Raccogli istantaneamente ricordi inediti.</p>
-            </div>
-            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
-              <Map className="w-10 h-10 text-emerald-500 mb-6" />
-              <h3 className="text-xl font-bold mb-3">Disposizione tavoli e RSVP</h3>
-              <p className="text-stone-600 font-light">Gestisci le conferme degli ospiti e crea la mappa interattiva dei tavoli per il ristorante direttamente dal tuo spazio privato.</p>
-            </div>
-            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
-              <MessageCircle className="w-10 h-10 text-amber-500 mb-6" />
-              <h3 className="text-xl font-bold mb-3">Guestbook e Video-dediche</h3>
-              <p className="text-stone-600 font-light">Lascia che parenti e amici registrino messaggi vocali, dediche scritte o brevi video-auguri che conserverai per sempre.</p>
-            </div>
-            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
-              <ImageIcon className="w-10 h-10 text-indigo-500 mb-6" />
-              <h3 className="text-xl font-bold mb-3">Gestione completa dell'album</h3>
-              <p className="text-stone-600 font-light">Il tuo fotografo carica qui le foto ufficiali in alta risoluzione. Decidi tu quali foto rendere pubbliche o nascondere.</p>
-            </div>
-            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
-              <Share2 className="w-10 h-10 text-blue-500 mb-6" />
-              <h3 className="text-xl font-bold mb-3">Inviti digitali interattivi</h3>
-              <p className="text-stone-600 font-light">Invia partecipazioni digitali tramite WhatsApp o Email con mappe, programma della giornata e link diretto per l'RSVP.</p>
-            </div>
-            <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
-              <Sparkles className="w-10 h-10 text-rose-400 mb-6" />
-              <h3 className="text-xl font-bold mb-3">Una pagina tutta vostra</h3>
-              <p className="text-stone-600 font-light">La vostra storia racchiusa in una pagina web bellissima e personalizzata, protetta da password per la massima privacy.</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[320px]">
+            
+            {/* Box 1: Condivisione Live (Span 2) */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="md:col-span-2 bg-gradient-to-br from-rose-500 to-rose-600 rounded-[2.5rem] p-10 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between group"
+            >
+              <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 group-hover:scale-110 transition-transform duration-1000"></div>
+              <div className="relative z-10 max-w-sm">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
+                  <Camera className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-3xl md:text-4xl font-serif mb-4">Condivisione Live</h3>
+                <p className="text-rose-100 text-lg font-light leading-relaxed">
+                  Gli invitati scansionano il QR Code stampato sui tavoli e caricano foto e video in tempo reale, senza app. Una galleria spontanea che si aggiorna in diretta.
+                </p>
+              </div>
+              <div className="absolute bottom-[-20%] right-[-10%] md:right-10 md:bottom-10 opacity-20 md:opacity-100 pointer-events-none group-hover:-translate-y-4 transition-transform duration-700">
+                <div className="w-48 h-48 bg-white p-4 rounded-3xl shadow-2xl rotate-12">
+                   <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://antigravity.com" className="w-full h-full object-contain opacity-80" alt="QR" />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Box 2: Guestbook */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-[2.5rem] p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-amber-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-6 text-amber-500 relative z-10">
+                <MessageCircle className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-serif mb-3 relative z-10">Guestbook Digitale</h3>
+              <p className="text-stone-500 font-light relative z-10 flex-1">
+                Parenti e amici possono lasciarvi messaggi testuali, vocali o video-dediche speciali da riascoltare per sempre.
+              </p>
+            </motion.div>
+
+            {/* Box 3: Tavoli e RSVP */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-[2.5rem] p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 text-emerald-500 relative z-10">
+                <Map className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-serif mb-3 relative z-10">Mappa Tavoli & RSVP</h3>
+              <p className="text-stone-500 font-light relative z-10 flex-1">
+                Ricevi le conferme di partecipazione, annota le intolleranze e organizza visivamente i tavoli del ristorante con un editor intuitivo.
+              </p>
+            </motion.div>
+
+            {/* Box 4: Album Pro (Span 2) */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="md:col-span-2 bg-gradient-to-br from-stone-900 to-black rounded-[2.5rem] p-10 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between group"
+            >
+              <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-3xl translate-y-1/2 translate-x-1/4 group-hover:scale-110 transition-transform duration-1000"></div>
+              <div className="relative z-10 max-w-lg">
+                <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
+                  <ImageIcon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-3xl md:text-4xl font-serif mb-4">L'Album Ufficiale in HD</h3>
+                <p className="text-stone-300 text-lg font-light leading-relaxed">
+                  L'accesso diretto per il tuo fotografo o videomaker. Possono caricare gli scatti in alta risoluzione creando la galleria ufficiale, visibile agli ospiti o protetta da password.
+                </p>
+              </div>
+            </motion.div>
+
           </div>
         </div>
       </section>
 
-      {/* TWO WORLDS & TIMELINE SECTION */}
+
+{/* TWO WORLDS & TIMELINE SECTION */}
       <section className="py-24 bg-stone-100 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
