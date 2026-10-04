@@ -131,6 +131,8 @@ model Guest {
   isAttending    Boolean?
   token          String?      @unique
   hasAccess      Boolean      @default(true)
+  rsvpReminder30Sent Boolean @default(false)
+  rsvpReminder10Sent Boolean @default(false)
   timelineItemId String       @map("weddingId")
   timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
@@ -416,4 +418,15 @@ model TravelDocument {
   timelineItemId String       @map("weddingId")
   timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
+}
+
+
+model SystemConfig {
+  id          String   @id @default("default")
+  smtpHost    String?
+  smtpPort    String?
+  smtpUser    String?
+  smtpPass    String?
+  senderEmail String?
+  updatedAt   DateTime @updatedAt
 }

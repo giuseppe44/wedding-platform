@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { createTable, deleteTable, createGuest, deleteGuest, assignGuestToTable, updateGuest } from "@/app/seatingActions";
-import { Trash2, Users, Printer, LayoutGrid, List } from "lucide-react";
+import { Trash2, Users, Printer, LayoutGrid, List, CheckCircle, XCircle, Clock } from "lucide-react";
+import { parseDietary } from "@/lib/dietary";
 import SeatingVisualizer from "./SeatingVisualizer";
 
 export default function SeatingManager({ chapter, guests, tables, entitlements }: { chapter: any, guests: any[], tables: any[], entitlements?: any }) {
@@ -53,7 +54,11 @@ export default function SeatingManager({ chapter, guests, tables, entitlements }
       html += `<h2>${table.name} (${tableGuests.length} / ${table.capacity})</h2>`;
       html += '<table><tr><th>Nome</th><th>Cognome</th><th>Esigenze Alimentari</th></tr>';
       tableGuests.forEach(g => {
-        html += `<tr><td>${g.name}</td><td>${g.surname}</td><td class="diet">${g.dietaryNotes || ''}</td></tr>`;
+        
+        const diet = parseDietary(g.dietaryNotes);
+        const dietText = diet.allergies.join(", ") + (diet.notes ? " - " + diet.notes : "");
+        html += `<tr><td>${g.name}</td><td>${g.surname}</td><td class="diet">${dietText}</td></tr>`;
+    
       });
       html += '</table>';
     });
@@ -200,8 +205,25 @@ export default function SeatingManager({ chapter, guests, tables, entitlements }
                 {tableGuests.map(g => (
                   <div key={g.id} className="flex justify-between items-center bg-stone-50 p-2 rounded-md text-sm border border-stone-100">
                     <div>
-                      <p className="font-medium">{g.name} {g.surname}</p>
-                      {g.dietaryNotes && <p className="text-xs text-red-600">{g.dietaryNotes}</p>}
+                      
+                        <p className="font-medium flex items-center gap-2">
+                          {g.name} {g.surname}
+                          {g.isAttending === true && <span className="w-2 h-2 rounded-full bg-emerald-500" title="Confermato"></span>}
+                          {g.isAttending === false && <span className="w-2 h-2 rounded-full bg-rose-500" title="Rifiutato"></span>}
+                          {g.isAttending === null && <span className="w-2 h-2 rounded-full bg-stone-300" title="In Attesa"></span>}
+                        </p>
+                        {(() => {
+                           const diet = parseDietary(g.dietaryNotes);
+                           const hasAllergies = diet.allergies.length > 0;
+                           if (!hasAllergies && !diet.notes) return null;
+                           return (
+                             <div className="text-[10px] leading-tight mt-1">
+                               {hasAllergies && <span className="bg-red-100 text-red-800 px-1.5 py-0.5 rounded font-medium mr-1">{diet.allergies.join(", ")}</span>}
+                               {diet.notes && <span className="text-stone-500">{diet.notes}</span>}
+                             </div>
+                           );
+                        })()}
+
                     </div>
                     <div className="flex items-center gap-2">
                       <select 
@@ -267,8 +289,25 @@ export default function SeatingManager({ chapter, guests, tables, entitlements }
             {guests.filter(g => !g.tableId).map(g => (
               <div key={g.id} className="flex justify-between items-center bg-white p-3 rounded-md shadow-sm border border-stone-200">
                 <div>
-                  <p className="font-medium">{g.name} {g.surname}</p>
-                  {g.dietaryNotes && <p className="text-xs text-red-600">{g.dietaryNotes}</p>}
+                  
+                        <p className="font-medium flex items-center gap-2">
+                          {g.name} {g.surname}
+                          {g.isAttending === true && <span className="w-2 h-2 rounded-full bg-emerald-500" title="Confermato"></span>}
+                          {g.isAttending === false && <span className="w-2 h-2 rounded-full bg-rose-500" title="Rifiutato"></span>}
+                          {g.isAttending === null && <span className="w-2 h-2 rounded-full bg-stone-300" title="In Attesa"></span>}
+                        </p>
+                        {(() => {
+                           const diet = parseDietary(g.dietaryNotes);
+                           const hasAllergies = diet.allergies.length > 0;
+                           if (!hasAllergies && !diet.notes) return null;
+                           return (
+                             <div className="text-[10px] leading-tight mt-1">
+                               {hasAllergies && <span className="bg-red-100 text-red-800 px-1.5 py-0.5 rounded font-medium mr-1">{diet.allergies.join(", ")}</span>}
+                               {diet.notes && <span className="text-stone-500">{diet.notes}</span>}
+                             </div>
+                           );
+                        })()}
+
                 </div>
                   <form action={deleteGuest.bind(null, g.id, chapter.slug)}>
                     <SubmitButton 

@@ -1,4 +1,5 @@
-﻿"use server";
+"use server";
+import crypto from "crypto";
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
@@ -23,6 +24,7 @@ export async function createGuest(timelineItemId: string, data: any, slug: strin
   await prisma.guest.create({
     data: {
       timelineItemId,
+      token: crypto.randomUUID(), // Genera token sicuro per RSVP
       name: data.name,
       surname: data.surname,
       email: data.email,
