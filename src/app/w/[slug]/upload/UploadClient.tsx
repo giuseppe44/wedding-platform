@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
 
 "use client";
 
@@ -16,14 +16,11 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
   const [selectedStage, setSelectedStage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      if (!window.confirm("ATTENZIONE - DIRITTI E PRIVACY\nConfermi di possedere i diritti d'autore e le necessarie autorizzazioni per queste foto/video, sollevando la piattaforma da qualsiasi responsabilità per violazioni di copyright o privacy?")) {
-        e.target.value = "";
-        return;
-      }
       const newFiles = Array.from(e.target.files);
       setFiles(prev => {
         const total = [...prev, ...newFiles];
@@ -93,6 +90,10 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
     if (files.length === 0) return;
     if (!guestName.trim()) {
       alert("Per favore, inserisci il tuo nome in modo che gli sposi sappiano chi ha caricato le foto.");
+      return;
+    }
+    if (!acceptedLegal) {
+      alert("Devi accettare i Termini e Condizioni, la Privacy Policy e confermare di possedere i diritti sui file caricati.");
       return;
     }
     
@@ -214,10 +215,26 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
             </div>
           )}
 
+          <label className="flex items-start gap-3 p-3.5 bg-stone-50 border border-stone-200 rounded-xl text-left text-xs text-stone-600 cursor-pointer">
+            <input
+              type="checkbox"
+              required
+              checked={acceptedLegal}
+              onChange={(e) => setAcceptedLegal(e.target.checked)}
+              className="mt-1 w-4 h-4 accent-stone-900 shrink-0 cursor-pointer"
+            />
+            <span className="leading-relaxed">
+              Dichiaro che le foto, i video e i testi caricati sono di mia proprietà o che ne possiedo licenza e consenso delle persone ritratte, assumendomi ogni responsabilità e sollevando GentiLuna da qualsiasi pretesa di terzi. Accetto i{" "}
+              <Link href="/terms" target="_blank" className="underline font-semibold text-stone-900">Termini e Condizioni</Link>{" "}
+              e la{" "}
+              <Link href="/privacy" target="_blank" className="underline font-semibold text-stone-900">Privacy Policy</Link>.
+            </span>
+          </label>
+
           <Button 
             type="submit" 
             className="w-full h-14 text-lg rounded-full shadow-lg text-white hover:opacity-90" 
-            disabled={files.length === 0 || uploading}
+            disabled={files.length === 0 || uploading || !acceptedLegal}
             style={{ backgroundColor: buttonColor || "#000" }}
           >
             {uploading ? (

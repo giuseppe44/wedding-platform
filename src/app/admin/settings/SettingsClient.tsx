@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
 import { updateSystemConfig } from "../settingsActions";
 import { Mail, Save } from "lucide-react";
@@ -79,7 +79,7 @@ export default function SettingsClient({ initialConfig }: { initialConfig: any }
           <label className="text-sm font-medium text-stone-700">Email Mittente (Da cui partono le email)</label>
           <input 
             name="senderEmail" value={form.senderEmail} onChange={handleChange}
-            placeholder="es. info@ecos.com"
+            placeholder="es. info@gentiluna.com"
             className="w-full border border-stone-200 rounded-xl p-3 focus:ring-2 focus:ring-rose-500 outline-none max-w-md block"
           />
           <p className="text-xs text-stone-500">Queste impostazioni sovrascriveranno quelle nel file .env (se presenti).</p>

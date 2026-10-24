@@ -16,7 +16,7 @@ export default function FornitoriPage() {
         <Link href="/">
           <div className="flex items-center gap-2 text-stone-900 font-serif text-2xl">
             <Heart className="w-6 h-6 text-rose-500" />
-            ecos.com
+            GentiLuna
           </div>
         </Link>
         <div className="flex items-center gap-4">

@@ -56,7 +56,7 @@ export default function PublicReviewForm({ proId, proName }: { proId: string, pr
             </div>
             <h3 className="text-xl font-serif text-stone-800">Grazie per la recensione!</h3>
             <p className="text-stone-500 text-sm">
-              Abbiamo creato automaticamente il tuo spazio <strong>ecos.com</strong> dedicato al tuo matrimonio.
+              Abbiamo creato automaticamente il tuo spazio <strong>GentiLuna</strong> dedicato al tuo matrimonio.
               Accedi con la tua email per scoprire tutte le funzioni e custodire i tuoi ricordi!
             </p>
             <div className="pt-4">
@@ -117,6 +117,16 @@ export default function PublicReviewForm({ proId, proName }: { proId: string, pr
                 <Label>Email</Label>
                 <Input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="la.tua@email.it" />
               </div>
+
+              <label className="flex items-start gap-2.5 pt-3 text-xs text-stone-600 cursor-pointer">
+                <input type="checkbox" required className="mt-0.5 w-4 h-4 accent-stone-900 shrink-0 cursor-pointer" />
+                <span className="leading-relaxed">
+                  Dichiaro che la recensione rispecchia un&apos;esperienza reale sotto la mia responsabilità e accetto i{" "}
+                  <Link href="/terms" target="_blank" className="underline font-semibold text-stone-900">Termini e Condizioni</Link>{" "}
+                  e la{" "}
+                  <Link href="/privacy" target="_blank" className="underline font-semibold text-stone-900">Privacy Policy</Link>.
+                </span>
+              </label>
             </div>
 
             <DialogFooter className="pt-4">

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link2, Mail, MessageCircle } from "lucide-react";
 
 export default function ShareVetrinaButtons({ slug }: { slug: string }) {
-  const url = typeof window !== 'undefined' ? `${window.location.origin}/w/${slug}` : `https://ecos.com/w/${slug}`;
+  const url = typeof window !== 'undefined' ? `${window.location.origin}/w/${slug}` : `https://gentiluna.com/w/${slug}`;
   
   const handleCopy = () => {
     navigator.clipboard.writeText(url);
@@ -12,11 +12,11 @@ export default function ShareVetrinaButtons({ slug }: { slug: string }) {
   };
 
   const handleWhatsapp = () => {
-    window.open(`https://wa.me/?text=${encodeURIComponent(`Guarda la nostra Vetrina su ecos.com! Troverai tutte le info e potrai caricare le tue foto: ${url}`)}`, '_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Guarda la nostra Vetrina su GentiLuna! Troverai tutte le info e potrai caricare le tue foto: ${url}`)}`, '_blank');
   };
 
   const handleEmail = () => {
-    window.open(`mailto:?subject=${encodeURIComponent("La nostra Vetrina su ecos.com")}&body=${encodeURIComponent(`Guarda la nostra Vetrina su ecos.com! Troverai tutte le info e potrai caricare le tue foto:\n\n${url}`)}`);
+    window.open(`mailto:?subject=${encodeURIComponent("La nostra Vetrina su GentiLuna")}&body=${encodeURIComponent(`Guarda la nostra Vetrina su GentiLuna! Troverai tutte le info e potrai caricare le tue foto:\n\n${url}`)}`);
   };
 
   return (

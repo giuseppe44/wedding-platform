@@ -30,7 +30,7 @@ export default function CoppiePage() {
           className="flex items-center gap-2 text-stone-900 font-serif text-2xl drop-shadow-sm"
         >
           <Heart className="w-6 h-6 text-rose-500" />
-          ecos.com
+          GentiLuna
         </Link>
         <div className="hidden md:flex items-center gap-8 text-[12px] font-medium tracking-[0.2em] text-stone-900 uppercase">
           <Link href="/#directory" className="hover:text-rose-500 transition-colors">Trova Fornitori</Link>
@@ -152,7 +152,7 @@ export default function CoppiePage() {
            >
              <h2 className="text-4xl md:text-6xl font-serif mb-6 tracking-tight">Avete deciso di fare il grande passo?</h2>
              <p className="text-xl md:text-2xl font-light text-rose-100 max-w-2xl mx-auto mb-10 leading-relaxed">
-               ecos.com cresce con voi. Con un semplice click, potrete trasformare il vostro Diario in un vero e proprio ecosistema organizzativo per il vostro Matrimonio. 
+               GentiLuna cresce con voi. Con un semplice click, potrete trasformare il vostro Diario in un vero e proprio ecosistema organizzativo per il vostro Matrimonio. 
              </p>
              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-left grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-12 shadow-xl">
                <div className="flex items-center gap-3">

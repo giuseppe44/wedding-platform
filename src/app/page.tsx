@@ -41,7 +41,7 @@ export default function Home() {
           className="flex items-center gap-2 text-white font-serif text-2xl drop-shadow-md"
         >
           <Heart className="w-6 h-6 text-rose-500" />
-          ecos.com
+          GentiLuna
         </motion.div>
         
         <motion.div 
@@ -420,7 +420,7 @@ export default function Home() {
                 <Calendar className="text-rose-500 w-6 h-6" /> Il matrimonio è il primo capitolo.
               </h3>
               <p className="text-lg text-stone-600 font-light mb-6">
-                La vostra storia continua. Da noi non prenoti solo il fotografo del matrimonio. ecos.com è una timeline della tua vita.
+                La vostra storia continua. Da noi non prenoti solo il fotografo del matrimonio. GentiLuna è una timeline della tua vita.
               </p>
               <div className="p-4 bg-stone-50 rounded-xl border border-stone-200">
                 <p className="text-stone-800 font-medium">Riapri il tuo spazio per ogni nuovo grande traguardo.</p>
@@ -466,7 +466,7 @@ export default function Home() {
               "Inviti digitali interattivi (Email / WhatsApp)",
               "Gestione RSVP e menù (intolleranze, scelte)",
               "Disposizione interattiva dei tavoli",
-              "ecos.com LIVE (Modalità Proiettore per le foto)",
+              "GentiLuna LIVE (Modalità Proiettore per le foto)",
               "Galleria fotografica privata e sicura",
               "Guestbook digitale per auguri e video-dediche",
               "Possibilità di nascondere o approvare le foto",
@@ -569,7 +569,7 @@ export default function Home() {
                 <ul className="space-y-4 mb-8 flex-grow text-stone-300">
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Spazio Illimitato</li>
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Disposizione Tavoli & RSVP</li>
-                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> ecos.com LIVE (Proiettore)</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> GentiLuna LIVE (Proiettore)</li>
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Inviti digitali illimitati</li>
                 </ul>
                 <Link href="/prezzi">

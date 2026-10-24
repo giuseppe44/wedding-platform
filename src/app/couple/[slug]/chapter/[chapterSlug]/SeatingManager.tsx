@@ -81,7 +81,28 @@ export default function SeatingManager({ chapter, guests, tables, entitlements }
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      
+        {/* RSVP STATS DASHBOARD */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col items-center justify-center">
+            <span className="text-3xl font-bold text-stone-800">{guests.length}</span>
+            <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider mt-1">Totale</span>
+          </div>
+          <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 shadow-sm flex flex-col items-center justify-center">
+            <span className="text-3xl font-bold text-emerald-600">{guests.filter(g => g.isAttending === true).length}</span>
+            <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mt-1">Confermati</span>
+          </div>
+          <div className="bg-rose-50 p-4 rounded-2xl border border-rose-100 shadow-sm flex flex-col items-center justify-center">
+            <span className="text-3xl font-bold text-rose-600">{guests.filter(g => g.isAttending === false).length}</span>
+            <span className="text-xs font-semibold text-rose-600 uppercase tracking-wider mt-1">Rifiutati</span>
+          </div>
+          <div className="bg-stone-100 p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col items-center justify-center">
+            <span className="text-3xl font-bold text-stone-500">{guests.filter(g => g.isAttending === null).length}</span>
+            <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider mt-1">In Attesa</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-2xl font-serif text-stone-800">Gestione Ospiti e Tavoli</h2>
         <div className="flex items-center gap-2">
           <div className="bg-stone-100 p-1 rounded-md flex border border-stone-200">

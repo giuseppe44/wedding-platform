@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Camera, Users, Target, Rocket, ArrowRight, CheckCircle2, TrendingUp, BarChart, MonitorSmartphone, Star, Gift, Heart } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -11,7 +11,7 @@ export default function ProfessionistiPage() {
       <nav className="absolute top-0 w-full z-50 flex items-center justify-between px-6 md:px-12 py-6">
         <Link href="/" className="flex items-center gap-2 text-2xl font-serif text-white tracking-tight">
           <Heart className="w-6 h-6 text-amber-500" />
-          ecos.com <span className="text-amber-500 font-sans text-sm tracking-widest font-bold ml-2 mt-1">PRO</span>
+          GentiLuna <span className="text-amber-500 font-sans text-sm tracking-widest font-bold ml-2 mt-1">PRO</span>
         </Link>
         <div className="flex items-center gap-4">
           <Link href="/">
@@ -80,7 +80,7 @@ export default function ProfessionistiPage() {
               <div>
                 <h3 className="text-2xl font-bold text-white mb-4">L'unica Condizione?</h3>
                 <p className="text-stone-400 mb-6 leading-relaxed">
-                  Vogliamo professionisti veri. Ti chiediamo solo di usare ecos.com e i nostri QR Code per la raccolta foto in almeno <strong>3 matrimoni reali quest'anno</strong>. 
+                  Vogliamo professionisti veri. Ti chiediamo solo di usare GentiLuna e i nostri QR Code per la raccolta foto in almeno <strong>3 matrimoni reali quest'anno</strong>. 
                 </p>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-center gap-3 text-stone-300"><CheckCircle2 className="w-5 h-5 text-emerald-500" /> Nessun vincolo di rinnovo</li>
@@ -113,7 +113,7 @@ export default function ProfessionistiPage() {
               In un matrimonio medio ci sono 100 invitati. Ognuno di loro fa foto, ognuno di loro guarda le tue foto, ma <strong>nessuno di loro conosce il tuo nome o ha il tuo bigliettino da visita.</strong>
             </p>
             <p className="text-lg text-stone-400 mb-8 leading-relaxed">
-              Con ecos.com, ogni invitato che inquadra il QR code per vedere o caricare le foto entra nel <strong>tuo database</strong>.
+              Con GentiLuna, ogni invitato che inquadra il QR code per vedere o caricare le foto entra nel <strong>tuo database</strong>.
             </p>
             <ul className="space-y-4">
               <li className="flex items-center gap-3 text-stone-300"><CheckCircle2 className="w-6 h-6 text-emerald-500" /> Acquisizione contatti 100% GDPR compliant</li>
@@ -260,7 +260,7 @@ export default function ProfessionistiPage() {
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Pacchetti Sposi in stock da rivendere</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Piattaforma White-Label (Tuo Logo)</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Dominio personalizzato (es. portale.tuobrand.it)</span></li>
-                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Account Manager ecos.com dedicato</span></li>
+                <li className="flex items-start gap-3"><CheckCircle2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" /> <span>Account Manager GentiLuna dedicato</span></li>
               </ul>
               <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER"><Button variant="outline" className="bg-transparent w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg">Contattaci per Demo</Button></Link>
             </div>

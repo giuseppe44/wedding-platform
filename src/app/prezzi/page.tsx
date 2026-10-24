@@ -45,7 +45,7 @@ export default function PrezziPage() {
             <div className="bg-rose-50 border border-rose-100 p-6 rounded-2xl inline-block max-w-2xl mb-8">
               <h4 className="font-bold text-rose-800 mb-2">🎁 Hai già un fotografo partner?</h4>
               <p className="text-rose-600 text-sm">
-                Se il tuo fotografo o professionista è già convenzionato con la piattaforma ecos.com, avrai diritto a un <strong>prezzo dedicato</strong> e vantaggioso (o incluso nel suo pacchetto). Chiedigli il codice invito!
+                Se il tuo fotografo o professionista è già convenzionato con la piattaforma GentiLuna, avrai diritto a un <strong>prezzo dedicato</strong> e vantaggioso (o incluso nel suo pacchetto). Chiedigli il codice invito!
               </p>
             </div>
 

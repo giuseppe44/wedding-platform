@@ -1,5 +1,6 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
+import Link from "next/link";
 import { updateGuestRSVP } from "./rsvpActions";
 import { parseDietary } from "@/lib/dietary";
 
@@ -14,6 +15,7 @@ export default function RSVPClient({ wedding, guest }: { wedding: any, guest: an
   const [isAttending, setIsAttending] = useState<boolean | null>(guest.isAttending);
   const [allergies, setAllergies] = useState<string[]>(dietary.allergies);
   const [notes, setNotes] = useState(dietary.notes);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -22,6 +24,10 @@ export default function RSVPClient({ wedding, guest }: { wedding: any, guest: an
   };
 
   const handleSave = async () => {
+    if (!acceptedPrivacy) {
+      alert("Per inviare la conferma devi leggere e accettare l'Informativa sulla Privacy e i Termini e Condizioni.");
+      return;
+    }
     setLoading(true);
     try {
       await updateGuestRSVP(wedding.id, guest.token, isAttending, allergies, notes);
@@ -83,9 +89,24 @@ export default function RSVPClient({ wedding, guest }: { wedding: any, guest: an
           </div>
         )}
 
+        <label className="flex items-start gap-3 p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-600 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={acceptedPrivacy}
+            onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+            className="mt-0.5 w-4 h-4 accent-rose-500 shrink-0 cursor-pointer"
+          />
+          <span className="leading-relaxed">
+            Acconsento al trattamento dei miei dati personali (inclusi eventuali dati su allergie e intolleranze alimentari ex Art. 9 GDPR comunicati agli sposi) e accetto la{" "}
+            <Link href="/privacy" target="_blank" className="underline font-semibold text-stone-900">Privacy Policy</Link>{" "}
+            e i{" "}
+            <Link href="/terms" target="_blank" className="underline font-semibold text-stone-900">Termini e Condizioni</Link> di GentiLuna.
+          </span>
+        </label>
+
         <button 
           onClick={handleSave}
-          disabled={loading || isAttending === null}
+          disabled={loading || isAttending === null || !acceptedPrivacy}
           className="w-full bg-stone-900 text-white py-4 rounded-xl font-medium hover:bg-stone-800 disabled:opacity-50 transition-all"
         >
           {loading ? "Salvataggio..." : saved ? "Salvato con successo! ✓" : "Invia Conferma"}

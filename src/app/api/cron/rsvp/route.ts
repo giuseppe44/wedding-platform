@@ -1,4 +1,4 @@
-﻿import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   const smtpUser = dbConfig?.smtpUser || process.env.SMTP_USER;
   const smtpPass = dbConfig?.smtpPass || process.env.SMTP_PASS;
   const smtpPort = dbConfig?.smtpPort || process.env.SMTP_PORT || "587";
-  const senderEmail = dbConfig?.senderEmail || process.env.ADMIN_EMAIL || "info@tuosito.com";
+  const senderEmail = dbConfig?.senderEmail || process.env.ADMIN_EMAIL || "info@gentiluna.com";
 
 
   if (!smtpHost || !smtpUser || !smtpPass) {
@@ -71,10 +71,10 @@ export async function GET(req: Request) {
           safeToken = crypto.randomUUID();
           await prisma.guest.update({ where: { id: g.id }, data: { token: safeToken } });
         }
-        const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://tuosito.com'}/w/${w.slug}/rsvp/${safeToken}`;
+        const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://gentiluna.com'}/w/${w.slug}/rsvp/${safeToken}`;
         
         await transporter.sendMail({
-          from: `"Wedding Team" <${senderEmail}>`,
+          from: `"GentiLuna" <${senderEmail}>`,
           to: g.email as string,
           subject: "Conferma la tua presenza al matrimonio! ❤️",
           html: `
@@ -116,10 +116,10 @@ export async function GET(req: Request) {
           safeToken = crypto.randomUUID();
           await prisma.guest.update({ where: { id: g.id }, data: { token: safeToken } });
         }
-        const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://tuosito.com'}/w/${w.slug}/rsvp/${safeToken}`;
+        const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://gentiluna.com'}/w/${w.slug}/rsvp/${safeToken}`;
         
         await transporter.sendMail({
-          from: `"Wedding Team" <${senderEmail}>`,
+          from: `"GentiLuna" <${senderEmail}>`,
           to: g.email as string,
           subject: "Il grande giorno si avvicina! 💍",
           html: `

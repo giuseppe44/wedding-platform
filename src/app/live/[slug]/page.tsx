@@ -109,7 +109,7 @@ export default function LiveProjectorMode({ params }: { params: { slug: string }
             <Heart className="w-5 h-5 md:w-7 md:h-7 text-rose-400 animate-pulse" />
           </div>
           <div>
-            <h1 className="text-xl md:text-3xl font-serif text-white tracking-wide shadow-black drop-shadow-md">ecos.com <span className="font-light text-rose-300">LIVE</span></h1>
+            <h1 className="text-xl md:text-3xl font-serif text-white tracking-wide shadow-black drop-shadow-md">GentiLuna <span className="font-light text-rose-300">LIVE</span></h1>
             <p className="text-xs md:text-sm text-stone-300 tracking-widest uppercase shadow-black drop-shadow-md">Condividi le tue emozioni</p>
           </div>
         </div>

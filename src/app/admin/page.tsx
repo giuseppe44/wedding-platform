@@ -23,7 +23,7 @@ export default async function AdminPage() {
       <aside className="w-full md:w-64 bg-stone-950 text-stone-300 flex flex-col">
         <div className="p-6 flex items-center gap-3 border-b border-stone-800">
           <Heart className="w-8 h-8 text-rose-500" />
-          <span className="text-2xl font-serif text-white font-bold">ecos.com</span>
+          <span className="text-2xl font-serif text-white font-bold">GentiLuna</span>
         </div>
         
         <div className="px-6 py-4 text-xs font-bold text-stone-600 uppercase tracking-widest">
@@ -55,7 +55,7 @@ export default async function AdminPage() {
             </div>
             <div>
               <div className="text-white font-medium text-sm">Super Admin</div>
-              <div className="text-xs text-stone-500">admin@ecos.com</div>
+              <div className="text-xs text-stone-500">admin@gentiluna.com</div>
             </div>
           </div>
           <Link href="/" className="flex items-center justify-center gap-2 w-full py-2 bg-stone-950 hover:bg-stone-800 text-stone-400 hover:text-white transition-colors rounded-xl text-sm">

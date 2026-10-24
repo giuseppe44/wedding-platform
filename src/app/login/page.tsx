@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -30,12 +30,13 @@ function AuthFlow() {
   const [regBusinessName, setRegBusinessName] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
     if (mode === "LOGIN") {
       if (activeRole === "COUPLE") setEmail("sposi@demo.it");
       if (activeRole === "PHOTOGRAPHER") setEmail("demo@fotografo.it");
-      if (activeRole === "ADMIN") setEmail("admin@weddingplatform.com");
+      if (activeRole === "ADMIN") setEmail("admin@gentiluna.com");
     } else {
       setEmail("");
     }
@@ -43,6 +44,10 @@ function AuthFlow() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (mode === "REGISTER" && !acceptedTerms) {
+      alert("Per registrarti devi leggere e accettare i Termini e Condizioni e la Privacy Policy di GentiLuna.");
+      return;
+    }
     setLoading(true);
     
     try {
@@ -107,6 +112,12 @@ function AuthFlow() {
             {loading ? "Accesso in corso..." : "Accedi alla Dashboard"}
           </Button>
 
+          <p className="text-[11px] text-stone-400 text-center leading-relaxed">
+            Accedendo confermi di aver preso visione della{" "}
+            <Link href="/privacy" className="underline hover:text-stone-700" target="_blank">Privacy Policy</Link> e di accettare i{" "}
+            <Link href="/terms" className="underline hover:text-stone-700" target="_blank">Termini e Condizioni</Link> di GentiLuna.
+          </p>
+
           {activeRole !== "ADMIN" && (
             <div className="text-center pt-4 border-t border-stone-100">
               <p className="text-sm text-stone-500">
@@ -159,7 +170,22 @@ function AuthFlow() {
             <Input id="regPassword" type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} className="bg-stone-50 h-12" required />
           </div>
 
-          <Button type="submit" className="w-full h-12 text-lg rounded-xl bg-stone-900 hover:bg-stone-800" disabled={loading}>
+          <div className="flex items-start space-x-3 p-3.5 rounded-xl bg-stone-50 border border-stone-200">
+            <Checkbox
+              id="regTerms"
+              checked={acceptedTerms}
+              onCheckedChange={(c) => setAcceptedTerms(c as boolean)}
+              className="mt-0.5"
+            />
+            <Label htmlFor="regTerms" className="text-xs text-stone-600 leading-relaxed font-normal cursor-pointer">
+              Dichiaro di aver letto e di accettare integralmente i{" "}
+              <Link href="/terms" target="_blank" className="underline font-semibold text-stone-900">Termini e Condizioni</Link>{" "}
+              (inclusi gli artt. 3, 4, 5, 6, 7 e 8 su responsabilità esclusiva dei contenuti caricati, licenze d&apos;autore e manleva) e l&apos;{" "}
+              <Link href="/privacy" target="_blank" className="underline font-semibold text-stone-900">Informativa sulla Privacy</Link>.
+            </Label>
+          </div>
+
+          <Button type="submit" className="w-full h-12 text-lg rounded-xl bg-stone-900 hover:bg-stone-800" disabled={loading || !acceptedTerms}>
             {loading ? "Creazione in corso..." : "Registrati e Accedi"}
           </Button>
 

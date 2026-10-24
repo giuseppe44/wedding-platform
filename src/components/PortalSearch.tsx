@@ -117,6 +117,15 @@ export default function PortalSearch() {
                   <Input required type="email" name="email" placeholder="tua@email.com" className="bg-stone-900 border-stone-800 text-white placeholder-stone-600 h-12 rounded-xl" />
                 </div>
 
+                <label className="flex items-start gap-2.5 text-xs text-stone-400 cursor-pointer pt-1">
+                  <input type="checkbox" required className="mt-0.5 w-4 h-4 accent-rose-500 shrink-0 cursor-pointer" />
+                  <span className="leading-relaxed">
+                    Dichiaro di aver letto e accettato la{" "}
+                    <a href="/privacy" target="_blank" className="underline text-white">Privacy Policy</a> e i{" "}
+                    <a href="/terms" target="_blank" className="underline text-white">Termini e Condizioni</a> di GentiLuna.
+                  </span>
+                </label>
+
                 <Button type="submit" disabled={isLoading} className="w-full h-14 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-lg font-bold mt-4 shadow-lg shadow-rose-500/20 border-none">
                   {isLoading ? "Elaborazione in corso..." : "Scopri i tuoi Match"}
                 </Button>
@@ -136,7 +145,7 @@ export default function PortalSearch() {
               <DialogHeader className="mb-6">
                 <DialogTitle className="text-2xl font-serif text-white">Segnala un Talento</DialogTitle>
                 <DialogDescription className="text-stone-400 text-base mt-2">
-                  L'ecosistema ecos.com cresce grazie alle raccomandazioni. Se conosci un professionista eccezionale, dicci chi è.
+                  L'ecosistema GentiLuna cresce grazie alle raccomandazioni. Se conosci un professionista eccezionale, dicci chi è.
                 </DialogDescription>
               </DialogHeader>
 
@@ -158,6 +167,15 @@ export default function PortalSearch() {
                   <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">La tua Email</label>
                   <Input required type="email" name="email" placeholder="tua@email.com" className="bg-stone-900 border-stone-800 text-white placeholder-stone-600 h-12 rounded-xl" />
                 </div>
+
+                <label className="flex items-start gap-2.5 text-xs text-stone-400 cursor-pointer pt-1">
+                  <input type="checkbox" required className="mt-0.5 w-4 h-4 accent-amber-500 shrink-0 cursor-pointer" />
+                  <span className="leading-relaxed">
+                    Dichiaro di aver letto e accettato la{" "}
+                    <a href="/privacy" target="_blank" className="underline text-white">Privacy Policy</a> e i{" "}
+                    <a href="/terms" target="_blank" className="underline text-white">Termini e Condizioni</a> di GentiLuna.
+                  </span>
+                </label>
 
                 <div className="flex gap-3 pt-4">
                   <Button type="button" variant="ghost" onClick={() => setView("preventivo")} className="flex-1 h-14 text-stone-400 hover:text-white hover:bg-stone-900 rounded-xl">

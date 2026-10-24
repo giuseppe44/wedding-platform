@@ -19,7 +19,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "ecos.com | Il tuo matrimonio in digitale",
+  title: "GentiLuna | Il tuo matrimonio in digitale",
   description: "La piattaforma che unisce sposi, invitati e professionisti in un unico racconto digitale.",
   manifest: "/manifest.json",
 };
