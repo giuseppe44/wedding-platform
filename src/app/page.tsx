@@ -510,7 +510,7 @@ export default function Home() {
               </button>
               <span className={"text-lg font-medium flex items-center gap-2 " + (isTriennial ? "text-stone-900" : "text-stone-400")}>
                 Triennale 
-                <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-full">-50%</span>
+                <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded-full">PROMO 3 ANNI</span>
               </span>
             </div>
   
@@ -522,7 +522,7 @@ export default function Home() {
                 <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita.</p>
                 
                 <div className="text-4xl font-bold mb-2">
-                  {isTriennial ? '148,50 €' : '99,00 €'}
+                  {isTriennial ? '249,00 €' : '149,00 €'}
                 </div>
                 {!isTriennial ? (
                   <div className="text-sm text-stone-500 mb-6 min-h-[40px]">
@@ -531,7 +531,7 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="text-sm text-emerald-600 font-bold mb-6 min-h-[40px]">
-                    Pagamento anticipato 3 anni.<br/>Risparmi 148,50 €
+                    Pagamento anticipato 3 anni.<br/>Blocchi il prezzo per un triennio
                   </div>
                 )}
 
@@ -553,7 +553,7 @@ export default function Home() {
                 <p className="text-stone-400 mb-6 line-clamp-2">Sblocca tutte le funzionalità organizzative per un matrimonio perfetto.</p>
                 
                 <div className="text-4xl font-bold mb-2">
-                  {isTriennial ? '448,50 €' : '299,00 €'}
+                  {isTriennial ? '499,00 €' : '399,00 €'}
                 </div>
                 {!isTriennial ? (
                   <div className="text-sm text-stone-400 mb-6 min-h-[40px]">
@@ -562,7 +562,7 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="text-sm text-emerald-400 font-bold mb-6 min-h-[40px]">
-                    Pagamento anticipato 3 anni.<br/>Risparmi 448,50 €
+                    Pagamento anticipato 3 anni.<br/>Risparmi sul rinnovo triennale
                   </div>
                 )}
 

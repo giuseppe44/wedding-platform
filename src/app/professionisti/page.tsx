@@ -70,9 +70,9 @@ export default function ProfessionistiPage() {
             </div>
             
             <div className="text-center mb-10 mt-4">
-              <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Il primo anno te lo paghiamo noi.</h2>
+              <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Prezzo Promo per i primi 50 iscritti.</h2>
               <p className="text-xl text-stone-400 font-light max-w-2xl mx-auto">
-                Stiamo selezionando 50 fotografi in tutta Italia per lanciare la piattaforma. Candidati ora e ottieni il pacchetto <strong className="text-amber-400">PRO (Valore €230) 100% GRATIS</strong> per 12 mesi.
+                Stiamo selezionando 50 fotografi in tutta Italia per lanciare la piattaforma. Candidati ora e ottieni il pacchetto <strong className="text-amber-400">PRO (Valore €299) al prezzo promo di € 49,00</strong> per 12 mesi.
               </p>
             </div>
             
@@ -90,11 +90,11 @@ export default function ProfessionistiPage() {
               </div>
               <div className="text-center bg-stone-900 p-8 rounded-2xl border border-stone-800 relative">
                 <div className="text-stone-500 line-through text-2xl mb-2 font-serif">€ 299,00</div>
-                <div className="text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 mb-2">€ 0,00</div>
-                <div className="text-stone-400 mb-8 uppercase tracking-widest text-sm font-bold">Per i primi 12 Mesi</div>
+                <div className="text-5xl md:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 mb-2">€ 49,00</div>
+                <div className="text-stone-400 mb-8 uppercase tracking-widest text-xs md:text-sm font-bold">Prezzo Promo Primi 50 Iscritti (12 Mesi)</div>
                 <Link href="/login?role=PHOTOGRAPHER&mode=REGISTER">
-                  <Button className="w-full h-14 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-lg rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                    Blocca il tuo Posto Gratis
+                  <Button className="w-full h-14 px-4 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-base md:text-lg rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] whitespace-normal">
+                    Blocca il tuo Posto a € 49
                   </Button>
                 </Link>
                 <p className="text-stone-500 text-xs mt-4">Restano solo 14 inviti disponibili.</p>

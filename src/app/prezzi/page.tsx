@@ -38,7 +38,7 @@ export default function PrezziPage() {
                 <div className={`w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ${isTriennial ? 'translate-x-8' : ''}`} />
               </button>
               <div className="flex flex-col items-start">
-                <span className={`font-bold ${isTriennial ? 'text-stone-900' : 'text-stone-400'}`}>Triennale (Risparmia 50%)</span>
+                <span className={`font-bold ${isTriennial ? 'text-stone-900' : 'text-stone-400'}`}>Triennale (Promo 3 Anni)</span>
               </div>
             </div>
             
@@ -59,11 +59,11 @@ export default function PrezziPage() {
                 <h4 className="font-bold text-2xl text-stone-800 mb-2">Base</h4>
                 <p className="text-stone-500 mb-6 h-10">L'essenziale per il tuo matrimonio</p>
                 <div className="mb-2">
-                  <span className="text-5xl font-serif font-bold text-stone-900">{isTriennial ? '148,50 €' : '99,00 €'}</span>
+                  <span className="text-5xl font-serif font-bold text-stone-900">{isTriennial ? '249,00 €' : '149,00 €'}</span>
                 </div>
                 <p className="text-sm text-stone-500 mb-6 min-h-[40px]">
                   {isTriennial ? (
-                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-600 font-bold">Risparmi 148,50 €</span></>
+                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-600 font-bold">Blocchi il prezzo per un triennio</span></>
                   ) : (
                     <>il primo anno<br/><span className="italic">rinnovo dal secondo anno 50,00 € all'anno</span></>
                   )}
@@ -93,11 +93,11 @@ export default function PrezziPage() {
                 <h4 className="font-bold text-2xl text-white mb-2">Premium</h4>
                 <p className="text-stone-400 mb-6 h-10">Ideale per l'organizzazione completa</p>
                 <div className="mb-2">
-                  <span className="text-5xl font-serif font-bold text-white">{isTriennial ? '448,50 €' : '299,00 €'}</span>
+                  <span className="text-5xl font-serif font-bold text-white">{isTriennial ? '499,00 €' : '399,00 €'}</span>
                 </div>
                 <p className="text-sm text-stone-400 mb-6 min-h-[40px]">
                   {isTriennial ? (
-                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-400 font-bold">Risparmi 448,50 €</span></>
+                    <>Pagamento anticipato 3 anni.<br/><span className="text-emerald-400 font-bold">Risparmi sul rinnovo triennale</span></>
                   ) : (
                     <>il primo anno<br/><span className="italic">rinnovo dal secondo anno 60,00 € all'anno</span></>
                   )}
