@@ -18,12 +18,11 @@ export default function Footer() {
             <Heart className="w-6 h-6 text-rose-500" />
             GentiLuna
           </Link>
-          <p className="text-sm max-w-sm leading-relaxed mb-4">
+          <p className="text-sm max-w-sm leading-relaxed mb-3">
             La piattaforma digitale definitiva per sposi, invitati e professionisti. Raccogli ricordi, organizza il tuo evento e fai crescere il tuo business.
           </p>
-          <p className="text-xs text-stone-500 leading-relaxed">
-            <strong>GentiLuna (gentiluna.com)</strong> è un servizio di <strong>TopWebsite.it di Giuseppe Urgeghe</strong><br />
-            Z.I. Predda Niedda, Strada 3 – 07100 Sassari (SS) • P.IVA 02656280902 • REA SS-203474
+          <p className="text-xs text-rose-400/90 font-serif italic tracking-wide">
+            Da un&apos;idea di Michele e Giuseppe
           </p>
         </div>
         
@@ -52,13 +51,14 @@ export default function Footer() {
               </button>
             </li>
             <li><Link href="/login?role=ADMIN" className="hover:text-rose-500 transition-colors">Amministrazione</Link></li>
+            <li className="pt-1 text-xs text-stone-600"><a href="mailto:info@gentiluna.com" className="hover:text-stone-400 transition-colors">info@gentiluna.com</a></li>
           </ul>
         </div>
       </div>
       
       <div className="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-stone-800 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-        <p>&copy; {new Date().getFullYear()} GentiLuna – TopWebsite.it di Giuseppe Urgeghe (P.IVA 02656280902). Tutti i diritti riservati.</p>
-        <p className="text-xs text-stone-500">Tutti i contenuti caricati dagli utenti sono sotto l&apos;esclusiva responsabilità dei rispettivi autori.</p>
+        <p>&copy; {new Date().getFullYear()} GentiLuna. Tutti i diritti riservati. • Sviluppato da <a href="https://www.topwebsite.it" target="_blank" rel="noopener noreferrer" className="text-stone-300 hover:text-white underline">TopWebsite.it</a> – P.IVA 02656280902</p>
+        <p className="text-xs text-stone-500">Da un&apos;idea di Michele e Giuseppe</p>
       </div>
     </footer>
   );
