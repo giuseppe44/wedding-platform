@@ -95,9 +95,9 @@ export default function Home() {
             <span className="inline-block py-1 px-3 rounded-full border border-rose-500/30 bg-rose-500/20 text-rose-300 text-xs font-bold tracking-[0.2em] mb-6 backdrop-blur-md">
               MOLTO PIÙ DI UN SITO WEB
             </span>
-            <h1 className="text-5xl md:text-7xl font-serif text-white mb-6 leading-tight drop-shadow-xl">
-              Una Vetrina Unica <br className="hidden md:block" />
-              <span className="text-stone-400 italic font-light">per Tutta la Vita.</span>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-6 leading-tight drop-shadow-xl">
+              Il Vostro Spazio Unico, <br className="hidden md:block" />
+              <span className="text-stone-300 italic font-light">per Ricordare, Condividere e Organizzare.</span>
             </h1>
             <p className="text-lg md:text-2xl text-stone-300 font-light max-w-3xl mx-auto mb-10 leading-relaxed drop-shadow-md">
               Il vostro matrimonio è solo l'inizio della vostra vita insieme. 

@@ -58,7 +58,6 @@ export default function Footer() {
       
       <div className="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-stone-800 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
         <p>&copy; {new Date().getFullYear()} GentiLuna. Tutti i diritti riservati. • Sviluppato da <a href="https://www.topwebsite.it" target="_blank" rel="noopener noreferrer" className="text-stone-300 hover:text-white underline">TopWebsite.it</a> – P.IVA 02656280902</p>
-        <p className="text-xs text-stone-500">Da un&apos;idea di Michele e Giuseppe</p>
       </div>
     </footer>
   );
