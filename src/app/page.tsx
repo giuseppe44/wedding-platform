@@ -76,7 +76,7 @@ export default function Home() {
       </nav>
 
       {/* HERO SECTION */}
-      <header className="relative min-h-[90vh] flex flex-col justify-center overflow-hidden bg-stone-950">
+      <header className="relative min-h-[82vh] md:min-h-[90vh] flex flex-col justify-center overflow-hidden bg-stone-950">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" 
@@ -86,7 +86,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20 md:pt-24 md:pb-12 text-center">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,7 +99,7 @@ export default function Home() {
               Il Vostro Spazio Unico, <br className="hidden md:block" />
               <span className="text-stone-300 italic font-light">per Ricordare, Condividere e Organizzare.</span>
             </h1>
-            <p className="text-lg md:text-2xl text-stone-300 font-light max-w-3xl mx-auto mb-10 leading-relaxed drop-shadow-md">
+            <p className="text-lg md:text-2xl text-stone-300 font-light max-w-3xl mx-auto mb-4 md:mb-10 leading-relaxed drop-shadow-md">
               Il vostro matrimonio è solo l'inizio della vostra vita insieme. 
               Da lì in avanti, tutto quello che farete lo ritroverete qua.
             </p>
@@ -109,12 +109,12 @@ export default function Home() {
 
       
         {/* THREE MAIN GATEWAYS - LUMINOSO E PREMIUM */}
-        <section className="pt-32 pb-32 bg-gradient-to-b from-stone-50 via-white to-white relative z-20 -mt-20 rounded-t-[3rem] sm:rounded-t-[4rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)]">
+        <section className="pt-10 pb-16 md:pt-28 md:pb-32 bg-gradient-to-b from-stone-50 via-white to-white relative z-20 -mt-14 md:-mt-20 rounded-t-[2.5rem] sm:rounded-t-[4rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)]">
           <div className="max-w-7xl mx-auto px-6">
             
             
               {/* Animazione introduttiva capitoli ESPANSA */}
-              <div className="relative z-30 mb-24 max-w-5xl mx-auto text-center px-4 pt-10">
+              <div className="relative z-30 mb-12 md:mb-24 max-w-5xl mx-auto text-center px-2 sm:px-4 pt-0 md:pt-10">
                 <div className="absolute inset-0 pointer-events-none hidden md:block">
                   {/* Elementi fluttuanti di background */}
                   <motion.div 
@@ -154,7 +154,7 @@ export default function Home() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  className="inline-flex items-center gap-4 bg-rose-50/80 backdrop-blur-md px-6 py-2 rounded-full shadow-inner border border-rose-100 mb-8 mt-12 relative z-10"
+                  className="inline-flex items-center gap-4 bg-rose-50/80 backdrop-blur-md px-5 py-2 rounded-full shadow-inner border border-rose-100 mb-6 md:mb-8 mt-0 md:mt-12 relative z-10"
                 >
                   <div className="flex -space-x-3">
                     <div className="w-8 h-8 rounded-full bg-rose-400 flex items-center justify-center text-white text-xs border-2 border-white shadow-sm z-30">M</div>
@@ -286,9 +286,9 @@ export default function Home() {
   
         
       {/* CORE FEATURES BENTO GRID (PREMIUM) */}
-      <section className="py-32 bg-stone-50 relative">
+      <section className="py-16 md:py-32 bg-stone-50 relative">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12 md:mb-20">
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
