@@ -7,77 +7,49 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function loginAction(requestedRole: string, email?: string, password?: string, rememberMe: boolean = false) {
-  let user;
   const cleanEmail = email?.trim().toLowerCase();
-  const isDemoEmail = !cleanEmail || [
-    "sposi@demo.it",
-    "demo@fotografo.it",
-    "admin@gentiluna.com",
-    "admin@weddingplatform.com"
-  ].includes(cleanEmail);
-
-  if (cleanEmail) {
-    user = await prisma.user.findFirst({
-      where: { email: { equals: cleanEmail, mode: "insensitive" } }
-    });
+  if (!cleanEmail || !password) {
+    throw new Error("Inserisci email e password per accedere.");
   }
 
-  // If a real user typed a non-demo email that doesn't exist, show a clear error instead of logging into demo
-  if (!user && !isDemoEmail) {
-    throw new Error("Nessun account trovato con questa email. Clicca su 'Registrati' in basso per creare il tuo account.");
+  // Blocca completamente gli account demo pubblici
+  if (["sposi@demo.it", "demo@fotografo.it", "admin@weddingplatform.com"].includes(cleanEmail)) {
+    throw new Error("Gli account demo sono stati disabilitati. Effettua l'accesso con il tuo account personale o registrati.");
   }
 
-  // Check password for real users who set a password
-  if (user && !isDemoEmail && user.password && user.password !== "hashed_password" && password && user.password !== password) {
-    throw new Error("Password non corretta. Riprova.");
-  }
+  let user = await prisma.user.findFirst({
+    where: { email: { equals: cleanEmail, mode: "insensitive" } }
+  });
 
-  // Fallback for demo accounts if demo email was used
-  if (!user) {
-    if (requestedRole === "PHOTOGRAPHER" || cleanEmail === "demo@fotografo.it") {
-      user = await prisma.user.findFirst({ where: { role: "PHOTOGRAPHER" } });
-      if (!user) {
-        user = await prisma.user.create({
-          data: {
-            email: "demo@fotografo.it",
-            password: "hashed_password",
-            role: "PHOTOGRAPHER",
-            name: "Studio Fotografico Demo",
-          },
-        });
-      }
-    } else if (requestedRole === "ADMIN" || cleanEmail === "admin@gentiluna.com" || cleanEmail === "admin@weddingplatform.com") {
-      user = await prisma.user.findFirst({ where: { role: "ADMIN" } });
-      if (!user) {
-        user = await prisma.user.create({
-          data: {
-            email: "admin@gentiluna.com",
-            password: "hashed_password",
-            role: "ADMIN",
-            name: "Super Admin",
-          },
-        });
-      }
-    } else {
-      user = await prisma.user.findFirst({ where: { email: "sposi@demo.it" } }) || await prisma.user.findFirst({ where: { role: "COUPLE" } });
-      if (!user) {
-        user = await prisma.user.create({
-          data: {
-            email: "sposi@demo.it",
-            password: "hashed_password",
-            role: "COUPLE",
-            name: "Chiara e Matteo",
-          },
-        });
-        await prisma.timelineItem.updateMany({
-          where: { slug: "demo-chiara-e-matteo" },
-          data: { coupleId: user.id }
-        });
-      }
-      await prisma.timelineItem.updateMany({
-        where: { slug: "demo-chiara-e-matteo", coupleId: null },
-        data: { coupleId: user.id }
+  // Gestione account Super Admin ufficiale (admin@gentiluna.com / info@gentiluna.com)
+  const isOfficialAdminEmail = cleanEmail === "admin@gentiluna.com" || cleanEmail === "info@gentiluna.com";
+  const adminPassword = process.env.ADMIN_PASSWORD || "Gentiluna2026!";
+
+  if (isOfficialAdminEmail) {
+    if (password !== adminPassword && (!user || user.password === "hashed_password" || user.password !== password)) {
+      throw new Error("Credenziali Amministratore non valide.");
+    }
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: cleanEmail,
+          password: adminPassword,
+          role: "ADMIN",
+          name: "Super Admin GentiLuna",
+        },
       });
+    } else if (user.role !== "ADMIN") {
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: { role: "ADMIN" }
+      });
+    }
+  } else {
+    if (!user) {
+      throw new Error("Nessun account trovato con questa email. Clicca su 'Registrati ora' in basso per creare il tuo account.");
+    }
+    if (!user.password || user.password === "hashed_password" || user.password !== password) {
+      throw new Error("Password non corretta. Riprova.");
     }
   }
 
@@ -104,13 +76,13 @@ export async function loginAction(requestedRole: string, email?: string, passwor
   });
 
   if (!wedding) {
-    const slug = user.email === "sposi@demo.it" ? "demo-chiara-e-matteo" : `nozze-${user.id.slice(0, 6)}`;
+    const slug = `nozze-${user.id.slice(0, 6)}`;
     wedding = await prisma.timelineItem.findUnique({ where: { slug } });
     if (!wedding) {
       const parts = (user.name || "Sposa e Sposo").split(/\s+(?:e|&)\s+|\s+/i);
       wedding = await prisma.timelineItem.create({
         data: {
-          title: "Il nostro matrimonio",
+          title: "Il nostro evento",
           slug,
           type: "WEDDING",
           ownerId: user.id,

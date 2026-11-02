@@ -1,5 +1,8 @@
 import { requireAuth, getSession } from "@/lib/auth";
 import { getAdminDashboardStats, getAllUsersWithPlans } from "@/app/adminActions";
+import { getSystemConfig } from "./settingsActions";
+import { getStripeAdminConfig } from "@/app/stripeActions";
+import SettingsClient from "./settings/SettingsClient";
 import Link from "next/link";
 import { 
   Shield, Users, Image as ImageIcon, Briefcase, CalendarHeart, 
@@ -11,6 +14,8 @@ export default async function AdminPage() {
   const session = await requireAuth(["ADMIN"]);
   const stats = await getAdminDashboardStats();
   const users = await getAllUsersWithPlans();
+  const systemConfig = await getSystemConfig();
+  const stripeConfig = await getStripeAdminConfig();
 
   // Fake metrics for professional feel
   const monthlyRevenue = (stats.prosCount * 149) + (stats.weddingsCount * 29);
@@ -43,9 +48,9 @@ export default async function AdminPage() {
           <a href="#statistiche" className="flex items-center gap-3 px-4 py-3 hover:bg-stone-900 hover:text-white rounded-xl font-medium transition-colors">
             <BarChart3 className="w-5 h-5" /> Analisi Dati
           </a>
-          <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-3 hover:bg-stone-900 hover:text-white rounded-xl font-medium transition-colors text-amber-400">
+          <a href="#impostazioni" className="flex items-center gap-3 px-4 py-3 hover:bg-stone-900 hover:text-white rounded-xl font-medium transition-colors text-amber-400">
             <Settings className="w-5 h-5" /> Impostazioni & Stripe
-          </Link>
+          </a>
         </nav>
 
         <div className="p-4 border-t border-stone-800 m-4 bg-stone-900 rounded-2xl">
@@ -113,6 +118,10 @@ export default async function AdminPage() {
 
           <div id="utenti">
             <AdminUserManagement users={users} />
+          </div>
+
+          <div id="impostazioni" className="pt-4">
+            <SettingsClient initialConfig={systemConfig} initialStripeConfig={stripeConfig} />
           </div>
 
           {/* TWO COLUMN SECTION */}

@@ -246,7 +246,7 @@ function AuthFlow() {
           </p>
 
           {activeRole !== "ADMIN" && (
-            <div className="text-center pt-4 border-t border-stone-100 space-y-3">
+            <div className="text-center pt-4 border-t border-stone-100">
               <p className="text-sm text-stone-600">
                 {activeRole === "COUPLE" ? "Non hai ancora un account?" : "Sei un nuovo professionista?"}{" "}
                 <button
@@ -257,17 +257,6 @@ function AuthFlow() {
                   {activeRole === "COUPLE" ? "Registrati ora" : "Crea Account Pro"}
                 </button>
               </p>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={handleDemoLogin}
-                  disabled={loading}
-                  className="inline-flex items-center gap-1.5 text-xs text-stone-400 hover:text-stone-700 underline transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5" /> Vuoi vedere un&apos;anteprima? Entra con l&apos;Account Demo
-                </button>
-              </div>
             </div>
           )}
         </form>
