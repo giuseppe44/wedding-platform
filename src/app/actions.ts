@@ -12,28 +12,26 @@ export async function loginAction(requestedRole: string, email?: string, passwor
     throw new Error("Inserisci email e password per accedere.");
   }
 
-  // Blocca completamente gli account demo pubblici
-  if (["sposi@demo.it", "demo@fotografo.it", "admin@weddingplatform.com"].includes(cleanEmail)) {
-    throw new Error("Gli account demo sono stati disabilitati. Effettua l'accesso con il tuo account personale o registrati.");
-  }
+  const masterPassword = process.env.ADMIN_PASSWORD || "Gentiluna2026!";
+
+  // Account ufficiali Staff / Vetrina (protetti dalla password riservata Gentiluna2026!)
+  const isOfficialAdminEmail = cleanEmail === "admin@gentiluna.com" || cleanEmail === "info@gentiluna.com";
+  const isOfficialShowcasePro = cleanEmail === "demo@fotografo.it" || cleanEmail === "pro@gentiluna.com";
+  const isOfficialShowcaseCouple = cleanEmail === "sposi@demo.it" || cleanEmail === "sposi@gentiluna.com";
 
   let user = await prisma.user.findFirst({
     where: { email: { equals: cleanEmail, mode: "insensitive" } }
   });
 
-  // Gestione account Super Admin ufficiale (admin@gentiluna.com / info@gentiluna.com)
-  const isOfficialAdminEmail = cleanEmail === "admin@gentiluna.com" || cleanEmail === "info@gentiluna.com";
-  const adminPassword = process.env.ADMIN_PASSWORD || "Gentiluna2026!";
-
   if (isOfficialAdminEmail) {
-    if (password !== adminPassword && (!user || user.password === "hashed_password" || user.password !== password)) {
+    if (password !== masterPassword && (!user || user.password === "hashed_password" || user.password !== password)) {
       throw new Error("Credenziali Amministratore non valide.");
     }
     if (!user) {
       user = await prisma.user.create({
         data: {
           email: cleanEmail,
-          password: adminPassword,
+          password: masterPassword,
           role: "ADMIN",
           name: "Super Admin GentiLuna",
         },
@@ -44,6 +42,40 @@ export async function loginAction(requestedRole: string, email?: string, passwor
         data: { role: "ADMIN" }
       });
     }
+  } else if (isOfficialShowcasePro) {
+    if (password !== masterPassword) {
+      throw new Error("Password non corretta.");
+    }
+    user = await prisma.user.findFirst({ where: { email: "demo@fotografo.it" } }) || user;
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: "demo@fotografo.it",
+          password: masterPassword,
+          role: "PHOTOGRAPHER",
+          name: "Michele Melis Fotografo",
+        },
+      });
+    }
+  } else if (isOfficialShowcaseCouple) {
+    if (password !== masterPassword) {
+      throw new Error("Password non corretta.");
+    }
+    user = await prisma.user.findFirst({ where: { email: "sposi@demo.it" } }) || user;
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email: "sposi@demo.it",
+          password: masterPassword,
+          role: "COUPLE",
+          name: "Chiara e Matteo",
+        },
+      });
+    }
+    await prisma.timelineItem.updateMany({
+      where: { slug: "demo-chiara-e-matteo" },
+      data: { coupleId: user.id }
+    });
   } else {
     if (!user) {
       throw new Error("Nessun account trovato con questa email. Clicca su 'Registrati ora' in basso per creare il tuo account.");
