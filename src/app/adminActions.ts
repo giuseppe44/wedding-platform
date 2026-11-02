@@ -64,23 +64,23 @@ export async function getAllUsersWithPlans() {
 
 export async function updateUserPlan(userId: string, planName: string) {
   await requireAuth(["ADMIN"]);
-  
-  const plan = await prisma.plan.findUnique({ where: { name: planName } });
-  if (!plan) throw new Error("Plan not found");
+  const { ensureCatalogPlansInDb, activateUserPlanInDb } = await import("@/app/stripeActions");
+  await ensureCatalogPlansInDb();
 
-  // Upsert subscription
-  await prisma.subscription.upsert({
-    where: { userId },
-    update: {
-      planId: plan.id,
-      status: "ACTIVE"
-    },
-    create: {
-      userId,
-      planId: plan.id,
-      status: "ACTIVE"
-    }
-  });
+  if (planName === "FREE") {
+    const freePlan = await prisma.plan.upsert({
+      where: { name: "FREE" },
+      update: {},
+      create: { name: "FREE", features: "{}", price: 0 }
+    });
+    await prisma.subscription.upsert({
+      where: { userId },
+      update: { planId: freePlan.id, status: "ACTIVE" },
+      create: { userId, planId: freePlan.id, status: "ACTIVE" }
+    });
+  } else {
+    await activateUserPlanInDb(userId, planName);
+  }
 
   revalidatePath("/admin");
 }

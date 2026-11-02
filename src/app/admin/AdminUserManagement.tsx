@@ -58,9 +58,21 @@ export default function AdminUserManagement({ users }: { users: any[] }) {
                       disabled={loadingId === u.id}
                       onChange={(e) => handlePlanChange(u.id, e.target.value)}
                     >
-                      <option value="FREE">FREE</option>
-                      <option value="PREMIUM">PRO / PREMIUM</option>
-                      <option value="DIAMOND">DIAMOND / WHITE-LABEL</option>
+                      <option value="FREE">FREE (Nessun piano)</option>
+                      <optgroup label="Piani Sposi / Eventi">
+                        <option value="BASE_ANNUAL">Sposi Base Annuale (€149)</option>
+                        <option value="BASE_TRIENNIAL">Sposi Base Triennale (€249)</option>
+                        <option value="PREMIUM_ANNUAL">Sposi Premium Annuale (€399)</option>
+                        <option value="PREMIUM_TRIENNIAL">Sposi Premium Triennale (€499)</option>
+                        <option value="DIAMOND_ANNUAL">Sposi Diamond Annuale (€449)</option>
+                        <option value="DIAMOND_TRIENNIAL">Sposi Diamond Triennale (€673,50)</option>
+                      </optgroup>
+                      <optgroup label="Piani Professionisti">
+                        <option value="PRO_FOUNDERS_49">Pro Founders Club (€49)</option>
+                        <option value="PRO_ENTRY_120">Pro Entry (€120)</option>
+                        <option value="PRO_299">Pro Standard (€299)</option>
+                        <option value="PRO_DIAMOND_449">Pro Diamond (€449)</option>
+                      </optgroup>
                     </select>
                     {loadingId === u.id && <span className="ml-2 text-xs text-stone-400">Aggiornamento...</span>}
                   </td>

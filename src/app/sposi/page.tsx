@@ -52,8 +52,8 @@ export default function SposiLandingPage() {
               </div>
             </div>
             
-            <div className="space-y-8 order-1 lg:order-2">
-              <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-6">
+            <div className="space-y-8 order-1 lg:order-2 text-center lg:text-left">
+              <div className="w-16 h-16 mx-auto lg:mx-0 bg-rose-100 rounded-2xl flex items-center justify-center mb-6">
                 <Camera className="w-8 h-8 text-rose-600" />
               </div>
               <h2 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight">Il punto di vista <br/>dei tuoi invitati.</h2>
@@ -72,15 +72,15 @@ export default function SposiLandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-8">
-              <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-6">
+            <div className="space-y-8 text-center lg:text-left">
+              <div className="w-16 h-16 mx-auto lg:mx-0 bg-amber-100 rounded-2xl flex items-center justify-center mb-6">
                 <Users className="w-8 h-8 text-amber-600" />
               </div>
               <h2 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight">Un unico luogo <br/>per tutta l'organizzazione.</h2>
               <p className="text-xl text-stone-600 leading-relaxed font-light">
                 Dimentica fogli Excel e centinaia di chat separate. GentiLuna e' il vostro quartier generale.
               </p>
-              <ul className="space-y-4 text-stone-600">
+              <ul className="space-y-4 text-stone-600 text-left">
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Raccogli gli RSVP e le intolleranze alimentari in automatico.</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Condividi le mappe interattive della chiesa e della location.</span></li>
                 <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" /> <span>Ricevi dediche emozionanti sul guestbook digitale, che si sblocca il giorno dopo l'evento.</span></li>

@@ -41,8 +41,9 @@ export default async function DashboardPage() {
     include: { plan: true }
   });
 
-  const isPremium = subscription?.status === "active" && subscription.plan?.name.toUpperCase() !== "FREE" && subscription.plan?.name.toUpperCase() !== "BASE";
-  const currentPlanName = isPremium ? subscription.plan.name : "Piano Base Gratuito";
+  const isSubActive = subscription?.status?.toUpperCase() === "ACTIVE";
+  const isPremium = isSubActive && subscription?.plan?.name.toUpperCase() !== "FREE" && subscription?.plan?.name.toUpperCase() !== "BASE";
+  const currentPlanName = isSubActive && subscription?.plan ? subscription.plan.name : "Piano Base Gratuito";
   
   const features = {
     included: isPremium ? [
@@ -76,16 +77,19 @@ export default async function DashboardPage() {
             <p className="text-sm text-stone-500 font-semibold uppercase tracking-wider">Spazio Usato</p>
             <p className="font-bold flex items-center justify-end gap-1"><HardDrive className="h-4 w-4" /> {formattedStorage}</p>
           </div>
-          <form action={async () => {
-            "use server";
-          }}>
+          <div className="flex flex-wrap gap-2 items-center">
+            <Link href="/dashboard/billing">
+              <Button className="rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold gap-1.5">
+                <CreditCard className="w-4 h-4" /> Piani & Upgrade
+              </Button>
+            </Link>
             <Link href="/dashboard/profile">
               <Button variant="outline" className="rounded-full bg-stone-100 hover:bg-stone-200">Il Mio Profilo</Button>
             </Link>
             <Link href="/">
-              <Button variant="outline" className="rounded-full ml-2">Esci</Button>
+              <Button variant="outline" className="rounded-full">Esci</Button>
             </Link>
-          </form>
+          </div>
         </div>
       </div>
 
@@ -131,11 +135,11 @@ export default async function DashboardPage() {
         <PlanWidget 
           role="PHOTOGRAPHER" 
           currentPlanName={currentPlanName} 
-          isActive={!!subscription && subscription.status === "active"} 
+          isActive={isSubActive} 
           expiresAt={subscription?.currentPeriodEnd?.toISOString() || subscription?.expiresAt?.toISOString()} 
           features={features} 
           upgradeLink="/dashboard/billing" 
-          stripeConfigured={stripeConfigured}
+          stripeConfigured={true}
         />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

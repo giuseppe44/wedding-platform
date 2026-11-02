@@ -29,6 +29,7 @@ const fadeUpVariant: Variants = {
 
 export default function Home() {
   const [isTriennial, setIsTriennial] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
       
@@ -52,7 +53,7 @@ export default function Home() {
         >
           <Link href="/sposi" className="text-white hover:text-rose-300 transition-colors font-semibold">AREA SPOSI</Link>
           <Link href="/fornitori" className="hover:text-rose-300 transition-colors">FORNITORI</Link>
-          <Link href="#pricing" className="hover:text-rose-300 transition-colors">ABBONAMENTI</Link>
+          <Link href="/prezzi" className="hover:text-rose-300 transition-colors">ABBONAMENTI</Link>
           <Link href="/professionisti" className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-2">
             <Briefcase className="w-4 h-4" /> SEI UN PROFESSIONISTA?
           </Link>
@@ -62,17 +63,39 @@ export default function Home() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex items-center gap-4"
+          className="flex items-center gap-3"
         >
           <Link href="/login">
             <Button className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-stone-900 rounded-full font-bold px-4 md:px-6">
               Accedi
             </Button>
           </Link>
-          <div className="md:hidden text-white ml-2">
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Apri menu"
+            className="md:hidden text-white p-1"
+          >
             <Menu className="w-8 h-8" />
-          </div>
+          </button>
         </motion.div>
+
+        {mobileMenuOpen && (
+          <div className="absolute top-20 left-4 right-4 bg-stone-900/95 backdrop-blur-xl border border-stone-800 rounded-3xl p-6 flex flex-col gap-4 text-center md:hidden shadow-2xl z-50">
+            <Link href="/sposi" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-rose-300 font-semibold py-2 border-b border-stone-800">
+              AREA SPOSI & EVENTI
+            </Link>
+            <Link href="/fornitori" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-rose-300 py-2 border-b border-stone-800">
+              FORNITORI & TOP PRO
+            </Link>
+            <Link href="/prezzi" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-rose-300 py-2 border-b border-stone-800">
+              PIANI E ABBONAMENTI
+            </Link>
+            <Link href="/professionisti" onClick={() => setMobileMenuOpen(false)} className="text-amber-300 hover:text-amber-200 font-semibold py-2 flex items-center justify-center gap-2">
+              <Briefcase className="w-4 h-4" /> SEI UN PROFESSIONISTA?
+            </Link>
+          </div>
+        )}
       </nav>
 
       {/* HERO SECTION */}
@@ -193,11 +216,11 @@ export default function Home() {
             >
               {/* 1. Organizza il tuo matrimonio */}
               <Link href="/sposi" className="block group h-full">
-                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-rose-50/60 via-white to-white border border-rose-100/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(244,63,94,0.25)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
+                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-rose-50/60 via-white to-white border border-rose-100/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(244,63,94,0.25)] transition-all duration-500 h-full flex flex-col justify-between text-center md:text-left group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-rose-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   
                   <div className="relative z-10">
-                    <div className="w-20 h-20 bg-gradient-to-br from-rose-100 to-rose-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative group-hover:scale-110 transition-transform duration-500">
+                    <div className="w-20 h-20 mx-auto md:mx-0 bg-gradient-to-br from-rose-100 to-rose-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative group-hover:scale-110 transition-transform duration-500">
                       <motion.div
                         animate={{ scale: [1, 1.15, 1] }}
                         transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
@@ -213,7 +236,7 @@ export default function Home() {
                       Un portale esclusivo per i tuoi momenti speciali. Iscriviti, accedi alla tua Area Personale e organizza l'intero evento in ogni singolo dettaglio, condividendolo con i tuoi ospiti.
                     </p>
                   </div>
-                  <div className="mt-12 flex items-center text-rose-500 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
+                  <div className="mt-12 flex items-center justify-center md:justify-start text-rose-500 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
                     Inizia ora <ArrowRight className="w-5 h-5 ml-2" />
                   </div>
                 </motion.div>
@@ -221,11 +244,11 @@ export default function Home() {
   
               {/* 2. Fornitori */}
               <Link href="/fornitori" className="block group h-full">
-                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-stone-100/60 via-white to-white border border-stone-200/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(41,37,36,0.2)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
+                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-stone-100/60 via-white to-white border border-stone-200/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(41,37,36,0.2)] transition-all duration-500 h-full flex flex-col justify-between text-center md:text-left group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-stone-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   
                   <div className="relative z-10">
-                    <div className="w-20 h-20 bg-gradient-to-br from-stone-100 to-stone-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative overflow-hidden group-hover:scale-110 transition-transform duration-500">
+                    <div className="w-20 h-20 mx-auto md:mx-0 bg-gradient-to-br from-stone-100 to-stone-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative overflow-hidden group-hover:scale-110 transition-transform duration-500">
                       <motion.div
                         animate={{ rotate: [0, 15, 0, -15, 0], scale: [1, 1.1, 1] }}
                         transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
@@ -244,19 +267,19 @@ export default function Home() {
                       Ricerca tra i migliori professionisti del settore. Esplora l'elenco generale dei nostri iscritti e trova fotografo, location, e molto altro.
                     </p>
                   </div>
-                  <div className="mt-12 flex items-center text-stone-700 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
+                  <div className="mt-12 flex items-center justify-center md:justify-start text-stone-700 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
                     Cerca Fornitori <ArrowRight className="w-5 h-5 ml-2" />
                   </div>
                 </motion.div>
               </Link>
   
               {/* 3. Abbonamenti e Promozioni */}
-              <Link href="#pricing" className="block group h-full">
-                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-amber-50/60 via-white to-white border border-amber-100/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(245,158,11,0.25)] transition-all duration-500 h-full flex flex-col justify-between group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
+              <Link href="/prezzi" className="block group h-full">
+                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-amber-50/60 via-white to-white border border-amber-100/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(245,158,11,0.25)] transition-all duration-500 h-full flex flex-col justify-between text-center md:text-left group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
                   <div className="absolute top-0 right-0 w-48 h-48 bg-amber-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   
                   <div className="relative z-10">
-                    <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-amber-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative group-hover:scale-110 transition-transform duration-500">
+                    <div className="w-20 h-20 mx-auto md:mx-0 bg-gradient-to-br from-amber-100 to-amber-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative group-hover:scale-110 transition-transform duration-500">
                       <motion.div
                         animate={{ y: [0, -6, 0], rotate: [0, 5, -5, 0] }}
                         transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
@@ -275,7 +298,7 @@ export default function Home() {
                       Scopri cosa possiamo offrirti. Visualizza i pacchetti, gli abbonamenti e le promozioni in corso, sia per sposi che per professionisti.
                     </p>
                   </div>
-                  <div className="mt-12 flex items-center text-amber-500 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
+                  <div className="mt-12 flex items-center justify-center md:justify-start text-amber-500 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
                     Vedi Piani <ArrowRight className="w-5 h-5 ml-2" />
                   </div>
                 </motion.div>
@@ -315,11 +338,11 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="md:col-span-2 bg-gradient-to-br from-rose-500 to-rose-600 rounded-[2.5rem] p-10 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between group"
+              className="md:col-span-2 bg-gradient-to-br from-rose-500 to-rose-600 rounded-[2.5rem] p-10 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between text-center md:text-left group"
             >
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 group-hover:scale-110 transition-transform duration-1000"></div>
-              <div className="relative z-10 max-w-sm">
-                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
+              <div className="relative z-10 max-w-sm mx-auto md:mx-0">
+                <div className="w-16 h-16 mx-auto md:mx-0 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
                   <Camera className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-3xl md:text-4xl font-serif mb-4">Condivisione Live</h3>
@@ -329,7 +352,7 @@ export default function Home() {
               </div>
               <div className="absolute bottom-[-20%] right-[-10%] md:right-10 md:bottom-10 opacity-20 md:opacity-100 pointer-events-none group-hover:-translate-y-4 transition-transform duration-700">
                 <div className="w-48 h-48 bg-white p-4 rounded-3xl shadow-2xl rotate-12">
-                   <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://antigravity.com" className="w-full h-full object-contain opacity-80" alt="QR" />
+                   <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.gentiluna.com" className="w-full h-full object-contain opacity-80" alt="QR" />
                 </div>
               </div>
             </motion.div>
@@ -340,10 +363,10 @@ export default function Home() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-[2.5rem] p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
+              className="bg-white rounded-[2.5rem] p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col items-center md:items-start text-center md:text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-amber-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-6 text-amber-500 relative z-10">
+              <div className="w-16 h-16 mx-auto md:mx-0 bg-amber-100 rounded-2xl flex items-center justify-center mb-6 text-amber-500 relative z-10">
                 <MessageCircle className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-serif mb-3 relative z-10">Guestbook Digitale</h3>
@@ -357,10 +380,10 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-white rounded-[2.5rem] p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
+              className="bg-white rounded-[2.5rem] p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col items-center md:items-start text-center md:text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 text-emerald-500 relative z-10">
+              <div className="w-16 h-16 mx-auto md:mx-0 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 text-emerald-500 relative z-10">
                 <Map className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-serif mb-3 relative z-10">Mappa Tavoli & RSVP</h3>
@@ -375,11 +398,11 @@ export default function Home() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="md:col-span-2 bg-gradient-to-br from-stone-900 to-black rounded-[2.5rem] p-10 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between group"
+              className="md:col-span-2 bg-gradient-to-br from-stone-900 to-black rounded-[2.5rem] p-10 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between text-center md:text-left group"
             >
               <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-3xl translate-y-1/2 translate-x-1/4 group-hover:scale-110 transition-transform duration-1000"></div>
-              <div className="relative z-10 max-w-lg">
-                <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
+              <div className="relative z-10 max-w-lg mx-auto md:mx-0">
+                <div className="w-16 h-16 mx-auto md:mx-0 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
                   <ImageIcon className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-3xl md:text-4xl font-serif mb-4">L'Album Ufficiale in HD</h3>
@@ -403,6 +426,7 @@ export default function Home() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            className="text-center md:text-left"
           >
             <h2 className="text-4xl md:text-5xl font-serif text-stone-900 mb-6 leading-tight">
               Un unico portale, <br/>
@@ -412,12 +436,15 @@ export default function Home() {
               La piattaforma che unisce chi celebra l'amore e chi lavora per renderlo perfetto.
             </p>
 
-            <div className="bg-white p-8 rounded-3xl shadow-lg border border-stone-100 relative">
+            <div className="bg-white p-8 rounded-3xl shadow-lg border border-stone-100 relative text-center md:text-left">
               <div className="absolute top-0 right-0 p-6 opacity-10">
                 <Infinity className="w-32 h-32 text-stone-900" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                <Calendar className="text-rose-500 w-6 h-6" /> Il matrimonio è il primo capitolo.
+              <h3 className="text-2xl font-bold mb-4 flex flex-col md:flex-row items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center mx-auto md:mx-0 shrink-0">
+                  <Calendar className="text-rose-500 w-6 h-6" />
+                </div>
+                <span>Il matrimonio è il primo capitolo.</span>
               </h3>
               <p className="text-lg text-stone-600 font-light mb-6">
                 La vostra storia continua. Da noi non prenoti solo il fotografo del matrimonio. GentiLuna è una timeline della tua vita.
@@ -516,7 +543,7 @@ export default function Home() {
   
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {/* SPOSI ENTRY */}
-              <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
+              <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-center md:text-left hover:-translate-y-2 transition-transform">
                 <div className="text-rose-500 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
                 <h3 className="text-3xl font-serif text-stone-900 mb-2">Piano Base</h3>
                 <p className="text-stone-500 mb-6 line-clamp-2">Inizia a raccogliere foto e a creare la tua timeline della vita.</p>
@@ -535,18 +562,20 @@ export default function Home() {
                   </div>
                 )}
 
-                <ul className="space-y-4 mb-8 flex-grow">
+                <ul className="space-y-4 mb-8 flex-grow text-left">
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Galleria foto e video</li>
-                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 10 GB di spazio privato</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 3 GB di spazio privato</li>
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Sito web personalizzato</li>
                 </ul>
-                <Link href="/prezzi">
-                  <Button className="w-full h-12 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-semibold">Scopri i Piani</Button>
+                <Link href={`/login?role=COUPLE&mode=REGISTER&plan=${isTriennial ? "BASE_TRIENNIAL" : "BASE_ANNUAL"}`}>
+                  <Button className="w-full h-12 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-semibold">
+                    Attiva Piano Base
+                  </Button>
                 </Link>
               </div>
   
               {/* SPOSI PREMIUM */}
-              <div className="bg-stone-900 p-8 rounded-3xl shadow-xl border border-stone-800 flex flex-col text-left text-white hover:-translate-y-2 transition-transform relative overflow-hidden">
+              <div className="bg-stone-900 p-8 rounded-3xl shadow-xl border border-stone-800 flex flex-col text-center md:text-left text-white hover:-translate-y-2 transition-transform relative overflow-hidden">
                 <div className="absolute top-0 right-0 bg-rose-500 text-white text-xs font-bold px-4 py-1 rounded-bl-xl">CONSIGLIATO</div>
                 <div className="text-rose-400 font-bold tracking-widest text-sm mb-4 uppercase">Per gli Sposi</div>
                 <h3 className="text-3xl font-serif mb-2">Piano Premium</h3>
@@ -566,25 +595,27 @@ export default function Home() {
                   </div>
                 )}
 
-                <ul className="space-y-4 mb-8 flex-grow text-stone-300">
-                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Spazio Illimitato</li>
+                <ul className="space-y-4 mb-8 flex-grow text-stone-300 text-left">
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Fino a 15 Capitoli & 5 GB</li>
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Disposizione Tavoli & RSVP</li>
-                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> GentiLuna LIVE (Proiettore)</li>
+                  <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Upload diretto foto sposi & ospiti</li>
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Inviti digitali illimitati</li>
                 </ul>
-                <Link href="/prezzi">
-                  <Button className="w-full h-12 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold border-none">Scopri i Piani</Button>
+                <Link href={`/login?role=COUPLE&mode=REGISTER&plan=${isTriennial ? "PREMIUM_TRIENNIAL" : "PREMIUM_ANNUAL"}`}>
+                  <Button className="w-full h-12 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold border-none">
+                    Attiva Piano Premium
+                  </Button>
                 </Link>
               </div>
   
               {/* PROFESSIONISTI */}
-              <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-left hover:-translate-y-2 transition-transform">
+              <div className="bg-white p-8 rounded-3xl shadow-md border border-stone-200 flex flex-col text-center md:text-left hover:-translate-y-2 transition-transform">
                 <div className="text-amber-500 font-bold tracking-widest text-sm mb-4 uppercase">Per i Professionisti</div>
                 <h3 className="text-3xl font-serif text-stone-900 mb-2">Pro & Partner</h3>
                 <p className="text-stone-500 mb-6 line-clamp-2">Ottieni visibilità, consegne digitali perfette e acquisisci nuovi clienti.</p>
-                <div className="text-4xl font-bold mb-2">da € 15<span className="text-xl text-stone-400 font-light">/mese</span></div>
-                <div className="text-sm text-stone-500 mb-6 min-h-[40px]">Fatturazione annuale</div>
-                <ul className="space-y-4 mb-8 flex-grow">
+                <div className="text-4xl font-bold mb-2">49,00 €<span className="text-xl text-stone-400 font-light"> /1° anno</span></div>
+                <div className="text-sm text-amber-600 font-semibold mb-6 min-h-[40px]">Promo Lancio Primi 50 Iscritti<br/><span className="text-stone-400 font-normal line-through">invece di 299,00 €/anno</span></div>
+                <ul className="space-y-4 mb-8 flex-grow text-left">
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Vetrina nella directory Top Pro</li>
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Consegna album in alta qualità</li>
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Ricevi recensioni e contatti diretti</li>

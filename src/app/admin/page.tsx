@@ -43,9 +43,9 @@ export default async function AdminPage() {
           <a href="#statistiche" className="flex items-center gap-3 px-4 py-3 hover:bg-stone-900 hover:text-white rounded-xl font-medium transition-colors">
             <BarChart3 className="w-5 h-5" /> Analisi Dati
           </a>
-          <a href="#impostazioni" className="flex items-center gap-3 px-4 py-3 hover:bg-stone-900 hover:text-white rounded-xl font-medium transition-colors">
-            <Settings className="w-5 h-5" /> Impostazioni Globali
-          </a>
+          <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-3 hover:bg-stone-900 hover:text-white rounded-xl font-medium transition-colors text-amber-400">
+            <Settings className="w-5 h-5" /> Impostazioni & Stripe
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-stone-800 m-4 bg-stone-900 rounded-2xl">

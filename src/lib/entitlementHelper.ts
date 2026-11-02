@@ -1,4 +1,4 @@
-﻿import { prisma } from "./prisma";
+import { prisma } from "./prisma";
 
 export const BASE_FEATURES = {
   maxChapters: 1,
@@ -54,18 +54,21 @@ export async function getUserEntitlements(userId: string) {
     return BASE_FEATURES; // Default fallback is BASE
   }
 
+  const planName = subscription.plan.name.toUpperCase();
+  if (planName.includes("DIAMOND")) return DIAMOND_FEATURES;
+  if (planName.includes("PREMIUM") || planName.includes("PRO_FOUNDERS") || planName === "PRO_299") return PREMIUM_FEATURES;
+  if (planName.includes("BASE") || planName.includes("ENTRY")) return BASE_FEATURES;
+
   try {
     if (subscription.plan.features) {
-      return JSON.parse(subscription.plan.features);
+      const parsed = JSON.parse(subscription.plan.features);
+      if (parsed && typeof parsed.maxChapters === "number") {
+        return parsed;
+      }
     }
   } catch (err) {}
 
-  switch (subscription.plan.name.toUpperCase()) {
-    case "DIAMOND": return DIAMOND_FEATURES;
-    case "PREMIUM": return PREMIUM_FEATURES;
-    case "BASE": return BASE_FEATURES;
-    default: return BASE_FEATURES;
-  }
+  return BASE_FEATURES;
 }
 
 export async function checkFeatureAccess(userId: string, feature: keyof typeof BASE_FEATURES, requiredValue?: any) {

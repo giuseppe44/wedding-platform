@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -8,14 +8,33 @@ import { redirect } from "next/navigation";
 
 export async function loginAction(requestedRole: string, email?: string, password?: string, rememberMe: boolean = false) {
   let user;
-  
-  if (email) {
-    user = await prisma.user.findUnique({ where: { email } });
+  const cleanEmail = email?.trim().toLowerCase();
+  const isDemoEmail = !cleanEmail || [
+    "sposi@demo.it",
+    "demo@fotografo.it",
+    "admin@gentiluna.com",
+    "admin@weddingplatform.com"
+  ].includes(cleanEmail);
+
+  if (cleanEmail) {
+    user = await prisma.user.findFirst({
+      where: { email: { equals: cleanEmail, mode: "insensitive" } }
+    });
   }
 
-  // Fallback for demo accounts if no email was provided or user not found
+  // If a real user typed a non-demo email that doesn't exist, show a clear error instead of logging into demo
+  if (!user && !isDemoEmail) {
+    throw new Error("Nessun account trovato con questa email. Clicca su 'Registrati' in basso per creare il tuo account.");
+  }
+
+  // Check password for real users who set a password
+  if (user && !isDemoEmail && user.password && user.password !== "hashed_password" && password && user.password !== password) {
+    throw new Error("Password non corretta. Riprova.");
+  }
+
+  // Fallback for demo accounts if demo email was used
   if (!user) {
-    if (requestedRole === "PHOTOGRAPHER") {
+    if (requestedRole === "PHOTOGRAPHER" || cleanEmail === "demo@fotografo.it") {
       user = await prisma.user.findFirst({ where: { role: "PHOTOGRAPHER" } });
       if (!user) {
         user = await prisma.user.create({
@@ -27,12 +46,12 @@ export async function loginAction(requestedRole: string, email?: string, passwor
           },
         });
       }
-    } else if (requestedRole === "ADMIN") {
+    } else if (requestedRole === "ADMIN" || cleanEmail === "admin@gentiluna.com" || cleanEmail === "admin@weddingplatform.com") {
       user = await prisma.user.findFirst({ where: { role: "ADMIN" } });
       if (!user) {
         user = await prisma.user.create({
           data: {
-            email: "admin@weddingplatform.com",
+            email: "admin@gentiluna.com",
             password: "hashed_password",
             role: "ADMIN",
             name: "Super Admin",
@@ -40,7 +59,7 @@ export async function loginAction(requestedRole: string, email?: string, passwor
         });
       }
     } else {
-      user = await prisma.user.findFirst({ where: { role: "COUPLE" } });
+      user = await prisma.user.findFirst({ where: { email: "sposi@demo.it" } }) || await prisma.user.findFirst({ where: { role: "COUPLE" } });
       if (!user) {
         user = await prisma.user.create({
           data: {
@@ -65,6 +84,45 @@ export async function loginAction(requestedRole: string, email?: string, passwor
   // Authorize based on actual DB role, NOT the requested URL role
   const actualRole = user.role;
   await setSession(user.id, actualRole, rememberMe);
+
+  if (actualRole === "ADMIN") {
+    return { role: actualRole, redirectUrl: "/admin" };
+  }
+  if (actualRole === "PHOTOGRAPHER") {
+    return { role: actualRole, redirectUrl: "/dashboard" };
+  }
+
+  // Find or create the couple's own event space
+  let wedding = await prisma.timelineItem.findFirst({
+    where: {
+      OR: [
+        { coupleId: user.id },
+        { ownerId: user.id }
+      ]
+    },
+    orderBy: { createdAt: "asc" }
+  });
+
+  if (!wedding) {
+    const slug = user.email === "sposi@demo.it" ? "demo-chiara-e-matteo" : `nozze-${user.id.slice(0, 6)}`;
+    wedding = await prisma.timelineItem.findUnique({ where: { slug } });
+    if (!wedding) {
+      const parts = (user.name || "Sposa e Sposo").split(/\s+(?:e|&)\s+|\s+/i);
+      wedding = await prisma.timelineItem.create({
+        data: {
+          title: "Il nostro matrimonio",
+          slug,
+          type: "WEDDING",
+          ownerId: user.id,
+          coupleId: user.id,
+          brideName: parts[0] || "Sposa",
+          groomName: parts[1] || "Sposo",
+        }
+      });
+    }
+  }
+
+  return { role: actualRole, redirectUrl: `/couple/${wedding.slug}` };
 }
 
 
@@ -132,43 +190,56 @@ export async function deleteMediaAction(mediaId: string) {
   revalidatePath("/couple/[slug]", "layout");
 }
 export async function registerAction(role: string, data: any) {
-  const existing = await prisma.user.findFirst({ where: { email: data.email } });
-  if (existing) throw new Error("Email gia registrata.");
+  const cleanEmail = (data.email || "").trim().toLowerCase();
+  if (!cleanEmail) throw new Error("Inserisci un indirizzo email valido.");
+
+  const existing = await prisma.user.findFirst({
+    where: { email: { equals: cleanEmail, mode: "insensitive" } }
+  });
+  if (existing) throw new Error("Questa email è già registrata. Clicca su 'Accedi ora' per entrare col tuo account.");
 
   const user = await prisma.user.create({
     data: {
-      email: data.email,
-      password: "hashed_password",
+      email: cleanEmail,
+      password: data.password || "hashed_password",
       name: data.name || "Nuovo Utente",
       role: role as any,
     }
   });
 
-  if (role === "PHOTOGRAPHER" && data.businessName) {
+  let redirectUrl = "/dashboard";
+
+  if (role === "PHOTOGRAPHER") {
+    const bizName = data.businessName || data.name || "Studio Professionale";
     await prisma.professionalProfile.create({
       data: {
         userId: user.id,
-        businessName: data.businessName,
-        slug: data.businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + user.id.slice(0,4),
-        category: "PHOTOGRAPHER"
+        businessName: bizName,
+        slug: bizName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + user.id.slice(0, 4),
+        category: data.category || "PHOTOGRAPHER",
+        contactEmail: cleanEmail
       }
     });
+    redirectUrl = "/dashboard";
   } else if (role === "COUPLE") {
-    // Optionally create a dummy wedding space
+    const slug = "nozze-" + user.id.slice(0, 6);
+    const parts = (data.name || "Sposa e Sposo").split(/\s+(?:e|&)\s+|\s+/i);
     await prisma.timelineItem.create({
       data: {
-        title: "Il nostro matrimonio",
-        slug: "nozze-" + user.id.slice(0,6),
+        title: "Il nostro evento",
+        slug,
         type: "WEDDING",
         ownerId: user.id,
         coupleId: user.id,
-        brideName: data.name.split(" ")[0] || "Sposa",
-        groomName: "Sposo",
+        brideName: parts[0] || "Partner 1",
+        groomName: parts[1] || "Partner 2",
       }
     });
+    redirectUrl = `/couple/${slug}`;
   }
 
-  await setSession(user.id, role as any, false);
+  await setSession(user.id, role as any, true);
+  return { role: user.role, redirectUrl };
 }
 
 export async function getLiveMedia(slug: string) {

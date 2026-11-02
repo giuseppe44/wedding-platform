@@ -154,8 +154,8 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
             isActive={!!coupleSubscription}
             expiresAt={coupleSubscription?.currentPeriodEnd?.toISOString() || coupleSubscription?.expiresAt?.toISOString()}
             features={coupleFeatures}
-            upgradeLink={`/couple/${wedding.slug}/billing`}
-            stripeConfigured={stripeConfigured}
+            upgradeLink="/dashboard/billing"
+            stripeConfigured={true}
           />
         )}
       </div>
