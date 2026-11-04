@@ -6,74 +6,16 @@ import { getSession, requireAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { PLANS_CATALOG, getCatalogPlan } from "@/lib/plans";
-import { BASE_FEATURES, PREMIUM_FEATURES, DIAMOND_FEATURES } from "@/lib/entitlementHelper";
+import {
+  ensureCatalogPlansInDb,
+  getServerStripeConfig,
+  MASKED_SECRET_PLACEHOLDER,
+} from "@/lib/stripeServer";
 import { revalidatePath } from "next/cache";
 
-function getFeaturesForTier(tier: "BASE" | "PREMIUM" | "DIAMOND") {
-  if (tier === "DIAMOND") return JSON.stringify(DIAMOND_FEATURES);
-  if (tier === "PREMIUM") return JSON.stringify(PREMIUM_FEATURES);
-  return JSON.stringify(BASE_FEATURES);
-}
-
 /**
- * Assicura che tutti i piani del catalogo esistano nella tabella Plan del DB
- */
-export async function ensureCatalogPlansInDb() {
-  for (const plan of Object.values(PLANS_CATALOG)) {
-    await prisma.plan.upsert({
-      where: { name: plan.code },
-      update: {
-        price: plan.priceCents,
-        interval: plan.isTriennial ? "3years" : "year",
-        features: getFeaturesForTier(plan.tier),
-      },
-      create: {
-        name: plan.code,
-        price: plan.priceCents,
-        interval: plan.isTriennial ? "3years" : "year",
-        features: getFeaturesForTier(plan.tier),
-      },
-    });
-  }
-}
-
-/**
- * Legge la configurazione Stripe salvata da Admin (Payment Links + eventuali chiavi API)
- */
-export async function getStripeAdminConfig() {
-  await ensureCatalogPlansInDb();
-  const plans = await prisma.plan.findMany();
-  const links: Record<string, string> = {};
-  for (const p of plans) {
-    if (p.stripePriceId) {
-      links[p.name] = p.stripePriceId;
-    }
-  }
-
-  let secretKey = "";
-  let publishableKey = "pk_live_51NlK6iAuYhdNmyvmNtSkYPOi3lO9Gk8IljYOquHzm9QBfshj9f9hMRrszC4mfEymiqdgCgFVb7YDnOnghh1FW4AW00c4UXZQpk";
-  let webhookSecret = "";
-  const configRow = plans.find((p) => p.name === "__STRIPE_KEYS__");
-  if (configRow?.features) {
-    try {
-      const parsed = JSON.parse(configRow.features);
-      secretKey = parsed.secretKey || "";
-      publishableKey = parsed.publishableKey || publishableKey;
-      webhookSecret = parsed.webhookSecret || "";
-    } catch {}
-  }
-
-  return {
-    links,
-    secretKey,
-    publishableKey,
-    webhookSecret,
-    hasEnvSecretKey: !!(process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes("placeholder")),
-  };
-}
-
-/**
- * Salva dal pannello Admin i Link di Pagamento Stripe (Payment Links) o le chiavi API Stripe
+ * Salva dal pannello Admin i Link di Pagamento Stripe (Payment Links) o le chiavi API Stripe.
+ * Protetto rigorosamente dal ruolo ADMIN. Preserva i segreti già salvati se il campo mostra il placeholder mascherato.
  */
 export async function saveStripeAdminConfig(data: {
   links: Record<string, string>;
@@ -92,14 +34,32 @@ export async function saveStripeAdminConfig(data: {
     });
   }
 
-  if (data.secretKey !== undefined || data.publishableKey !== undefined || data.webhookSecret !== undefined) {
+  if (
+    data.secretKey !== undefined ||
+    data.publishableKey !== undefined ||
+    data.webhookSecret !== undefined
+  ) {
+    const current = await getServerStripeConfig();
+
+    const nextSecretKey =
+      data.secretKey === MASKED_SECRET_PLACEHOLDER
+        ? current.secretKey
+        : data.secretKey?.trim() ?? current.secretKey;
+
+    const nextWebhookSecret =
+      data.webhookSecret === MASKED_SECRET_PLACEHOLDER
+        ? current.webhookSecret
+        : data.webhookSecret?.trim() ?? current.webhookSecret;
+
+    const nextPublishableKey = data.publishableKey?.trim() || current.publishableKey;
+
     await prisma.plan.upsert({
       where: { name: "__STRIPE_KEYS__" },
       update: {
         features: JSON.stringify({
-          secretKey: data.secretKey?.trim() || "",
-          publishableKey: data.publishableKey?.trim() || "",
-          webhookSecret: data.webhookSecret?.trim() || "",
+          secretKey: nextSecretKey,
+          publishableKey: nextPublishableKey,
+          webhookSecret: nextWebhookSecret,
         }),
       },
       create: {
@@ -107,14 +67,15 @@ export async function saveStripeAdminConfig(data: {
         price: 0,
         interval: "none",
         features: JSON.stringify({
-          secretKey: data.secretKey?.trim() || "",
-          publishableKey: data.publishableKey?.trim() || "",
-          webhookSecret: data.webhookSecret?.trim() || "",
+          secretKey: nextSecretKey,
+          publishableKey: nextPublishableKey,
+          webhookSecret: nextWebhookSecret,
         }),
       },
     });
   }
 
+  revalidatePath("/admin");
   revalidatePath("/admin/settings");
   revalidatePath("/dashboard/billing");
   revalidatePath("/prezzi");
@@ -138,7 +99,6 @@ export async function createCheckoutSession(planCodeOrId: string) {
 
   await ensureCatalogPlansInDb();
 
-  // Trova il piano per codice (es. PREMIUM_ANNUAL) o per id nel DB
   let dbPlan = await prisma.plan.findUnique({ where: { name: planCodeOrId.toUpperCase() } });
   if (!dbPlan) {
     dbPlan = await prisma.plan.findUnique({ where: { id: planCodeOrId } });
@@ -147,11 +107,11 @@ export async function createCheckoutSession(planCodeOrId: string) {
   const catalogPlan = getCatalogPlan(dbPlan?.name || planCodeOrId);
   const planCode = catalogPlan?.code || dbPlan?.name || "PREMIUM_ANNUAL";
 
-  // Controlla se esiste un Payment Link configurato nel DB o nelle variabili d'ambiente
-  const envLink = process.env[`STRIPE_LINK_${planCode}`] || process.env[`NEXT_PUBLIC_STRIPE_LINK_${planCode}`];
+  const envLink =
+    process.env[`STRIPE_LINK_${planCode}`] || process.env[`NEXT_PUBLIC_STRIPE_LINK_${planCode}`];
   const configuredTarget = dbPlan?.stripePriceId?.trim() || envLink?.trim() || "";
 
-  // CASO 1: È stato inserito un Link di Pagamento Stripe (https://buy.stripe.com/...)
+  // CASO 1: Stripe Payment Link diretto (https://buy.stripe.com/...)
   if (configuredTarget.startsWith("http://") || configuredTarget.startsWith("https://")) {
     const urlObj = new URL(configuredTarget);
     urlObj.searchParams.set("client_reference_id", `${user.id}__${planCode}`);
@@ -161,19 +121,14 @@ export async function createCheckoutSession(planCodeOrId: string) {
     redirect(urlObj.toString());
   }
 
-  // Determina l'URL base del sito
   const headersList = await headers();
-  const host = headersList.get("x-forwarded-host") || headersList.get("host") || "www.gentiluna.com";
+  const host =
+    headersList.get("x-forwarded-host") || headersList.get("host") || "www.gentiluna.com";
   const protocol = host.includes("localhost") ? "http" : "https";
   const appUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
 
-  // Determina la chiave segreta Stripe (da DB Admin oppure da variabile d'ambiente Vercel)
-  const adminStripe = await getStripeAdminConfig();
-  const activeSecretKey =
-    adminStripe.secretKey ||
-    (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes("placeholder")
-      ? process.env.STRIPE_SECRET_KEY
-      : "");
+  const adminStripe = await getServerStripeConfig();
+  const activeSecretKey = adminStripe.activeSecretKey;
 
   if (!activeSecretKey) {
     redirect(`/dashboard/billing?plan=${encodeURIComponent(planCode)}&setup_pending=true`);
@@ -183,7 +138,7 @@ export async function createCheckoutSession(planCodeOrId: string) {
     apiVersion: "2023-10-16" as any,
   });
 
-  // CASO 2: È stato configurato un Price ID di Stripe (price_...)
+  // CASO 2: Price ID di Stripe (price_...)
   if (configuredTarget.startsWith("price_")) {
     const stripeSession = await stripeClient.checkout.sessions.create({
       success_url: `${appUrl}/dashboard/billing?success=true&plan=${encodeURIComponent(planCode)}&session_id={CHECKOUT_SESSION_ID}`,
@@ -205,10 +160,14 @@ export async function createCheckoutSession(planCodeOrId: string) {
     }
   }
 
-  // CASO 3: Creazione automatica del Checkout Stripe con l'importo esatto del piano (senza bisogno di creare Price ID a mano!)
+  // CASO 3: Creazione automatica del Checkout Stripe con l'importo esatto del piano
   const amountCents = catalogPlan ? catalogPlan.priceCents : dbPlan?.price || 14900;
-  const productName = catalogPlan ? `GentiLuna - ${catalogPlan.name}` : `GentiLuna - Piano ${planCode}`;
-  const productDesc = catalogPlan ? `${catalogPlan.subtitle} (${catalogPlan.renewalNote})` : "Attivazione piano GentiLuna";
+  const productName = catalogPlan
+    ? `GentiLuna - ${catalogPlan.name}`
+    : `GentiLuna - Piano ${planCode}`;
+  const productDesc = catalogPlan
+    ? `${catalogPlan.subtitle} (${catalogPlan.renewalNote})`
+    : "Attivazione piano GentiLuna";
 
   const stripeSession = await stripeClient.checkout.sessions.create({
     success_url: `${appUrl}/dashboard/billing?success=true&plan=${encodeURIComponent(planCode)}&session_id={CHECKOUT_SESSION_ID}`,
@@ -244,41 +203,6 @@ export async function createCheckoutSession(planCodeOrId: string) {
   redirect(stripeSession.url);
 }
 
-/**
- * Attiva il piano nel DB per un utente (chiamato al ritorno dal pagamento con successo o dal webhook)
- */
-export async function activateUserPlanInDb(userId: string, planCode: string, stripeCustomerId?: string, stripeSubscriptionId?: string) {
-  await ensureCatalogPlansInDb();
-  const catalogPlan = getCatalogPlan(planCode) || PLANS_CATALOG.PREMIUM_ANNUAL;
-
-  const dbPlan = await prisma.plan.findUnique({ where: { name: catalogPlan.code } });
-  if (!dbPlan) return;
-
-  const expiresAt = new Date();
-  expiresAt.setMonth(expiresAt.getMonth() + (catalogPlan.durationMonths || 12));
-
-  await prisma.subscription.upsert({
-    where: { userId },
-    update: {
-      planId: dbPlan.id,
-      status: "ACTIVE",
-      currentPeriodEnd: expiresAt,
-      expiresAt,
-      ...(stripeCustomerId ? { stripeCustomerId } : {}),
-      ...(stripeSubscriptionId ? { stripeSubscriptionId } : {}),
-    },
-    create: {
-      userId,
-      planId: dbPlan.id,
-      status: "ACTIVE",
-      currentPeriodEnd: expiresAt,
-      expiresAt,
-      ...(stripeCustomerId ? { stripeCustomerId } : {}),
-      ...(stripeSubscriptionId ? { stripeSubscriptionId } : {}),
-    },
-  });
-}
-
 export async function createCustomerPortal() {
   const session = await getSession();
 
@@ -294,13 +218,12 @@ export async function createCustomerPortal() {
     redirect("/dashboard/billing");
   }
 
-  const adminStripe = await getStripeAdminConfig();
-  const activeSecretKey = adminStripe.secretKey || process.env.STRIPE_SECRET_KEY || "";
-  if (!activeSecretKey || activeSecretKey.includes("placeholder")) {
+  const adminStripe = await getServerStripeConfig();
+  if (!adminStripe.activeSecretKey) {
     redirect("/dashboard/billing");
   }
 
-  const stripeClient = new Stripe(activeSecretKey, {
+  const stripeClient = new Stripe(adminStripe.activeSecretKey, {
     apiVersion: "2023-10-16" as any,
   });
 

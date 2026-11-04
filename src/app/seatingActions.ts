@@ -3,6 +3,7 @@ import crypto from "crypto";
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
+import { verifyTimelineAccess } from "@/lib/accessControl";
 import { revalidatePath } from "next/cache";
 import { getUserEntitlements } from "@/lib/entitlementHelper";
 
@@ -140,13 +141,25 @@ export async function assignGuestToTable(guestId: string, tableId: string | null
 
 export async function searchGuestSeating(timelineItemId: string, name: string, surname: string) {
   if (!name.trim() || !surname.trim()) return null;
+
+  const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
+  if (!wedding || !wedding.showSeating) return null;
+
+  const hasAccess = await verifyTimelineAccess(wedding, "VIEW_PUBLIC");
+  if (!hasAccess) {
+    throw new Error("Non autorizzato");
+  }
   
-  // Fetch all guests for this wedding and filter in memory to avoid Prisma SQLite vs Postgres case-sensitivity issues
+  // Fetch only minimal seating fields (never token/email/phone/dietaryNotes)
   const allGuests = await prisma.guest.findMany({
     where: { timelineItemId },
-    include: {
+    select: {
+      name: true,
+      surname: true,
       table: {
-        include: {
+        select: {
+          name: true,
+          type: true,
           guests: { select: { name: true, surname: true } }
         }
       }

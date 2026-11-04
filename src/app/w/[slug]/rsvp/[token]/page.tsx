@@ -1,16 +1,35 @@
-﻿import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import RSVPClient from "./RSVPClient";
 
 export default async function RSVPPage({ params }: { params: { slug: string, token: string } }) {
   const wedding = await prisma.timelineItem.findUnique({
-    where: { slug: params.slug }
+    where: { slug: params.slug },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      brideName: true,
+      groomName: true,
+      date: true,
+      themeColor: true,
+      coverImage: true,
+    },
   });
 
   if (!wedding) notFound();
 
   const guest = await prisma.guest.findFirst({
-    where: { timelineItemId: wedding.id, token: params.token }
+    where: { timelineItemId: wedding.id, token: params.token },
+    select: {
+      id: true,
+      name: true,
+      surname: true,
+      isAttending: true,
+      dietaryNotes: true,
+      token: true,
+      timelineItemId: true,
+    },
   });
 
   if (!guest) {

@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { verifyTimelineAccess } from "@/lib/accessControl";
@@ -35,8 +35,16 @@ export default async function GuestSeatingPage({ params, searchParams }: { param
     where: { timelineItemId: wedding.id }
   });
 
+  // Seleziona esclusivamente nome, cognome e tavolo: MAI esporre token RSVP, email, telefono o note cliniche/allergie nel tableau pubblico
   const guests = await prisma.guest.findMany({
-    where: { timelineItemId: wedding.id, tableId: { not: null } }
+    where: { timelineItemId: wedding.id, tableId: { not: null } },
+    select: {
+      id: true,
+      name: true,
+      surname: true,
+      tableId: true,
+      category: true,
+    },
   });
 
   return (

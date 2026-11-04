@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import fs from "fs/promises";
 import path from "path";
@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { uploadFile, deleteFile } from "@/lib/storage";
 import { getSession } from "@/lib/auth";
-import { createSystemNotification } from "./notificationActions";
+import { verifyTimelineAccess } from "@/lib/accessControl";
 
 export async function uploadMediaAction(timelineItemId: string, formData: FormData) {
   const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
@@ -55,13 +55,16 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
   // ----------------------
 
 
-  if (wedding.visibility === "PRIVATE" && wedding.type !== "WEDDING") {
-    if (!session || (session.role !== "PHOTOGRAPHER" && session.role !== "COUPLE")) {
+  if (wedding.visibility !== "PUBLIC") {
+    const canAccess = await verifyTimelineAccess(wedding, "VIEW_PUBLIC");
+    if (!canAccess) {
       throw new Error("Non autorizzato");
     }
   }
 
-  // Auto-approval check`n  const isOwner = session && (session.userId === wedding.ownerId || session.userId === wedding.coupleId);`n  const targetStatus = isOwner ? "APPROVED" : "PENDING";
+  // Auto-approval check: owner/couple uploads are approved automatically
+  const isOwner = session && (session.userId === wedding.ownerId || session.userId === wedding.coupleId);
+  const targetStatus = isOwner ? "APPROVED" : "PENDING";
 
   const albumId = formData.get("albumId") as string | null;
   const guestName = formData.get("guestName") as string | null;

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -74,7 +74,15 @@ export default function WalletManager({ documents, weddingId, isProOrAdmin }: { 
                   <p className="text-xs text-stone-400">Aggiunto {new Date(doc.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="flex shrink-0 gap-2">
-                  <a href={doc.url} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={
+                      doc.url?.startsWith("http") && !doc.url.includes("supabase.co")
+                        ? doc.url
+                        : `/api/travel-doc/${doc.id}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Button size="icon" variant="outline" className="rounded-full hover:bg-stone-100" type="button">
                       <Download className="w-4 h-4" />
                     </Button>

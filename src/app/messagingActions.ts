@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { createSystemNotification } from "./notificationActions";
+import { createSystemNotification } from "@/lib/notifications";
 
 export async function getConversations() {
   const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);

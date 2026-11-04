@@ -18,16 +18,19 @@ export async function fetchMoreMediaAction(
   if (!chapter) throw new Error("Capitolo non trovato");
 
   if (isPublicView) {
-    if (chapter.visibility === "PRIVATE") {
-      const session = await getSession();
-      if (!session || (session.role !== "ADMIN" && chapter.ownerId !== session.userId && chapter.coupleId !== session.userId)) {
-        throw new Error("Non autorizzato");
-      }
+    const hasAccess = await verifyTimelineAccess(chapter, "VIEW_PUBLIC");
+    if (!hasAccess) {
+      throw new Error("Non autorizzato");
     }
   } else {
-    // Private view requires strictly the owner
+    // Private view requires strictly the owner or admin
     const session = await getSession();
-    if (!session || (chapter.ownerId !== session.userId && chapter.coupleId !== session.userId)) {
+    if (
+      !session ||
+      (session.role !== "ADMIN" &&
+        chapter.ownerId !== session.userId &&
+        chapter.coupleId !== session.userId)
+    ) {
       throw new Error("Non autorizzato");
     }
   }

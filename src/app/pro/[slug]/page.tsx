@@ -1,4 +1,4 @@
-﻿import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExternalLink, Camera, Mail, Phone, MessageCircle, MapPin, Lock, ArrowUpRight } from "lucide-react";
@@ -35,9 +35,16 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
     where: { userId: profile.userId },
     include: { plan: true }
   });
-  const isPremium = sub?.status === "active" && sub.plan?.name.toUpperCase() !== "FREE" && sub.plan?.name.toUpperCase() !== "BASE";
+  const isPremium = sub?.status?.toUpperCase() === "ACTIVE" && sub.plan?.name.toUpperCase() !== "FREE" && sub.plan?.name.toUpperCase() !== "BASE";
 
   const services = profile.services?.sort((a, b) => a.order - b.order) || [];
+  const resolveProImg = (raw?: string | null) => {
+    if (!raw) return "";
+    if (raw.startsWith("uploads/pro-") || raw.includes("/object/public/wedding-media/uploads/pro-")) {
+      return `/api/media/pro?path=${encodeURIComponent(raw)}`;
+    }
+    return raw;
+  };
 
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
@@ -46,7 +53,7 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
         {profile.coverImage ? (
           <>
             <div className="absolute inset-0">
-              <img src={profile.coverImage} alt="Cover" className="w-full h-full object-cover opacity-30" />
+              <img src={resolveProImg(profile.coverImage)} alt="Cover" className="w-full h-full object-cover opacity-30" />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/60 to-transparent" />
           </>
@@ -64,7 +71,7 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
         <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
           {(profile.profileImage || profile.logoUrl) && (
             <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-stone-800 shadow-2xl mb-6 bg-stone-100">
-              <img src={profile.profileImage || profile.logoUrl || ''} alt={profile.businessName} className="w-full h-full object-cover" />
+              <img src={resolveProImg(profile.profileImage || profile.logoUrl)} alt={profile.businessName} className="w-full h-full object-cover" />
             </div>
           )}
           <div className="flex justify-center items-center gap-3">
@@ -138,7 +145,7 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {profile.gallery.map((imgUrl, i) => (
                   <div key={i} className="aspect-square rounded-xl overflow-hidden bg-stone-100 shadow-sm">
-                    <img src={imgUrl} alt={`Gallery ${i+1}`} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500 cursor-pointer" />
+                    <img src={resolveProImg(imgUrl)} alt={`Gallery ${i+1}`} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500 cursor-pointer" />
                   </div>
                 ))}
               </div>

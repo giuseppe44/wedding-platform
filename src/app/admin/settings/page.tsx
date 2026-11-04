@@ -1,6 +1,6 @@
 import { requireAuth } from "@/lib/auth";
 import { getSystemConfig } from "../settingsActions";
-import { getStripeAdminConfig } from "@/app/stripeActions";
+import { getMaskedStripeConfigForAdminUI } from "@/lib/stripeServer";
 import SettingsClient from "./SettingsClient";
 import Link from "next/link";
 import { ArrowLeft, Settings } from "lucide-react";
@@ -8,7 +8,7 @@ import { ArrowLeft, Settings } from "lucide-react";
 export default async function SettingsPage() {
   await requireAuth(["ADMIN"]);
   const config = await getSystemConfig();
-  const stripeConfig = await getStripeAdminConfig();
+  const stripeConfig = await getMaskedStripeConfigForAdminUI();
 
   return (
     <div className="min-h-screen bg-stone-100 p-4 md:p-8">

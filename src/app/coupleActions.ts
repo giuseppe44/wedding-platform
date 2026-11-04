@@ -1,17 +1,26 @@
-﻿"use server";
+"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/lib/auth";
+import { hashPassword } from "@/lib/password";
 
 export async function updateBranding(timelineItemId: string, formData: FormData) {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
   const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
   if (!wedding) throw new Error("Evento non trovato");
 
+  if (
+    wedding.ownerId !== session.userId &&
+    wedding.coupleId !== session.userId &&
+    session.role !== "ADMIN"
+  ) {
+    throw new Error("Non autorizzato");
+  }
+
   const { getUserEntitlements } = await import("@/lib/entitlementHelper");
   const entitlements = await getUserEntitlements(wedding.ownerId);
-  if (!entitlements.canCustomizeTableau) { // Used generic custom branding flag
+  if (!entitlements.canCustomizeTableau) {
     throw new Error("La personalizzazione dei colori e della vetrina richiede il piano Diamond.");
   }
 
@@ -30,7 +39,18 @@ export async function updateBranding(timelineItemId: string, formData: FormData)
 }
 
 export async function addTimelineItem(timelineItemId: string, formData: FormData) {
-  await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
+  const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
+  if (!wedding) throw new Error("Evento non trovato");
+
+  if (
+    wedding.ownerId !== session.userId &&
+    wedding.coupleId !== session.userId &&
+    session.role !== "ADMIN"
+  ) {
+    throw new Error("Non autorizzato");
+  }
+
   const time = formData.get("time") as string;
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
@@ -42,7 +62,7 @@ export async function addTimelineItem(timelineItemId: string, formData: FormData
       time,
       title,
       description,
-      order: parseInt(time.replace(':', '')) || 0, // basic sort
+      order: parseInt((time || "").replace(":", "")) || 0,
     },
   });
 
@@ -51,43 +71,83 @@ export async function addTimelineItem(timelineItemId: string, formData: FormData
 }
 
 export async function deleteTimelineItem(itemId: string, slug: string) {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
-  const item = await prisma.scheduleItem.findUnique({ where: { id: itemId }, include: { timelineItem: true } });
-  if (item?.timelineItem.ownerId !== session.userId && item?.timelineItem.coupleId !== session.userId) throw new Error("Non autorizzato");
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
+  const item = await prisma.scheduleItem.findUnique({
+    where: { id: itemId },
+    include: { timelineItem: true },
+  });
+  if (
+    !item ||
+    (item.timelineItem.ownerId !== session.userId &&
+      item.timelineItem.coupleId !== session.userId &&
+      session.role !== "ADMIN")
+  ) {
+    throw new Error("Non autorizzato");
+  }
   await prisma.scheduleItem.delete({ where: { id: itemId } });
   revalidatePath(`/couple/${slug}`, "page");
   revalidatePath(`/w/${slug}`, "page");
 }
 
 export async function approveMessage(messageId: string, slug: string) {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
-  const msg = await prisma.message.findUnique({ where: { id: messageId }, include: { timelineItem: true } });
-  if (msg?.timelineItem.ownerId !== session.userId && msg?.timelineItem.coupleId !== session.userId) throw new Error("Non autorizzato");
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
+  const msg = await prisma.message.findUnique({
+    where: { id: messageId },
+    include: { timelineItem: true },
+  });
+  if (
+    !msg ||
+    (msg.timelineItem.ownerId !== session.userId &&
+      msg.timelineItem.coupleId !== session.userId &&
+      session.role !== "ADMIN")
+  ) {
+    throw new Error("Non autorizzato");
+  }
   await prisma.message.update({ where: { id: messageId }, data: { status: "APPROVED" } });
   revalidatePath(`/couple/${slug}`, "page");
   revalidatePath(`/w/${slug}`, "page");
 }
 
 export async function rejectMessage(messageId: string, slug: string) {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
-  const msg = await prisma.message.findUnique({ where: { id: messageId }, include: { timelineItem: true } });
-  if (msg?.timelineItem.ownerId !== session.userId && msg?.timelineItem.coupleId !== session.userId) throw new Error("Non autorizzato");
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
+  const msg = await prisma.message.findUnique({
+    where: { id: messageId },
+    include: { timelineItem: true },
+  });
+  if (
+    !msg ||
+    (msg.timelineItem.ownerId !== session.userId &&
+      msg.timelineItem.coupleId !== session.userId &&
+      session.role !== "ADMIN")
+  ) {
+    throw new Error("Non autorizzato");
+  }
   await prisma.message.update({ where: { id: messageId }, data: { status: "REJECTED" } });
   revalidatePath(`/couple/${slug}`, "page");
 }
 
-export async function updateEventPassword(timelineItemId: string, passwordHash: string | null, slug: string) {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+export async function updateEventPassword(
+  timelineItemId: string,
+  rawPassword: string | null,
+  slug: string
+) {
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
   const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
-  
+
   if (!wedding) throw new Error("Not found");
-  if (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN") {
+  if (
+    wedding.ownerId !== session.userId &&
+    wedding.coupleId !== session.userId &&
+    session.role !== "ADMIN"
+  ) {
     throw new Error("Non autorizzato");
   }
 
+  const storedHash = rawPassword && rawPassword.trim() ? hashPassword(rawPassword.trim()) : null;
+
   await prisma.timelineItem.update({
     where: { id: timelineItemId },
-    data: { passwordHash },
+    data: { passwordHash: storedHash },
   });
 
   revalidatePath(`/couple/${slug}`, "page");
@@ -95,15 +155,18 @@ export async function updateEventPassword(timelineItemId: string, passwordHash: 
 }
 
 export async function updateExtendedDetails(timelineItemId: string, data: any, slug: string) {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
   const wedding = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
-  
+
   if (!wedding) throw new Error("Not found");
-  if (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN") {
+  if (
+    wedding.ownerId !== session.userId &&
+    wedding.coupleId !== session.userId &&
+    session.role !== "ADMIN"
+  ) {
     throw new Error("Non autorizzato");
   }
 
-  // Update TimelineItem basic details
   await prisma.timelineItem.update({
     where: { id: timelineItemId },
     data: {
@@ -119,18 +182,14 @@ export async function updateExtendedDetails(timelineItemId: string, data: any, s
     },
   });
 
-  // Update Locations
   const locations = data.locations || [];
-  
-  // To keep it simple, we delete existing locations for this item and recreate them.
-  // BUT we only delete the specific types we are managing here to avoid breaking others if any exist.
   const typesToManage = ["BRIDE_PREP", "GROOM_PREP", "CEREMONY", "RECEPTION"];
-  
+
   await prisma.location.deleteMany({
     where: {
       timelineItemId,
-      type: { in: typesToManage }
-    }
+      type: { in: typesToManage },
+    },
   });
 
   for (const loc of locations) {
@@ -143,8 +202,8 @@ export async function updateExtendedDetails(timelineItemId: string, data: any, s
           address: loc.address,
           city: loc.city,
           notes: loc.notes,
-          coordinates: loc.coordinates
-        }
+          coordinates: loc.coordinates,
+        },
       });
     }
   }
@@ -154,9 +213,17 @@ export async function updateExtendedDetails(timelineItemId: string, data: any, s
 }
 
 export async function updateTimelineItem(itemId: string, slug: string, formData: FormData) {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
-  const item = await prisma.scheduleItem.findUnique({ where: { id: itemId }, include: { timelineItem: true } });
-  if (!item || (item.timelineItem.ownerId !== session.userId && item.timelineItem.coupleId !== session.userId)) {
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
+  const item = await prisma.scheduleItem.findUnique({
+    where: { id: itemId },
+    include: { timelineItem: true },
+  });
+  if (
+    !item ||
+    (item.timelineItem.ownerId !== session.userId &&
+      item.timelineItem.coupleId !== session.userId &&
+      session.role !== "ADMIN")
+  ) {
     throw new Error("Non autorizzato");
   }
 
@@ -169,8 +236,7 @@ export async function updateTimelineItem(itemId: string, slug: string, formData:
     data: { time, title, description },
   });
 
-  revalidatePath(/couple/ + slug + /chapter/ + item.timelineItem.slug, "page");
-  revalidatePath(/couple/ + slug, "page");
-  revalidatePath(/w/ + slug, "page");
+  revalidatePath(`/couple/${slug}/chapter/${item.timelineItem.slug}`, "page");
+  revalidatePath(`/couple/${slug}`, "page");
+  revalidatePath(`/w/${slug}`, "page");
 }
-

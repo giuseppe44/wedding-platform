@@ -1,7 +1,7 @@
 import { requireAuth, getSession } from "@/lib/auth";
 import { getAdminDashboardStats, getAllUsersWithPlans } from "@/app/adminActions";
 import { getSystemConfig } from "./settingsActions";
-import { getStripeAdminConfig } from "@/app/stripeActions";
+import { getMaskedStripeConfigForAdminUI } from "@/lib/stripeServer";
 import SettingsClient from "./settings/SettingsClient";
 import Link from "next/link";
 import { 
@@ -15,7 +15,7 @@ export default async function AdminPage() {
   const stats = await getAdminDashboardStats();
   const users = await getAllUsersWithPlans();
   const systemConfig = await getSystemConfig();
-  const stripeConfig = await getStripeAdminConfig();
+  const stripeConfig = await getMaskedStripeConfigForAdminUI();
 
   // Fake metrics for professional feel
   const monthlyRevenue = (stats.prosCount * 149) + (stats.weddingsCount * 29);

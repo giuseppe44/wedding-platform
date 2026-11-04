@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { BillingButtons } from "./BillingButtons";
 import { PLANS_CATALOG, getCatalogPlan } from "@/lib/plans";
-import { activateUserPlanInDb, getStripeAdminConfig } from "@/app/stripeActions";
+import { verifyAndActivateStripeReturn } from "@/lib/stripeServer";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Sparkles, ShieldCheck, AlertCircle, Heart, Camera } from "lucide-react";
 
@@ -20,19 +20,32 @@ export default async function BillingPage({
   const canceledParam = resolvedParams.canceled === "true";
   const setupPendingParam = resolvedParams.setup_pending === "true";
   const planParam = typeof resolvedParams.plan === "string" ? resolvedParams.plan.toUpperCase() : "";
+  const sessionIdParam = typeof resolvedParams.session_id === "string" ? resolvedParams.session_id : undefined;
   const autoCheckoutParam = resolvedParams.autocheckout === "true" && !setupPendingParam && !successParam && !canceledParam;
-
-  // Se l'utente ritorna da Stripe con ?success=true&plan=..., attiviamo il piano nel DB!
-  if (successParam && planParam) {
-    await activateUserPlanInDb(session.userId, planParam);
-  }
 
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
-    include: { professionalProfile: true },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      professionalProfile: true,
+    },
   });
 
   if (!user) redirect("/login");
+
+  // Verifica crittografica su Stripe prima di attivare il piano nel DB (anti-tampering URL)
+  let verifiedPaymentSuccess = false;
+  if (successParam && planParam) {
+    verifiedPaymentSuccess = await verifyAndActivateStripeReturn({
+      userId: user.id,
+      userEmail: user.email,
+      planCode: planParam,
+      sessionId: sessionIdParam,
+    });
+  }
 
   const isPro = user.role === "PHOTOGRAPHER";
 
@@ -69,7 +82,7 @@ export default async function BillingPage({
     (p) => p.role === (isPro ? "PHOTOGRAPHER" : "COUPLE")
   );
 
-  const stripeConfig = await getStripeAdminConfig();
+  const showVerifiedSuccessBanner = successParam && (verifiedPaymentSuccess || isActive);
 
   return (
     <div className="min-h-screen bg-[#faf9f8] py-12 px-4 sm:px-6 lg:px-8">
@@ -88,7 +101,7 @@ export default async function BillingPage({
         </div>
 
         {/* BANNER CONFERMA PAGAMENTO */}
-        {successParam && (
+        {showVerifiedSuccessBanner && (
           <div className="mb-8 p-6 rounded-3xl bg-emerald-50 border-2 border-emerald-300 text-emerald-900 shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-start gap-4">
               <div className="p-3 bg-emerald-500 text-white rounded-2xl shrink-0">

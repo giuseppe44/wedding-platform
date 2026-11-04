@@ -1,7 +1,9 @@
-﻿"use server";
+"use server";
 
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
+import { hashPassword } from "@/lib/password";
 import { uploadFile } from "@/lib/storage";
 import { revalidatePath } from "next/cache";
 
@@ -129,8 +131,8 @@ export async function leavePublicReview(proId: string, rating: number, text: str
 
   user = await prisma.user.create({
     data: {
-      email: data.email,
-      password: 'hashed_password',
+      email: data.email.trim().toLowerCase(),
+      password: hashPassword(crypto.randomUUID()),
       name: data.brideName + ' & ' + data.groomName,
       role: 'COUPLE'
     }
@@ -185,9 +187,9 @@ export async function uploadProMedia(formData: FormData) {
 
   const uniqueName = `pro-${Date.now()}-${Math.random().toString(36).substring(2,7)}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
   
-  // Reuse storage upload. The folder will be uploads/pro-userId/...
-  const url = await uploadFile(`pro-${session.userId}`, uniqueName, buffer, file.type);
+  // Reuse storage upload. Serve via secure proxy so bucket stays private (`public = false`)
+  const storagePath = await uploadFile(`pro-${session.userId}`, uniqueName, buffer, file.type);
   
-  return url;
+  return `/api/media/pro?path=${encodeURIComponent(storagePath)}`;
 }
 

@@ -3,9 +3,10 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 export async function GET(req: Request) {
-  // CRON_SECRET SECURITY CHECK
+  // CRON_SECRET SECURITY CHECK (blocca anche quando CRON_SECRET non è definito)
+  const cronSecret = process.env.CRON_SECRET;
   const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
 

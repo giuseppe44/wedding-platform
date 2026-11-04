@@ -2,21 +2,22 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { createSystemNotification } from "./notificationActions";
-import { getSession } from "@/lib/auth";
+import { verifyTimelineAccess } from "@/lib/accessControl";
 
 export async function addGuestMessage(timelineItemId: string, formData: FormData) {
-  const guestName = formData.get("guestName") as string;
-  const text = formData.get("text") as string;
-  
-  if (!text || text.trim().length === 0) return { error: "Messaggio vuoto" };
+  const guestName = (formData.get("guestName") as string)?.trim().slice(0, 120);
+  const text = (formData.get("text") as string)?.trim().slice(0, 2000);
+
+  if (!text || text.length === 0) return { error: "Messaggio vuoto" };
 
   const chapter = await prisma.timelineItem.findUnique({ where: { id: timelineItemId } });
-  if (chapter?.visibility === "PRIVATE" && chapter?.type !== "WEDDING") {
-    const session = await getSession();
-    if (!session || (session.role !== "PHOTOGRAPHER" && session.role !== "COUPLE")) {
-      throw new Error("Non autorizzato");
-    }
+  if (!chapter || !chapter.showGuestbook) {
+    throw new Error("Non autorizzato");
+  }
+
+  const hasAccess = await verifyTimelineAccess(chapter, "VIEW_PUBLIC");
+  if (!hasAccess) {
+    throw new Error("Non autorizzato");
   }
 
   await prisma.message.create({
@@ -24,11 +25,10 @@ export async function addGuestMessage(timelineItemId: string, formData: FormData
       timelineItemId,
       guestName: guestName || "Anonimo",
       text,
-      status: "PENDING", // Couples must approve messages to show up? Or maybe they show up immediately depending on wedding setting.
-    }
+      status: "PENDING",
+    },
   });
 
-  // Revalidate to show in dashboard, but public page needs approval
   revalidatePath(`/couple/[slug]`);
   return { success: true };
 }

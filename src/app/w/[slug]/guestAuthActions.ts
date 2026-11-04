@@ -2,12 +2,13 @@
 
 import { prisma } from "@/lib/prisma";
 import { setGuestSession } from "@/lib/accessControl";
+import { verifyPassword, hashPassword } from "@/lib/password";
 import { revalidatePath } from "next/cache";
 
 export async function authenticateGuestAction(slug: string, passwordAttempt: string) {
   try {
     const wedding = await prisma.timelineItem.findUnique({
-      where: { slug }
+      where: { slug },
     });
 
     if (!wedding) {
@@ -18,12 +19,22 @@ export async function authenticateGuestAction(slug: string, passwordAttempt: str
       return { success: false, error: "Questo evento non è protetto da password" };
     }
 
-    if (wedding.passwordHash !== passwordAttempt) {
+    const { valid, needsRehash } = verifyPassword(passwordAttempt, wedding.passwordHash);
+    if (!valid) {
       return { success: false, error: "Password errata" };
     }
 
-    // Pass passwordHash as pwdVer for stateless revocation check
-    await setGuestSession(wedding.id, "OTHER", undefined, wedding.passwordHash);
+    let activePwdHash = wedding.passwordHash;
+    if (needsRehash) {
+      activePwdHash = hashPassword(passwordAttempt);
+      await prisma.timelineItem.update({
+        where: { id: wedding.id },
+        data: { passwordHash: activePwdHash },
+      });
+    }
+
+    // Passa l'hash come versione stateles per la revoca istantanea se la password cambia
+    await setGuestSession(wedding.id, "OTHER", undefined, activePwdHash);
 
     revalidatePath(`/w/${slug}`);
     return { success: true };
@@ -36,7 +47,7 @@ export async function authenticateGuestAction(slug: string, passwordAttempt: str
 export async function authenticateGuestByTokenAction(slug: string, token: string) {
   try {
     const wedding = await prisma.timelineItem.findUnique({
-      where: { slug }
+      where: { slug },
     });
 
     if (!wedding) {
@@ -44,7 +55,7 @@ export async function authenticateGuestByTokenAction(slug: string, token: string
     }
 
     const guest = await prisma.guest.findFirst({
-      where: { timelineItemId: wedding.id, token, hasAccess: true }
+      where: { timelineItemId: wedding.id, token, hasAccess: true },
     });
 
     if (!guest) {

@@ -82,7 +82,13 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
           {wedding.coverImage ? (
             <div 
               className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
-              style={{ backgroundImage: `url(${wedding.coverImage})` }}
+              style={{
+                backgroundImage: `url(${
+                  wedding.coverImage.startsWith("http") && !wedding.coverImage.includes("supabase.co")
+                    ? wedding.coverImage
+                    : `/api/media/cover/${wedding.id}`
+                })`,
+              }}
             />
           ) : (
             <div className="absolute inset-0 z-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80')] bg-cover bg-center" />
@@ -135,7 +141,13 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
                       <div className="h-48 w-full relative overflow-hidden bg-stone-200">
                         <div 
                           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                          style={{ backgroundImage: `url(${c.coverImage})` }}
+                          style={{
+                            backgroundImage: `url(${
+                              c.coverImage.startsWith("http") && !c.coverImage.includes("supabase.co")
+                                ? c.coverImage
+                                : `/api/media/cover/${c.id}`
+                            })`,
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                         <div className="absolute bottom-4 left-4 text-white">

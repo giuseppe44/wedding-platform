@@ -34,6 +34,17 @@ export async function submitLead(formData: FormData) {
       ? `Email: ${email}\nDettagli: ${details}` 
       : `Richiesta Preventivo da: ${email}\nDettagli: ${details}`;
 
+    const escapeHtml = (str: string) =>
+      String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    const safeEmailHtml = escapeHtml(email);
+    const safeDetailsHtml = escapeHtml(details || "").replace(/\n/g, "<br/>");
+
     // 2. Invia Notifica via Email tramite Resend
     try {
       // Usa onboarding@resend.dev finché non verifichi il dominio su Resend
@@ -49,8 +60,8 @@ export async function submitLead(formData: FormData) {
             <div style="padding: 24px; background-color: #faf9f8;">
               <p style="font-size: 16px; color: #333;">Hai ricevuto un nuovo contatto dalla barra di ricerca (Lead Trap):</p>
               <ul style="list-style-type: none; padding: 0;">
-                <li style="margin-bottom: 12px;"><strong>Email Cliente:</strong> ${email}</li>
-                <li style="margin-bottom: 12px;"><strong>Dettagli:</strong><br/> ${details.replace(/\n/g, '<br/>')}</li>
+                <li style="margin-bottom: 12px;"><strong>Email Cliente:</strong> ${safeEmailHtml}</li>
+                <li style="margin-bottom: 12px;"><strong>Dettagli:</strong><br/> ${safeDetailsHtml}</li>
               </ul>
               <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
               <p style="font-size: 14px; color: #666; text-align: center;">Accedi al database di GentiLuna per ulteriori informazioni.</p>

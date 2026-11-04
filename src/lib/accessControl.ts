@@ -1,10 +1,9 @@
-import { getSession } from "./auth";
+import { getSession, getJwtSecretKey } from "./auth";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import { prisma } from "./prisma";
 
-const secretKey = process.env.JWT_SECRET || "super-secret-key-for-wedding-platform-mvp-local-only";
-const key = new TextEncoder().encode(secretKey);
+const key = getJwtSecretKey();
 
 export async function setGuestSession(timelineItemId: string, category: string, guestId?: string, pwdVer?: string | null) {
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -16,7 +15,13 @@ export async function setGuestSession(timelineItemId: string, category: string, 
     .sign(key);
   
   const cookieStore = await cookies();
-  cookieStore.set(`guest_session_${timelineItemId}`, session, { expires, httpOnly: true, path: "/" });
+  cookieStore.set(`guest_session_${timelineItemId}`, session, {
+    expires,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
 }
 
 export async function getGuestSession(timelineItemId: string) {

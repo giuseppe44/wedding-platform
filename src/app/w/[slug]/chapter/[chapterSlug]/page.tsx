@@ -236,10 +236,28 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         </div>
       )}
 
-      {/* LISTA NOZZE / REGALI (Opzionale) */}
+      {/* LISTA NOZZE / REGALI (Opzionale) — IBAN e Intestatario NON vengono serializzati al client ma rivelati solo on-demand */}
       {wedding.showGifts && wedding.giftOptions && wedding.giftOptions.length > 0 && (
         <div className="pt-12">
-          <GiftSection slug={wedding.slug} options={wedding.giftOptions} />
+          <GiftSection
+            slug={wedding.slug}
+            options={wedding.giftOptions.map((opt: any) => ({
+              id: opt.id,
+              type: opt.type,
+              title: opt.title,
+              description: opt.description,
+              hasIban: Boolean(opt.iban),
+              paypalLink: opt.paypalLink,
+              externalLink: opt.externalLink,
+              order: opt.order,
+              isActive: opt.isActive,
+              isTravelStage: opt.isTravelStage,
+              stageDate: opt.stageDate,
+              location: opt.location,
+              targetAmount: opt.targetAmount,
+              raisedAmount: opt.raisedAmount,
+            }))}
+          />
         </div>
       )}
 

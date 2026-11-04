@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { downloadFileBuffer } from "@/lib/storage";
-import { getSession } from "@/lib/auth";
+import { verifyTimelineAccess } from "@/lib/accessControl";
 import { ZipArchive } from "archiver";
 
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
@@ -19,16 +19,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     return new NextResponse("Not found", { status: 404 });
   }
 
-  // P0.1 - PROTEZIONE DOWNLOAD ZIP
-  if (wedding.visibility === "PRIVATE") {
-    const session = await getSession();
-    if (!session || (session.role !== "PHOTOGRAPHER" && session.role !== "COUPLE")) {
-      return new NextResponse("Non autorizzato", { status: 401 });
-    }
-    // Also strictly verify ownership/coupleId for private to avoid other authenticated users from stealing data
-    if (wedding.ownerId !== session.userId && wedding.coupleId !== session.userId && session.role !== "ADMIN") {
-      return new NextResponse("Non autorizzato", { status: 401 });
-    }
+  // Verifica rigorosa per tutti i regimi di visibilità (PRIVATE, PASSWORD, SELECTED_GUESTS, PUBLIC)
+  const hasAccess = await verifyTimelineAccess(wedding, "VIEW_PUBLIC");
+  if (!hasAccess) {
+    return new NextResponse("Non autorizzato", { status: 401 });
   }
 
   if (wedding.media.length === 0) {

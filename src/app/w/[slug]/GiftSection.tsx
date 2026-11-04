@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
 "use client";
 
 import { useState } from "react";
@@ -121,7 +121,7 @@ function GiftInteractions({ option, slug, btnClass = "w-full" }: { option: any, 
 
   return (
     <div className="space-y-3">
-      {option.iban && !ibanData.iban && (
+      {(option.hasIban || Boolean(option.iban)) && !ibanData.iban && (
         <Button onClick={handleRevealIban} variant="outline" className={btnClass} disabled={loadingIban}>
           {loadingIban ? "Verifica in corso..." : <><CreditCard className="w-4 h-4 mr-2" /> Mostra IBAN per Bonifico</>}
         </Button>
