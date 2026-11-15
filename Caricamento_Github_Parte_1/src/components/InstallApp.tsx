@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download, Share, PlusSquare, CheckCircle2, Smartphone } from "lucide-react";
+import { Download, Share2, Plus, CheckCircle, Smartphone } from "lucide-react";
 
-type BIPEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
+type BIPEvent = {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: string }>;
+};
 
 export default function InstallApp() {
   const [deferred, setDeferred] = useState<BIPEvent | null>(null);
@@ -11,26 +14,33 @@ export default function InstallApp() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    const ua = navigator.userAgent;
+    if (typeof window === "undefined") return;
+    const ua = navigator.userAgent || "";
     setIsIos(/iPad|iPhone|iPod/.test(ua));
-    if (window.matchMedia("(display-mode: standalone)").matches) setInstalled(true);
-    const onPrompt = (e: Event) => {
+    if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) {
+      setInstalled(true);
+    }
+    const onPrompt = (e: any) => {
       e.preventDefault();
-      setDeferred(e as BIPEvent);
+      setDeferred(e);
     };
     const onInstalled = () => setInstalled(true);
-    window.addEventListener("beforeinstallprompt", onPrompt);
-    window.addEventListener("appinstalled", onInstalled);
+    window.addEventListener("beforeinstallprompt" as any, onPrompt);
+    window.addEventListener("appinstalled" as any, onInstalled);
     return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt);
-      window.removeEventListener("appinstalled", onInstalled);
+      window.removeEventListener("beforeinstallprompt" as any, onPrompt);
+      window.removeEventListener("appinstalled" as any, onInstalled);
     };
   }, []);
 
   const install = async () => {
     if (!deferred) return;
-    await deferred.prompt();
-    await deferred.userChoice;
+    try {
+      await deferred.prompt();
+      await deferred.userChoice;
+    } catch {
+      // Ignora eventuali errori di cancellazione dell'utente
+    }
     setDeferred(null);
   };
 
@@ -48,7 +58,7 @@ export default function InstallApp() {
 
       {installed ? (
         <p className="flex items-center gap-2 text-emerald-600 font-semibold">
-          <CheckCircle2 className="w-5 h-5" /> App già installata su questo dispositivo.
+          <CheckCircle className="w-5 h-5" /> App già installata su questo dispositivo.
         </p>
       ) : deferred ? (
         <button
@@ -60,8 +70,8 @@ export default function InstallApp() {
       ) : isIos ? (
         <ol className="space-y-3 text-stone-700 text-sm">
           <li className="flex items-center gap-2">1. Apri questa pagina con <strong>Safari</strong>.</li>
-          <li className="flex items-center gap-2">2. Tocca <Share className="w-4 h-4 inline" /> <strong>Condividi</strong>.</li>
-          <li className="flex items-center gap-2">3. Scegli <PlusSquare className="w-4 h-4 inline" /> <strong>Aggiungi alla schermata Home</strong>.</li>
+          <li className="flex items-center gap-2">2. Tocca <Share2 className="w-4 h-4 inline" /> <strong>Condividi</strong>.</li>
+          <li className="flex items-center gap-2">3. Scegli <Plus className="w-4 h-4 inline" /> <strong>Aggiungi alla schermata Home</strong>.</li>
         </ol>
       ) : (
         <p className="text-sm text-stone-600">
