@@ -30,5 +30,12 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "Caricamento_Github_Parte_1",
+    "Caricamento_Github_Parte_2",
+    "Progetto_Matrimoni_Sicuro_Completo",
+    "Desktop_Deploy",
+    "APRI_E_TRASCINA_QUESTI_4_ELEMENTI"
+  ]
 }

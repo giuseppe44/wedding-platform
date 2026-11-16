@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { Download, Share2, Plus, CheckCircle, Smartphone } from "lucide-react";
 
-type BIPEvent = {
+interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: string }>;
-};
+}
 
 export default function InstallApp() {
-  const [deferred, setDeferred] = useState<BIPEvent | null>(null);
+  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [isIos, setIsIos] = useState(false);
   const [installed, setInstalled] = useState(false);
 
@@ -20,16 +20,16 @@ export default function InstallApp() {
     if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) {
       setInstalled(true);
     }
-    const onPrompt = (e: any) => {
+    const onPrompt: EventListener = (e) => {
       e.preventDefault();
-      setDeferred(e);
+      setDeferred(e as BeforeInstallPromptEvent);
     };
-    const onInstalled = () => setInstalled(true);
-    window.addEventListener("beforeinstallprompt" as any, onPrompt);
-    window.addEventListener("appinstalled" as any, onInstalled);
+    const onInstalled: EventListener = () => setInstalled(true);
+    window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("appinstalled", onInstalled);
     return () => {
-      window.removeEventListener("beforeinstallprompt" as any, onPrompt);
-      window.removeEventListener("appinstalled" as any, onInstalled);
+      window.removeEventListener("beforeinstallprompt", onPrompt);
+      window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);
 

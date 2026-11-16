@@ -3,7 +3,7 @@
   "short_name": "GentiLuna",
   "description": "La piattaforma che unisce sposi, invitati e professionisti in un unico racconto digitale.",
   "id": "/",
-  "start_url": "/login?role=PHOTOGRAPHER&source=pwa",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
