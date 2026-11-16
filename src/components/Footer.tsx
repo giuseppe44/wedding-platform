@@ -33,6 +33,8 @@ export default function Footer() {
             <li><Link href="/professionisti" className="hover:text-white transition-colors">Per i Professionisti</Link></li>
             <li><Link href="/prezzi" className="hover:text-white transition-colors">Tariffe Sposi</Link></li>
             <li><Link href="/login" className="hover:text-white transition-colors">Accedi / Registrati</Link></li>
+            <li><Link href="/assistenza" className="hover:text-white transition-colors">Assistenza Clienti</Link></li>
+            <li><Link href="/assistenza#installa" className="hover:text-white transition-colors">Scarica l&apos;App</Link></li>
           </ul>
         </div>
         
