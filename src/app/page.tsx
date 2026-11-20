@@ -116,7 +116,7 @@ export default function Home() {
             transition={{ duration: 1, delay: 0.2 }}
           >
             <span className="inline-block py-1 px-3 rounded-full border border-rose-500/30 bg-rose-500/20 text-rose-300 text-xs font-bold tracking-[0.2em] mb-6 backdrop-blur-md">
-              MOLTO PIÙ DI UN SITO WEB
+              GENTILUNA • MOLTO PIÙ DI UN SITO WEB
             </span>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-6 leading-tight drop-shadow-xl">
               Il Vostro Spazio Unico, <br className="hidden md:block" />

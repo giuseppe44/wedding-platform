@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart, Camera, MapPin, Users, CheckCircle2, Star, ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "Area Sposi – Sito Matrimonio, Foto Invitati QR Code e RSVP",
+  description:
+    "Crea il sito digitale del tuo matrimonio su GentiLuna: raccogli foto e video degli invitati con QR Code in tempo reale, gestisci RSVP, intolleranze, tavoli e lista nozze.",
+  alternates: {
+    canonical: "/sposi",
+  },
+};
 
 export default function SposiLandingPage() {
   return (

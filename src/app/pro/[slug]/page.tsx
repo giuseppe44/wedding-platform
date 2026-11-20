@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,6 +20,42 @@ const CATEGORY_LABELS: Record<string, string> = {
   HAIR_STYLIST: "Hair Stylist",
   OTHER: "Professionista Eventi"
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const profile = await prisma.professionalProfile.findUnique({
+    where: { slug, isActive: true },
+    select: { businessName: true, category: true, serviceArea: true, description: true },
+  });
+
+  if (!profile) {
+    return { title: "Professionista non trovato" };
+  }
+
+  const catLabel = CATEGORY_LABELS[profile.category] || "Professionista Eventi";
+  const areaText = profile.serviceArea ? ` a ${profile.serviceArea}` : "";
+  const title = `${profile.businessName} – ${catLabel} Matrimonio${areaText}`;
+  const description =
+    profile.description?.slice(0, 155) ||
+    `Scopri il profilo, il portfolio e i servizi di ${profile.businessName} (${catLabel}${areaText}) su GentiLuna.`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/pro/${slug}`,
+    },
+    openGraph: {
+      title: `${title} | GentiLuna`,
+      description,
+      url: `https://www.gentiluna.com/pro/${slug}`,
+    },
+  };
+}
 
 export default async function ProPublicProfile({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
