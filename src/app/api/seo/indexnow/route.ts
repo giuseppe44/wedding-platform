@@ -1,4 +1,4 @@
-import { NextResponse } from "next";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 const HOST = "www.gentiluna.com";
@@ -69,18 +69,19 @@ async function submitIndexNow() {
           status: res.status,
           ok: res.status === 200 || res.status === 202,
         };
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Errore di rete";
         return {
           engine: endpoint.name,
           status: 0,
           ok: false,
-          error: err?.message || "Errore di rete",
+          error: message,
         };
       }
     })
   );
 
-  return Response.json({
+  return NextResponse.json({
     success: true,
     host: HOST,
     keyLocation: KEY_LOCATION,
