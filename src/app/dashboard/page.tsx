@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { Camera, HardDrive, Users, Settings, CreditCard } from "lucide-react";
 import { PlanWidget } from "@/components/PlanWidget";
+import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
 
 export default async function DashboardPage() {
   const headersList = await headers();
@@ -92,6 +93,9 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* VIDEO GUIDA INTERATTIVA CON VOCE PER I PROFESSIONISTI */}
+      <VideoGuidePlayer role="PHOTOGRAPHER" />
 
       <div className="mb-6 bg-gradient-to-r from-amber-500/10 to-amber-700/10 border border-amber-200/50 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-4 justify-between">
         <div>

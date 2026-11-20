@@ -4,6 +4,7 @@ import ProProfileManager from "./ProProfileManager";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
 
 export default async function ProDashboardProfile() {
   const session = await requireAuth(["PHOTOGRAPHER", "ADMIN"]);
@@ -25,6 +26,7 @@ export default async function ProDashboardProfile() {
         </div>
       </div>
 
+      <VideoGuidePlayer role="PHOTOGRAPHER" />
       <ProProfileManager initialProfile={profile} />
     </div>
   );

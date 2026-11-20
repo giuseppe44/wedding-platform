@@ -13,6 +13,7 @@ import { Plus, ArrowRight, Calendar, Check, X, Camera, QrCode, Trash2, Edit2, Lo
 import { approveMedia, rejectMedia, logoutAction } from "@/app/actions";
 import { PlanWidget } from "@/components/PlanWidget";
 import { SubmitButton } from "@/components/SubmitButton";
+import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
 
 export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
   const headersList = await headers();
@@ -147,6 +148,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
+        <VideoGuidePlayer role="COUPLE" />
         {isOwner && (
           <PlanWidget 
             role="COUPLE"
