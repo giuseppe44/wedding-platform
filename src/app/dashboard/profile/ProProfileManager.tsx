@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,12 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const url = await uploadProMedia(formData);
+      const res = await uploadProMedia(formData);
+      if (!res.success || !res.url) {
+        alert(res.error || "Errore durante il caricamento");
+        return;
+      }
+      const url = res.url;
       if (field === "gallery") {
         const currentGallery = galleryText.split('\n').map((u: string) => u.trim()).filter((u: string) => u !== "");
         if (currentGallery.length >= 15) {

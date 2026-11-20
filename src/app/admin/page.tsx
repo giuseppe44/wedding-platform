@@ -4,6 +4,7 @@ import { getSystemConfig } from "./settingsActions";
 import { getMaskedStripeConfigForAdminUI } from "@/lib/stripeServer";
 import SettingsClient from "./settings/SettingsClient";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { 
   Shield, Users, Image as ImageIcon, Briefcase, CalendarHeart, 
   TrendingUp, CreditCard, Activity, BarChart3, Settings, LogOut, Globe, Heart
@@ -11,6 +12,10 @@ import {
 import AdminUserManagement from "./AdminUserManagement";
 
 export default async function AdminPage() {
+  const currentSession = await getSession();
+  if (!currentSession || currentSession.role !== "ADMIN") {
+    redirect("/login?role=ADMIN");
+  }
   const session = await requireAuth(["ADMIN"]);
   const stats = await getAdminDashboardStats();
   const users = await getAllUsersWithPlans();

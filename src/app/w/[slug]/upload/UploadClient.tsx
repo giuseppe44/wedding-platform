@@ -117,9 +117,9 @@ export default function UploadClient({ timelineItemId, displayTitle, displayType
         setSuccess(true);
         setFiles([]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Errore durante l`upload", error);
-      alert("C`� stato un problema durante l`upload. Riprova con file pi� piccoli o meno file alla volta.");
+      alert(error?.message || "Si è verificato un problema durante il caricamento. Riprova con file più piccoli o meno file alla volta.");
     } finally {
       setUploading(false);
     }

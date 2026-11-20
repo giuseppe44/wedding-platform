@@ -165,15 +165,15 @@ export async function leavePublicReview(proId: string, rating: number, text: str
 }
 
 
-export async function uploadProMedia(formData: FormData) {
-  const session = await requireAuth(["PHOTOGRAPHER", "ADMIN"]);
-  const file = formData.get("file") as File;
-  if (!file || file.size === 0) throw new Error("Nessun file selezionato");
-  
-  if (!file.type.startsWith("image/")) throw new Error("Sono consentite solo immagini");
-  if (file.size > 5 * 1024 * 1024) throw new Error("Immagine troppo grande (max 5MB)");
-  
-  
+export async function uploadProMedia(formData: FormData): Promise<{ success: boolean; url?: string; error?: string }> {
+  try {
+    const session = await requireAuth(["PHOTOGRAPHER", "ADMIN"]);
+    const file = formData.get("file") as File;
+    if (!file || file.size === 0) return { success: false, error: "Nessun file selezionato" };
+    
+    if (!file.type.startsWith("image/")) return { success: false, error: "Sono consentite solo immagini (JPEG, PNG, WebP, HEIC, TIFF)" };
+    if (file.size > 25 * 1024 * 1024) return { success: false, error: "Immagine troppo grande (massimo 25MB)" };
+    
     const buffer = Buffer.from(await file.arrayBuffer());
     // Basic verification of file signatures
     const magic = buffer.toString('hex', 0, 4).toUpperCase();
@@ -181,15 +181,21 @@ export async function uploadProMedia(formData: FormData) {
     const isPNG = magic === '89504E47';
     const isGIF = magic.startsWith('47494638');
     const isWebP = magic.startsWith('52494646') && buffer.toString('hex', 8, 12).toUpperCase() === '57454250';
-    if (!isJPEG && !isPNG && !isGIF && !isWebP) {
-      throw new Error("Formato file non supportato o invalido. Verifica che il file sia un'immagine reale.");
+    const isHEIC = magic.startsWith('000000') && (buffer.toString('hex', 8, 12).toUpperCase() === '68656963' || buffer.toString('hex', 8, 12).toUpperCase() === '6D696631');
+    const isTIFF = magic.startsWith('49492A00') || magic.startsWith('4D4D002A');
+    if (!isJPEG && !isPNG && !isGIF && !isWebP && !isHEIC && !isTIFF && !file.type.startsWith("image/")) {
+      return { success: false, error: "Formato file non supportato o non riconosciuto." };
     }
 
-  const uniqueName = `pro-${Date.now()}-${Math.random().toString(36).substring(2,7)}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-  
-  // Reuse storage upload. Serve via secure proxy so bucket stays private (`public = false`)
-  const storagePath = await uploadFile(`pro-${session.userId}`, uniqueName, buffer, file.type);
-  
-  return `/api/media/pro?path=${encodeURIComponent(storagePath)}`;
+    const uniqueName = `pro-${Date.now()}-${Math.random().toString(36).substring(2,7)}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+    
+    // Reuse storage upload. Serve via secure proxy so bucket stays private (`public = false`)
+    const storagePath = await uploadFile(`pro-${session.userId}`, uniqueName, buffer, file.type);
+    
+    return { success: true, url: `/api/media/pro?path=${encodeURIComponent(storagePath)}` };
+  } catch (err: any) {
+    console.error("Errore uploadProMedia:", err);
+    return { success: false, error: err?.message || "Errore durante il caricamento dell'immagine" };
+  }
 }
 

@@ -5,7 +5,7 @@ export const BASE_FEATURES = {
   maxPhotos: 20,
   maxStorageGB: 3,
   canManageSeating: false,
-  canUploadPhotos: false,
+  canUploadPhotos: true,
   canUseLiveProjection: false,
   canExportSeatingPDF: false,
   canCustomizeTableau: false,
