@@ -158,23 +158,38 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
         </Link>
       </div>
 
-      {/* 2. AREA DI GESTIONE IN PRIMA POSIZIONE (Fulcro Operativo Sposi) */}
+      {/* 2. AREA DI GESTIONE IN PRIMA POSIZIONE (Stile macOS Dock — Fulcro Operativo Sposi) */}
       <div className="max-w-7xl mx-auto px-4 -mt-10 relative z-20">
-        <div className="bg-white rounded-3xl p-5 md:p-8 shadow-2xl border border-stone-200/90">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5 border-b border-stone-100 pb-6 mb-6">
+        <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] p-5 md:p-8 shadow-[0_24px_60px_rgba(28,25,23,0.12)] border border-stone-200/80">
+          {/* macOS Window Top Dots */}
+          <div className="flex items-center justify-between mb-5 pb-4 border-b border-stone-100">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-rose-400 shadow-inner" />
+              <span className="w-3 h-3 rounded-full bg-amber-400 shadow-inner" />
+              <span className="w-3 h-3 rounded-full bg-emerald-400 shadow-inner" />
+              <span className="ml-2 text-xs font-semibold text-stone-400 tracking-wide">
+                GentiLuna Studio • {displayTitle}
+              </span>
+            </div>
+            <span className="text-xs font-bold text-stone-700 bg-stone-100 border border-stone-200/80 px-3 py-1 rounded-full">
+              Completamento:{" "}
+              <span className={completionPct >= 80 ? "text-emerald-600" : completionPct >= 40 ? "text-amber-600" : "text-rose-600"}>
+                {completionPct}%
+              </span>
+            </span>
+          </div>
+
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5 pb-6 mb-6 border-b border-stone-100">
             <div className="space-y-2 flex-1">
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1 rounded-full">
                   <Sparkles className="w-3.5 h-3.5" /> Pannello di Controllo Sposi
-                </span>
-                <span className="text-xs font-bold text-stone-700 bg-stone-100 px-2.5 py-1 rounded-full">
-                  Completamento: <span className={completionPct >= 80 ? "text-emerald-600" : completionPct >= 40 ? "text-amber-600" : "text-rose-600"}>{completionPct}%</span>
                 </span>
               </div>
               <h2 className="text-2xl md:text-3xl font-serif font-bold text-stone-900">Area di Gestione</h2>
               <p className="text-stone-500 text-sm">
                 {nextStepHint
-                  ? `Prossimo passo consigliato: compila "${nextStepHint}" cliccando sulla scheda colorata qui sotto.`
+                  ? `Prossimo passo consigliato: clicca l'icona "${nextStepHint}" nella barra qui sotto.`
                   : "Ottimo lavoro! Il vostro capitolo è completo e pronto da condividere con tutti gli invitati."}
               </p>
               <div className="w-full max-w-md h-2.5 bg-stone-100 rounded-full overflow-hidden border border-stone-200/70">
@@ -270,94 +285,134 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
             </div>
           </div>
 
-          <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 w-full mb-8 bg-transparent p-0 h-auto">
+          <Tabs defaultValue={defaultTab} className="w-full flex flex-col gap-8">
+            {/* macOS Frosted Glass Dock */}
+            <TabsList className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 w-full group-data-horizontal/tabs:h-auto !h-auto bg-stone-100/80 backdrop-blur-xl p-2.5 rounded-3xl border border-stone-200/80 shadow-inner">
               {isOwner && (
                 <TabsTrigger
                   value="dettagli"
-                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-rose-200 bg-rose-50/70 text-rose-800 hover:bg-rose-100/80 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:border-rose-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
                 >
-                  <span className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /> Dettagli &amp; Luoghi</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-rose-800">{chapter.locations?.length || 0}</span>
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-md shadow-rose-500/25 group-hover/dock:scale-105 transition-transform">
+                    <MapPin className="h-5 w-5" />
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+                      {chapter.locations?.length || 0}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Luoghi &amp; Info</span>
                 </TabsTrigger>
               )}
 
               {isOwner && (
                 <TabsTrigger
                   value="timeline"
-                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-amber-200 bg-amber-50/70 text-amber-900 hover:bg-amber-100/80 data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:border-amber-500 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
                 >
-                  <span className="flex items-center gap-2"><Clock className="h-4 w-4 shrink-0" /> Programma</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-amber-900">{chapter.schedule?.length || 0}</span>
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-md shadow-amber-500/25 group-hover/dock:scale-105 transition-transform">
+                    <Clock className="h-5 w-5" />
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+                      {chapter.schedule?.length || 0}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Programma</span>
                 </TabsTrigger>
               )}
 
               <TabsTrigger
                 value="photos"
-                className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-sky-200 bg-sky-50/70 text-sky-900 hover:bg-sky-100/80 data-[state=active]:bg-sky-600 data-[state=active]:text-white data-[state=active]:border-sky-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
               >
-                <span className="flex items-center gap-2"><Camera className="h-4 w-4 shrink-0" /> Foto &amp; Album</span>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-sky-900">
-                  {approvedMedia.length}{pendingMedia.length > 0 ? ` (+${pendingMedia.length})` : ""}
-                </span>
+                <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center shadow-md shadow-sky-500/25 group-hover/dock:scale-105 transition-transform">
+                  <Camera className="h-5 w-5" />
+                  <span className={`absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full text-white text-[10px] font-bold flex items-center justify-center border-2 border-white ${pendingMedia.length > 0 ? "bg-rose-500" : "bg-stone-900"}`}>
+                    {approvedMedia.length}{pendingMedia.length > 0 ? `+` : ""}
+                  </span>
+                </div>
+                <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Foto &amp; Album</span>
               </TabsTrigger>
 
               {isOwner && (
                 <TabsTrigger
                   value="seating"
-                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-indigo-200 bg-indigo-50/70 text-indigo-900 hover:bg-indigo-100/80 data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:border-indigo-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
                 >
-                  <span className="flex items-center gap-2"><Users className="h-4 w-4 shrink-0" /> Invitati &amp; Tavoli</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-indigo-900">{chapter.guests?.length || 0}</span>
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/25 group-hover/dock:scale-105 transition-transform">
+                    <Users className="h-5 w-5" />
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+                      {chapter.guests?.length || 0}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Invitati &amp; Tavoli</span>
                 </TabsTrigger>
               )}
 
               {isOwner && (
                 <TabsTrigger
                   value="gifts"
-                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 text-emerald-900 hover:bg-emerald-100/80 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:border-emerald-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
                 >
-                  <span className="flex items-center gap-2"><Gift className="h-4 w-4 shrink-0" /> Lista Regali</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-emerald-900">{chapter.giftOptions?.length || 0}</span>
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex items-center justify-center shadow-md shadow-emerald-500/25 group-hover/dock:scale-105 transition-transform">
+                    <Gift className="h-5 w-5" />
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+                      {chapter.giftOptions?.length || 0}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Lista Regali</span>
                 </TabsTrigger>
               )}
 
               <TabsTrigger
                 value="messages"
-                className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-violet-200 bg-violet-50/70 text-violet-900 hover:bg-violet-100/80 data-[state=active]:bg-violet-600 data-[state=active]:text-white data-[state=active]:border-violet-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
               >
-                <span className="flex items-center gap-2"><MessageSquareHeart className="h-4 w-4 shrink-0" /> Dediche</span>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-violet-900">
-                  {approvedMessages.length}{pendingMessages.length > 0 ? ` (+${pendingMessages.length})` : ""}
-                </span>
+                <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white flex items-center justify-center shadow-md shadow-fuchsia-500/25 group-hover/dock:scale-105 transition-transform">
+                  <MessageSquareHeart className="h-5 w-5" />
+                  <span className={`absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full text-white text-[10px] font-bold flex items-center justify-center border-2 border-white ${pendingMessages.length > 0 ? "bg-rose-500" : "bg-stone-900"}`}>
+                    {approvedMessages.length}{pendingMessages.length > 0 ? `+` : ""}
+                  </span>
+                </div>
+                <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Dediche</span>
               </TabsTrigger>
 
               {isOwner && (
                 <TabsTrigger
                   value="wallet"
-                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-teal-200 bg-teal-50/70 text-teal-900 hover:bg-teal-100/80 data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:border-teal-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
                 >
-                  <span className="flex items-center gap-2"><Wallet className="h-4 w-4 shrink-0" /> Documenti</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-teal-900">{chapter.travelDocuments?.length || 0}</span>
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-cyan-500 to-teal-600 text-white flex items-center justify-center shadow-md shadow-cyan-500/25 group-hover/dock:scale-105 transition-transform">
+                    <Wallet className="h-5 w-5" />
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+                      {chapter.travelDocuments?.length || 0}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Documenti</span>
                 </TabsTrigger>
               )}
 
               {isOwner && (
                 <TabsTrigger
                   value="pros"
-                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-orange-200 bg-orange-50/70 text-orange-900 hover:bg-orange-100/80 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:border-orange-500 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
                 >
-                  <span className="flex items-center gap-2"><Camera className="h-4 w-4 shrink-0" /> Team Fornitori</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-orange-900">{chapter.assignments?.length || 0}</span>
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-orange-400 to-rose-500 text-white flex items-center justify-center shadow-md shadow-orange-500/25 group-hover/dock:scale-105 transition-transform">
+                    <Camera className="h-5 w-5" />
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
+                      {chapter.assignments?.length || 0}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Team</span>
                 </TabsTrigger>
               )}
 
               {isOwner && (
                 <TabsTrigger
                   value="settings"
-                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-stone-300 bg-stone-100 text-stone-800 hover:bg-stone-200/80 data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=active]:border-stone-900 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
                 >
-                  <span className="flex items-center gap-2"><Settings className="h-4 w-4 shrink-0" /> Impostazioni</span>
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-stone-600 to-stone-800 text-white flex items-center justify-center shadow-md shadow-stone-700/25 group-hover/dock:scale-105 transition-transform">
+                    <Settings className="h-5 w-5" />
+                  </div>
+                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Impostazioni</span>
                 </TabsTrigger>
               )}
             </TabsList>
