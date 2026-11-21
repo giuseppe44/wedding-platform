@@ -82,7 +82,11 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
   const themeColor = wedding.themeColor || "#1c1917"; // stone-900
 
   return (
-    <EnvelopeOpening initials={`${wedding.brideName.charAt(0)}&${wedding.groomName.charAt(0)}`}>
+    <EnvelopeOpening
+      initials={`${wedding.brideName.charAt(0)}&${wedding.groomName.charAt(0)}`}
+      coupleNames={`${wedding.brideName} & ${wedding.groomName}`}
+      date={wedding.date}
+    >
       <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
         
         {/* 1. HERO & PRESENTAZIONE GENERALE */}

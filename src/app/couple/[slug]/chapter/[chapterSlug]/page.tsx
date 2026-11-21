@@ -7,7 +7,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, MessageSquareHeart, Settings, Clock, Download, Check, X, ArrowLeft, Trash2, Edit2, Users, Gift, Wallet } from "lucide-react";
+import { Camera, MessageSquareHeart, Settings, Clock, Download, Check, X, ArrowLeft, Trash2, Edit2, Users, Gift, Wallet, MapPin, Sparkles, ExternalLink } from "lucide-react";
+import ShareChapterButtons from "@/components/ShareChapterButtons";
 import { approveMedia, rejectMedia, deleteMediaAction } from "@/app/actions";
 import { updateBranding, addTimelineItem, deleteTimelineItem, updateTimelineItem, approveMessage, rejectMessage } from "@/app/coupleActions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
@@ -112,85 +113,94 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
   const pendingMessages = chapter.messages.filter((m: any) => m.status === "PENDING");
   const approvedMessages = chapter.messages.filter((m: any) => m.status === "APPROVED");
 
+  const completionChecks = [
+    { label: "Copertina", done: Boolean(chapter.coverImage) },
+    { label: "Location", done: (chapter.locations?.length || 0) > 0 },
+    { label: "Programma", done: (chapter.schedule?.length || 0) > 0 },
+    { label: "Invitati / Tavoli", done: (chapter.guests?.length || 0) > 0 || (chapter.tables?.length || 0) > 0 },
+    { label: "Foto", done: approvedMedia.length > 0 },
+    { label: "Lista Regali", done: (chapter.giftOptions?.length || 0) > 0 },
+  ];
+  const completionPct = Math.round(
+    (completionChecks.filter((c) => c.done).length / completionChecks.length) * 100
+  );
+  const nextStepHint = completionChecks.find((c) => !c.done)?.label;
+  const defaultTab =
+    isOwner && (chapter.locations?.length || 0) === 0 && approvedMedia.length === 0
+      ? "dettagli"
+      : "photos";
+
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
-      {/* 1. Hero Narrativa */}
-      <div className="relative w-full h-[50vh] md:h-[60vh] bg-stone-900 flex items-center justify-center overflow-hidden">
+      {/* 1. Hero Compatta del Capitolo */}
+      <div className="relative w-full h-[30vh] md:h-[36vh] bg-stone-900 flex items-center justify-center overflow-hidden">
         {chapter.coverImage ? (
-          <img src={`/api/media/cover/${chapter.id}`} className="absolute inset-0 w-full h-full object-cover opacity-60" alt={displayTitle} />
+          <img src={`/api/media/cover/${chapter.id}`} className="absolute inset-0 w-full h-full object-cover opacity-55" alt={displayTitle} />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-tr from-stone-800 to-stone-600 opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-stone-900 via-rose-950/70 to-amber-900/50 opacity-90" />
         )}
-        
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <p className="text-stone-200 text-sm md:text-base font-bold tracking-widest uppercase mb-4">{displayType}</p>
-          <h1 className="text-4xl md:text-6xl font-serif text-white tracking-tight mb-6">{displayTitle}</h1>
+          <p className="text-amber-200 text-xs md:text-sm font-bold tracking-widest uppercase mb-2">{displayType}</p>
+          <h1 className="text-3xl md:text-5xl font-serif text-white tracking-tight mb-2 drop-shadow">{displayTitle}</h1>
           {chapter.date && (
-            <p className="text-stone-200 text-lg md:text-xl font-light italic">
+            <p className="text-stone-200 text-base md:text-lg font-light italic">
               {new Date(chapter.date).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           )}
         </div>
 
-        <Link href={`/couple/${wedding.slug}`} className="absolute top-6 left-6 z-20">
-          <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur-md rounded-full gap-2">
+        <Link href={`/couple/${wedding.slug}`} className="absolute top-5 left-5 z-20">
+          <Button variant="outline" className="bg-white/15 text-white border-white/25 hover:bg-white/25 backdrop-blur-md rounded-full gap-2">
             <ArrowLeft className="w-4 h-4" /> La Nostra Storia
           </Button>
         </Link>
       </div>
 
-      {/* 2. Descrizione */}
-      {chapter.description && (
-        <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-          <p className="text-xl md:text-2xl text-stone-600 font-serif leading-relaxed italic">
-            "{chapter.description}"
-          </p>
-        </div>
-      )}
-
-      {/* 3. Media Narrativi (solo approvati) e Upload Privato */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <h2 className="text-3xl font-serif text-stone-800 mb-8 text-center">Le Nostre Fotografie</h2>
-        <ChapterGallery approvedMedia={approvedMedia} albums={chapter.albums} chapterId={chapter.id} initialHasMore={initialHasMore} initialCursor={initialCursor} currentAlbumId={albumId || null} />
-        
-                {/* Componente di Upload per gli Sposi */}
-        <ChapterUploader chapterId={chapter.id} albums={chapter.albums} />
-      </div>
-
-      {/* 4. Dediche / Messaggi Narrativi (solo approvati) */}
-      {approvedMessages.length > 0 && (
-        <div className="max-w-5xl mx-auto px-4 py-12">
-           <h2 className="text-3xl font-serif text-stone-800 mb-8 text-center">Le Nostre Parole</h2>
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             {approvedMessages.map((msg: any) => (
-               <div key={msg.id} className="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 flex flex-col justify-between">
-                 <p className="text-stone-600 italic mb-4 leading-relaxed">"{msg.text}"</p>
-                 <p className="text-sm font-bold text-stone-800 text-right">— {msg.guestName || "Anonimo"}</p>
-               </div>
-             ))}
-           </div>
-        </div>
-      )}
-
-      {/* 5. Area di Gestione (Dashboard Interna del Capitolo) */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-stone-200">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-stone-100 pb-8">
-            <div>
-              <h2 className="text-2xl font-serif text-stone-800">Area di Gestione</h2>
-              <p className="text-stone-500 text-sm mt-1">Gestisci le foto in attesa, le dediche e le impostazioni del capitolo.</p>
+      {/* 2. AREA DI GESTIONE IN PRIMA POSIZIONE (Fulcro Operativo Sposi) */}
+      <div className="max-w-7xl mx-auto px-4 -mt-10 relative z-20">
+        <div className="bg-white rounded-3xl p-5 md:p-8 shadow-2xl border border-stone-200/90">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5 border-b border-stone-100 pb-6 mb-6">
+            <div className="space-y-2 flex-1">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1 rounded-full">
+                  <Sparkles className="w-3.5 h-3.5" /> Pannello di Controllo Sposi
+                </span>
+                <span className="text-xs font-bold text-stone-700 bg-stone-100 px-2.5 py-1 rounded-full">
+                  Completamento: <span className={completionPct >= 80 ? "text-emerald-600" : completionPct >= 40 ? "text-amber-600" : "text-rose-600"}>{completionPct}%</span>
+                </span>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-stone-900">Area di Gestione</h2>
+              <p className="text-stone-500 text-sm">
+                {nextStepHint
+                  ? `Prossimo passo consigliato: compila "${nextStepHint}" cliccando sulla scheda colorata qui sotto.`
+                  : "Ottimo lavoro! Il vostro capitolo è completo e pronto da condividere con tutti gli invitati."}
+              </p>
+              <div className="w-full max-w-md h-2.5 bg-stone-100 rounded-full overflow-hidden border border-stone-200/70">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    completionPct >= 80
+                      ? "bg-gradient-to-r from-emerald-500 to-teal-400"
+                      : completionPct >= 40
+                      ? "bg-gradient-to-r from-amber-500 to-rose-400"
+                      : "bg-gradient-to-r from-rose-500 to-pink-500"
+                  }`}
+                  style={{ width: `${Math.max(completionPct, 8)}%` }}
+                />
+              </div>
             </div>
 
-          <div className="flex gap-2 items-center flex-wrap">
-            <Link href={`/w/${chapter.slug}`}>
-              <Button className="bg-stone-800 hover:bg-stone-700 text-white rounded-full">
-                Sito Pubblico / Carica
-              </Button>
-            </Link>
-            
-            <ShareVetrinaButtons slug={chapter.slug} />
+            <div className="flex flex-col items-start lg:items-end gap-3 shrink-0">
+              <div className="flex gap-2 items-center flex-wrap">
+                <Link href={`/w/${wedding.slug}/chapter/${chapter.slug}`} target="_blank">
+                  <Button className="bg-gradient-to-r from-rose-600 to-amber-500 hover:from-rose-700 hover:to-amber-600 text-white rounded-full shadow-md gap-2 font-semibold px-5">
+                    <ExternalLink className="w-4 h-4" />
+                    Apri Sito Pubblico
+                  </Button>
+                </Link>
 
-            {!isWedding && (
+                {!isWedding && (
                 <>
                   <Dialog>
                     <DialogTrigger className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border bg-background shadow-sm rounded-full border-stone-300 text-stone-800 hover:bg-stone-200 h-10 w-10 p-0" title="Modifica">
@@ -250,30 +260,106 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
                   </form>
                 </>
               )}
+              </div>
+
+              <ShareChapterButtons
+                urlPath={`/w/${wedding.slug}/chapter/${chapter.slug}`}
+                title={`${displayTitle} — ${wedding.brideName} & ${wedding.groomName}`}
+                label="Condividi:"
+              />
             </div>
           </div>
 
-          <Tabs defaultValue="photos" className="w-full">
-            <TabsList className="flex w-full overflow-x-auto no-scrollbar mb-8 bg-stone-100 p-1.5 rounded-2xl h-auto border border-stone-200/50 justify-start sm:justify-center">
-              <TabsTrigger value="photos" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Camera className="h-4 w-4"/> Foto</TabsTrigger>
-              <TabsTrigger value="messages" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all">
-                <MessageSquareHeart className="h-4 w-4"/> Dediche 
-                {pendingMessages.length > 0 && <span className="ml-1 bg-rose-500 text-white rounded-full px-2 text-xs">{pendingMessages.length}</span>}
+          <Tabs defaultValue={defaultTab} className="w-full">
+            <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 w-full mb-8 bg-transparent p-0 h-auto">
+              {isOwner && (
+                <TabsTrigger
+                  value="dettagli"
+                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-rose-200 bg-rose-50/70 text-rose-800 hover:bg-rose-100/80 data-[state=active]:bg-rose-600 data-[state=active]:text-white data-[state=active]:border-rose-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2"><MapPin className="h-4 w-4 shrink-0" /> Dettagli &amp; Luoghi</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-rose-800">{chapter.locations?.length || 0}</span>
+                </TabsTrigger>
+              )}
+
+              {isOwner && (
+                <TabsTrigger
+                  value="timeline"
+                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-amber-200 bg-amber-50/70 text-amber-900 hover:bg-amber-100/80 data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:border-amber-500 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2"><Clock className="h-4 w-4 shrink-0" /> Programma</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-amber-900">{chapter.schedule?.length || 0}</span>
+                </TabsTrigger>
+              )}
+
+              <TabsTrigger
+                value="photos"
+                className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-sky-200 bg-sky-50/70 text-sky-900 hover:bg-sky-100/80 data-[state=active]:bg-sky-600 data-[state=active]:text-white data-[state=active]:border-sky-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+              >
+                <span className="flex items-center gap-2"><Camera className="h-4 w-4 shrink-0" /> Foto &amp; Album</span>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-sky-900">
+                  {approvedMedia.length}{pendingMedia.length > 0 ? ` (+${pendingMedia.length})` : ""}
+                </span>
               </TabsTrigger>
 
-              {isOwner && <TabsTrigger value="timeline" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Clock className="h-4 w-4"/> Programma</TabsTrigger>}
+              {isOwner && (
+                <TabsTrigger
+                  value="seating"
+                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-indigo-200 bg-indigo-50/70 text-indigo-900 hover:bg-indigo-100/80 data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:border-indigo-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2"><Users className="h-4 w-4 shrink-0" /> Invitati &amp; Tavoli</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-indigo-900">{chapter.guests?.length || 0}</span>
+                </TabsTrigger>
+              )}
 
-              {isOwner && <TabsTrigger value="dettagli" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Edit2 className="h-4 w-4"/> Dettagli</TabsTrigger>}
+              {isOwner && (
+                <TabsTrigger
+                  value="gifts"
+                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 text-emerald-900 hover:bg-emerald-100/80 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:border-emerald-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2"><Gift className="h-4 w-4 shrink-0" /> Lista Regali</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-emerald-900">{chapter.giftOptions?.length || 0}</span>
+                </TabsTrigger>
+              )}
 
-              {isOwner && <TabsTrigger value="seating" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Users className="h-4 w-4"/> Tavoli</TabsTrigger>}
+              <TabsTrigger
+                value="messages"
+                className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-violet-200 bg-violet-50/70 text-violet-900 hover:bg-violet-100/80 data-[state=active]:bg-violet-600 data-[state=active]:text-white data-[state=active]:border-violet-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+              >
+                <span className="flex items-center gap-2"><MessageSquareHeart className="h-4 w-4 shrink-0" /> Dediche</span>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-violet-900">
+                  {approvedMessages.length}{pendingMessages.length > 0 ? ` (+${pendingMessages.length})` : ""}
+                </span>
+              </TabsTrigger>
 
-              {isOwner && <TabsTrigger value="gifts" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Gift className="h-4 w-4"/> Regali</TabsTrigger>}
+              {isOwner && (
+                <TabsTrigger
+                  value="wallet"
+                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-teal-200 bg-teal-50/70 text-teal-900 hover:bg-teal-100/80 data-[state=active]:bg-teal-600 data-[state=active]:text-white data-[state=active]:border-teal-600 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2"><Wallet className="h-4 w-4 shrink-0" /> Documenti</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-teal-900">{chapter.travelDocuments?.length || 0}</span>
+                </TabsTrigger>
+              )}
 
-              {isOwner && <TabsTrigger value="wallet" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Wallet className="h-4 w-4"/> Documenti</TabsTrigger>}
+              {isOwner && (
+                <TabsTrigger
+                  value="pros"
+                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-orange-200 bg-orange-50/70 text-orange-900 hover:bg-orange-100/80 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:border-orange-500 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2"><Camera className="h-4 w-4 shrink-0" /> Team Fornitori</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-orange-900">{chapter.assignments?.length || 0}</span>
+                </TabsTrigger>
+              )}
 
-              {isOwner && <TabsTrigger value="pros" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Camera className="h-4 w-4"/> Team</TabsTrigger>}
-
-              {isOwner && <TabsTrigger value="settings" className="shrink-0 gap-2 py-3 px-5 rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-stone-900 text-stone-500 font-medium transition-all"><Settings className="h-4 w-4"/> Impostazioni</TabsTrigger>}
+              {isOwner && (
+                <TabsTrigger
+                  value="settings"
+                  className="flex items-center justify-between gap-2 py-3.5 px-4 rounded-2xl border border-stone-300 bg-stone-100 text-stone-800 hover:bg-stone-200/80 data-[state=active]:bg-stone-900 data-[state=active]:text-white data-[state=active]:border-stone-900 data-[state=active]:shadow-md font-semibold text-xs sm:text-sm transition-all cursor-pointer"
+                >
+                  <span className="flex items-center gap-2"><Settings className="h-4 w-4 shrink-0" /> Impostazioni</span>
+                </TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent value="photos" className="space-y-6 animate-in fade-in">
@@ -491,6 +577,28 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
 
         </div>
       </div>
+
+      {/* 3. Anteprima Galleria & Upload Rapido Sposi */}
+      <div className="max-w-7xl mx-auto px-4 pt-14 pb-8">
+        <h2 className="text-3xl font-serif text-stone-800 mb-8 text-center">Le Nostre Fotografie</h2>
+        <ChapterGallery approvedMedia={approvedMedia} albums={chapter.albums} chapterId={chapter.id} initialHasMore={initialHasMore} initialCursor={initialCursor} currentAlbumId={albumId || null} />
+        <ChapterUploader chapterId={chapter.id} albums={chapter.albums} />
+      </div>
+
+      {/* 4. Dediche Approvate */}
+      {approvedMessages.length > 0 && (
+        <div className="max-w-5xl mx-auto px-4 py-12">
+          <h2 className="text-3xl font-serif text-stone-800 mb-8 text-center">Le Nostre Parole</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {approvedMessages.map((msg: any) => (
+              <div key={msg.id} className="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 flex flex-col justify-between">
+                <p className="text-stone-600 italic mb-4 leading-relaxed">&ldquo;{msg.text}&rdquo;</p>
+                <p className="text-sm font-bold text-stone-800 text-right">— {msg.guestName || "Anonimo"}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -26,12 +26,17 @@ export default function ProContactBox({
   const [weddingDate, setWeddingDate] = useState("");
   const [coupleEmail, setCoupleEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptedLegal) {
+      setError("Devi accettare la Privacy Policy e i Termini e Condizioni per procedere.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -41,6 +46,7 @@ export default function ProContactBox({
       weddingDate,
       coupleEmail,
       message,
+      acceptedLegal,
     });
 
     setLoading(false);
@@ -135,7 +141,7 @@ export default function ProContactBox({
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-3">
             <div className="space-y-1">
               <Label className="text-xs font-semibold text-stone-700">Data evento</Label>
               <Input
@@ -173,6 +179,27 @@ export default function ProContactBox({
             </p>
           </div>
 
+          <label className="flex items-start gap-2.5 bg-stone-50 border border-stone-200 rounded-xl p-3 cursor-pointer">
+            <input
+              type="checkbox"
+              required
+              checked={acceptedLegal}
+              onChange={(e) => setAcceptedLegal(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-800 shrink-0 cursor-pointer"
+            />
+            <span className="text-[11px] text-stone-600 leading-relaxed">
+              Dichiaro di aver letto e accettato la{" "}
+              <Link href="/privacy" target="_blank" className="text-rose-600 underline font-semibold hover:text-rose-700">
+                Privacy Policy
+              </Link>{" "}
+              e i{" "}
+              <Link href="/terms" target="_blank" className="text-rose-600 underline font-semibold hover:text-rose-700">
+                Termini e Condizioni
+              </Link>{" "}
+              di GentiLuna. *
+            </span>
+          </label>
+
           <div className="flex gap-2 pt-1">
             <Button
               type="button"
@@ -187,8 +214,8 @@ export default function ProContactBox({
             </Button>
             <Button
               type="submit"
-              disabled={loading}
-              className="flex-1 bg-stone-900 text-white hover:bg-stone-800 rounded-xl gap-2 font-semibold"
+              disabled={loading || !acceptedLegal}
+              className="flex-1 bg-stone-900 text-white hover:bg-stone-800 rounded-xl gap-2 font-semibold disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
               {loading ? "Invio..." : "Invia Richiesta"}

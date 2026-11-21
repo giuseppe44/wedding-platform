@@ -11,12 +11,20 @@ export async function requestProQuote(data: {
   weddingDate?: string;
   coupleEmail: string;
   message: string;
+  acceptedLegal?: boolean;
 }) {
   try {
     const coupleName = (data.coupleName || "").trim();
     const coupleEmail = (data.coupleEmail || "").trim().toLowerCase();
     const weddingDate = (data.weddingDate || "").trim();
     const message = (data.message || "").trim();
+
+    if (!data.acceptedLegal) {
+      return {
+        success: false,
+        error: "Devi accettare la Privacy Policy e i Termini e Condizioni per inviare la richiesta.",
+      };
+    }
 
     if (!data.proId || !coupleName || !coupleEmail || !message) {
       return { success: false, error: "Compila tutti i campi obbligatori per inviare la richiesta." };
@@ -55,6 +63,7 @@ export async function requestProQuote(data: {
       `Professionista: ${pro.businessName} (/pro/${pro.slug})`,
       `Richiedente: ${coupleName}`,
       `Data Evento: ${weddingDate || "Da definire"}`,
+      `Consenso Privacy & Termini: Accettato (${new Date().toISOString()})`,
       `Messaggio: ${message}`,
     ].join("\n");
 

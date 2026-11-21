@@ -129,40 +129,19 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
           
           <h1 className="text-4xl md:text-6xl font-serif">{profile.businessName}</h1>
           
-          <div className="flex flex-wrap justify-center gap-4 text-sm font-medium pt-4">
-            {profile.website && (
-              <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-stone-800/50 hover:bg-stone-700/50 rounded-full px-3 py-1 transition-colors">
-                <ExternalLink className="w-4 h-4"/> Sito Web
-              </a>
-            )}
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-4 pt-6">
-            {!isPremium ? (
-              <div className="bg-stone-800/50 border border-stone-700 p-4 rounded-xl text-center max-w-sm mx-auto w-full">
-                <p className="text-sm font-semibold text-stone-300 mb-2 flex items-center justify-center gap-2">
-                  <Lock className="w-4 h-4" /> Recapiti Diretti Nascosti
-                </p>
-                <p className="text-xs text-stone-400 mb-3">Questa è una funzione Premium.</p>
-                <Link href="/dashboard/billing">
-                  <Button variant="secondary" size="sm" className="w-full text-stone-800 bg-white hover:bg-stone-200">
-                    Scopri come sbloccarla <ArrowUpRight className="w-3 h-3 ml-1" />
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <>
-                {profile.whatsapp && (
-                  <a href={`https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 rounded-full gap-2 text-green-600 border-green-200 hover:bg-green-50"><MessageCircle className="w-4 h-4"/> WhatsApp</a>
-                )}
-                {profile.contactEmail && (
-                  <a href={`mailto:${profile.contactEmail}`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 rounded-full gap-2 text-stone-800"><Mail className="w-4 h-4"/> Email</a>
-                )}
-                {profile.contactPhone && (
-                  <a href={`tel:${profile.contactPhone}`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 rounded-full gap-2 text-stone-800"><Phone className="w-4 h-4"/> Chiama</a>
-                )}
-              </>
-            )}
+          <div className="flex flex-wrap justify-center gap-3 pt-6">
+            <a
+              href="#contatta-pro"
+              className="inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm px-6 py-3 rounded-full shadow-lg transition-colors"
+            >
+              Richiedi Preventivo Gratuito
+            </a>
+            <Link
+              href={session ? "/dashboard/messages" : "/login?role=COUPLE"}
+              className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium text-sm px-6 py-3 rounded-full transition-colors"
+            >
+              Live Chat Protetta
+            </Link>
           </div>
         </div>
       </div>
@@ -309,7 +288,7 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
         </div>
 
         {/* Info Laterali - Contatto Protetto 100% Interno a GentiLuna */}
-        <div className="space-y-8">
+        <div id="contatta-pro" className="space-y-8 scroll-mt-8">
           <ProContactBox
             proId={profile.id}
             proName={profile.businessName}

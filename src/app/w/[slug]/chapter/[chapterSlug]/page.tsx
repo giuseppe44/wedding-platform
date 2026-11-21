@@ -90,7 +90,11 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
   const themeColor = wedding.themeColor || "#1c1917";
 
   return (
-    <EnvelopeOpening initials={`${wedding.brideName.charAt(0)}&${wedding.groomName.charAt(0)}`}>
+    <EnvelopeOpening
+      initials={`${wedding.brideName.charAt(0)}&${wedding.groomName.charAt(0)}`}
+      coupleNames={`${wedding.brideName} & ${wedding.groomName}`}
+      date={wedding.date}
+    >
       <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
       <div className="bg-white border-b border-stone-200 px-6 py-4 flex flex-wrap items-center justify-between gap-3 shadow-sm relative z-50">
         <Link href={`/w/${slug}`}>
