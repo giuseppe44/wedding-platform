@@ -15,6 +15,8 @@ import GuestRegistrationForm from "../../GuestRegistrationForm";
 import { getSession } from "@/lib/auth";
 import LoadMoreGallery from "@/components/LoadMoreGallery";
 import ShareChapterButtons from "@/components/ShareChapterButtons";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import Footer from "@/components/Footer";
 import { resolveLegacyTimelineSlug } from "@/lib/slugify";
 import WeddingDetails from "../../WeddingDetails";
 import GiftSection from "../../GiftSection";
@@ -95,18 +97,31 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
       coupleNames={`${wedding.brideName} & ${wedding.groomName}`}
       date={wedding.date}
     >
-      <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
-      <div className="bg-white border-b border-stone-200 px-6 py-4 flex flex-wrap items-center justify-between gap-3 shadow-sm relative z-50">
-        <Link href={`/w/${slug}`}>
-          <Button variant="ghost" className="gap-2 text-stone-600 hover:text-stone-900 rounded-full">
-            ← Torna a {mainWedding?.title || (mainWedding ? `${mainWedding.brideName} & ${mainWedding.groomName}` : 'Home')}
-          </Button>
-        </Link>
-        <ShareChapterButtons
-          urlPath={`/w/${slug}/chapter/${chapterSlug}`}
-          title={`${displayTitle} — ${wedding.brideName} & ${wedding.groomName}`}
-          label="Condividi capitolo:"
-        />
+      <div className="min-h-screen bg-stone-50 font-sans text-stone-800 flex flex-col overflow-x-hidden">
+      <div className="bg-white/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-sm sticky top-0 z-40">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="hidden sm:flex items-center gap-1.5 font-serif text-lg text-stone-900 pr-2 border-r border-stone-200">
+            <GentiLunaLogo className="w-5 h-5 shrink-0" />
+            <span>GentiLuna</span>
+          </Link>
+          <Link href={`/w/${slug}`}>
+            <Button variant="ghost" className="gap-2 text-stone-700 hover:text-stone-900 rounded-full text-xs sm:text-sm h-9 px-3">
+              ← Torna a {mainWedding?.title || (mainWedding ? `${mainWedding.brideName} & ${mainWedding.groomName}` : 'Home')}
+            </Button>
+          </Link>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link href={`/w/${slug}/upload`}>
+            <Button size="sm" className="rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold h-8 px-3.5 text-xs gap-1.5">
+              <Camera className="w-3.5 h-3.5" /> Invia Foto
+            </Button>
+          </Link>
+          <ShareChapterButtons
+            urlPath={`/w/${slug}/chapter/${chapterSlug}`}
+            title={`${displayTitle} — ${wedding.brideName} & ${wedding.groomName}`}
+            label="Condividi:"
+          />
+        </div>
       </div>
 
 
@@ -306,12 +321,12 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
                <span className="text-xs text-stone-400 mt-3 font-semibold uppercase tracking-wider">Inquadra per caricare</span>
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 w-full sm:w-auto">
               <span className="text-stone-400 font-serif italic hidden md:block">- oppure -</span>
-              <Link href={`/w/${wedding.slug}/upload`}>
-                <Button size="lg" className="w-full sm:w-auto text-xl py-8 px-12 rounded-full shadow-2xl hover:scale-105 transition-transform text-white font-bold" style={{ backgroundColor: themeColor }}>
-                  <Camera className="mr-3 h-8 w-8" />
-                  + Condividi le tue foto
+              <Link href={`/w/${wedding.slug}/upload`} className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto text-base sm:text-xl min-h-14 h-auto py-4 sm:py-6 px-6 sm:px-10 rounded-full shadow-2xl hover:scale-105 transition-transform text-white font-bold whitespace-normal text-center leading-snug" style={{ backgroundColor: themeColor }}>
+                  <Camera className="mr-2 sm:mr-3 h-6 w-6 sm:h-7 sm:w-7 shrink-0" />
+                  <span>+ Condividi le tue foto</span>
                 </Button>
               </Link>
             </div>
@@ -326,12 +341,12 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         {mainPro && (
           <div className="max-w-2xl mx-auto mb-12 bg-amber-50/50 border border-amber-100 rounded-2xl p-6 text-center">
             <h4 className="font-serif text-xl text-stone-800 mb-2">Vuoi stampare questi ricordi?</h4>
-            <p className="text-stone-600 text-sm mb-4">Richiedi stampe ad alta qualità o l'album fotografico ufficiale direttamente a {mainPro.businessName}.</p>
-            <a href={mainPro.contactEmail ? `mailto:${mainPro.contactEmail}?subject=Richiesta stampe - ${displayTitle}` : `/pro/${mainPro.slug}`}>
+            <p className="text-stone-600 text-sm mb-4">Richiedi stampe ad alta qualità o l&apos;album fotografico ufficiale direttamente a {mainPro.businessName} tramite la piattaforma.</p>
+            <Link href={`/pro/${mainPro.slug}#contatta-pro`}>
               <Button variant="outline" className="rounded-full border-amber-200 hover:bg-amber-100 text-amber-900">
-                Richiedi Stampe
+                Richiedi Stampe &amp; Album
               </Button>
-            </a>
+            </Link>
           </div>
         )}
 
@@ -363,7 +378,7 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
 
       {/* 6. DEDICHE */}
       {wedding.showGuestbook && (
-        <div className="max-w-3xl mx-auto px-4 pt-24 pb-12">
+        <div id="dediche" className="max-w-3xl mx-auto px-4 pt-24 pb-12 scroll-mt-20">
           <h2 className="text-3xl font-serif text-stone-800 mb-4 text-center">Lascia un messaggio</h2>
           <p className="text-center text-stone-500 mb-12 font-serif italic">
             Scrivi un pensiero da conservare nella storia.
@@ -394,6 +409,9 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
           )}
         </div>
       )}
+
+      {/* TEAM FORNITORI DELL'EVENTO */}
+      <PublicProsSection assignments={wedding.assignments || []} />
 
       {/* 7. REVIEWS & CTA FINALE */}
       <div className="max-w-4xl mx-auto px-4 pt-12 pb-24 text-center border-t border-stone-200 mt-12">
@@ -438,6 +456,7 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
         </div>
       </div>
 
+      <Footer />
     </div>
     </EnvelopeOpening>
   );

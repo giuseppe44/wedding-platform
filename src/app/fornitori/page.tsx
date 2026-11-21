@@ -2,31 +2,32 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Heart, Search, MapPin, Briefcase } from "lucide-react";
+import { Search, MapPin, Briefcase } from "lucide-react";
 import Footer from "@/components/Footer";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import PortalSearch from "@/components/PortalSearch";
 import { motion } from "framer-motion";
 
 export default function FornitoriPage() {
   return (
-    <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col">
+    <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
       
       {/* NAVBAR */}
-      <nav className="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center bg-transparent">
-        <Link href="/">
-          <div className="flex items-center gap-2 text-stone-900 font-serif text-2xl">
-            <Heart className="w-6 h-6 text-rose-500" />
-            GentiLuna
+      <nav className="absolute top-0 w-full z-50 px-4 sm:px-6 py-5 sm:py-6 flex justify-between items-center gap-2 bg-transparent">
+        <Link href="/" className="shrink-0">
+          <div className="flex items-center gap-2 text-stone-900 font-serif text-xl sm:text-2xl">
+            <GentiLunaLogo className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
+            <span>GentiLuna</span>
           </div>
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Link href="/login" className="hidden md:block">
             <Button className="bg-white text-stone-900 border border-stone-200 hover:bg-stone-100 rounded-full font-bold px-6 shadow-sm">
               Accedi
             </Button>
           </Link>
           <Link href="/professionisti">
-            <Button className="bg-stone-900 text-white hover:bg-stone-800 rounded-full font-bold px-6 shadow-xl">
+            <Button className="bg-stone-900 text-white hover:bg-stone-800 rounded-full font-bold px-4 sm:px-6 py-2 h-auto min-h-10 text-xs sm:text-sm shadow-xl whitespace-normal text-center">
               Sei un professionista?
             </Button>
           </Link>

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function SposiLandingPage() {
   return (
-    <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col">
+    <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
       {/* HERO SECTION */}
       <section className="relative pt-40 pb-32 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
         <div className="absolute inset-0 bg-stone-900 z-0">
@@ -34,10 +34,10 @@ export default function SposiLandingPage() {
           <p className="text-xl text-stone-200 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
             Raccogli le foto di tutti gli invitati in tempo reale, ricevi dediche emozionanti e organizza ogni dettaglio in un unico, elegante spazio digitale.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/login?role=COUPLE&mode=REGISTER">
-              <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-lg rounded-full bg-rose-500 hover:bg-rose-600 text-white shadow-xl transition-all hover:scale-105 border-none">
-                Inizia Ora Gratuitamente <ArrowRight className="ml-2 w-5 h-5" />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full">
+            <Link href="/login?role=COUPLE&mode=REGISTER" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto min-h-14 h-auto py-3.5 px-6 sm:px-8 text-base sm:text-lg rounded-full bg-rose-500 hover:bg-rose-600 text-white shadow-xl transition-all hover:scale-105 border-none whitespace-normal text-center leading-snug">
+                <span>Inizia Ora Gratuitamente</span> <ArrowRight className="ml-2 w-5 h-5 shrink-0" />
               </Button>
             </Link>
           </div>
@@ -49,16 +49,10 @@ export default function SposiLandingPage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="relative order-2 lg:order-1">
-              <div className="absolute -inset-4 bg-rose-100 rounded-[2rem] transform -rotate-3"></div>
-              <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" alt="Raccolta Foto" className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[4/5]" />
-              <div className="absolute -bottom-10 -right-10 bg-white p-6 rounded-3xl shadow-xl hidden md:block border border-stone-100">
-                <div className="flex items-center gap-4">
-                  <div className="bg-emerald-100 p-3 rounded-full"><CheckCircle2 className="w-6 h-6 text-emerald-600" /></div>
-                  <div>
-                    <p className="font-bold text-stone-800">450+ Foto Ricevute</p>
-                    <p className="text-sm text-stone-500">Aggiornato ora</p>
-                  </div>
-                </div>
+              <div className="absolute -inset-4 bg-rose-100 rounded-[2rem] transform -rotate-2"></div>
+              <img src="/press/GentiLuna_Immagine_7.jpg" alt="Tableau Interattivo, Galleria HD, RSVP e Timeline GentiLuna" className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[16/9]" />
+              <div className="mt-4 rounded-2xl overflow-hidden shadow-lg border border-stone-200 relative z-10">
+                <img src="/press/GentiLuna_Immagine_8.jpg" alt="Gestione RSVP, Intolleranze e Tavoli dallo Smartphone" className="w-full object-cover aspect-[16/9]" />
               </div>
             </div>
             
@@ -98,8 +92,11 @@ export default function SposiLandingPage() {
             </div>
             
             <div className="relative">
-              <div className="absolute -inset-4 bg-amber-100 rounded-[2rem] transform rotate-3"></div>
-              <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" alt="Organizzazione Matrimonio" className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[4/5]" />
+              <div className="absolute -inset-4 bg-amber-100 rounded-[2rem] transform rotate-2"></div>
+              <img src="/press/GentiLuna_Showcase_Capitoli.jpg" alt="I Capitoli della Vita: Matrimonio, Viaggio di Nozze, Nascita e Famiglia" className="relative rounded-[2rem] shadow-2xl w-full object-cover aspect-[16/9]" />
+              <div className="mt-4 rounded-2xl overflow-hidden shadow-lg border border-stone-200 relative z-10">
+                <img src="/press/GentiLuna_Showcase_Regali_Guestbook.jpg" alt="Lista Regali IBAN, Tappe Viaggio Nozze e Guestbook Dediche" className="w-full object-cover aspect-[16/9]" />
+              </div>
             </div>
           </div>
         </div>
@@ -113,9 +110,9 @@ export default function SposiLandingPage() {
             Abbiamo creato piani su misura per il tuo evento. Scopri tutte le funzionalità incluse e scegli l'opzione perfetta per conservare i tuoi ricordi per sempre.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/prezzi#sposi">
-              <Button size="lg" className="w-full sm:w-auto h-14 px-10 rounded-full bg-stone-900 hover:bg-stone-800 text-white text-lg shadow-xl">
-                Scopri i nostri Piani <ArrowRight className="ml-2 w-5 h-5" />
+            <Link href="/prezzi#sposi" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto min-h-14 h-auto py-3.5 px-8 sm:px-10 rounded-full bg-stone-900 hover:bg-stone-800 text-white text-base sm:text-lg shadow-xl whitespace-normal text-center leading-snug">
+                <span>Scopri i nostri Piani</span> <ArrowRight className="ml-2 w-5 h-5 shrink-0" />
               </Button>
             </Link>
           </div>

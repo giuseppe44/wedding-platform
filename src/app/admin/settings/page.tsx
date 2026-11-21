@@ -1,12 +1,16 @@
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getSystemConfig } from "../settingsActions";
 import { getMaskedStripeConfigForAdminUI } from "@/lib/stripeServer";
 import SettingsClient from "./SettingsClient";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft, Settings } from "lucide-react";
 
 export default async function SettingsPage() {
-  await requireAuth(["ADMIN"]);
+  const session = await getSession();
+  if (!session || session.role !== "ADMIN") {
+    redirect("/login?role=ADMIN");
+  }
   const config = await getSystemConfig();
   const stripeConfig = await getMaskedStripeConfigForAdminUI();
 

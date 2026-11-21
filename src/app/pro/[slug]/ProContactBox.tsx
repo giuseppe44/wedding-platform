@@ -13,6 +13,7 @@ interface ProContactBoxProps {
   proName: string;
   serviceArea?: string | null;
   isLoggedIn: boolean;
+  userRole?: string | null;
 }
 
 export default function ProContactBox({
@@ -20,6 +21,7 @@ export default function ProContactBox({
   proName,
   serviceArea,
   isLoggedIn,
+  userRole,
 }: ProContactBoxProps) {
   const [showForm, setShowForm] = useState(false);
   const [coupleName, setCoupleName] = useState("");
@@ -106,14 +108,23 @@ export default function ProContactBox({
             Richiedi Preventivo Gratuito
           </Button>
 
-          <Link href={isLoggedIn ? "/dashboard/messages" : "/login?role=COUPLE"} className="block">
+          <Link
+            href={
+              userRole === "COUPLE"
+                ? `/dashboard/messages?proId=${proId}`
+                : isLoggedIn
+                ? "/dashboard/messages"
+                : "/login?role=COUPLE"
+            }
+            className="block"
+          >
             <Button
               type="button"
               variant="outline"
-              className="w-full h-11 rounded-xl border-stone-300 text-stone-800 hover:bg-stone-50 font-medium text-sm gap-2 cursor-pointer"
+              className="w-full min-h-11 h-auto py-2.5 px-4 rounded-xl border-stone-300 text-stone-800 hover:bg-stone-50 font-medium text-sm gap-2 cursor-pointer whitespace-normal text-center"
             >
-              <MessageSquare className="w-4 h-4 text-rose-500" />
-              {isLoggedIn ? "Apri Live Chat Interna" : "Accedi per la Live Chat"}
+              <MessageSquare className="w-4 h-4 text-rose-500 shrink-0" />
+              <span>{isLoggedIn ? "Apri Live Chat Interna" : "Accedi per la Live Chat"}</span>
             </Button>
           </Link>
 

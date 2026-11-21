@@ -1,4 +1,4 @@
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getMessages } from "@/app/messagingActions";
 import ChatClient from "./ChatClient";
 import { prisma } from "@/lib/prisma";
@@ -6,7 +6,10 @@ import { redirect } from "next/navigation";
 
 export default async function ChatPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await getSession();
+  if (!session || !["PHOTOGRAPHER", "COUPLE", "ADMIN"].includes(session.role)) {
+    redirect("/login?role=COUPLE");
+  }
   
   try {
     const messages = await getMessages(id);

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Heart, ArrowLeft, Phone, MessageCircle, UserPlus, LifeBuoy, KeyRound, Camera, Clock } from "lucide-react";
+import { ArrowLeft, Phone, MessageCircle, UserPlus, LifeBuoy, KeyRound, Camera, Clock } from "lucide-react";
 import Footer from "@/components/Footer";
 import InstallApp from "@/components/InstallApp";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 
 export const metadata = {
   title: "Assistenza Clienti | GentiLuna",
@@ -25,8 +26,8 @@ export default function AssistenzaPage() {
     <div className="min-h-screen bg-[#faf9f8] flex flex-col font-sans text-stone-800">
       <nav className="bg-stone-950 text-white px-6 py-5 border-b border-stone-800">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-2xl font-serif text-white">
-            <Heart className="w-6 h-6 text-rose-500" /> GentiLuna
+          <Link href="/" className="flex items-center gap-2.5 text-2xl font-serif text-white">
+            <GentiLunaLogo className="w-7 h-7 shrink-0" /> GentiLuna
           </Link>
           <Link href="/" className="text-sm text-stone-300 hover:text-white flex items-center gap-2 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Torna alla Home

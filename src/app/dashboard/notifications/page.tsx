@@ -1,9 +1,13 @@
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getNotifications, markNotificationAsRead } from "@/app/notificationActions";
+import { redirect } from "next/navigation";
 import { Bell } from "lucide-react";
 
 export default async function NotificationsPage() {
-  await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await getSession();
+  if (!session || !["PHOTOGRAPHER", "COUPLE", "ADMIN"].includes(session.role)) {
+    redirect("/login?role=COUPLE");
+  }
   const notifications = await getNotifications();
 
   return (

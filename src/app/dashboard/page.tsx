@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { createWedding } from "@/app/actions";
 import { headers } from "next/headers";
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import Link from "next/link";
 import { Camera, HardDrive, Users, Settings, CreditCard } from "lucide-react";
 import { PlanWidget } from "@/components/PlanWidget";
 import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
+import { GuidedCoachBubble, type CoachTip } from "@/components/GuidedCoachBubble";
 
 export default async function DashboardPage() {
   const headersList = await headers();
@@ -17,7 +19,10 @@ export default async function DashboardPage() {
   const protocol = host.includes("localhost") ? "http" : "https";
   const baseUrl = `${protocol}://${host}`;
 
-  const session = await requireAuth(["PHOTOGRAPHER"]);
+  const session = await getSession();
+  if (!session || !["PHOTOGRAPHER", "ADMIN"].includes(session.role)) {
+    redirect("/login?role=PHOTOGRAPHER");
+  }
 
   const weddings = await prisma.timelineItem.findMany({
     where: { 
@@ -66,8 +71,108 @@ export default async function DashboardPage() {
 
   const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
+  const proProfile = await prisma.professionalProfile.findUnique({
+    where: { userId: session.userId },
+    include: { services: true },
+  });
+
+  const hasBioAndArea = Boolean(proProfile?.description?.trim() && proProfile?.serviceArea?.trim());
+  const hasAvatarAndCover = Boolean((proProfile?.profileImage || proProfile?.logoUrl) && proProfile?.coverImage);
+  const portfolioCount = proProfile?.gallery?.filter((u: string) => u.trim() !== "").length || 0;
+  const servicesCount = proProfile?.services?.length || 0;
+  const proSteps = [
+    Boolean(proProfile?.businessName),
+    hasBioAndArea,
+    hasAvatarAndCover,
+    portfolioCount >= 3,
+    servicesCount > 0,
+    weddings.length > 0,
+  ];
+  const proDoneCount = proSteps.filter(Boolean).length;
+
+  const proCoachTips: CoachTip[] = [];
+  if (!hasAvatarAndCover) {
+    proCoachTips.push({
+      id: "pro-todo-media",
+      kind: "TODO",
+      title: "Carica Logo / Avatar e Foto Copertina sulla tua Vetrina",
+      body: "Le vetrine complete di foto copertina luminosa e logo studio ottengono fino a 4 volte più richieste preventivo dalle coppie.",
+      ctaLabel: "Completa Vetrina",
+      ctaHref: "/dashboard/profile",
+    });
+  } else {
+    proCoachTips.push({
+      id: "pro-done-media",
+      kind: "DONE",
+      title: "Hai caricato Logo e Foto Copertina sulla Vetrina",
+      body: "La tua scheda nella directory Fornitori ha un impatto visivo professionale fin dal primo sguardo.",
+    });
+  }
+
+  if (portfolioCount < 3 || servicesCount === 0) {
+    proCoachTips.push({
+      id: "pro-todo-portfolio",
+      kind: "TODO",
+      title:
+        portfolioCount < 3
+          ? `Aggiungi almeno 3 foto nel Portfolio (attualmente ${portfolioCount})`
+          : "Inserisci almeno un Servizio / Pacchetto con prezzo indicativo",
+      body: "Carica fino a 15 scatti ad alta risoluzione (JPG, PNG, WebP, HEIC o TIFF fino a 25 MB) e spiega cosa offri agli sposi.",
+      ctaLabel: "Apri Profilo Vetrina",
+      ctaHref: "/dashboard/profile",
+    });
+  } else {
+    proCoachTips.push({
+      id: "pro-done-portfolio",
+      kind: "DONE",
+      title: `Portfolio (${portfolioCount} foto) e ${servicesCount} serviz${servicesCount === 1 ? "io" : "i"} pubblicati`,
+      body: "Ottimo! I tuoi potenziali clienti possono valutare subito il tuo stile e richiederti un preventivo tracciato.",
+    });
+  }
+
+  if (weddings.length === 0) {
+    proCoachTips.push({
+      id: "pro-todo-wedding",
+      kind: "TODO",
+      title: "Crea il tuo primo Spazio Matrimonio (anche demo per i tuoi sposi)",
+      body: "Genera uno spazio in 10 secondi dal box 'Nuovo Matrimonio' qui sotto per ottenere subito la galleria e il QR Code per i tavoli.",
+      ctaLabel: "Crea Nuovo Matrimonio",
+      ctaHref: "#nuovo-matrimonio",
+    });
+  } else {
+    proCoachTips.push({
+      id: "pro-done-wedding",
+      kind: "DONE",
+      title: `Hai ${weddings.length} event${weddings.length === 1 ? "o" : "i"} attiv${weddings.length === 1 ? "o" : "i"} in Dashboard`,
+      body: "Puoi entrare in ciascun evento per caricare le fotografie HD e scaricare il QR Code da consegnare agli sposi.",
+    });
+  }
+
+  proCoachTips.push(
+    {
+      id: "pro-sug-qr",
+      kind: "SUGGESTION",
+      title: "Usa il QR Code sui tavoli di ogni evento per acquisire 100+ nuovi contatti",
+      body: "Quando gli invitati inquadrano il QR Code per caricare le foto della serata, vedono il tuo brand di Fotografo / Partner ufficiale e possono contattarti per futuri eventi.",
+    },
+    {
+      id: "pro-dyk-zero-fee",
+      kind: "DID_YOU_KNOW",
+      title: "Su GentiLuna hai 0% di commissioni sui lavori e comunicazioni protette",
+      body: "I tuoi contatti privati sono protetti da bot e spam nella vetrina pubblica, ma ogni richiesta di preventivo arriva notificata direttamente nella tua dashboard.",
+      ctaLabel: "Apri Messaggi",
+      ctaHref: "/dashboard/messages",
+    },
+    {
+      id: "pro-dyk-invite",
+      kind: "DID_YOU_KNOW",
+      title: "Puoi invitare i tuoi futuri sposi su WhatsApp con 1 clic",
+      body: "Quando i tuoi clienti si registrano dal tuo invito, lavori sullo stesso spazio evento collaborando su gallerie HD, location e documenti.",
+    }
+  );
+
   return (
-    <div className="container mx-auto p-4 md:p-8 min-h-screen bg-stone-50">
+    <div className="container mx-auto p-4 md:p-8 min-h-screen bg-stone-50 overflow-x-hidden">
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
         <div>
           <h1 className="text-3xl font-bold font-serif">Area Professionisti</h1>
@@ -96,6 +201,15 @@ export default async function DashboardPage() {
 
       {/* VIDEO GUIDA INTERATTIVA CON VOCE PER I PROFESSIONISTI */}
       <VideoGuidePlayer role="PHOTOGRAPHER" />
+
+      {/* NUVOLETTA SUGGERIMENTI INTERATTIVA PER IL PROFESSIONISTA */}
+      <GuidedCoachBubble
+        role="PRO"
+        storageKey={`pro_dash_${session.userId}`}
+        completedCount={proDoneCount}
+        totalSteps={proSteps.length}
+        tips={proCoachTips}
+      />
 
       <div className="mb-6 bg-gradient-to-r from-amber-500/10 to-amber-700/10 border border-amber-200/50 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-4 justify-between">
         <div>
@@ -164,7 +278,7 @@ export default async function DashboardPage() {
           </Card>
 
           {/* Nuovo Matrimonio */}
-          <Card className="shadow-md border-none">
+          <Card id="nuovo-matrimonio" className="shadow-md border-none scroll-mt-8">
             <CardHeader className="bg-stone-100 text-stone-800 rounded-t-xl">
               <CardTitle>Nuovo Matrimonio</CardTitle>
             </CardHeader>

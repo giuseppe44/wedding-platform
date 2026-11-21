@@ -7,9 +7,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { 
   Shield, Users, Image as ImageIcon, Briefcase, CalendarHeart, 
-  TrendingUp, CreditCard, Activity, BarChart3, Settings, LogOut, Globe, Heart
+  TrendingUp, CreditCard, Activity, BarChart3, Settings, LogOut, Globe
 } from "lucide-react";
 import AdminUserManagement from "./AdminUserManagement";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 
 export default async function AdminPage() {
   const currentSession = await getSession();
@@ -32,7 +33,7 @@ export default async function AdminPage() {
       {/* SIDEBAR */}
       <aside className="w-full md:w-64 bg-stone-950 text-stone-300 flex flex-col">
         <div className="p-6 flex items-center gap-3 border-b border-stone-800">
-          <Heart className="w-8 h-8 text-rose-500" />
+          <GentiLunaLogo className="w-8 h-8 shrink-0" />
           <span className="text-2xl font-serif text-white font-bold">GentiLuna</span>
         </div>
         

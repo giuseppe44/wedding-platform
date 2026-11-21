@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Shield, Lock, FileText, ArrowLeft, Heart } from "lucide-react";
+import { Shield, Lock, FileText, ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 
 export const metadata = {
   title: "Privacy & Cookie Policy | GentiLuna",
@@ -13,8 +14,8 @@ export default function PrivacyPolicyPage() {
       {/* Top Navbar */}
       <nav className="bg-stone-950 text-white px-6 py-5 border-b border-stone-800">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-2xl font-serif text-white">
-            <Heart className="w-6 h-6 text-rose-500" />
+          <Link href="/" className="flex items-center gap-2.5 text-2xl font-serif text-white">
+            <GentiLunaLogo className="w-7 h-7 shrink-0" />
             GentiLuna
           </Link>
           <Link href="/" className="text-sm text-stone-300 hover:text-white flex items-center gap-2 transition-colors">

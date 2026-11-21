@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { loginAction, registerAction } from "@/app/actions";
 import { getCatalogPlan } from "@/lib/plans";
 import Link from "next/link";
-import { Camera, Heart, Shield, ArrowLeft, CheckCircle2, Star, CreditCard, Sparkles } from "lucide-react";
+import { Camera, Heart, Shield, ArrowLeft, CheckCircle2, Star, CreditCard, Sparkles, Loader2 } from "lucide-react";
 
 function AuthFlow() {
   const router = useRouter();
@@ -112,28 +112,28 @@ function AuthFlow() {
   };
 
   const roleSwitcher = activeRole !== "ADMIN" && (
-    <div className="flex bg-stone-100 p-1 rounded-full mb-6 max-w-xs mx-auto border border-stone-200">
+    <div className="grid grid-cols-2 bg-stone-100 p-1 rounded-full mb-5 sm:mb-6 w-full max-w-sm mx-auto border border-stone-200 gap-1">
       <button
         type="button"
         onClick={() => setActiveRole("COUPLE")}
-        className={`flex-1 py-2 px-4 rounded-full text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+        className={`py-2 px-2 sm:px-3 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 text-center leading-tight whitespace-normal ${
           activeRole === "COUPLE"
             ? "bg-white text-rose-600 shadow-sm"
             : "text-stone-500 hover:text-stone-800"
         }`}
       >
-        <Heart className="w-3.5 h-3.5" /> Clienti / Sposi
+        <Heart className="w-3.5 h-3.5 shrink-0" /> <span>Clienti / Sposi</span>
       </button>
       <button
         type="button"
         onClick={() => setActiveRole("PHOTOGRAPHER")}
-        className={`flex-1 py-2 px-4 rounded-full text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 ${
+        className={`py-2 px-2 sm:px-3 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 text-center leading-tight whitespace-normal ${
           activeRole === "PHOTOGRAPHER"
             ? "bg-stone-900 text-amber-400 shadow-sm"
             : "text-stone-500 hover:text-stone-800"
         }`}
       >
-        <Camera className="w-3.5 h-3.5" /> Professionisti
+        <Camera className="w-3.5 h-3.5 shrink-0" /> <span>Professionisti</span>
       </button>
     </div>
   );
@@ -155,8 +155,8 @@ function AuthFlow() {
   );
 
   const loginFormContent = (
-    <Card className="w-full shadow-lg border-stone-200 rounded-3xl">
-      <CardHeader className="text-center space-y-4 pt-8">
+    <Card className="w-full shadow-lg border-stone-200 rounded-3xl overflow-hidden">
+      <CardHeader className="text-center space-y-4 px-5 sm:px-6 pt-7 sm:pt-8">
         {roleSwitcher}
         <div className="mx-auto bg-stone-50 p-4 rounded-full inline-block">
           {activeRole === "COUPLE" && <Heart className="h-6 w-6 text-rose-500" />}
@@ -164,14 +164,14 @@ function AuthFlow() {
           {activeRole === "ADMIN" && <Shield className="h-6 w-6 text-blue-600" />}
         </div>
         <div className="space-y-2">
-          <CardTitle className="text-3xl font-serif text-stone-800">
+          <CardTitle className="text-2xl sm:text-3xl font-serif text-stone-800">
             {activeRole === "COUPLE"
               ? "Accesso Sposi & Eventi"
               : activeRole === "PHOTOGRAPHER"
               ? "Area Professionisti"
               : "Accesso Amministratore"}
           </CardTitle>
-          <CardDescription className="text-stone-500">
+          <CardDescription className="text-stone-500 text-sm">
             {activeRole === "COUPLE"
               ? "Accedi alla tua area privata per gestire il tuo spazio, le foto e gli invitati."
               : activeRole === "PHOTOGRAPHER"
@@ -180,7 +180,7 @@ function AuthFlow() {
           </CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="p-8 pt-4">
+      <CardContent className="p-5 sm:p-8 pt-4">
         {selectedPlanBanner}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
@@ -210,27 +210,33 @@ function AuthFlow() {
             />
           </div>
 
-          <div className="flex items-center space-x-2 py-1">
+          <div className="flex items-start gap-2.5 py-1">
             <Checkbox
               id="remember"
               checked={rememberMe}
               onCheckedChange={(c) => setRememberMe(c as boolean)}
+              className="mt-0.5 shrink-0"
             />
-            <Label htmlFor="remember" className="text-sm font-medium leading-none cursor-pointer">
+            <label htmlFor="remember" className="block text-sm font-medium leading-snug text-stone-700 cursor-pointer">
               Resta collegato su questo dispositivo
-            </Label>
+            </label>
           </div>
 
           <Button
             type="submit"
-            className="w-full h-12 text-lg rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold"
+            className="w-full min-h-12 h-auto py-3 px-4 text-sm sm:text-base rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold whitespace-normal text-center leading-snug disabled:opacity-90"
             disabled={loading}
           >
-            {loading
-              ? "Accesso in corso..."
-              : selectedPlan
-              ? `Accedi e Attiva (${selectedPlan.priceDisplay})`
-              : "Accedi al tuo Spazio"}
+            {loading ? (
+              <span className="inline-flex items-center justify-center gap-2 text-white">
+                <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                <span>Accesso e reindirizzamento...</span>
+              </span>
+            ) : selectedPlan ? (
+              `Accedi e Attiva (${selectedPlan.priceDisplay})`
+            ) : (
+              "Accedi al tuo Spazio"
+            )}
           </Button>
 
           <p className="text-[11px] text-stone-400 text-center leading-relaxed">
@@ -265,8 +271,8 @@ function AuthFlow() {
   );
 
   const registerFormContent = (
-    <Card className="w-full shadow-lg border-stone-200 rounded-3xl">
-      <CardHeader className="text-center space-y-4 pt-8">
+    <Card className="w-full shadow-lg border-stone-200 rounded-3xl overflow-hidden">
+      <CardHeader className="text-center space-y-4 px-5 sm:px-6 pt-7 sm:pt-8">
         {roleSwitcher}
         <div className="mx-auto bg-stone-50 p-4 rounded-full inline-block">
           {activeRole === "COUPLE" ? (
@@ -276,17 +282,17 @@ function AuthFlow() {
           )}
         </div>
         <div className="space-y-2">
-          <CardTitle className="text-3xl font-serif text-stone-800">
+          <CardTitle className="text-2xl sm:text-3xl font-serif text-stone-800">
             {activeRole === "COUPLE" ? "Crea il tuo Spazio" : "Registrati come Professionista"}
           </CardTitle>
-          <CardDescription className="text-stone-500">
+          <CardDescription className="text-stone-500 text-sm">
             {activeRole === "COUPLE"
               ? "Crea il tuo account per ricordare, condividere e organizzare i tuoi eventi."
               : "Unisciti alla rete ufficiale di professionisti GentiLuna."}
           </CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="p-8 pt-4">
+      <CardContent className="p-5 sm:p-8 pt-4">
         {selectedPlanBanner}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
@@ -340,36 +346,44 @@ function AuthFlow() {
             />
           </div>
 
-          <div className="flex items-start space-x-3 p-3.5 rounded-xl bg-stone-50 border border-stone-200">
+          <div className="flex items-start gap-3 p-3.5 sm:p-4 rounded-xl bg-stone-50 border border-stone-200 w-full">
             <Checkbox
               id="regTerms"
               checked={acceptedTerms}
               onCheckedChange={(c) => setAcceptedTerms(c as boolean)}
-              className="mt-0.5"
+              className="mt-0.5 shrink-0"
             />
-            <Label htmlFor="regTerms" className="text-xs text-stone-600 leading-relaxed font-normal cursor-pointer">
-              Dichiaro di aver letto e di accettare integralmente i{" "}
-              <Link href="/terms" target="_blank" className="underline font-semibold text-stone-900">
+            <label
+              htmlFor="regTerms"
+              className="block flex-1 min-w-0 text-xs sm:text-[13px] text-stone-700 leading-relaxed font-normal cursor-pointer text-left break-words"
+            >
+              Dichiaro di aver letto e accettato integralmente i{" "}
+              <Link href="/terms" target="_blank" className="underline font-semibold text-stone-900 hover:text-rose-600">
                 Termini e Condizioni
               </Link>{" "}
               (inclusi gli artt. 3, 4, 5, 6, 7 e 8 su responsabilità esclusiva dei contenuti caricati, licenze d&apos;autore e manleva) e l&apos;{" "}
-              <Link href="/privacy" target="_blank" className="underline font-semibold text-stone-900">
+              <Link href="/privacy" target="_blank" className="underline font-semibold text-stone-900 hover:text-rose-600">
                 Informativa sulla Privacy
               </Link>
               .
-            </Label>
+            </label>
           </div>
 
           <Button
             type="submit"
-            className="w-full h-12 text-lg rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold"
+            className="w-full min-h-12 h-auto py-3.5 px-4 text-sm sm:text-base rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold whitespace-normal text-center leading-snug shadow-sm disabled:opacity-85"
             disabled={loading || !acceptedTerms}
           >
-            {loading
-              ? "Creazione spazio in corso..."
-              : selectedPlan
-              ? `Registrati e Procedi al Pagamento (${selectedPlan.priceDisplay})`
-              : "Crea Account e Continua"}
+            {loading ? (
+              <span className="inline-flex items-center justify-center gap-2 text-white">
+                <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                <span>Reindirizzamento in corso...</span>
+              </span>
+            ) : selectedPlan ? (
+              `Registrati e Procedi al Pagamento (${selectedPlan.priceDisplay})`
+            ) : (
+              "Crea Account e Continua"
+            )}
           </Button>
 
           <div className="text-center pt-4 border-t border-stone-100">

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Sparkles, X, Send, Moon, ShieldCheck, ArrowUpRight, Bot } from "lucide-react";
+import { Sparkles, X, Send, Moon, ShieldCheck, ArrowUpRight, Bot, Minimize2 } from "lucide-react";
 
 type AssistantContext = "PUBLIC" | "LOGIN" | "COUPLE" | "PRO";
 
@@ -91,10 +91,31 @@ function renderFormattedText(text: string) {
 export default function LunaAssistant() {
   const pathname = usePathname() || "/";
   const [open, setOpen] = useState(false);
+  const [minimized, setMinimized] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem("gentiluna_luna_minimized") === "1") {
+        setMinimized(true);
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, []);
+
+  const handleToggleMinimize = (nextState: boolean) => {
+    setMinimized(nextState);
+    if (nextState) setOpen(false);
+    try {
+      window.localStorage.setItem("gentiluna_luna_minimized", nextState ? "1" : "0");
+    } catch {
+      // ignore storage errors
+    }
+  };
 
   // Nascondi l'assistente sulle pagine pubbliche romantiche degli invitati e sul pannello Admin
   const shouldHide =
@@ -190,10 +211,10 @@ export default function LunaAssistant() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+    <div className="fixed bottom-20 sm:bottom-24 right-3 sm:right-5 z-40 flex flex-col items-end pointer-events-none">
       {/* FINESTRA CHAT */}
       {open && (
-        <div className="mb-3 w-[calc(100vw-2.5rem)] sm:w-[380px] max-h-[78vh] bg-white rounded-3xl shadow-2xl border border-stone-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <div className="pointer-events-auto mb-3 w-[calc(100vw-1.5rem)] sm:w-[380px] max-h-[70vh] bg-white rounded-3xl shadow-2xl border border-stone-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">
           {/* Header */}
           <div className="bg-stone-900 text-white px-5 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -210,14 +231,25 @@ export default function LunaAssistant() {
                 <p className="text-[11px] text-stone-300 mt-1">{cfg.subtitle}</p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Chiudi assistente Luna"
-              className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => handleToggleMinimize(true)}
+                title="Riduci a icona"
+                aria-label="Riduci assistente Luna a icona"
+                className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <Minimize2 className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Chiudi finestra chat Luna"
+                className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Informativa Trasparenza EU AI Act Art. 50 & GDPR */}
@@ -332,33 +364,64 @@ export default function LunaAssistant() {
         </div>
       )}
 
-      {/* PULSANTE FLOATING "CHIEDI A LUNA" */}
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-label="Apri Assistente AI Luna"
-        className="group flex items-center gap-2.5 bg-stone-900 hover:bg-stone-800 text-white pl-3.5 pr-4 py-3 rounded-full shadow-xl border border-white/15 transition-all hover:scale-105 cursor-pointer"
-      >
-        <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 shadow-inner">
-          {open ? (
-            <X className="w-4 h-4 text-white" />
-          ) : (
-            <Moon className="w-4 h-4 text-white fill-white/25" />
-          )}
-          {!open && (
-            <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 border border-stone-900"></span>
+      {/* PULSANTE FLOATING "CHIEDI A LUNA" / MINI STATO */}
+      {minimized && !open ? (
+        <button
+          type="button"
+          onClick={() => {
+            handleToggleMinimize(false);
+            setOpen(true);
+          }}
+          title="Riapri Assistente AI Luna"
+          aria-label="Riapri Assistente AI Luna"
+          className="pointer-events-auto flex items-center gap-1.5 bg-stone-900/90 hover:bg-stone-900 text-white p-2.5 sm:px-3 sm:py-2 rounded-full shadow-lg border border-white/15 backdrop-blur-md transition-all hover:scale-105 cursor-pointer"
+        >
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-tr from-rose-500 to-amber-400">
+            <Moon className="w-3.5 h-3.5 text-white fill-white/25" />
+          </span>
+          <span className="hidden sm:inline text-[11px] font-semibold pr-0.5">Luna AI</span>
+        </button>
+      ) : (
+        <div className="pointer-events-auto flex items-center gap-1.5 bg-stone-900/95 hover:bg-stone-900 text-white pl-2.5 pr-2 py-2 rounded-full shadow-xl border border-white/15 backdrop-blur-md transition-all">
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-label="Apri Assistente AI Luna"
+            className="flex items-center gap-2 pr-1 cursor-pointer"
+          >
+            <span className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 shadow-inner shrink-0">
+              {open ? (
+                <X className="w-3.5 h-3.5 text-white" />
+              ) : (
+                <Moon className="w-3.5 h-3.5 text-white fill-white/25" />
+              )}
+              {!open && (
+                <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 border border-stone-900"></span>
+                </span>
+              )}
             </span>
+            <div className="text-left">
+              <div className="text-[11px] sm:text-xs font-bold leading-tight flex items-center gap-1">
+                Chiedi a Luna <Sparkles className="w-3 h-3 text-amber-300" />
+              </div>
+              <div className="text-[9px] sm:text-[10px] text-stone-300 leading-tight">Assistente AI</div>
+            </div>
+          </button>
+          {!open && (
+            <button
+              type="button"
+              onClick={() => handleToggleMinimize(true)}
+              title="Minimizza Luna"
+              aria-label="Minimizza assistente Luna"
+              className="p-1 rounded-full text-stone-400 hover:text-white hover:bg-white/15 transition-colors cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           )}
-        </span>
-        <div className="text-left pr-1">
-          <div className="text-xs font-bold leading-tight flex items-center gap-1">
-            Chiedi a Luna <Sparkles className="w-3 h-3 text-amber-300" />
-          </div>
-          <div className="text-[10px] text-stone-300 leading-tight">Assistente AI</div>
         </div>
-      </button>
+      )}
     </div>
   );
 }

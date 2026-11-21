@@ -15,8 +15,10 @@ import {
   Star,
   Gift,
   Heart,
+  Loader2,
 } from "lucide-react";
 import Footer from "@/components/Footer";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import { createCheckoutSession } from "@/app/stripeActions";
 
 export default function ProfessionistiPage() {
@@ -35,21 +37,22 @@ export default function ProfessionistiPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 font-sans text-stone-100 flex flex-col relative">
+    <div className="min-h-screen bg-stone-950 font-sans text-stone-100 flex flex-col relative overflow-x-hidden">
       {/* NAVBAR SEZIONE PROFESSIONISTI */}
-      <nav className="absolute top-0 w-full z-50 flex items-center justify-between px-6 md:px-12 py-6">
-        <Link href="/" className="flex items-center gap-2 text-2xl font-serif text-white tracking-tight">
-          <Heart className="w-6 h-6 text-amber-500" />
-          GentiLuna <span className="text-amber-500 font-sans text-sm tracking-widest font-bold ml-2 mt-1">PRO</span>
+      <nav className="absolute top-0 w-full z-50 flex items-center justify-between px-4 sm:px-6 md:px-12 py-5 sm:py-6 gap-2">
+        <Link href="/" className="flex items-center gap-2 text-xl sm:text-2xl font-serif text-white tracking-tight shrink-0">
+          <GentiLunaLogo variant="pro" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
+          <span>GentiLuna</span>
+          <span className="text-amber-500 font-sans text-xs sm:text-sm tracking-widest font-bold ml-1 mt-0.5">PRO</span>
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <Link href="/">
             <Button variant="ghost" className="text-stone-300 hover:text-white hidden md:flex hover:bg-white/10 rounded-full">
               Torna alla Home
             </Button>
           </Link>
           <Link href="/login?role=PHOTOGRAPHER">
-            <Button className="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold rounded-full px-8 shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all hover:scale-105">
+            <Button className="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold rounded-full px-5 sm:px-8 h-10 sm:h-11 shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all hover:scale-105">
               Accedi
             </Button>
           </Link>
@@ -81,20 +84,21 @@ export default function ProfessionistiPage() {
           <p className="text-xl md:text-2xl text-stone-400 max-w-3xl mx-auto mb-12 font-light">
             Smetti di perdere contatti. Trasforma ogni matrimonio in una macchina automatica di lead generation e aumenta il tuo fatturato vendendo stampe direttamente agli invitati.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="#founders">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center">
+            <Link href="#founders" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="h-16 px-10 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 text-xl font-bold shadow-[0_0_30px_rgba(245,158,11,0.3)] transition-all hover:scale-105"
+                className="w-full sm:w-auto min-h-14 sm:min-h-16 h-auto py-3.5 px-6 sm:px-10 rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 text-base sm:text-xl font-bold shadow-[0_0_30px_rgba(245,158,11,0.3)] transition-all hover:scale-105 whitespace-normal text-center leading-snug"
               >
-                Accedi al Founders Club <ArrowRight className="ml-2 w-6 h-6" />
+                <span>Accedi al Founders Club</span>
+                <ArrowRight className="ml-2 w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
               </Button>
             </Link>
-            <Link href="#pricing">
+            <Link href="#pricing" className="w-full sm:w-auto">
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-transparent h-16 px-10 rounded-full border-stone-700 hover:bg-stone-800 text-stone-300 hover:text-white text-xl"
+                className="w-full sm:w-auto bg-transparent min-h-14 sm:min-h-16 h-auto py-3.5 px-6 sm:px-10 rounded-full border-stone-700 hover:bg-stone-800 text-stone-300 hover:text-white text-base sm:text-xl whitespace-normal text-center leading-snug"
               >
                 Vedi i Piani Normali
               </Button>
@@ -111,30 +115,31 @@ export default function ProfessionistiPage() {
         <div className="absolute -right-40 -top-40 w-96 h-96 bg-amber-500/10 blur-[100px] rounded-full mix-blend-screen pointer-events-none" />
         <div className="absolute -left-40 bottom-0 w-96 h-96 bg-rose-500/10 blur-[100px] rounded-full mix-blend-screen pointer-events-none" />
 
-        <div className="max-w-5xl mx-auto px-4 relative z-10">
-          <div className="bg-stone-900 border border-amber-500/30 rounded-[3rem] p-8 md:p-16 shadow-[0_0_50px_rgba(245,158,11,0.1)] relative">
-            <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-amber-500 text-stone-950 font-black tracking-widest uppercase text-sm px-6 py-2 rounded-full flex items-center gap-2 whitespace-nowrap">
-              <Gift className="w-5 h-5" /> Offerta Lancio (Solo 50 Posti)
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 relative z-10">
+          <div className="bg-stone-900 border border-amber-500/30 rounded-3xl sm:rounded-[3rem] px-4 py-8 sm:p-8 md:p-14 shadow-[0_0_50px_rgba(245,158,11,0.1)] relative">
+            <div className="absolute -top-4 sm:-top-5 left-1/2 -translate-x-1/2 bg-amber-500 text-stone-950 font-black tracking-wider sm:tracking-widest uppercase text-[11px] sm:text-sm px-4 sm:px-6 py-1.5 sm:py-2 rounded-full flex items-center justify-center gap-1.5 sm:gap-2 whitespace-normal text-center max-w-[92%] shadow-lg">
+              <Gift className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+              <span>Offerta Lancio (Solo 50 Posti)</span>
             </div>
 
-            <div className="text-center mb-10 mt-4">
-              <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">
+            <div className="text-center mb-8 sm:mb-10 mt-6 sm:mt-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-white mb-4 sm:mb-6">
                 Prezzo Promo per i primi 50 iscritti.
               </h2>
-              <p className="text-xl text-stone-400 font-light max-w-2xl mx-auto">
+              <p className="text-base sm:text-xl text-stone-400 font-light max-w-2xl mx-auto">
                 Stiamo selezionando 50 fotografi in tutta Italia per lanciare la piattaforma. Candidati ora e ottieni il pacchetto{" "}
                 <strong className="text-amber-400">PRO (Valore €299) al prezzo promo di € 49,00</strong> per 12 mesi.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center bg-stone-950 p-8 rounded-3xl border border-stone-800">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center bg-stone-950 p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-stone-800">
               <div className="text-center md:text-left">
-                <h3 className="text-2xl font-bold text-white mb-4">L&apos;unica Condizione?</h3>
-                <p className="text-stone-400 mb-6 leading-relaxed">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">L&apos;unica Condizione?</h3>
+                <p className="text-stone-400 mb-6 leading-relaxed text-sm sm:text-base">
                   Vogliamo professionisti veri. Ti chiediamo solo di usare GentiLuna e i nostri QR Code per la raccolta foto in almeno{" "}
                   <strong>3 matrimoni reali quest&apos;anno</strong>.
                 </p>
-                <ul className="space-y-3 mb-8 text-left">
+                <ul className="space-y-3 mb-4 md:mb-8 text-left text-sm sm:text-base">
                   <li className="flex items-center gap-3 text-stone-300">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> Nessun vincolo di rinnovo
                   </li>
@@ -146,22 +151,31 @@ export default function ProfessionistiPage() {
                   </li>
                 </ul>
               </div>
-              <div className="text-center bg-stone-900 p-8 rounded-2xl border border-stone-800 relative">
-                <div className="text-stone-500 line-through text-2xl mb-2 font-serif">€ 299,00</div>
-                <div className="text-5xl md:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 mb-2">
+              <div className="text-center bg-stone-900 p-5 sm:p-8 rounded-2xl border border-stone-800 relative">
+                <div className="text-stone-500 line-through text-xl sm:text-2xl mb-1 font-serif">€ 299,00</div>
+                <div className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 mb-2">
                   € 49,00
                 </div>
-                <div className="text-stone-400 mb-8 uppercase tracking-widest text-xs md:text-sm font-bold">
+                <div className="text-stone-400 mb-6 sm:mb-8 uppercase tracking-wider sm:tracking-widest text-[11px] sm:text-sm font-bold leading-snug">
                   Prezzo Promo Primi 50 Iscritti (12 Mesi)
                 </div>
                 <Button
                   onClick={() => handleSelectPlan("PRO_FOUNDERS_49")}
                   disabled={isPending}
-                  className="w-full h-14 px-4 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-base md:text-lg rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] whitespace-normal"
+                  className={`w-full min-h-14 h-auto py-3.5 px-4 sm:px-6 rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] whitespace-normal text-center leading-snug font-bold transition-all ${
+                    isPending && pendingPlan === "PRO_FOUNDERS_49"
+                      ? "bg-stone-800 text-white border border-amber-400/60 disabled:opacity-100 text-xs sm:text-sm"
+                      : "bg-amber-500 hover:bg-amber-600 text-stone-950 text-sm sm:text-base md:text-lg"
+                  }`}
                 >
-                  {isPending && pendingPlan === "PRO_FOUNDERS_49"
-                    ? "Reindirizzamento..."
-                    : "Blocca il tuo Posto a € 49"}
+                  {isPending && pendingPlan === "PRO_FOUNDERS_49" ? (
+                    <span className="inline-flex items-center justify-center gap-2 text-white">
+                      <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                      <span>Reindirizzamento...</span>
+                    </span>
+                  ) : (
+                    "Blocca il tuo Posto a € 49"
+                  )}
                 </Button>
                 <p className="text-stone-500 text-xs mt-4">Restano solo 14 inviti disponibili.</p>
               </div>
@@ -286,6 +300,20 @@ export default function ProfessionistiPage() {
         </div>
       </section>
 
+      {/* SHOWCASE REALE PROFESSIONISTI */}
+      <section className="py-12 bg-stone-950 border-t border-stone-900">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="rounded-3xl overflow-hidden border border-stone-800 bg-stone-900 shadow-2xl">
+              <img src="/press/GentiLuna_Showcase_Pro.jpg" alt="Consegna Album HD, Vetrina Pro e 0% Commissioni" className="w-full aspect-[16/9] object-cover" />
+            </div>
+            <div className="rounded-3xl overflow-hidden border border-stone-800 bg-stone-900 shadow-2xl">
+              <img src="/press/GentiLuna_Immagine_3.jpg" alt="Proiezione Live Wall, Tablet e QR Code in Sala" className="w-full aspect-[16/9] object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 5. PREZZI PROFESSIONISTI */}
       <section className="py-24 bg-[#1c1917] border-t border-stone-800" id="pricing">
         <div className="max-w-7xl mx-auto px-4">
@@ -299,7 +327,7 @@ export default function ProfessionistiPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Entry */}
-            <div className="bg-stone-900 p-10 rounded-3xl border border-stone-800 shadow-xl flex flex-col hover:border-stone-700 transition-colors text-center md:text-left">
+            <div className="bg-stone-900 p-6 sm:p-8 lg:p-10 rounded-3xl border border-stone-800 shadow-xl flex flex-col hover:border-stone-700 transition-colors text-center md:text-left">
               <h4 className="font-bold text-2xl text-white mb-2">Entry</h4>
               <p className="text-stone-500 mb-6 h-10">Ideale per iniziare</p>
               <div className="mb-8">
@@ -328,15 +356,26 @@ export default function ProfessionistiPage() {
                 variant="outline"
                 onClick={() => handleSelectPlan("PRO_ENTRY_120")}
                 disabled={isPending}
-                className="bg-transparent w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg"
+                className={`bg-transparent w-full border-stone-700 min-h-14 h-auto py-3 px-4 rounded-full whitespace-normal text-center leading-snug font-semibold transition-all ${
+                  isPending && pendingPlan === "PRO_ENTRY_120"
+                    ? "bg-stone-800 text-white disabled:opacity-100 text-sm"
+                    : "text-stone-300 hover:text-white hover:bg-stone-800 text-base sm:text-lg"
+                }`}
               >
-                {isPending && pendingPlan === "PRO_ENTRY_120" ? "Reindirizzamento..." : "Seleziona Entry"}
+                {isPending && pendingPlan === "PRO_ENTRY_120" ? (
+                  <span className="inline-flex items-center justify-center gap-2 text-white">
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                    <span>Reindirizzamento...</span>
+                  </span>
+                ) : (
+                  "Seleziona Entry"
+                )}
               </Button>
             </div>
 
             {/* Pro */}
-            <div className="bg-gradient-to-b from-stone-800 to-stone-900 text-white p-10 rounded-3xl border border-amber-500/50 shadow-2xl relative transform md:-translate-y-6 flex flex-col text-center md:text-left">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider whitespace-nowrap">
+            <div className="bg-gradient-to-b from-stone-800 to-stone-900 text-white p-6 sm:p-8 lg:p-10 rounded-3xl border border-amber-500/50 shadow-2xl relative transform md:-translate-y-6 flex flex-col text-center md:text-left">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-[11px] sm:text-xs font-bold px-3.5 sm:px-4 py-1.5 rounded-full uppercase tracking-wider whitespace-normal text-center max-w-[90%] shadow-md">
                 Incluso nel Founders Club
               </div>
               <h4 className="font-bold text-2xl text-white mb-2">Pro</h4>
@@ -373,14 +412,25 @@ export default function ProfessionistiPage() {
               <Button
                 onClick={() => handleSelectPlan("PRO_299")}
                 disabled={isPending}
-                className="w-full bg-amber-500 hover:bg-amber-600 text-amber-950 h-14 rounded-full font-bold text-lg"
+                className={`w-full min-h-14 h-auto py-3 px-4 rounded-full font-bold whitespace-normal text-center leading-snug transition-all ${
+                  isPending && pendingPlan === "PRO_299"
+                    ? "bg-stone-950 text-white border border-amber-400/60 disabled:opacity-100 text-sm"
+                    : "bg-amber-500 hover:bg-amber-600 text-amber-950 text-base sm:text-lg"
+                }`}
               >
-                {isPending && pendingPlan === "PRO_299" ? "Reindirizzamento..." : "Seleziona Pro"}
+                {isPending && pendingPlan === "PRO_299" ? (
+                  <span className="inline-flex items-center justify-center gap-2 text-white">
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                    <span>Reindirizzamento...</span>
+                  </span>
+                ) : (
+                  "Seleziona Pro"
+                )}
               </Button>
             </div>
 
             {/* Diamond */}
-            <div className="bg-stone-900 p-10 rounded-3xl border border-stone-800 shadow-xl flex flex-col hover:border-stone-700 transition-colors text-center md:text-left">
+            <div className="bg-stone-900 p-6 sm:p-8 lg:p-10 rounded-3xl border border-stone-800 shadow-xl flex flex-col hover:border-stone-700 transition-colors text-center md:text-left">
               <h4 className="font-bold text-2xl text-white mb-2">Diamond</h4>
               <p className="text-stone-500 mb-6 h-10">Ideale per Wedding Planner & Location</p>
               <div className="mb-8">
@@ -413,11 +463,20 @@ export default function ProfessionistiPage() {
                 variant="outline"
                 onClick={() => handleSelectPlan("PRO_DIAMOND_449")}
                 disabled={isPending}
-                className="bg-transparent w-full border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 h-14 rounded-full text-lg"
+                className={`bg-transparent w-full border-stone-700 min-h-14 h-auto py-3 px-4 rounded-full whitespace-normal text-center leading-snug font-semibold transition-all ${
+                  isPending && pendingPlan === "PRO_DIAMOND_449"
+                    ? "bg-stone-800 text-white disabled:opacity-100 text-sm"
+                    : "text-stone-300 hover:text-white hover:bg-stone-800 text-base sm:text-lg"
+                }`}
               >
-                {isPending && pendingPlan === "PRO_DIAMOND_449"
-                  ? "Reindirizzamento..."
-                  : "Seleziona Diamond"}
+                {isPending && pendingPlan === "PRO_DIAMOND_449" ? (
+                  <span className="inline-flex items-center justify-center gap-2 text-white">
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                    <span>Reindirizzamento...</span>
+                  </span>
+                ) : (
+                  "Seleziona Diamond"
+                )}
               </Button>
             </div>
           </div>

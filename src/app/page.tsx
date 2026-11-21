@@ -10,6 +10,7 @@ import {
   Infinity, LayoutDashboard
 } from "lucide-react";
 import Footer from "@/components/Footer";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import { motion, Variants } from "framer-motion";
 
 const staggerContainer: Variants = {
@@ -34,28 +35,40 @@ export default function Home() {
     <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
       
       {/* NAVBAR */}
-      <nav className="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center bg-gradient-to-b from-stone-900/50 to-transparent">
+      <nav className="absolute top-0 w-full z-50 px-4 sm:px-6 py-5 sm:py-6 flex justify-between items-center gap-3 bg-gradient-to-b from-stone-900/60 to-transparent">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex items-center gap-2 text-white font-serif text-2xl drop-shadow-md"
+          className="flex items-center gap-2.5 text-white font-serif text-xl sm:text-2xl drop-shadow-md shrink-0"
         >
-          <Heart className="w-6 h-6 text-rose-500" />
-          GentiLuna
+          <GentiLunaLogo className="w-7 h-7 sm:w-8 sm:h-8 shrink-0" />
+          <span>GentiLuna</span>
         </motion.div>
         
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="hidden md:flex items-center gap-8 text-[12px] font-light tracking-[0.2em] text-white drop-shadow-md uppercase"
+          className="hidden xl:flex items-center gap-3 2xl:gap-5 text-[11px] font-medium tracking-[0.12em] text-white drop-shadow-md uppercase"
         >
-          <Link href="/sposi" className="text-white hover:text-rose-300 transition-colors font-semibold">AREA SPOSI</Link>
-          <Link href="/fornitori" className="hover:text-rose-300 transition-colors">FORNITORI</Link>
-          <Link href="/prezzi" className="hover:text-rose-300 transition-colors">ABBONAMENTI</Link>
-          <Link href="/professionisti" className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-2">
-            <Briefcase className="w-4 h-4" /> SEI UN PROFESSIONISTA?
+          <Link
+            href="/funzioni-sposi"
+            className="bg-rose-500/25 hover:bg-rose-500/40 border border-rose-300/35 text-white px-3.5 py-2 rounded-full transition-colors font-semibold backdrop-blur-sm whitespace-nowrap"
+          >
+            Funzioni Sposi &amp; Eventi
+          </Link>
+          <Link
+            href="/funzioni-professionisti"
+            className="bg-amber-500/20 hover:bg-amber-500/35 border border-amber-300/40 text-amber-200 px-3.5 py-2 rounded-full transition-colors font-semibold backdrop-blur-sm whitespace-nowrap"
+          >
+            Funzioni Professionisti
+          </Link>
+          <Link href="/fornitori" className="hover:text-rose-300 transition-colors whitespace-nowrap px-1.5">FORNITORI</Link>
+          <Link href="/prezzi" className="hover:text-rose-300 transition-colors whitespace-nowrap px-1.5">ABBONAMENTI</Link>
+          <Link href="/blog" className="hover:text-rose-300 transition-colors whitespace-nowrap px-1.5">BLOG</Link>
+          <Link href="/professionisti" className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-1.5 whitespace-nowrap px-1.5">
+            <Briefcase className="w-3.5 h-3.5 shrink-0" /> SEI UN PROFESSIONISTA?
           </Link>
         </motion.div>
 
@@ -63,7 +76,7 @@ export default function Home() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex items-center gap-3"
+          className="flex items-center gap-2 sm:gap-3 shrink-0"
         >
           <Link href="/login">
             <Button className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-stone-900 rounded-full font-bold px-4 md:px-6">
@@ -74,22 +87,31 @@ export default function Home() {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Apri menu"
-            className="md:hidden text-white p-1"
+            className="xl:hidden text-white p-1"
           >
-            <Menu className="w-8 h-8" />
+            <Menu className="w-7 h-7 sm:w-8 sm:h-8" />
           </button>
         </motion.div>
 
         {mobileMenuOpen && (
-          <div className="absolute top-20 left-4 right-4 bg-stone-900/95 backdrop-blur-xl border border-stone-800 rounded-3xl p-6 flex flex-col gap-4 text-center md:hidden shadow-2xl z-50">
+          <div className="absolute top-20 left-4 right-4 bg-stone-900/95 backdrop-blur-xl border border-stone-800 rounded-3xl p-6 flex flex-col gap-3.5 text-center xl:hidden shadow-2xl z-50">
+            <Link href="/funzioni-sposi" onClick={() => setMobileMenuOpen(false)} className="bg-rose-500/20 border border-rose-400/30 text-rose-200 hover:text-white font-semibold py-2.5 px-4 rounded-full">
+              FUNZIONI SPOSI &amp; EVENTI
+            </Link>
+            <Link href="/funzioni-professionisti" onClick={() => setMobileMenuOpen(false)} className="bg-amber-500/20 border border-amber-400/30 text-amber-200 hover:text-white font-semibold py-2.5 px-4 rounded-full">
+              FUNZIONI PROFESSIONISTI
+            </Link>
             <Link href="/sposi" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-rose-300 font-semibold py-2 border-b border-stone-800">
-              AREA SPOSI & EVENTI
+              AREA SPOSI &amp; EVENTI
             </Link>
             <Link href="/fornitori" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-rose-300 py-2 border-b border-stone-800">
-              FORNITORI & TOP PRO
+              FORNITORI &amp; TOP PRO
             </Link>
             <Link href="/prezzi" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-rose-300 py-2 border-b border-stone-800">
               PIANI E ABBONAMENTI
+            </Link>
+            <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-rose-300 py-2 border-b border-stone-800">
+              BLOG &amp; GUIDE SEO
             </Link>
             <Link href="/professionisti" onClick={() => setMobileMenuOpen(false)} className="text-amber-300 hover:text-amber-200 font-semibold py-2 flex items-center justify-center gap-2">
               <Briefcase className="w-4 h-4" /> SEI UN PROFESSIONISTA?
@@ -331,14 +353,14 @@ export default function Home() {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[320px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[340px]">
             
             {/* Box 1: Condivisione Live (Span 2) */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="md:col-span-2 bg-gradient-to-br from-rose-500 to-rose-600 rounded-[2.5rem] p-10 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between text-center md:text-left group"
+              className="md:col-span-2 bg-gradient-to-br from-rose-500 to-rose-600 rounded-[2.5rem] p-8 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between text-center md:text-left group"
             >
               <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 group-hover:scale-110 transition-transform duration-1000"></div>
               <div className="relative z-10 max-w-sm mx-auto md:mx-0">
@@ -346,14 +368,12 @@ export default function Home() {
                   <Camera className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-3xl md:text-4xl font-serif mb-4">Condivisione Live</h3>
-                <p className="text-rose-100 text-lg font-light leading-relaxed">
+                <p className="text-rose-100 text-base md:text-lg font-light leading-relaxed">
                   Gli invitati scansionano il QR Code stampato sui tavoli e caricano foto e video in tempo reale, senza app. Una galleria spontanea che si aggiorna in diretta.
                 </p>
               </div>
-              <div className="absolute bottom-[-20%] right-[-10%] md:right-10 md:bottom-10 opacity-20 md:opacity-100 pointer-events-none group-hover:-translate-y-4 transition-transform duration-700">
-                <div className="w-48 h-48 bg-white p-4 rounded-3xl shadow-2xl rotate-12">
-                   <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.gentiluna.com" className="w-full h-full object-contain opacity-80" alt="QR" />
-                </div>
+              <div className="hidden md:block absolute right-6 bottom-6 w-72 aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl border-2 border-white/30 rotate-2 group-hover:rotate-0 group-hover:-translate-y-2 transition-all duration-700 pointer-events-none">
+                <img src="/press/GentiLuna_Immagine_6.jpg" alt="QR Code Live sui tavoli e Galleria in diretta" className="w-full h-full object-cover" />
               </div>
             </motion.div>
 
@@ -363,7 +383,7 @@ export default function Home() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-[2.5rem] p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col items-center md:items-start text-center md:text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
+              className="bg-white rounded-[2.5rem] p-8 md:p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col items-center md:items-start text-center md:text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-amber-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="w-16 h-16 mx-auto md:mx-0 bg-amber-100 rounded-2xl flex items-center justify-center mb-6 text-amber-500 relative z-10">
@@ -371,7 +391,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-serif mb-3 relative z-10">Guestbook Digitale</h3>
               <p className="text-stone-500 font-light relative z-10 flex-1">
-                Parenti e amici possono lasciarvi messaggi testuali, vocali o video-dediche speciali da riascoltare per sempre.
+                Parenti e amici possono lasciarvi messaggi e dediche speciali da conservare e approvare prima della pubblicazione.
               </p>
             </motion.div>
 
@@ -380,15 +400,15 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="bg-white rounded-[2.5rem] p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col items-center md:items-start text-center md:text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
+              className="bg-white rounded-[2.5rem] p-8 md:p-10 text-stone-800 border border-stone-100 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] flex flex-col items-center md:items-start text-center md:text-left relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="w-16 h-16 mx-auto md:mx-0 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 text-emerald-500 relative z-10">
                 <Map className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-serif mb-3 relative z-10">Mappa Tavoli & RSVP</h3>
+              <h3 className="text-2xl font-serif mb-3 relative z-10">Mappa Tavoli &amp; RSVP</h3>
               <p className="text-stone-500 font-light relative z-10 flex-1">
-                Ricevi le conferme di partecipazione, annota le intolleranze e organizza visivamente i tavoli del ristorante con un editor intuitivo.
+                Ricevi le conferme di partecipazione, annota allergie e intolleranze e organizza i tavoli del ristorante con un editor intuitivo.
               </p>
             </motion.div>
 
@@ -398,20 +418,101 @@ export default function Home() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="md:col-span-2 bg-gradient-to-br from-stone-900 to-black rounded-[2.5rem] p-10 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between text-center md:text-left group"
+              className="md:col-span-2 bg-gradient-to-br from-stone-900 to-black rounded-[2.5rem] p-8 md:p-12 text-white overflow-hidden relative shadow-2xl flex flex-col justify-between text-center md:text-left group"
             >
               <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-3xl translate-y-1/2 translate-x-1/4 group-hover:scale-110 transition-transform duration-1000"></div>
-              <div className="relative z-10 max-w-lg mx-auto md:mx-0">
+              <div className="relative z-10 max-w-md mx-auto md:mx-0">
                 <div className="w-16 h-16 mx-auto md:mx-0 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
                   <ImageIcon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-3xl md:text-4xl font-serif mb-4">L'Album Ufficiale in HD</h3>
-                <p className="text-stone-300 text-lg font-light leading-relaxed">
-                  L'accesso diretto per il tuo fotografo o videomaker. Possono caricare gli scatti in alta risoluzione creando la galleria ufficiale, visibile agli ospiti o protetta da password.
+                <h3 className="text-3xl md:text-4xl font-serif mb-4">L&apos;Album Ufficiale in HD</h3>
+                <p className="text-stone-300 text-base md:text-lg font-light leading-relaxed">
+                  L&apos;accesso diretto per il tuo fotografo o videomaker: consegna gallerie in alta risoluzione divise in capitoli, scaricabili in ZIP.
                 </p>
+              </div>
+              <div className="hidden md:block absolute right-6 bottom-6 w-72 aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl border border-amber-400/30 -rotate-2 group-hover:rotate-0 group-hover:-translate-y-2 transition-all duration-700 pointer-events-none">
+                <img src="/press/GentiLuna_Showcase_Pro.jpg" alt="GentiLuna Studio Consegna Album HD e Vetrina Pro" className="w-full h-full object-cover" />
               </div>
             </motion.div>
 
+          </div>
+
+          {/* SHOWCASE DINAMICO: VERA INTERFACCIA DAL VIVO */}
+          <div className="mt-16 md:mt-20">
+            <div className="text-center mb-10">
+              <span className="inline-block text-xs font-bold uppercase tracking-widest text-rose-600 bg-rose-50 border border-rose-200 px-3.5 py-1 rounded-full mb-3">
+                La Piattaforma in Azione
+              </span>
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif text-stone-900">
+                Così prende vita il tuo Evento su GentiLuna
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                {
+                  img: "/press/GentiLuna_Immagine_7.jpg",
+                  title: "Tableau Interattivo, Galleria HD & Timeline",
+                  desc: "Dal cartoncino QR sul tavolo allo smartphone degli invitati: scaletta della giornata, tavoli e scatti sincronizzati.",
+                  href: "/funzioni-sposi",
+                },
+                {
+                  img: "/press/GentiLuna_Immagine_8.jpg",
+                  title: "RSVP Ospiti, Intolleranze & Ricerca Posti",
+                  desc: "Conferme immediate, segnalazioni alimentari e lista ospiti in un'interfaccia elegante accessibile senza app.",
+                  href: "/funzioni-sposi",
+                },
+                {
+                  img: "/press/GentiLuna_Immagine_3.jpg",
+                  title: "GentiLuna LIVE su Proiettore in Sala",
+                  desc: "Proietta in tempo reale su maxischermo le emozioni scattate e approvate durante la festa.",
+                  href: "/prezzi",
+                },
+                {
+                  img: "/press/GentiLuna_Showcase_Planner.jpg",
+                  title: "Regia per Sposi, Wedding Planner & Fotografi",
+                  desc: "Tavoli rotondi o imperiali, Team Fornitori collegato e consegne HD a 0% commissioni.",
+                  href: "/funzioni-professionisti",
+                },
+              ].map((item) => (
+                <Link
+                  key={item.img}
+                  href={item.href}
+                  className="group bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col"
+                >
+                  <div className="aspect-[16/9] overflow-hidden bg-stone-900 relative">
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col justify-between gap-2">
+                    <h4 className="font-serif font-bold text-xl text-stone-900 group-hover:text-rose-600 transition-colors">
+                      {item.title}
+                    </h4>
+                    <p className="text-sm text-stone-500 font-light leading-relaxed">{item.desc}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-10 flex flex-wrap justify-center gap-3">
+              <Link href="/funzioni-sposi">
+                <Button className="rounded-full bg-rose-500 hover:bg-rose-600 text-white px-6 h-11 font-semibold">
+                  Scopri Funzioni Sposi &amp; Eventi
+                </Button>
+              </Link>
+              <Link href="/funzioni-professionisti">
+                <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 px-6 h-11 font-semibold">
+                  Scopri Funzioni Professionisti
+                </Button>
+              </Link>
+              <Link href="/blog">
+                <Button variant="outline" className="rounded-full border-stone-300 text-stone-800 hover:bg-white px-6 h-11 font-semibold">
+                  Leggi le 15 Guide nel Blog
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -433,7 +534,7 @@ export default function Home() {
               <span className="text-rose-500 italic">due mondi interconnessi.</span>
             </h2>
             <p className="text-xl text-stone-600 font-light mb-10 leading-relaxed">
-              La piattaforma che unisce chi celebra l'amore e chi lavora per renderlo perfetto.
+              La piattaforma che unisce chi celebra l&apos;amore e chi lavora per renderlo perfetto.
             </p>
 
             <div className="bg-white p-8 rounded-3xl shadow-lg border border-stone-100 relative text-center md:text-left">
@@ -462,14 +563,19 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative">
+            <div className="aspect-[16/9] rounded-[2rem] overflow-hidden shadow-2xl relative border border-stone-200 bg-stone-900">
               <img 
-                src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" 
-                alt="Couple smiling" 
+                src="/press/GentiLuna_Showcase_Capitoli.jpg" 
+                alt="GentiLuna Capitoli della Vita: Matrimonio, Viaggio di Nozze, Nascita e Famiglia" 
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 to-transparent flex items-end p-10">
-                <p className="text-white text-2xl font-serif italic drop-shadow-md">"Una vetrina che durerà in eterno."</p>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="aspect-[16/9] rounded-2xl overflow-hidden shadow-md border border-stone-200">
+                <img src="/press/GentiLuna_Showcase_Regali_Guestbook.jpg" alt="Lista Regali, Tappe Viaggio Nozze e Guestbook Dediche" className="w-full h-full object-cover" />
+              </div>
+              <div className="aspect-[16/9] rounded-2xl overflow-hidden shadow-md border border-stone-200">
+                <img src="/press/GentiLuna_Immagine_9.jpg" alt="Sito Evento personalizzato e Galleria Live su smartphone" className="w-full h-full object-cover" />
               </div>
             </div>
           </motion.div>
@@ -568,7 +674,7 @@ export default function Home() {
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Sito web personalizzato</li>
                 </ul>
                 <Link href={`/login?role=COUPLE&mode=REGISTER&plan=${isTriennial ? "BASE_TRIENNIAL" : "BASE_ANNUAL"}`}>
-                  <Button className="w-full h-12 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-semibold">
+                  <Button className="w-full min-h-12 h-auto py-3 px-4 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-semibold whitespace-normal text-center">
                     Attiva Piano Base
                   </Button>
                 </Link>
@@ -602,7 +708,7 @@ export default function Home() {
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-400 shrink-0"/> Inviti digitali illimitati</li>
                 </ul>
                 <Link href={`/login?role=COUPLE&mode=REGISTER&plan=${isTriennial ? "PREMIUM_TRIENNIAL" : "PREMIUM_ANNUAL"}`}>
-                  <Button className="w-full h-12 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold border-none">
+                  <Button className="w-full min-h-12 h-auto py-3 px-4 rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold border-none whitespace-normal text-center">
                     Attiva Piano Premium
                   </Button>
                 </Link>
@@ -621,7 +727,7 @@ export default function Home() {
                   <li className="flex gap-2"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> Ricevi recensioni e contatti diretti</li>
                 </ul>
                 <Link href="/professionisti">
-                  <Button className="w-full h-12 rounded-full bg-amber-400 hover:bg-amber-500 text-stone-900 font-bold border-none shadow-sm">Scopri i Piani Pro</Button>
+                  <Button className="w-full min-h-12 h-auto py-3 px-4 rounded-full bg-amber-400 hover:bg-amber-500 text-stone-900 font-bold border-none shadow-sm whitespace-normal text-center">Scopri i Piani Pro</Button>
                 </Link>
               </div>
             </div>

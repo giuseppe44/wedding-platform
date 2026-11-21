@@ -2,11 +2,28 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { ExternalLink, Camera, Mail, Phone, MessageCircle, MapPin, Lock, ArrowUpRight } from "lucide-react";
+import {
+  Camera,
+  MapPin,
+  Lock,
+  Star,
+  Sparkles,
+  ShieldCheck,
+  QrCode,
+  CheckCircle2,
+  ArrowRight,
+  Award,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PublicReviewForm from "./PublicReviewForm";
 import ProContactBox from "./ProContactBox";
+import VideoThumbnail from "./VideoThumbnail";
+import ProPortfolioLightbox from "./ProPortfolioLightbox";
+import ProShareInviteCard from "./ProShareInviteCard";
+import ShareChapterButtons from "@/components/ShareChapterButtons";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import Footer from "@/components/Footer";
 import { getSession } from "@/lib/auth";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -20,7 +37,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   FLORIST: "Fiorista",
   MAKEUP_ARTIST: "Make-up Artist",
   HAIR_STYLIST: "Hair Stylist",
-  OTHER: "Professionista Eventi"
+  OTHER: "Professionista Eventi",
 };
 
 export async function generateMetadata({
@@ -59,25 +76,32 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProPublicProfile({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProPublicProfile({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
 
   const profile = await prisma.professionalProfile.findUnique({
     where: { slug: slug, isActive: true },
-    include: { services: true, reviews: { include: { timelineItem: true } } }
+    include: { services: true, reviews: { include: { timelineItem: true } } },
   });
 
   if (!profile) notFound();
 
   const session = await getSession();
 
-  // Controlla se il professionista ha un piano premium attivo
   const sub = await prisma.subscription.findUnique({
     where: { userId: profile.userId },
-    include: { plan: true }
+    include: { plan: true },
   });
-  const isPremium = sub?.status?.toUpperCase() === "ACTIVE" && sub.plan?.name.toUpperCase() !== "FREE" && sub.plan?.name.toUpperCase() !== "BASE";
+  const isPremium =
+    sub?.status?.toUpperCase() === "ACTIVE" &&
+    sub.plan?.name.toUpperCase() !== "FREE" &&
+    sub.plan?.name.toUpperCase() !== "BASE";
 
+  const categoryLabel = CATEGORY_LABELS[profile.category] || "Professionista";
   const services = profile.services?.sort((a, b) => a.order - b.order) || [];
   const resolveProImg = (raw?: string | null) => {
     if (!raw) return "";
@@ -87,216 +111,398 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
     return raw;
   };
 
+  const resolvedGallery = (profile.gallery || []).map((u) => resolveProImg(u)).filter(Boolean);
+  const avatarSrc = resolveProImg(profile.profileImage || profile.logoUrl);
+  const coverSrc = resolveProImg(profile.coverImage);
+
+  const reviewCount = profile.reviews?.length || 0;
+  const avgRating =
+    reviewCount > 0
+      ? (profile.reviews.reduce((sum, r) => sum + (r.rating || 5), 0) / reviewCount).toFixed(1)
+      : null;
+
   return (
-    <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
-      {/* Header Profilo */}
-      <div className="bg-stone-900 text-stone-100 pt-24 pb-16 px-4 relative overflow-hidden">
-        {profile.coverImage ? (
-          <>
-            <div className="absolute inset-0">
-              <img src={resolveProImg(profile.coverImage)} alt="Cover" className="w-full h-full object-cover opacity-30" />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/60 to-transparent" />
-          </>
-        ) : (
-          <div className="absolute inset-0 opacity-[0.03]">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
-                <path d="M 8 0 L 0 0 0 8" fill="none" stroke="currentColor" strokeWidth="0.5"/>
-              </pattern>
-              <rect width="100" height="100" fill="url(#grid)"/>
-            </svg>
-          </div>
-        )}
-        
-        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
-          {(profile.profileImage || profile.logoUrl) && (
-            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-stone-800 shadow-2xl mb-6 bg-stone-100">
-              <img src={resolveProImg(profile.profileImage || profile.logoUrl)} alt={profile.businessName} className="w-full h-full object-cover" />
-            </div>
-          )}
-          <div className="flex justify-center items-center gap-3">
-            <div className="inline-block bg-white/10 text-white border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm">
-              {CATEGORY_LABELS[profile.category] || "Professionista"}
-            </div>
-            {profile.serviceArea && (
-              <div className="inline-flex items-center gap-1.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm">
-                <MapPin className="w-3.5 h-3.5" />
-                {profile.serviceArea}
-              </div>
-            )}
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl font-serif">{profile.businessName}</h1>
-          
-          <div className="flex flex-wrap justify-center gap-3 pt-6">
-            <a
-              href="#contatta-pro"
-              className="inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-sm px-6 py-3 rounded-full shadow-lg transition-colors"
-            >
-              Richiedi Preventivo Gratuito
-            </a>
+    <div className="min-h-screen bg-[#faf9f8] font-sans flex flex-col overflow-x-hidden">
+      {/* TOP BAR ELEGANTE */}
+      <nav className="sticky top-0 z-40 w-full bg-stone-950/95 backdrop-blur-md border-b border-stone-800 px-4 sm:px-6 py-3.5 text-white">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+          <Link href="/" className="flex items-center gap-2 font-serif text-xl sm:text-2xl text-white">
+            <GentiLunaLogo variant="pro" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
+            <span>GentiLuna</span>
+            <span className="text-[11px] font-sans font-bold uppercase tracking-widest text-amber-400 ml-0.5">
+              PRO
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
             <Link
-              href={session ? "/dashboard/messages" : "/login?role=COUPLE"}
-              className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium text-sm px-6 py-3 rounded-full transition-colors"
+              href="/fornitori"
+              className="text-stone-300 hover:text-white px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors font-medium"
             >
-              Live Chat Protetta
+              Directory Fornitori
+            </Link>
+            <Link href="/professionisti#founders" className="hidden sm:inline-block">
+              <Button className="rounded-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold px-4 h-9 text-xs">
+                Crea la tua Vetrina
+              </Button>
             </Link>
           </div>
         </div>
-      </div>
+      </nav>
 
-      <div className="max-w-4xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
-        {/* Descrizione (Colonna Larga) */}
-        <div className="md:col-span-2 space-y-12">
+      {/* HERO EDITORIALE VETRINA */}
+      <header className="bg-stone-950 text-stone-100 pt-14 pb-20 px-4 relative overflow-hidden">
+        {coverSrc ? (
+          <>
+            <div className="absolute inset-0">
+              <img
+                src={coverSrc}
+                alt={profile.businessName}
+                className="w-full h-full object-cover opacity-35 scale-105"
+              />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/75 to-stone-950/50" />
+          </>
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-950 to-amber-950/30" />
+        )}
+
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[520px] h-[520px] bg-amber-500/10 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
+          {/* Avatar / Monogram Crest */}
+          <div className="inline-block relative">
+            {avatarSrc ? (
+              <div className="w-32 h-32 sm:w-36 sm:h-36 mx-auto rounded-full overflow-hidden border-4 border-amber-400/50 shadow-[0_0_40px_rgba(245,158,11,0.25)] bg-stone-900">
+                <img src={avatarSrc} alt={profile.businessName} className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <div className="w-32 h-32 sm:w-36 sm:h-36 mx-auto rounded-full border-4 border-amber-400/40 bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center shadow-2xl">
+                <span className="font-serif text-5xl text-amber-300">
+                  {profile.businessName.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
+            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 whitespace-nowrap bg-stone-900 border border-amber-400/40 text-amber-300 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+              {isPremium ? (
+                <>
+                  <Award className="w-3 h-3 text-amber-400" /> VIP Partner
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="w-3 h-3 text-emerald-400" /> Partner Verificato
+                </>
+              )}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap justify-center items-center gap-2 pt-2">
+            <span className="inline-flex items-center gap-1.5 bg-white/10 text-white border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm backdrop-blur-sm">
+              <Camera className="w-3.5 h-3.5 text-amber-300" />
+              {categoryLabel}
+            </span>
+            {profile.serviceArea && (
+              <span className="inline-flex items-center gap-1.5 bg-rose-500/20 text-rose-200 border border-rose-400/30 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm backdrop-blur-sm">
+                <MapPin className="w-3.5 h-3.5" />
+                {profile.serviceArea}
+              </span>
+            )}
+            {avgRating && (
+              <span className="inline-flex items-center gap-1 bg-amber-500/20 text-amber-200 border border-amber-400/30 rounded-full px-3.5 py-1.5 text-xs font-bold backdrop-blur-sm">
+                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                {avgRating} ({reviewCount} {reviewCount === 1 ? "recensione" : "recensioni"})
+              </span>
+            )}
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif text-white tracking-tight leading-tight">
+            {profile.businessName}
+          </h1>
+
+          {/* Metriche Vetrina */}
+          <div className="flex flex-wrap justify-center gap-3 text-xs text-stone-300">
+            <span className="bg-white/5 border border-white/10 rounded-full px-3.5 py-1">
+              {resolvedGallery.length} {resolvedGallery.length === 1 ? "foto portfolio" : "foto in portfolio"}
+            </span>
+            <span className="bg-white/5 border border-white/10 rounded-full px-3.5 py-1">
+              {services.length} {services.length === 1 ? "servizio configurato" : "servizi configurati"}
+            </span>
+            <span className="bg-white/5 border border-white/10 rounded-full px-3.5 py-1">
+              0% costi extra sui preventivi
+            </span>
+          </div>
+
+          {/* Primary CTAs */}
+          <div className="flex flex-wrap justify-center gap-3 pt-4">
+            <a
+              href="#contatta-pro"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold text-sm px-7 py-3.5 rounded-full shadow-lg shadow-rose-900/30 transition-all hover:scale-105"
+            >
+              <Sparkles className="w-4 h-4" />
+              Richiedi Preventivo Gratuito
+            </a>
+            {session?.role === "COUPLE" ? (
+              <Link
+                href={`/dashboard/messages?proId=${profile.id}`}
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/25 font-medium text-sm px-7 py-3.5 rounded-full backdrop-blur-sm transition-colors"
+              >
+                Live Chat Protetta
+              </Link>
+            ) : (
+              <a
+                href="#contatta-pro"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/25 font-medium text-sm px-7 py-3.5 rounded-full backdrop-blur-sm transition-colors"
+              >
+                Live Chat Protetta
+              </a>
+            )}
+          </div>
+
+          {/* Quick Share Strip right in Hero */}
+          <div className="pt-4 flex justify-center">
+            <div className="inline-flex flex-wrap items-center justify-center bg-white/10 backdrop-blur-md border border-white/15 rounded-full px-4 py-2">
+              <ShareChapterButtons
+                urlPath={`/pro/${slug}`}
+                title={`${profile.businessName} (${categoryLabel}) su GentiLuna`}
+                variant="dark"
+                label="Condividi vetrina:"
+              />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* BODY CONTENT */}
+      <main className="max-w-6xl mx-auto w-full px-4 py-12 sm:py-16 grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12 flex-1">
+        {/* Colonna Larga */}
+        <div className="lg:col-span-2 space-y-12">
+          {/* Chi Siamo */}
           {profile.description && (
-            <section>
-              <h2 className="text-2xl font-serif text-stone-800 mb-6">Chi Siamo</h2>
-              <p className="text-stone-600 whitespace-pre-wrap leading-relaxed">
+            <section className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm">
+              <h2 className="text-2xl sm:text-3xl font-serif text-stone-900 mb-4 flex items-center gap-2.5">
+                <Sparkles className="w-5 h-5 text-amber-500 shrink-0" /> Chi Siamo &amp; Filosofia
+              </h2>
+              <p className="text-stone-600 whitespace-pre-wrap leading-relaxed text-base sm:text-lg font-light">
                 {profile.description}
               </p>
             </section>
           )}
 
-          {/* Galleria (se presente) */}
-          {profile.gallery && profile.gallery.length > 0 && (
+          {/* Galleria Interattiva con Lightbox */}
+          {resolvedGallery.length > 0 && (
             <section>
-              <h2 className="text-2xl font-serif text-stone-800 mb-6">Gallery Professionale</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {profile.gallery.map((imgUrl, i) => (
-                  <div key={i} className="aspect-square rounded-xl overflow-hidden bg-stone-100 shadow-sm">
-                    <img src={resolveProImg(imgUrl)} alt={`Gallery ${i+1}`} loading="lazy" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500 cursor-pointer" />
-                  </div>
-                ))}
+              <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-widest text-rose-600">Portfolio Selezionato</span>
+                  <h2 className="text-2xl sm:text-3xl font-serif text-stone-900 mt-1">
+                    Gallery Professionale
+                  </h2>
+                </div>
+                <span className="text-xs text-stone-500 bg-stone-100 px-3 py-1 rounded-full">
+                  Clicca su uno scatto per ingrandirlo
+                </span>
               </div>
+              <ProPortfolioLightbox images={resolvedGallery} businessName={profile.businessName} />
             </section>
           )}
 
-          {/* Video (se presenti) */}
+          {/* Video con Thumbnail reale */}
           {(profile.video1 || profile.video2) && (
             <section>
-              <h2 className="text-2xl font-serif text-stone-800 mb-6">I Nostri Video</h2>
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-600">Showreel &amp; Film</span>
+              <h2 className="text-2xl sm:text-3xl font-serif text-stone-900 mt-1 mb-6">I Nostri Video</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {profile.video1 && (
-                  <div className="aspect-video rounded-xl overflow-hidden bg-stone-900 shadow-sm relative group">
-                    <a href={profile.video1.startsWith('http') ? profile.video1 : `https://${profile.video1}`} target="_blank" rel="noopener noreferrer" className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-white ml-1"></div>
-                      </div>
-                    </a>
-                  </div>
-                )}
-                {profile.video2 && (
-                  <div className="aspect-video rounded-xl overflow-hidden bg-stone-900 shadow-sm relative group">
-                    <a href={profile.video2.startsWith('http') ? profile.video2 : `https://${profile.video2}`} target="_blank" rel="noopener noreferrer" className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <div className="w-0 h-0 border-t-8 border-b-8 border-l-[14px] border-t-transparent border-b-transparent border-l-white ml-1"></div>
-                      </div>
-                    </a>
-                  </div>
-                )}
+                {profile.video1 && <VideoThumbnail url={profile.video1} />}
+                {profile.video2 && <VideoThumbnail url={profile.video2} />}
               </div>
-              <p className="text-xs text-stone-400 mt-3 italic">Clicca per visualizzare i video completi.</p>
+              <p className="text-xs text-stone-400 mt-3 italic">Clicca per riprodurre i video completi.</p>
             </section>
           )}
 
           {/* Servizi Offerti */}
           <section>
-            <h2 className="text-2xl font-serif text-stone-800 mb-6">Servizi Offerti</h2>
+            <span className="text-xs font-bold uppercase tracking-widest text-emerald-700">Listino &amp; Soluzioni</span>
+            <h2 className="text-2xl sm:text-3xl font-serif text-stone-900 mt-1 mb-6">Servizi Offerti</h2>
             {!isPremium && services.length > 3 ? (
               <div className="space-y-4">
-                {services.slice(0, 3).map(s => (
-                  <Card key={s.id} className="border-stone-200 shadow-sm">
+                {services.slice(0, 3).map((s) => (
+                  <Card key={s.id} className="border-stone-200/80 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden">
                     <CardContent className="p-6">
                       <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
-                        <div>
-                          <h3 className="text-xl font-medium text-stone-800 mb-2">{s.name}</h3>
-                          {s.description && <p className="text-stone-600 text-sm whitespace-pre-wrap">{s.description}</p>}
+                        <div className="space-y-2">
+                          <h3 className="text-xl font-serif font-semibold text-stone-900">{s.name}</h3>
+                          {s.description && <p className="text-stone-600 text-sm whitespace-pre-wrap leading-relaxed">{s.description}</p>}
                         </div>
-                        {s.priceIndicative && (
-                          <div className="shrink-0 bg-stone-100 text-stone-700 px-3 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap h-fit">
-                            {s.priceIndicative}
-                          </div>
-                        )}
+                        <div className="flex sm:flex-col items-center sm:items-end gap-2 shrink-0">
+                          {s.priceIndicative && (
+                            <div className="bg-amber-50 text-amber-900 border border-amber-200 px-3.5 py-1.5 rounded-full text-sm font-bold whitespace-nowrap">
+                              {s.priceIndicative}
+                            </div>
+                          )}
+                          <a href="#contatta-pro" className="text-xs font-semibold text-rose-600 hover:underline inline-flex items-center gap-1">
+                            Richiedi info <ArrowRight className="w-3 h-3" />
+                          </a>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
-                <div className="bg-stone-50 border border-stone-200 p-6 rounded-xl text-center">
-                   <p className="text-sm font-semibold text-stone-600 mb-2 flex justify-center items-center gap-2"><Lock className="w-4 h-4"/> Altri servizi nascosti (Funzione Premium)</p>
-                   <Link href="/dashboard/billing"><Button variant="outline" size="sm" className="mt-2 text-stone-800 bg-white">Scopri come sbloccare servizi illimitati</Button></Link>
+                <div className="bg-stone-100 border border-stone-200 p-6 rounded-2xl text-center">
+                  <p className="text-sm font-semibold text-stone-700 mb-2 flex justify-center items-center gap-2">
+                    <Lock className="w-4 h-4 text-amber-600" /> Altri servizi disponibili (Piano Partner PRO)
+                  </p>
+                  <Link href="/dashboard/billing">
+                    <Button variant="outline" size="sm" className="mt-2 text-stone-800 bg-white rounded-full">
+                      Scopri come sbloccare servizi illimitati
+                    </Button>
+                  </Link>
                 </div>
               </div>
             ) : services.length > 0 ? (
               <div className="space-y-4">
-                {services.map(s => (
-                  <Card key={s.id} className="border-stone-200 shadow-sm">
+                {services.map((s) => (
+                  <Card key={s.id} className="border-stone-200/80 shadow-sm hover:shadow-md transition-all rounded-2xl overflow-hidden">
                     <CardContent className="p-6">
                       <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
-                        <div>
-                          <h3 className="text-xl font-medium text-stone-800 mb-2">{s.name}</h3>
-                          {s.description && <p className="text-stone-600 text-sm whitespace-pre-wrap">{s.description}</p>}
+                        <div className="space-y-2">
+                          <h3 className="text-xl font-serif font-semibold text-stone-900">{s.name}</h3>
+                          {s.description && <p className="text-stone-600 text-sm whitespace-pre-wrap leading-relaxed">{s.description}</p>}
                         </div>
-                        {s.priceIndicative && (
-                          <div className="shrink-0 bg-stone-100 text-stone-700 px-3 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap h-fit">
-                            {s.priceIndicative}
-                          </div>
-                        )}
+                        <div className="flex sm:flex-col items-center sm:items-end gap-2 shrink-0">
+                          {s.priceIndicative && (
+                            <div className="bg-amber-50 text-amber-900 border border-amber-200 px-3.5 py-1.5 rounded-full text-sm font-bold whitespace-nowrap">
+                              {s.priceIndicative}
+                            </div>
+                          )}
+                          <a href="#contatta-pro" className="text-xs font-semibold text-rose-600 hover:underline inline-flex items-center gap-1">
+                            Chiedi disponibilità <ArrowRight className="w-3 h-3" />
+                          </a>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
             ) : (
-              <p className="text-stone-500 italic">Servizi non ancora configurati.</p>
+              <div className="bg-white rounded-2xl p-6 border border-stone-200 text-stone-500 text-sm italic">
+                Pacchetti personalizzabili su misura — utilizza il modulo a lato per ricevere un preventivo gratuito.
+              </div>
             )}
           </section>
 
+          {/* Vantaggi / Funzioni consigliate GentiLuna incluse */}
+          <section className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm">
+            <span className="text-xs font-bold uppercase tracking-widest text-rose-600">Ecosistema GentiLuna</span>
+            <h2 className="text-2xl font-serif font-bold text-stone-900 mt-1 mb-5">
+              Cosa ottieni lavorando con {profile.businessName} su GentiLuna
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                {
+                  icon: ShieldCheck,
+                  title: "Contatto Tracciato & 0% Rincari",
+                  text: "Nessuna commissione applicata ai preventivi: parli direttamente con lo studio dentro la piattaforma.",
+                },
+                {
+                  icon: Camera,
+                  title: "Consegne & Gallerie in HD",
+                  text: "Possibilità di ricevere album digitali ufficiali e foto organizzate per capitoli senza perdite di qualità.",
+                },
+                {
+                  icon: QrCode,
+                  title: "QR Code Live per gli Invitati",
+                  text: "Collega il professionista al tuo spazio evento così tutti gli ospiti partecipano e ricordano il tuo matrimonio.",
+                },
+                {
+                  icon: CheckCircle2,
+                  title: "Recensioni Reali & Trasparenza",
+                  text: "Feedback verificati lasciati direttamente dalle coppie che hanno vissuto l'evento.",
+                },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.title} className="rounded-2xl bg-stone-50/80 border border-stone-200/70 p-4 flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-white border border-stone-200 text-rose-600 flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-sm text-stone-900">{item.title}</h3>
+                      <p className="text-xs text-stone-600 mt-1 leading-relaxed">{item.text}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Condivisione Vetrina, QR Stampabile & Invito Colleghi/Sposi */}
+          <ProShareInviteCard
+            slug={slug}
+            businessName={profile.businessName}
+            categoryLabel={categoryLabel}
+          />
+
           {/* Recensioni */}
-          <section className="mt-12 pt-12 border-t border-stone-200">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-              <h2 className="text-2xl font-serif text-stone-800">Dicono di noi</h2>
+          <section className="pt-8 border-t border-stone-200">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-serif text-stone-900">Dicono di noi</h2>
+                {avgRating && (
+                  <p className="text-sm text-stone-500 mt-1">
+                    Media valutazioni: <strong className="text-stone-900">{avgRating} / 5</strong> su {reviewCount}{" "}
+                    {reviewCount === 1 ? "recensione" : "recensioni"}
+                  </p>
+                )}
+              </div>
               <PublicReviewForm proId={profile.id} proName={profile.businessName} />
             </div>
-            
+
             {profile.reviews && profile.reviews.length > 0 ? (
               <div className="space-y-4">
-                {profile.reviews.map(r => (
-                  <Card key={r.id} className="border-stone-200 shadow-sm bg-stone-50/50">
+                {profile.reviews.map((r) => (
+                  <Card key={r.id} className="border-stone-200 shadow-sm bg-white rounded-2xl">
                     <CardContent className="p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="flex items-center">
+                      <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+                        <span className="text-sm font-bold text-stone-900">
+                          {r.timelineItem?.brideName} &amp; {r.timelineItem?.groomName}
+                        </span>
+                        <div className="flex items-center gap-0.5">
                           {[...Array(5)].map((_, i) => (
-                            <svg key={i} className={`w-4 h-4 ${i < r.rating ? 'text-yellow-400' : 'text-stone-300'}`} fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < r.rating ? "text-amber-400 fill-amber-400" : "text-stone-200"
+                              }`}
+                            />
                           ))}
                         </div>
-                        <span className="text-sm font-semibold text-stone-800">
-                          {r.timelineItem?.brideName} & {r.timelineItem?.groomName}
-                        </span>
                       </div>
-                      <p className="text-stone-600 italic">"{r.text}"</p>
+                      <p className="text-stone-600 italic leading-relaxed">&ldquo;{r.text}&rdquo;</p>
                     </CardContent>
                   </Card>
                 ))}
               </div>
             ) : (
-              <p className="text-stone-500 italic">Ancora nessuna recensione. Sii il primo a raccontare la tua esperienza!</p>
+              <div className="bg-white rounded-2xl p-6 border border-stone-200 text-stone-500 text-sm italic">
+                Ancora nessuna recensione pubblica. Hai lavorato con {profile.businessName}? Sii il primo a raccontarlo!
+              </div>
             )}
           </section>
         </div>
 
         {/* Info Laterali - Contatto Protetto 100% Interno a GentiLuna */}
-        <div id="contatta-pro" className="space-y-8 scroll-mt-8">
+        <div id="contatta-pro" className="space-y-8 scroll-mt-24">
           <ProContactBox
             proId={profile.id}
             proName={profile.businessName}
             serviceArea={profile.serviceArea}
             isLoggedIn={Boolean(session)}
+            userRole={session?.role || null}
           />
         </div>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }

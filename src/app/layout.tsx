@@ -59,10 +59,10 @@ export const metadata: Metadata = {
       "La piattaforma italiana che unisce sposi, invitati e professionisti in un unico racconto digitale: sito nozze, foto live con QR Code, RSVP, tavoli e consegna album.",
     images: [
       {
-        url: "/press/gentiluna-press-showcase.jpg",
-        width: 1200,
-        height: 630,
-        alt: "GentiLuna - Il tuo matrimonio in digitale",
+        url: "/press/GentiLuna_Immagine_7.jpg",
+        width: 1280,
+        height: 714,
+        alt: "GentiLuna - Tableau Interattivo, Galleria HD, RSVP e Timeline",
       },
     ],
   },
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     title: "GentiLuna | Piattaforma Digitale per Matrimoni, Eventi e Fotografi",
     description:
       "Sito matrimonio, foto e video live degli invitati tramite QR Code, gestione RSVP, tavoli e portale fornitori wedding.",
-    images: ["/press/gentiluna-press-showcase.jpg"],
+    images: ["/press/GentiLuna_Immagine_7.jpg"],
   },
   robots: {
     index: true,
@@ -86,7 +86,14 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   appleWebApp: { capable: true, title: "GentiLuna", statusBarStyle: "black-translucent" as const },
-  icons: { apple: "/icons/icon-192.png" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "192x192" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export const viewport = {

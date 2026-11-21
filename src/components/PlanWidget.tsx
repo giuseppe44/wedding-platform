@@ -78,10 +78,10 @@ export function PlanWidget({ role, currentPlanName, isActive, expiresAt, feature
 
             <div className="mt-auto">
               {!isPremium && (
-                <Link href={upgradeLink}>
-                  <Button className="w-full bg-stone-900 text-white rounded-xl shadow-sm hover:bg-stone-800 transition-all flex items-center gap-2">
-                    Scopri i Piani Premium
-                    <ArrowUpRight className="w-4 h-4" />
+                <Link href={upgradeLink} className="block w-full">
+                  <Button className="w-full min-h-11 h-auto py-3 px-4 bg-stone-900 text-white rounded-xl shadow-sm hover:bg-stone-800 transition-all flex items-center justify-center gap-2 whitespace-normal text-center leading-snug">
+                    <span>Scopri i Piani Premium</span>
+                    <ArrowUpRight className="w-4 h-4 shrink-0" />
                   </Button>
                 </Link>
               )}

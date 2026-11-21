@@ -85,7 +85,7 @@ export default async function BillingPage({
   const showVerifiedSuccessBanner = successParam && (verifiedPaymentSuccess || isActive);
 
   return (
-    <div className="min-h-screen bg-[#faf9f8] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#faf9f8] py-10 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
       <div className="max-w-6xl mx-auto">
         {/* TOP NAVIGATION */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -165,7 +165,7 @@ export default async function BillingPage({
                 {selectedPlan.subtitle} • {selectedPlan.renewalNote}
               </p>
             </div>
-            <div className="w-full md:w-auto min-w-[260px]">
+            <div className="w-full md:w-auto md:min-w-[260px]">
               <BillingButtons
                 planId={selectedPlan.code}
                 planLabel="Completa Pagamento Ora"
@@ -226,7 +226,7 @@ export default async function BillingPage({
             return (
               <div
                 key={plan.code}
-                className={`rounded-3xl p-8 flex flex-col justify-between transition-all relative ${
+                className={`rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all relative ${
                   isHighlighted
                     ? "bg-stone-900 text-white border-2 border-rose-500/60 shadow-xl"
                     : "bg-white text-stone-900 border border-stone-200 shadow-sm"

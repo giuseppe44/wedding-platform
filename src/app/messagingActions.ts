@@ -1,121 +1,210 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/lib/auth";
+import { requireAuth, getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { createSystemNotification } from "@/lib/notifications";
 
 export async function getConversations() {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
-  
-  const isPro = session.role === "PHOTOGRAPHER";
+  const session = await getSession();
+  if (!session || !["PHOTOGRAPHER", "COUPLE", "ADMIN"].includes(session.role)) {
+    return [];
+  }
 
-  if (isPro) {
-    const profile = await prisma.professionalProfile.findUnique({ where: { userId: session.userId }});
-    if (!profile) return [];
-    
-    return await prisma.conversation.findMany({
-      where: { professionalProfileId: profile.id },
-      include: {
-        timelineItem: true,
-        professionalProfile: true,
-        messages: {
-          orderBy: { createdAt: "desc" },
-          take: 1
-        }
-      }
-    });
-  } else {
-    // Couple
+  try {
+    if (session.role === "ADMIN") {
+      return await prisma.conversation.findMany({
+        orderBy: { updatedAt: "desc" },
+        take: 50,
+        include: {
+          timelineItem: true,
+          professionalProfile: true,
+          messages: {
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          },
+        },
+      });
+    }
+
+    if (session.role === "PHOTOGRAPHER") {
+      const profile = await prisma.professionalProfile.findUnique({ where: { userId: session.userId } });
+      if (!profile) return [];
+
+      return await prisma.conversation.findMany({
+        where: { professionalProfileId: profile.id },
+        orderBy: { updatedAt: "desc" },
+        include: {
+          timelineItem: true,
+          professionalProfile: true,
+          messages: {
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          },
+        },
+      });
+    }
+
     return await prisma.conversation.findMany({
       where: {
         timelineItem: {
-          OR: [
-            { ownerId: session.userId },
-            { coupleId: session.userId }
-          ]
-        }
+          OR: [{ ownerId: session.userId }, { coupleId: session.userId }],
+        },
       },
+      orderBy: { updatedAt: "desc" },
       include: {
         timelineItem: true,
         professionalProfile: true,
         messages: {
           orderBy: { createdAt: "desc" },
-          take: 1
-        }
-      }
+          take: 1,
+        },
+      },
     });
+  } catch (err) {
+    console.error("getConversations error:", err);
+    return [];
+  }
+}
+
+export async function getOrCreateConversationForPro(proId: string): Promise<string | null> {
+  const session = await getSession();
+  if (!session || session.role !== "COUPLE") return null;
+
+  try {
+    const pro = await prisma.professionalProfile.findUnique({
+      where: { id: proId, isActive: true },
+      select: { id: true },
+    });
+    if (!pro) return null;
+
+    const wedding = await prisma.timelineItem.findFirst({
+      where: {
+        OR: [{ coupleId: session.userId }, { ownerId: session.userId }],
+      },
+      orderBy: { createdAt: "asc" },
+      select: { id: true },
+    });
+    if (!wedding) return null;
+
+    const existing = await prisma.conversation.findUnique({
+      where: {
+        timelineItemId_professionalProfileId: {
+          timelineItemId: wedding.id,
+          professionalProfileId: pro.id,
+        },
+      },
+      select: { id: true },
+    });
+    if (existing) return existing.id;
+
+    const created = await prisma.conversation.create({
+      data: {
+        timelineItemId: wedding.id,
+        professionalProfileId: pro.id,
+      },
+      select: { id: true },
+    });
+    return created.id;
+  } catch (err) {
+    console.error("getOrCreateConversationForPro error:", err);
+    return null;
   }
 }
 
 export async function getMessages(conversationId: string) {
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
-  
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
+
   const conversation = await prisma.conversation.findUnique({
     where: { id: conversationId },
     include: {
       timelineItem: true,
-      professionalProfile: true
-    }
+      professionalProfile: true,
+    },
   });
 
   if (!conversation) throw new Error("Conversazione non trovata");
 
-  const isCouple = conversation.timelineItem.ownerId === session.userId || conversation.timelineItem.coupleId === session.userId;
+  const isCouple =
+    conversation.timelineItem.ownerId === session.userId ||
+    conversation.timelineItem.coupleId === session.userId;
   const isPro = conversation.professionalProfile.userId === session.userId;
+  const isAdmin = session.role === "ADMIN";
 
-  if (!isCouple && !isPro) throw new Error("Accesso negato");
+  if (!isCouple && !isPro && !isAdmin) throw new Error("Accesso negato");
 
   const assignment = await prisma.eventAssignment.findUnique({
     where: {
       timelineItemId_professionalProfileId: {
         timelineItemId: conversation.timelineItemId,
-        professionalProfileId: conversation.professionalProfileId
-      }
-    }
+        professionalProfileId: conversation.professionalProfileId,
+      },
+    },
   });
 
-  if (!assignment || assignment.status !== "ACTIVE") {
-    throw new Error("L'assegnazione è stata revocata. Impossibile accedere alla conversazione.");
+  if (assignment && assignment.status !== "ACTIVE" && !isAdmin) {
+    throw new Error("La conversazione è stata chiusa o revocata.");
   }
 
-  await prisma.chatMessage.updateMany({
-    where: {
-      conversationId,
-      senderId: { not: session.userId },
-      isRead: false
-    },
-    data: { isRead: true }
-  });
+  if (!isAdmin) {
+    await prisma.chatMessage.updateMany({
+      where: {
+        conversationId,
+        senderId: { not: session.userId },
+        isRead: false,
+      },
+      data: { isRead: true },
+    });
+  }
 
   return await prisma.chatMessage.findMany({
     where: { conversationId },
-    orderBy: { createdAt: "asc" }
+    orderBy: { createdAt: "asc" },
   });
 }
 
 export async function sendMessage(weddingId: string, proId: string, text: string) {
   const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
 
+  const conversation = await prisma.conversation.findUnique({
+    where: {
+      timelineItemId_professionalProfileId: {
+        timelineItemId: weddingId,
+        professionalProfileId: proId,
+      },
+    },
+    include: {
+      timelineItem: true,
+      professionalProfile: true,
+    },
+  });
+
   const assignment = await prisma.eventAssignment.findUnique({
     where: {
       timelineItemId_professionalProfileId: {
         timelineItemId: weddingId,
-        professionalProfileId: proId
-      }
+        professionalProfileId: proId,
+      },
     },
     include: {
       timelineItem: true,
-      professionalProfile: true
-    }
+      professionalProfile: true,
+    },
   });
 
-  if (!assignment || assignment.status !== "ACTIVE") {
-    throw new Error("Assegnazione non attiva. Impossibile inviare messaggi.");
+  if (assignment && assignment.status !== "ACTIVE") {
+    throw new Error("Assegnazione revocata. Impossibile inviare messaggi.");
   }
 
-  const isCouple = assignment.timelineItem.ownerId === session.userId || assignment.timelineItem.coupleId === session.userId;
-  const isPro = assignment.professionalProfile.userId === session.userId;
+  const timelineItem = assignment?.timelineItem || conversation?.timelineItem;
+  const professionalProfile = assignment?.professionalProfile || conversation?.professionalProfile;
+
+  if (!timelineItem || !professionalProfile || !professionalProfile.isActive) {
+    throw new Error("Conversazione non attiva. Impossibile inviare messaggi.");
+  }
+
+  const isCouple = timelineItem.ownerId === session.userId || timelineItem.coupleId === session.userId;
+  const isPro = professionalProfile.userId === session.userId;
 
   if (!isCouple && !isPro) throw new Error("Accesso negato");
 
@@ -127,29 +216,35 @@ export async function sendMessage(weddingId: string, proId: string, text: string
     );
   }
 
-  const conversation = await prisma.conversation.upsert({
+  const activeConversation = await prisma.conversation.upsert({
     where: {
       timelineItemId_professionalProfileId: {
         timelineItemId: weddingId,
-        professionalProfileId: proId
-      }
+        professionalProfileId: proId,
+      },
     },
     create: {
       timelineItemId: weddingId,
-      professionalProfileId: proId
+      professionalProfileId: proId,
     },
-    update: { updatedAt: new Date() }
+    update: { updatedAt: new Date() },
   });
 
-  const recipientId = isPro ? assignment.timelineItem.ownerId : assignment.professionalProfile.userId;
-  await createSystemNotification(recipientId, "Nuovo Messaggio", `Hai ricevuto un nuovo messaggio da ${isPro ? assignment.professionalProfile.businessName : "Sposi"}`, "MESSAGE", `/dashboard/messages/${conversation.id}`);
+  const recipientId = isPro ? timelineItem.ownerId : professionalProfile.userId;
+  await createSystemNotification(
+    recipientId,
+    "Nuovo Messaggio",
+    `Hai ricevuto un nuovo messaggio da ${isPro ? professionalProfile.businessName : "Sposi"}`,
+    "MESSAGE",
+    `/dashboard/messages/${activeConversation.id}`
+  );
 
   await prisma.chatMessage.create({
     data: {
-      conversationId: conversation.id,
+      conversationId: activeConversation.id,
       senderId: session.userId,
-      text
-    }
+      text,
+    },
   });
 
   revalidatePath(`/dashboard/messages`);

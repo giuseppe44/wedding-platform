@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 
 export default function Footer() {
   const openCookiePreferences = () => {
@@ -14,8 +14,8 @@ export default function Footer() {
     <footer className="bg-stone-950 text-stone-400 py-12 border-t border-stone-900">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="col-span-1 md:col-span-2">
-          <Link href="/" className="text-2xl font-serif text-white tracking-tight flex items-center gap-2 mb-4">
-            <Heart className="w-6 h-6 text-rose-500" />
+          <Link href="/" className="text-2xl font-serif text-white tracking-tight flex items-center gap-2.5 mb-4">
+            <GentiLunaLogo className="w-7 h-7 shrink-0" />
             GentiLuna
           </Link>
           <p className="text-sm max-w-sm leading-relaxed mb-3">
@@ -30,8 +30,12 @@ export default function Footer() {
           <h4 className="text-white font-bold mb-4">Esplora</h4>
           <ul className="space-y-2 text-sm">
             <li><Link href="/sposi" className="hover:text-white transition-colors">Per gli Sposi</Link></li>
+            <li><Link href="/funzioni-sposi" className="hover:text-white transition-colors">Funzioni Sposi &amp; Eventi</Link></li>
             <li><Link href="/professionisti" className="hover:text-white transition-colors">Per i Professionisti</Link></li>
-            <li><Link href="/prezzi" className="hover:text-white transition-colors">Tariffe Sposi</Link></li>
+            <li><Link href="/funzioni-professionisti" className="hover:text-white transition-colors">Funzioni Professionisti</Link></li>
+            <li><Link href="/fornitori" className="hover:text-white transition-colors">Directory Fornitori</Link></li>
+            <li><Link href="/prezzi" className="hover:text-white transition-colors">Tariffe &amp; Abbonamenti</Link></li>
+            <li><Link href="/blog" className="hover:text-white transition-colors">Blog &amp; Guide</Link></li>
             <li><Link href="/login" className="hover:text-white transition-colors">Accedi / Registrati</Link></li>
             <li><Link href="/assistenza" className="hover:text-white transition-colors">Assistenza Clienti</Link></li>
             <li><Link href="/assistenza#installa" className="hover:text-white transition-colors">Scarica l&apos;App</Link></li>
@@ -58,8 +62,8 @@ export default function Footer() {
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-stone-800 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-        <p>&copy; {new Date().getFullYear()} GentiLuna. Tutti i diritti riservati. • Sviluppato da <a href="https://www.topwebsite.it" target="_blank" rel="noopener noreferrer" className="text-stone-300 hover:text-white underline">TopWebsite.it</a> – P.IVA 02656280902</p>
+      <div className="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-stone-800 text-sm flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+        <p>&copy; {new Date().getFullYear()} GentiLuna. Tutti i diritti riservati. • Sviluppato da <a href="https://www.topidea.it" target="_blank" rel="noopener noreferrer" className="text-stone-300 hover:text-white underline">TopIdea.it</a> – P.IVA 02656280902</p>
       </div>
     </footer>
   );

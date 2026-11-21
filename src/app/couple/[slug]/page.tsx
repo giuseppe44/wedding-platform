@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { verifyProAssignment } from "@/app/proAssignmentActions";
 import { headers } from "next/headers";
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { resolveLegacyTimelineSlug } from "@/lib/slugify";
 import ShareChapterButtons from "@/components/ShareChapterButtons";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import { approveMedia, rejectMedia, logoutAction } from "@/app/actions";
 import { PlanWidget } from "@/components/PlanWidget";
 import { SubmitButton } from "@/components/SubmitButton";
 import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
+import { GuidedCoachBubble, type CoachTip } from "@/components/GuidedCoachBubble";
 
 export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
   const headersList = await headers();
@@ -25,10 +26,26 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
 
   const { slug } = await params;
   
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
+  const session = await getSession();
+  if (!session || !["PHOTOGRAPHER", "COUPLE", "ADMIN"].includes(session.role)) {
+    redirect("/login?role=COUPLE");
+  }
   
   const wedding = await prisma.timelineItem.findUnique({
     where: { slug: slug },
+    include: {
+      _count: {
+        select: {
+          locations: true,
+          schedule: true,
+          guests: true,
+          tables: true,
+          giftOptions: true,
+          media: true,
+          assignments: true,
+        },
+      },
+    },
   });
 
   if (!wedding) {
@@ -128,6 +145,85 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
 
   const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
+  const weddingStats = (wedding as any)._count || {};
+  const coupleProgress = [
+    Boolean(wedding.coverImage),
+    (weddingStats.locations || 0) > 0,
+    (weddingStats.schedule || 0) > 0,
+    (weddingStats.guests || 0) > 0,
+    (weddingStats.media || 0) > 0,
+  ];
+  const coupleDoneCount = coupleProgress.filter(Boolean).length;
+
+  const coupleCoachTips: CoachTip[] = [];
+  if ((weddingStats.locations || 0) === 0) {
+    coupleCoachTips.push({
+      id: "hub-todo-locs",
+      kind: "TODO",
+      title: "Aggiungi le Location del matrimonio (Chiesa & Ricevimento)",
+      body: "Apri il tuo capitolo principale e compila indirizzi, orari e indicazioni stradali per gli invitati.",
+      ctaLabel: "Apri Luoghi & Info",
+      ctaHref: `/couple/${wedding.slug}/chapter/${wedding.slug}?tab=dettagli#dock-area`,
+    });
+  } else {
+    coupleCoachTips.push({
+      id: "hub-done-locs",
+      kind: "DONE",
+      title: "Hai completato i Luoghi dell'evento",
+      body: "Chiesa e location del ricevimento sono già salvati e pronti da consultare sul sito pubblico.",
+    });
+  }
+
+  if ((weddingStats.guests || 0) === 0) {
+    coupleCoachTips.push({
+      id: "hub-todo-guests",
+      kind: "TODO",
+      title: "Inserisci la lista degli Invitati e prepara i Tavoli",
+      body: "Raccogli conferme RSVP, intolleranze alimentari e organizza il Tableau de Mariage in poche mosse.",
+      ctaLabel: "Vai a Invitati & Tavoli",
+      ctaHref: `/couple/${wedding.slug}/chapter/${wedding.slug}?tab=seating#dock-area`,
+    });
+  } else {
+    coupleCoachTips.push({
+      id: "hub-done-guests",
+      kind: "DONE",
+      title: `Hai già caricato ${weddingStats.guests} invitati nel tuo evento`,
+      body: "Puoi inviare loro il link RSVP personale o stampare il riepilogo tavoli per la location.",
+    });
+  }
+
+  if (pendingMediaGlobally.length > 0) {
+    coupleCoachTips.push({
+      id: "hub-todo-pending",
+      kind: "TODO",
+      title: `Ci sono ${pendingMediaGlobally.length} foto in attesa di approvazione`,
+      body: "Scorri subito qui sotto per decidere quali scatti degli invitati pubblicare nella galleria!",
+    });
+  }
+
+  coupleCoachTips.push(
+    {
+      id: "hub-sug-whatsapp",
+      kind: "SUGGESTION",
+      title: "Condividi il link con i tasti WhatsApp sotto ogni capitolo",
+      body: "Puoi inviare anche un singolo capitolo specifico (es. solo il Matrimonio o solo il Viaggio di Nozze) con la comoda barra di condivisione rapida.",
+      ctaLabel: "Vedi Sito Pubblico",
+      ctaHref: `/w/${wedding.slug}`,
+    },
+    {
+      id: "hub-dyk-qr",
+      kind: "DID_YOU_KNOW",
+      title: "Stampa il QR Code in fondo a questa pagina e mettilo sui tavoli",
+      body: "Gli ospiti inquadrano il QR Code con la fotocamera del telefono e caricano foto e video in diretta — senza scaricare alcuna app!",
+    },
+    {
+      id: "hub-dyk-chapters",
+      kind: "DID_YOU_KNOW",
+      title: "Puoi aggiungere nuovi capitoli dopo le nozze in qualunque momento",
+      body: `Al momento avete ${allChapters.length} capitol${allChapters.length === 1 ? "o" : "i"}. Potete aggiungerne per Viaggio di Nozze, Anniversari, Nascite o Feste in famiglia.`,
+    }
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 font-sans pb-24 relative">
       {/* Top Navbar */}
@@ -157,6 +253,15 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <VideoGuidePlayer role="COUPLE" />
+        {isOwner && (
+          <GuidedCoachBubble
+            role="COUPLE"
+            storageKey={`couple_hub_${wedding.id}`}
+            completedCount={coupleDoneCount}
+            totalSteps={coupleProgress.length}
+            tips={coupleCoachTips}
+          />
+        )}
         {isOwner && (
           <PlanWidget 
             role="COUPLE"

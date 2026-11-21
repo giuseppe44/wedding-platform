@@ -1,8 +1,8 @@
 ﻿import { prisma } from "@/lib/prisma";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { resolveLegacyTimelineSlug } from "@/lib/slugify";
 import { verifyProAssignment } from "@/app/proAssignmentActions";
-import { requireAuth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,12 +24,22 @@ import WalletManager from "./WalletManager";
 import ShareVetrinaButtons from "./ShareVetrinaButtons";
 import ProManager from "./ProManager";
 import { getUserEntitlements } from "@/lib/entitlementHelper";
+import { GuidedCoachBubble, type CoachTip } from "@/components/GuidedCoachBubble";
 
-export default async function ChapterDetailPage({ params, searchParams }: { params: Promise<{ slug: string, chapterSlug: string }>, searchParams: Promise<{ albumId?: string }> }) {
+export default async function ChapterDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string; chapterSlug: string }>;
+  searchParams: Promise<{ albumId?: string; tab?: string }>;
+}) {
   const { slug, chapterSlug } = await params;
-  const { albumId } = await searchParams;
+  const { albumId, tab } = await searchParams;
   
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
+  const session = await getSession();
+  if (!session || !["PHOTOGRAPHER", "COUPLE", "ADMIN"].includes(session.role)) {
+    redirect("/login?role=COUPLE");
+  }
 
   // The base wedding for context/slugs
   const wedding = await prisma.timelineItem.findUnique({
@@ -121,14 +131,116 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
     { label: "Foto", done: approvedMedia.length > 0 },
     { label: "Lista Regali", done: (chapter.giftOptions?.length || 0) > 0 },
   ];
-  const completionPct = Math.round(
-    (completionChecks.filter((c) => c.done).length / completionChecks.length) * 100
-  );
+  const completedStepsCount = completionChecks.filter((c) => c.done).length;
+  const completionPct = Math.round((completedStepsCount / completionChecks.length) * 100);
   const nextStepHint = completionChecks.find((c) => !c.done)?.label;
+  const allowedTabs = ["dettagli", "timeline", "photos", "seating", "gifts", "messages", "wallet", "pros", "settings"];
+  const requestedTab = tab && allowedTabs.includes(tab) ? tab : null;
   const defaultTab =
-    isOwner && (chapter.locations?.length || 0) === 0 && approvedMedia.length === 0
+    requestedTab ||
+    (isOwner && (chapter.locations?.length || 0) === 0 && approvedMedia.length === 0
       ? "dettagli"
-      : "photos";
+      : "photos");
+
+  const chapterTips: CoachTip[] = [];
+  if (!chapter.locations || chapter.locations.length === 0) {
+    chapterTips.push({
+      id: "todo-locations",
+      kind: "TODO",
+      title: "Inserisci Chiesa, Rito e Location del Ricevimento",
+      body: "Gli invitati cercano subito l'indirizzo e le indicazioni sulla mappa. Apri 'Luoghi & Info' per inserire cerimonia, ristorante e orari.",
+      ctaLabel: "Vai a Luoghi & Info",
+      ctaHref: `/couple/${wedding.slug}/chapter/${chapter.slug}?tab=dettagli#dock-area`,
+    });
+  } else {
+    chapterTips.push({
+      id: "done-locations",
+      kind: "DONE",
+      title: `Hai impostato ${chapter.locations.length} luogh${chapter.locations.length === 1 ? "o" : "i"} dell'evento`,
+      body: "I tuoi ospiti possono già vedere indirizzi e indicazioni direttamente dalla pagina pubblica del capitolo.",
+    });
+  }
+
+  if (!chapter.schedule || chapter.schedule.length === 0) {
+    chapterTips.push({
+      id: "todo-schedule",
+      kind: "TODO",
+      title: "Aggiungi la scaletta oraria nella scheda Programma",
+      body: "Racconta i momenti chiave (es. 11:00 Cerimonia, 13:30 Aperitivo, 21:00 Taglio Torta) così nessuno perde gli appuntamenti della giornata.",
+      ctaLabel: "Compila Programma",
+      ctaHref: `/couple/${wedding.slug}/chapter/${chapter.slug}?tab=timeline#dock-area`,
+    });
+  } else {
+    chapterTips.push({
+      id: "done-schedule",
+      kind: "DONE",
+      title: `Scaletta attiva con ${chapter.schedule.length} moment${chapter.schedule.length === 1 ? "o" : "i"}`,
+      body: "Il programma aiuta gli invitati a orientarsi tra preparazione, rito e festa senza doverti scrivere su WhatsApp.",
+    });
+  }
+
+  if ((chapter.guests?.length || 0) === 0) {
+    chapterTips.push({
+      id: "todo-guests",
+      kind: "TODO",
+      title: "Carica gli Invitati per RSVP, allergie e Mappa Tavoli",
+      body: "Ogni invitato riceve il proprio link personale per confermare la presenza, segnalare intolleranze alimentari e scoprire il proprio tavolo.",
+      ctaLabel: "Gestisci Invitati",
+      ctaHref: `/couple/${wedding.slug}/chapter/${chapter.slug}?tab=seating#dock-area`,
+    });
+  } else {
+    chapterTips.push({
+      id: "done-guests",
+      kind: "DONE",
+      title: `${chapter.guests.length} invitati registrati · ${chapter.tables?.length || 0} tavoli`,
+      body: "Puoi tenere sotto controllo conferme RSVP, preferenze menù/allergie ed esportare il riepilogo per il catering.",
+    });
+  }
+
+  if ((chapter.giftOptions?.length || 0) === 0) {
+    chapterTips.push({
+      id: "todo-gifts",
+      kind: "TODO",
+      title: "Configura la Lista Regali o le Tappe Viaggio di Nozze",
+      body: "Puoi inserire l'IBAN, una descrizione del viaggio di nozze a tappe o un link esterno, senza commissioni o intermediari.",
+      ctaLabel: "Imposta Regali",
+      ctaHref: `/couple/${wedding.slug}/chapter/${chapter.slug}?tab=gifts#dock-area`,
+    });
+  }
+
+  if (pendingMedia.length > 0 || pendingMessages.length > 0) {
+    chapterTips.push({
+      id: "todo-moderate",
+      kind: "TODO",
+      title: `Hai ${pendingMedia.length} foto e ${pendingMessages.length} dediche da approvare`,
+      body: "Controlla i nuovi scatti e messaggi caricati dagli invitati prima che appaiano pubblicamente nell'album del capitolo.",
+    });
+  }
+
+  chapterTips.push(
+    {
+      id: "sug-qr",
+      kind: "SUGGESTION",
+      title: "Scarica il QR Code da mettere sui tavoli del ricevimento",
+      body: "Dalla pagina principale 'La Nostra Storia' puoi scaricare il QR Code in alta qualità: gli ospiti lo inquadrano col telefono e inviano foto spontanee senza scaricare app.",
+      ctaLabel: "Vai al QR Code",
+      ctaHref: `/couple/${wedding.slug}`,
+    },
+    {
+      id: "dyk-no-app",
+      kind: "DID_YOU_KNOW",
+      title: "I tuoi ospiti non devono installare nessuna app né ricordare password",
+      body: "Aprendo il link WhatsApp o scansionando il QR Code dal telefono, possono confermare la presenza, cercare il proprio tavolo e caricare scatti in 10 secondi.",
+    },
+    {
+      id: "dyk-future",
+      kind: "DID_YOU_KNOW",
+      title: "Questo spazio non muore dopo le nozze: puoi aprirlo per ogni nuovo capitolo",
+      body: "Viaggio di Nozze, Anniversari, Nascite o Ricordi in famiglia: torna nella tua Storia per aggiungere nuovi capitoli quando vuoi, anche protetti da privacy dedicata.",
+      ctaLabel: "Gestisci Capitoli",
+      ctaHref: `/couple/${wedding.slug}`,
+    }
+  );
 
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans pb-24">
@@ -285,139 +397,172 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
             </div>
           </div>
 
-          <Tabs defaultValue={defaultTab} className="w-full flex flex-col gap-8">
+          {isOwner && (
+            <GuidedCoachBubble
+              role="COUPLE"
+              storageKey={`chapter_${chapter.id}`}
+              completedCount={completedStepsCount}
+              totalSteps={completionChecks.length}
+              tips={chapterTips}
+            />
+          )}
+
+          <div id="dock-area" className="scroll-mt-8 mb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-stone-400">
+              Scegli cosa gestire (clicca un&apos;icona qui sotto):
+            </p>
+            <p className="text-xs text-stone-500">
+              Ogni scheda aggiorna subito il sito visibile ai tuoi invitati.
+            </p>
+          </div>
+
+          <Tabs key={defaultTab} defaultValue={defaultTab} className="w-full flex flex-col gap-6">
             {/* macOS Frosted Glass Dock */}
-            <TabsList className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 w-full group-data-horizontal/tabs:h-auto !h-auto bg-stone-100/80 backdrop-blur-xl p-2.5 rounded-3xl border border-stone-200/80 shadow-inner">
+            <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2.5 w-full group-data-horizontal/tabs:h-auto !h-auto bg-stone-100/80 backdrop-blur-xl p-2.5 sm:p-3 rounded-3xl border border-stone-200/80 shadow-inner">
               {isOwner && (
                 <TabsTrigger
                   value="dettagli"
-                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                  className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
                 >
-                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-md shadow-rose-500/25 group-hover/dock:scale-105 transition-transform">
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-rose-500 to-pink-600 text-white flex items-center justify-center shadow-md shadow-rose-500/25 group-hover/dock:scale-105 transition-transform shrink-0">
                     <MapPin className="h-5 w-5" />
                     <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
                       {chapter.locations?.length || 0}
                     </span>
                   </div>
-                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Luoghi &amp; Info</span>
+                  <span className="text-[11px] font-bold tracking-tight leading-tight">Luoghi &amp; Info</span>
+                  <span className="text-[10px] text-stone-400 font-normal leading-tight">Chiesa, villa e mappe</span>
                 </TabsTrigger>
               )}
 
               {isOwner && (
                 <TabsTrigger
                   value="timeline"
-                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                  className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
                 >
-                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-md shadow-amber-500/25 group-hover/dock:scale-105 transition-transform">
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-md shadow-amber-500/25 group-hover/dock:scale-105 transition-transform shrink-0">
                     <Clock className="h-5 w-5" />
                     <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
                       {chapter.schedule?.length || 0}
                     </span>
                   </div>
-                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Programma</span>
+                  <span className="text-[11px] font-bold tracking-tight leading-tight">Programma</span>
+                  <span className="text-[10px] text-stone-400 font-normal leading-tight">Orari della giornata</span>
                 </TabsTrigger>
               )}
 
               <TabsTrigger
                 value="photos"
-                className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
               >
-                <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center shadow-md shadow-sky-500/25 group-hover/dock:scale-105 transition-transform">
+                <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center shadow-md shadow-sky-500/25 group-hover/dock:scale-105 transition-transform shrink-0">
                   <Camera className="h-5 w-5" />
                   <span className={`absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full text-white text-[10px] font-bold flex items-center justify-center border-2 border-white ${pendingMedia.length > 0 ? "bg-rose-500" : "bg-stone-900"}`}>
                     {approvedMedia.length}{pendingMedia.length > 0 ? `+` : ""}
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Foto &amp; Album</span>
+                <span className="text-[11px] font-bold tracking-tight leading-tight">Foto &amp; Album</span>
+                <span className="text-[10px] text-stone-400 font-normal leading-tight">Approva e scarica ZIP</span>
               </TabsTrigger>
 
               {isOwner && (
                 <TabsTrigger
                   value="seating"
-                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                  className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
                 >
-                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/25 group-hover/dock:scale-105 transition-transform">
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/25 group-hover/dock:scale-105 transition-transform shrink-0">
                     <Users className="h-5 w-5" />
                     <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
                       {chapter.guests?.length || 0}
                     </span>
                   </div>
-                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Invitati &amp; Tavoli</span>
+                  <span className="text-[11px] font-bold tracking-tight leading-tight">Invitati &amp; Tavoli</span>
+                  <span className="text-[10px] text-stone-400 font-normal leading-tight">RSVP, diete e posti</span>
                 </TabsTrigger>
               )}
 
               {isOwner && (
                 <TabsTrigger
                   value="gifts"
-                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                  className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
                 >
-                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex items-center justify-center shadow-md shadow-emerald-500/25 group-hover/dock:scale-105 transition-transform">
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-emerald-400 to-teal-600 text-white flex items-center justify-center shadow-md shadow-emerald-500/25 group-hover/dock:scale-105 transition-transform shrink-0">
                     <Gift className="h-5 w-5" />
                     <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
                       {chapter.giftOptions?.length || 0}
                     </span>
                   </div>
-                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Lista Regali</span>
+                  <span className="text-[11px] font-bold tracking-tight leading-tight">Lista Regali</span>
+                  <span className="text-[10px] text-stone-400 font-normal leading-tight">IBAN e tappe viaggio</span>
                 </TabsTrigger>
               )}
 
               <TabsTrigger
                 value="messages"
-                className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
               >
-                <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white flex items-center justify-center shadow-md shadow-fuchsia-500/25 group-hover/dock:scale-105 transition-transform">
+                <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white flex items-center justify-center shadow-md shadow-fuchsia-500/25 group-hover/dock:scale-105 transition-transform shrink-0">
                   <MessageSquareHeart className="h-5 w-5" />
                   <span className={`absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full text-white text-[10px] font-bold flex items-center justify-center border-2 border-white ${pendingMessages.length > 0 ? "bg-rose-500" : "bg-stone-900"}`}>
                     {approvedMessages.length}{pendingMessages.length > 0 ? `+` : ""}
                   </span>
                 </div>
-                <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Dediche</span>
+                <span className="text-[11px] font-bold tracking-tight leading-tight">Dediche</span>
+                <span className="text-[10px] text-stone-400 font-normal leading-tight">Auguri dagli ospiti</span>
               </TabsTrigger>
 
               {isOwner && (
                 <TabsTrigger
                   value="wallet"
-                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                  className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
                 >
-                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-cyan-500 to-teal-600 text-white flex items-center justify-center shadow-md shadow-cyan-500/25 group-hover/dock:scale-105 transition-transform">
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-cyan-500 to-teal-600 text-white flex items-center justify-center shadow-md shadow-cyan-500/25 group-hover/dock:scale-105 transition-transform shrink-0">
                     <Wallet className="h-5 w-5" />
                     <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
                       {chapter.travelDocuments?.length || 0}
                     </span>
                   </div>
-                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Documenti</span>
+                  <span className="text-[11px] font-bold tracking-tight leading-tight">Documenti</span>
+                  <span className="text-[10px] text-stone-400 font-normal leading-tight">Biglietti e voucher</span>
                 </TabsTrigger>
               )}
 
               {isOwner && (
                 <TabsTrigger
                   value="pros"
-                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                  className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
                 >
-                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-orange-400 to-rose-500 text-white flex items-center justify-center shadow-md shadow-orange-500/25 group-hover/dock:scale-105 transition-transform">
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-orange-400 to-rose-500 text-white flex items-center justify-center shadow-md shadow-orange-500/25 group-hover/dock:scale-105 transition-transform shrink-0">
                     <Camera className="h-5 w-5" />
                     <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-stone-900 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white">
                       {chapter.assignments?.length || 0}
                     </span>
                   </div>
-                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Team</span>
+                  <span className="text-[11px] font-bold tracking-tight leading-tight">Team</span>
+                  <span className="text-[10px] text-stone-400 font-normal leading-tight">I tuoi fornitori</span>
                 </TabsTrigger>
               )}
 
               {isOwner && (
                 <TabsTrigger
                   value="settings"
-                  className="group/dock relative flex flex-col items-center justify-center gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden"
+                  className="group/dock relative flex flex-col items-center justify-start gap-1.5 py-3 px-2 !h-auto rounded-2xl border border-transparent text-stone-600 hover:bg-white/80 hover:-translate-y-0.5 data-active:bg-white data-active:text-stone-900 data-active:shadow-md data-active:border-stone-200/80 data-active:-translate-y-0.5 transition-all cursor-pointer after:hidden whitespace-normal text-center"
                 >
-                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-stone-600 to-stone-800 text-white flex items-center justify-center shadow-md shadow-stone-700/25 group-hover/dock:scale-105 transition-transform">
+                  <div className="relative w-11 h-11 rounded-[14px] bg-gradient-to-br from-stone-600 to-stone-800 text-white flex items-center justify-center shadow-md shadow-stone-700/25 group-hover/dock:scale-105 transition-transform shrink-0">
                     <Settings className="h-5 w-5" />
                   </div>
-                  <span className="text-[11px] font-semibold tracking-tight whitespace-nowrap">Impostazioni</span>
+                  <span className="text-[11px] font-bold tracking-tight leading-tight">Impostazioni</span>
+                  <span className="text-[10px] text-stone-400 font-normal leading-tight">Colori, saluto e link</span>
                 </TabsTrigger>
               )}
             </TabsList>
 
             <TabsContent value="photos" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-sky-50/70 border border-sky-200/80 px-4 py-3 text-xs sm:text-sm text-sky-950 flex items-center justify-between gap-3 flex-wrap">
+                <span>
+                  <strong>📸 Come funziona Foto &amp; Album:</strong> approva gli scatti caricati dagli invitati tramite QR Code, gestisci la galleria ufficiale e scarica tutte le foto in un unico pacchetto ZIP.
+                </span>
+              </div>
               {pendingMedia.length > 0 && (
                 <section className="bg-orange-50 p-6 rounded-xl border border-orange-100 mb-8">
                   <h2 className="text-xl font-semibold mb-4 text-orange-800">Foto da Approvare (Ospiti)</h2>
@@ -469,6 +614,9 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
             </TabsContent>
 
             <TabsContent value="messages" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-fuchsia-50/70 border border-fuchsia-200/80 px-4 py-3 text-xs sm:text-sm text-fuchsia-950">
+                <strong>💌 Come funziona Dediche:</strong> qui leggi in anteprima gli auguri scritti dagli invitati e decidi quali approvare e mostrare sul vostro sito pubblico.
+              </div>
               {pendingMessages.length > 0 && (
                 <section className="bg-orange-50 p-6 rounded-xl border border-orange-100 mb-8">
                   <h2 className="text-xl font-semibold mb-4 text-orange-800">Dediche da Approvare</h2>
@@ -517,6 +665,9 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
             </TabsContent>
 
             <TabsContent value="timeline" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-amber-50/70 border border-amber-200/80 px-4 py-3 text-xs sm:text-sm text-amber-950">
+                <strong>⏰ Come funziona Programma:</strong> inserisci gli orari dei momenti più importanti (preparazione, cerimonia, aperitivo, taglio torta) per guidare gli invitati passo dopo passo.
+              </div>
               <Card className="border-stone-200 shadow-sm">
                 <CardHeader>
                   <CardTitle className="font-serif">Aggiungi Fase Evento</CardTitle>
@@ -561,7 +712,10 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
               </div>
             </TabsContent>
 
-            <TabsContent value="settings" className="animate-in fade-in">
+            <TabsContent value="settings" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-stone-100 border border-stone-200 px-4 py-3 text-xs sm:text-sm text-stone-800">
+                <strong>⚙️ Come funziona Impostazioni:</strong> scegli il colore dei pulsanti, scrivi un messaggio di benvenuto personalizzato per gli ospiti e aggiungi eventuali link esterni.
+              </div>
               <Card className="border-stone-200 shadow-sm">
                 <CardHeader>
                   <CardTitle className="font-serif">Personalizzazione</CardTitle>
@@ -605,26 +759,41 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
               </Card>
             </TabsContent>
           
-            <TabsContent value="dettagli" className="animate-in fade-in">
+            <TabsContent value="dettagli" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-rose-50/70 border border-rose-200/80 px-4 py-3 text-xs sm:text-sm text-rose-950">
+                <strong>📍 Come funziona Luoghi &amp; Info:</strong> inserisci Chiesa, Municipio, Location del ricevimento, dress code, orari e cosa vuoi rendere visibile agli invitati sul sito.
+              </div>
               <ExtendedDetailsForm chapter={chapter} locations={chapter.locations || []} />
             </TabsContent>
   
           
-            <TabsContent value="seating" className="animate-in fade-in">
+            <TabsContent value="seating" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-indigo-50/70 border border-indigo-200/80 px-4 py-3 text-xs sm:text-sm text-indigo-950">
+                <strong>🪑 Come funziona Invitati &amp; Tavoli:</strong> aggiungi gli invitati, invia loro il link personale per confermare la presenza (RSVP) e segnalare intolleranze, poi assegna i posti ai tavoli ed esporta il PDF per il ristorante.
+              </div>
               <SeatingManager chapter={chapter} guests={chapter.guests || []} tables={chapter.tables || []} entitlements={entitlements} />
             </TabsContent>
   
           
-            <TabsContent value="gifts" className="animate-in fade-in">
+            <TabsContent value="gifts" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-emerald-50/70 border border-emerald-200/80 px-4 py-3 text-xs sm:text-sm text-emerald-950">
+                <strong>🎁 Come funziona Lista Regali:</strong> inserisci il vostro IBAN, PayPal o le tappe del viaggio di nozze senza commissioni della piattaforma.
+              </div>
               <GiftManager chapter={chapter} giftOptions={chapter.giftOptions || []} />
             </TabsContent>
 
-            <TabsContent value="wallet" className="animate-in fade-in">
+            <TabsContent value="wallet" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-cyan-50/70 border border-cyan-200/80 px-4 py-3 text-xs sm:text-sm text-cyan-950">
+                <strong>🧳 Come funziona Documenti:</strong> custodisci in un posto ordinato biglietti, prenotazioni e voucher del viaggio di nozze o dell&apos;evento.
+              </div>
               <WalletManager documents={chapter.travelDocuments || []} weddingId={wedding.id} isProOrAdmin={isAssigned || session.role === "ADMIN"} />
             </TabsContent>
   
           
-            <TabsContent value="pros" className="animate-in fade-in">
+            <TabsContent value="pros" className="space-y-6 animate-in fade-in">
+              <div className="rounded-2xl bg-orange-50/70 border border-orange-200/80 px-4 py-3 text-xs sm:text-sm text-orange-950">
+                <strong>📸 Come funziona Team Fornitori:</strong> collega i professionisti verificati del vostro matrimonio (fotografo, planner, musica) così collaborano all&apos;album e compaiono con crediti ufficiali sul sito.
+              </div>
               <ProManager chapter={chapter} assignments={chapter.assignments || []} />
             </TabsContent>
   

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Star, Heart, Camera, ArrowLeft, CreditCard, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Star, Heart, Camera, ArrowLeft, CreditCard, ShieldCheck, Loader2 } from "lucide-react";
 import Footer from "@/components/Footer";
 import { createCheckoutSession } from "@/app/stripeActions";
 
@@ -24,7 +24,7 @@ export default function PrezziPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf9f8] font-sans flex flex-col">
+    <div className="min-h-screen bg-[#faf9f8] font-sans flex flex-col overflow-x-hidden">
       {/* HEADER */}
       <div className="bg-stone-950 text-white py-20 md:py-24 text-center px-4 relative">
         <div className="max-w-7xl mx-auto mb-6 text-left">
@@ -50,14 +50,15 @@ export default function PrezziPage() {
             </div>
             <h2 className="text-4xl font-serif text-stone-900 mb-4">Piani per i tuoi Eventi</h2>
 
-            <div className="flex justify-center items-center gap-4 mb-8">
-              <span className={`font-bold ${!isTriennial ? "text-stone-900" : "text-stone-400"}`}>
+            <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4 mb-8">
+              <span className={`font-bold text-sm sm:text-base ${!isTriennial ? "text-stone-900" : "text-stone-400"}`}>
                 Annuale
               </span>
               <button
                 type="button"
+                aria-label="Cambia durata annuale o triennale"
                 onClick={() => setIsTriennial(!isTriennial)}
-                className="w-16 h-8 bg-rose-500 rounded-full p-1 relative transition-colors"
+                className="w-16 h-8 bg-rose-500 rounded-full p-1 relative transition-colors shrink-0 cursor-pointer"
               >
                 <div
                   className={`w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ${
@@ -66,7 +67,7 @@ export default function PrezziPage() {
                 />
               </button>
               <div className="flex items-center gap-2">
-                <span className={`font-bold ${isTriennial ? "text-stone-900" : "text-stone-400"}`}>
+                <span className={`font-bold text-sm sm:text-base ${isTriennial ? "text-stone-900" : "text-stone-400"}`}>
                   Triennale (Promo 3 Anni)
                 </span>
               </div>
@@ -83,7 +84,7 @@ export default function PrezziPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Base */}
-            <div className="bg-white p-8 md:p-10 rounded-3xl border border-stone-200 shadow-sm hover:shadow-xl transition-all flex flex-col text-center md:text-left">
+            <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-3xl border border-stone-200 shadow-sm hover:shadow-xl transition-all flex flex-col text-center md:text-left">
               <h4 className="font-bold text-2xl text-stone-800 mb-2">Base</h4>
               <p className="text-stone-500 mb-6 min-h-[40px]">L&apos;essenziale per il tuo evento</p>
               <div className="mb-2">
@@ -135,19 +136,28 @@ export default function PrezziPage() {
               <Button
                 onClick={() => handleSelectPlan(isTriennial ? "BASE_TRIENNIAL" : "BASE_ANNUAL")}
                 disabled={isPending}
-                className="w-full bg-stone-900 hover:bg-stone-800 h-14 rounded-full text-white text-lg font-semibold"
+                className={`w-full min-h-14 h-auto py-3.5 px-4 rounded-full font-semibold whitespace-normal text-center leading-snug transition-all ${
+                  isPending && (pendingPlan === "BASE_ANNUAL" || pendingPlan === "BASE_TRIENNIAL")
+                    ? "bg-stone-800 text-white disabled:opacity-100 text-sm"
+                    : "bg-stone-900 hover:bg-stone-800 text-white text-base sm:text-lg"
+                }`}
               >
-                {isPending && (pendingPlan === "BASE_ANNUAL" || pendingPlan === "BASE_TRIENNIAL")
-                  ? "Reindirizzamento..."
-                  : isTriennial
-                  ? "Attiva Base (3 Anni)"
-                  : "Seleziona Base"}
+                {isPending && (pendingPlan === "BASE_ANNUAL" || pendingPlan === "BASE_TRIENNIAL") ? (
+                  <span className="inline-flex items-center justify-center gap-2 text-white">
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                    <span>Reindirizzamento...</span>
+                  </span>
+                ) : isTriennial ? (
+                  "Attiva Base (3 Anni)"
+                ) : (
+                  "Seleziona Base"
+                )}
               </Button>
             </div>
 
             {/* Premium */}
-            <div className="bg-stone-900 text-white p-8 md:p-10 rounded-3xl border border-stone-800 shadow-2xl relative transform md:-translate-y-4 flex flex-col text-center md:text-left">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider">
+            <div className="bg-stone-900 text-white p-6 sm:p-8 lg:p-10 rounded-3xl border border-stone-800 shadow-2xl relative transform md:-translate-y-4 flex flex-col text-center md:text-left">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider whitespace-nowrap">
                 Il Più Scelto
               </div>
               <h4 className="font-bold text-2xl text-white mb-2">Premium</h4>
@@ -198,18 +208,27 @@ export default function PrezziPage() {
               <Button
                 onClick={() => handleSelectPlan(isTriennial ? "PREMIUM_TRIENNIAL" : "PREMIUM_ANNUAL")}
                 disabled={isPending}
-                className="w-full bg-rose-500 hover:bg-rose-600 text-white h-14 rounded-full font-bold text-lg"
+                className={`w-full min-h-14 h-auto py-3.5 px-4 rounded-full font-bold whitespace-normal text-center leading-snug transition-all ${
+                  isPending && (pendingPlan === "PREMIUM_ANNUAL" || pendingPlan === "PREMIUM_TRIENNIAL")
+                    ? "bg-rose-700 text-white disabled:opacity-100 text-sm"
+                    : "bg-rose-500 hover:bg-rose-600 text-white text-base sm:text-lg"
+                }`}
               >
-                {isPending && (pendingPlan === "PREMIUM_ANNUAL" || pendingPlan === "PREMIUM_TRIENNIAL")
-                  ? "Reindirizzamento..."
-                  : isTriennial
-                  ? "Attiva Premium (3 Anni)"
-                  : "Seleziona Premium"}
+                {isPending && (pendingPlan === "PREMIUM_ANNUAL" || pendingPlan === "PREMIUM_TRIENNIAL") ? (
+                  <span className="inline-flex items-center justify-center gap-2 text-white">
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                    <span>Reindirizzamento...</span>
+                  </span>
+                ) : isTriennial ? (
+                  "Attiva Premium (3 Anni)"
+                ) : (
+                  "Seleziona Premium"
+                )}
               </Button>
             </div>
 
             {/* Diamond */}
-            <div className="bg-white p-8 md:p-10 rounded-3xl border border-stone-200 shadow-sm hover:shadow-xl transition-all flex flex-col text-center md:text-left">
+            <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-3xl border border-stone-200 shadow-sm hover:shadow-xl transition-all flex flex-col text-center md:text-left">
               <h4 className="font-bold text-2xl text-stone-800 mb-2">Diamond</h4>
               <p className="text-stone-500 mb-6 min-h-[40px]">L&apos;esperienza di lusso definitiva</p>
               <div className="mb-2">
@@ -262,19 +281,28 @@ export default function PrezziPage() {
                 variant="outline"
                 onClick={() => handleSelectPlan(isTriennial ? "DIAMOND_TRIENNIAL" : "DIAMOND_ANNUAL")}
                 disabled={isPending}
-                className="w-full h-14 rounded-full border-stone-300 text-lg hover:bg-stone-100 font-semibold"
+                className={`w-full min-h-14 h-auto py-3.5 px-4 rounded-full border-stone-300 font-semibold whitespace-normal text-center leading-snug transition-all ${
+                  isPending && (pendingPlan === "DIAMOND_ANNUAL" || pendingPlan === "DIAMOND_TRIENNIAL")
+                    ? "bg-stone-900 text-white border-stone-900 disabled:opacity-100 text-sm"
+                    : "text-base sm:text-lg hover:bg-stone-100"
+                }`}
               >
-                {isPending && (pendingPlan === "DIAMOND_ANNUAL" || pendingPlan === "DIAMOND_TRIENNIAL")
-                  ? "Reindirizzamento..."
-                  : isTriennial
-                  ? "Attiva Diamond (3 Anni)"
-                  : "Seleziona Diamond"}
+                {isPending && (pendingPlan === "DIAMOND_ANNUAL" || pendingPlan === "DIAMOND_TRIENNIAL") ? (
+                  <span className="inline-flex items-center justify-center gap-2 text-white">
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0 text-white" />
+                    <span>Reindirizzamento...</span>
+                  </span>
+                ) : isTriennial ? (
+                  "Attiva Diamond (3 Anni)"
+                ) : (
+                  "Seleziona Diamond"
+                )}
               </Button>
             </div>
           </div>
 
           {/* BANNER SICUREZZA PAGAMENTI + LINK PROFESSIONISTI */}
-          <div className="mt-16 max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 bg-white p-8 rounded-3xl border border-stone-200 shadow-sm text-center md:text-left">
+          <div className="mt-16 max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-sm text-center md:text-left">
             <div className="flex flex-col md:flex-row items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 mx-auto md:mx-0">
                 <ShieldCheck className="w-6 h-6" />
@@ -286,9 +314,10 @@ export default function PrezziPage() {
                 </p>
               </div>
             </div>
-            <Link href="/professionisti#founders" className="shrink-0">
-              <Button variant="outline" className="rounded-full border-amber-400 text-stone-900 hover:bg-amber-50 font-semibold">
-                <Camera className="w-4 h-4 mr-2 text-amber-500" /> Sei un Professionista? Vedi Piani Pro
+            <Link href="/professionisti#founders" className="w-full md:w-auto shrink-0">
+              <Button variant="outline" className="w-full md:w-auto min-h-11 h-auto py-2.5 px-5 rounded-full border-amber-400 text-stone-900 hover:bg-amber-50 font-semibold whitespace-normal text-center leading-snug">
+                <Camera className="w-4 h-4 mr-2 text-amber-500 shrink-0" />
+                <span>Sei un Professionista? Vedi Piani Pro</span>
               </Button>
             </Link>
           </div>

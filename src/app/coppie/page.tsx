@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowRight, Lock, Map, Sparkles, BookHeart, CheckCircle } from "lucide-react";
+import { ArrowRight, Lock, Map, Sparkles, BookHeart, CheckCircle } from "lucide-react";
 import Footer from "@/components/Footer";
+import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import { motion, Variants } from "framer-motion";
 
 const staggerContainer: Variants = {
@@ -29,7 +30,7 @@ export default function CoppiePage() {
           href="/" 
           className="flex items-center gap-2 text-stone-900 font-serif text-2xl drop-shadow-sm"
         >
-          <Heart className="w-6 h-6 text-rose-500" />
+          <GentiLunaLogo className="w-7 h-7 shrink-0" />
           GentiLuna
         </Link>
         <div className="hidden md:flex items-center gap-8 text-[12px] font-medium tracking-[0.2em] text-stone-900 uppercase">
