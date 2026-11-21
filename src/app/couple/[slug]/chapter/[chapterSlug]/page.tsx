@@ -27,7 +27,7 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
   const { slug, chapterSlug } = await params;
   const { albumId } = await searchParams;
   
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
 
   // The base wedding for context/slugs
   const wedding = await prisma.timelineItem.findUnique({

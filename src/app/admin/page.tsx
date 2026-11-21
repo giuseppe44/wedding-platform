@@ -132,34 +132,101 @@ export default async function AdminPage() {
           {/* TWO COLUMN SECTION */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* LAST WEDDINGS */}
-            <div className="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-stone-800">Ultimi Matrimoni Creati</h2>
-                <button className="text-sm text-rose-500 font-semibold hover:underline">Vedi tutti</button>
+            <div className="bg-white p-8 rounded-2xl border border-stone-200 shadow-sm lg:col-span-2">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-stone-800">Stato Completamento di Tutti i Matrimoni ({stats.recentWeddings.length})</h2>
+                  <p className="text-sm text-stone-500">Elenco completo dei matrimoni creati da Sposi o Fotografi, con contatori e accesso diretto.</p>
+                </div>
+                <Link href="/fornitori" target="_blank" className="text-sm text-amber-600 font-semibold hover:underline">
+                  Vedi Catalogo Fornitori Pubblico →
+                </Link>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-stone-200">
-                      <th className="pb-3 font-semibold text-stone-500">Sposi</th>
-                      <th className="pb-3 font-semibold text-stone-500">Data</th>
-                      <th className="pb-3 font-semibold text-stone-500 text-right">Azione</th>
+                    <tr className="border-b border-stone-200 text-xs uppercase tracking-wider text-stone-500">
+                      <th className="pb-3 pr-4 font-semibold">Sposi & Creatore</th>
+                      <th className="pb-3 px-4 font-semibold">Data</th>
+                      <th className="pb-3 px-4 font-semibold">Contenuti Inseriti</th>
+                      <th className="pb-3 pl-4 font-semibold text-right">Accessi Diretti</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {stats.recentWeddings.map((w: any) => (
-                      <tr key={w.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50">
-                        <td className="py-3 font-medium text-stone-800">{w.brideName} & {w.groomName}</td>
-                        <td className="py-3 text-stone-500">{w.date ? new Date(w.date).toLocaleDateString("it-IT") : "TBD"}</td>
-                        <td className="py-3 text-right">
-                          <Link href={`/w/${w.slug}`} target="_blank" className="text-rose-500 hover:text-rose-600 font-semibold bg-rose-50 px-3 py-1.5 rounded-full inline-block">
-                            Visita
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
+                  <tbody className="divide-y divide-stone-100">
+                    {stats.recentWeddings.map((w: any) => {
+                      const c = w._count || {};
+                      const stepsDone = [
+                        Boolean(w.date),
+                        Boolean(w.coverImage),
+                        Boolean(w.welcomeMessage || w.usefulInfo || w.dressCode),
+                        (c.locations || 0) > 0,
+                        (c.schedule || 0) > 0,
+                        (c.guests || 0) > 0,
+                        (c.media || 0) > 0,
+                        (c.giftOptions || 0) + (c.tables || 0) > 0,
+                      ].filter(Boolean).length;
+                      const pct = Math.round((stepsDone / 8) * 100);
+
+                      return (
+                        <tr key={w.id} className="hover:bg-stone-50">
+                          <td className="py-4 pr-4">
+                            <div className="font-bold text-stone-900">{w.brideName} & {w.groomName}</div>
+                            <div className="text-xs text-stone-500">
+                              Slug: <span className="font-mono text-stone-700">/w/{w.slug}</span> • Creato da: {w.owner?.name || w.owner?.email} ({w.owner?.role})
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 text-stone-600 whitespace-nowrap">
+                            {w.date ? new Date(w.date).toLocaleDateString("it-IT") : "Da definire"}
+                          </td>
+                          <td className="py-4 px-4">
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <div className="w-28 h-2 bg-stone-200 rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full ${pct >= 75 ? "bg-emerald-500" : pct >= 40 ? "bg-amber-500" : "bg-rose-500"}`}
+                                  style={{ width: `${pct}%` }}
+                                />
+                              </div>
+                              <span className="text-xs font-bold text-stone-700">{pct}%</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5 text-xs text-stone-600">
+                              <span className="bg-stone-100 px-2 py-0.5 rounded">📸 {c.media || 0} Foto</span>
+                              <span className="bg-stone-100 px-2 py-0.5 rounded">👥 {c.guests || 0} Invitati</span>
+                              <span className="bg-stone-100 px-2 py-0.5 rounded">📍 {c.locations || 0} Location</span>
+                              <span className="bg-stone-100 px-2 py-0.5 rounded">🕒 {c.schedule || 0} Orari</span>
+                              <span className="bg-stone-100 px-2 py-0.5 rounded">🪑 {c.tables || 0} Tavoli</span>
+                              <span className="bg-stone-100 px-2 py-0.5 rounded">🎁 {c.giftOptions || 0} Regali</span>
+                            </div>
+                          </td>
+                          <td className="py-4 pl-4 text-right whitespace-nowrap">
+                            <div className="inline-flex flex-wrap justify-end gap-1.5">
+                              <Link
+                                href={`/w/${w.slug}`}
+                                target="_blank"
+                                className="text-xs text-rose-600 hover:bg-rose-100 font-semibold bg-rose-50 border border-rose-200 px-2.5 py-1.5 rounded-lg"
+                              >
+                                Sito Pubblico
+                              </Link>
+                              <Link
+                                href={`/couple/${w.slug}`}
+                                target="_blank"
+                                className="text-xs text-stone-700 hover:bg-stone-200 font-semibold bg-stone-100 border border-stone-300 px-2.5 py-1.5 rounded-lg"
+                              >
+                                Dashboard Sposi
+                              </Link>
+                              <Link
+                                href={`/couple/${w.slug}/chapter/${w.slug}`}
+                                target="_blank"
+                                className="text-xs text-indigo-700 hover:bg-indigo-100 font-semibold bg-indigo-50 border border-indigo-200 px-2.5 py-1.5 rounded-lg"
+                              >
+                                Gestione Dettagli
+                              </Link>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                     {stats.recentWeddings.length === 0 && (
-                      <tr><td colSpan={3} className="py-4 text-center text-stone-500">Nessun matrimonio</td></tr>
+                      <tr><td colSpan={4} className="py-4 text-center text-stone-500">Nessun matrimonio</td></tr>
                     )}
                   </tbody>
                 </table>

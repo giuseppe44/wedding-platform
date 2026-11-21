@@ -23,7 +23,7 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
 
   const { slug } = await params;
   
-  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE"]);
+  const session = await requireAuth(["PHOTOGRAPHER", "COUPLE", "ADMIN"]);
   
   const wedding = await prisma.timelineItem.findUnique({
     where: { slug: slug },

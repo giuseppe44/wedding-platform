@@ -20,13 +20,18 @@ export async function getAdminDashboardStats() {
   const recentWeddings = await prisma.timelineItem.findMany({
     where: { type: "WEDDING" },
     orderBy: { createdAt: "desc" },
-    take: 5,
+    take: 50,
     select: {
       id: true,
       slug: true,
       brideName: true,
       groomName: true,
       date: true,
+      coverImage: true,
+      welcomeMessage: true,
+      dressCode: true,
+      usefulInfo: true,
+      isPublic: true,
       createdAt: true,
       owner: {
         select: {
@@ -34,6 +39,25 @@ export async function getAdminDashboardStats() {
           email: true,
           name: true,
           role: true,
+        },
+      },
+      couple: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+        },
+      },
+      _count: {
+        select: {
+          media: true,
+          guests: true,
+          locations: true,
+          schedule: true,
+          tables: true,
+          giftOptions: true,
+          messages: true,
+          albums: true,
         },
       },
     },
@@ -77,7 +101,69 @@ export async function getAllUsersWithPlans() {
       role: true,
       createdAt: true,
       updatedAt: true,
-      professionalProfile: true,
+      professionalProfile: {
+        include: {
+          _count: {
+            select: {
+              services: true,
+              assignments: true,
+              reviews: true,
+            },
+          },
+        },
+      },
+      timelineItemsOwned: {
+        select: {
+          id: true,
+          slug: true,
+          type: true,
+          brideName: true,
+          groomName: true,
+          date: true,
+          coverImage: true,
+          welcomeMessage: true,
+          dressCode: true,
+          usefulInfo: true,
+          _count: {
+            select: {
+              media: true,
+              guests: true,
+              locations: true,
+              schedule: true,
+              tables: true,
+              giftOptions: true,
+              messages: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      },
+      timelineItemsAsCouple: {
+        select: {
+          id: true,
+          slug: true,
+          type: true,
+          brideName: true,
+          groomName: true,
+          date: true,
+          coverImage: true,
+          welcomeMessage: true,
+          dressCode: true,
+          usefulInfo: true,
+          _count: {
+            select: {
+              media: true,
+              guests: true,
+              locations: true,
+              schedule: true,
+              tables: true,
+              giftOptions: true,
+              messages: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      },
       Subscription: {
         include: { plan: true },
         where: { status: "ACTIVE" },
