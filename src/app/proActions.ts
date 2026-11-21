@@ -138,10 +138,13 @@ export async function leavePublicReview(proId: string, rating: number, text: str
     }
   });
 
+  const { generateFriendlyWeddingSlug } = await import("@/lib/slugify");
+  const friendlySlug = await generateFriendlyWeddingSlug(data.brideName, data.groomName, "WEDDING");
+
   const wedding = await prisma.timelineItem.create({
     data: {
       title: 'Il nostro Matrimonio',
-      slug: 'nozze-' + user.id.slice(0,6),
+      slug: friendlySlug,
       type: 'WEDDING',
       ownerId: user.id,
       coupleId: user.id,

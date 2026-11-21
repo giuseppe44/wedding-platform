@@ -119,6 +119,14 @@ export async function sendMessage(weddingId: string, proId: string, text: string
 
   if (!isCouple && !isPro) throw new Error("Accesso negato");
 
+  const { inspectAndSanitizeMessage } = await import("@/lib/contactGuard");
+  const guard = inspectAndSanitizeMessage(text);
+  if (guard.hasPrivateContact) {
+    throw new Error(
+      `Per la tua sicurezza e per mantenere tracciate le comunicazioni su GentiLuna, non è consentito scambiare contatti diretti in chat (${guard.reasons.join(", ")}). Continua la conversazione qui sulla piattaforma.`
+    );
+  }
+
   const conversation = await prisma.conversation.upsert({
     where: {
       timelineItemId_professionalProfileId: {

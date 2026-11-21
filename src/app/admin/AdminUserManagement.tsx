@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { updateUserPlan } from "@/app/adminActions";
+import { updateUserPlan, migrateLegacyWeddingSlugs } from "@/app/adminActions";
 import Link from "next/link";
-import { ExternalLink, CheckCircle2, XCircle, Camera, Users, MapPin, Clock, Gift, LayoutDashboard, Globe, Sparkles } from "lucide-react";
+import { ExternalLink, CheckCircle2, XCircle, Camera, Users, MapPin, Clock, Gift, LayoutDashboard, Globe, Sparkles, Wand2 } from "lucide-react";
 
 function computeProCompletion(pro: any) {
   if (!pro) {
@@ -64,8 +64,26 @@ function computeWeddingCompletion(w: any) {
 
 export default function AdminUserManagement({ users }: { users: any[] }) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [migratingSlugs, setMigratingSlugs] = useState(false);
   const [roleFilter, setRoleFilter] = useState<"ALL" | "PHOTOGRAPHER" | "COUPLE">("ALL");
   const [search, setSearch] = useState("");
+
+  const handleMigrateSlugs = async () => {
+    setMigratingSlugs(true);
+    try {
+      const res = await migrateLegacyWeddingSlugs();
+      if (res.count === 0) {
+        alert("Tutti i link degli sposi sono già personalizzati!");
+      } else {
+        const list = res.updated.map((u) => `${u.oldSlug} → ${u.newSlug}`).join("\n");
+        alert(`Aggiornati ${res.count} link con successo (con redirect automatico dai vecchi URL!):\n\n${list}`);
+      }
+    } catch (e: any) {
+      alert("Errore nella conversione dei link: " + e.message);
+    } finally {
+      setMigratingSlugs(false);
+    }
+  };
 
   const handlePlanChange = async (userId: string, newPlan: string) => {
     setLoadingId(userId);
@@ -101,6 +119,16 @@ export default function AdminUserManagement({ users }: { users: any[] }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={handleMigrateSlugs}
+            disabled={migratingSlugs}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-sm disabled:opacity-50 transition-colors cursor-pointer"
+            title="Trasforma i vecchi link nozze-xxxxxx in nomi-sposi-nozze mantenendo il redirect automatico 308"
+          >
+            <Wand2 className="w-3.5 h-3.5" />
+            {migratingSlugs ? "Conversione..." : "Personalizza Link Sposi"}
+          </button>
           <input
             type="text"
             placeholder="Cerca nome, email, attività..."

@@ -139,22 +139,22 @@ export async function loginAction(
   });
 
   if (!wedding) {
-    const slug = `nozze-${user.id.slice(0, 6)}`;
-    wedding = await prisma.timelineItem.findUnique({ where: { slug } });
-    if (!wedding) {
-      const parts = (user.name || "Sposa e Sposo").split(/\s+(?:e|&)\s+|\s+/i);
-      wedding = await prisma.timelineItem.create({
-        data: {
-          title: "Il nostro evento",
-          slug,
-          type: "WEDDING",
-          ownerId: user.id,
-          coupleId: user.id,
-          brideName: parts[0] || "Sposa",
-          groomName: parts[1] || "Sposo",
-        },
-      });
-    }
+    const { generateFriendlyWeddingSlug } = await import("@/lib/slugify");
+    const parts = (user.name || "Sposa e Sposo").split(/\s+(?:e|&)\s+|\s+/i);
+    const brideName = parts[0] || "Sposa";
+    const groomName = parts[1] || "Sposo";
+    const slug = await generateFriendlyWeddingSlug(brideName, groomName, "WEDDING");
+    wedding = await prisma.timelineItem.create({
+      data: {
+        title: "Il nostro evento",
+        slug,
+        type: "WEDDING",
+        ownerId: user.id,
+        coupleId: user.id,
+        brideName,
+        groomName,
+      },
+    });
   }
 
   return { role: actualRole, redirectUrl: `/couple/${wedding.slug}` };
@@ -295,8 +295,11 @@ export async function registerAction(role: string, data: any) {
     });
     redirectUrl = "/dashboard";
   } else {
-    const slug = "nozze-" + user.id.slice(0, 6);
+    const { generateFriendlyWeddingSlug } = await import("@/lib/slugify");
     const parts = (data.name || "Sposa e Sposo").split(/\s+(?:e|&)\s+|\s+/i);
+    const brideName = parts[0] || "Partner 1";
+    const groomName = parts[1] || "Partner 2";
+    const slug = await generateFriendlyWeddingSlug(brideName, groomName, "WEDDING");
     await prisma.timelineItem.create({
       data: {
         title: "Il nostro evento",
@@ -304,8 +307,8 @@ export async function registerAction(role: string, data: any) {
         type: "WEDDING",
         ownerId: user.id,
         coupleId: user.id,
-        brideName: parts[0] || "Partner 1",
-        groomName: parts[1] || "Partner 2",
+        brideName,
+        groomName,
       },
     });
     redirectUrl = `/couple/${slug}`;

@@ -177,24 +177,30 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
                     <Input className="rounded-l-none" value={profile.slug} onChange={e => setProfile({...profile, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')})} required placeholder="es. mario-rossi-foto" />
                   </div>
                 </div>
+                <div className="md:col-span-2 bg-amber-50/80 border border-amber-200 rounded-xl p-4 text-xs text-amber-950 leading-relaxed">
+                  <strong className="block text-sm font-semibold text-amber-900 mb-1">
+                    Novità Ecosistema Protetto GentiLuna — Recapiti Riservati &amp; Contatti Tracciati
+                  </strong>
+                  Per proteggerti dallo spam e garantirti che ogni richiesta degli sposi sia tracciata nella tua dashboard, i tuoi recapiti diretti qui sotto (Email, Telefono, WhatsApp, Sito Web e Instagram) <strong>restano riservati ad uso interno di GentiLuna</strong> (per verifica profilo e notifiche immediate) e non vengono più esposti pubblicamente in chiaro. Gli sposi ti contatteranno tramite il pulsante <strong>Richiedi Preventivo</strong> e la <strong>Live Chat interna protetta</strong>.
+                </div>
                 <div className="space-y-2">
-                  <Label>Sito Web</Label>
+                  <Label>Sito Web (Uso interno / verifica)</Label>
                   <Input value={profile.website || ""} onChange={e => setProfile({...profile, website: e.target.value})} placeholder="https://" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Email Contatto</Label>
+                  <Label>Email Contatto (Per ricevere le notifiche GentiLuna)</Label>
                   <Input type="email" value={profile.contactEmail || ""} onChange={e => setProfile({...profile, contactEmail: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Telefono Contatto</Label>
+                  <Label>Telefono Contatto (Riservato / verifica)</Label>
                   <Input value={profile.contactPhone || ""} onChange={e => setProfile({...profile, contactPhone: e.target.value})} />
                 </div>
                 <div className="space-y-2">
-                  <Label>WhatsApp</Label>
+                  <Label>WhatsApp (Riservato / verifica)</Label>
                   <Input value={profile.whatsapp || ""} onChange={e => setProfile({...profile, whatsapp: e.target.value})} placeholder="Es. +39..." />
                 </div>
                 <div className="space-y-2">
-                  <Label>Instagram (Username)</Label>
+                  <Label>Instagram (Riservato / verifica)</Label>
                   <Input value={profile.instagram || ""} onChange={e => setProfile({...profile, instagram: e.target.value.replace('@', '')})} placeholder="tuonome" />
                 </div>
               </div>

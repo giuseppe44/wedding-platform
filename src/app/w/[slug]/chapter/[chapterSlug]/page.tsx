@@ -3,7 +3,7 @@ import GuestLogin from "../../GuestLogin";
 import { verifyTimelineAccess } from "@/lib/accessControl";
 import { getUserEntitlements } from "@/lib/entitlementHelper";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { headers } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,6 +14,8 @@ import GuestbookForm from "../../GuestbookForm";
 import GuestRegistrationForm from "../../GuestRegistrationForm";
 import { getSession } from "@/lib/auth";
 import LoadMoreGallery from "@/components/LoadMoreGallery";
+import ShareChapterButtons from "@/components/ShareChapterButtons";
+import { resolveLegacyTimelineSlug } from "@/lib/slugify";
 import WeddingDetails from "../../WeddingDetails";
 import GiftSection from "../../GiftSection";
 import PublicProsSection from "../../PublicProsSection";
@@ -61,7 +63,14 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
     select: { title: true, brideName: true, groomName: true, themeColor: true }
   });
 
-  if (!wedding) { return notFound(); }
+  if (!wedding || !mainWedding) {
+    const resolvedSlug = mainWedding ? slug : (await resolveLegacyTimelineSlug(slug)) || slug;
+    const resolvedChap = wedding ? chapterSlug : (await resolveLegacyTimelineSlug(chapterSlug)) || chapterSlug;
+    if (resolvedSlug !== slug || resolvedChap !== chapterSlug) {
+      permanentRedirect(`/w/${resolvedSlug}/chapter/${resolvedChap}${token ? `?token=${encodeURIComponent(token)}` : ""}`);
+    }
+    if (!wedding) { return notFound(); }
+  }
   
   const displayTitle = wedding.title || "Capitolo";
   const config = { authors: "gli sposi" };
@@ -83,12 +92,17 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
   return (
     <EnvelopeOpening initials={`${wedding.brideName.charAt(0)}&${wedding.groomName.charAt(0)}`}>
       <div className="min-h-screen bg-stone-50 font-sans text-stone-800">
-      <div className="bg-white border-b border-stone-200 px-6 py-4 flex items-center shadow-sm relative z-50">
+      <div className="bg-white border-b border-stone-200 px-6 py-4 flex flex-wrap items-center justify-between gap-3 shadow-sm relative z-50">
         <Link href={`/w/${slug}`}>
           <Button variant="ghost" className="gap-2 text-stone-600 hover:text-stone-900 rounded-full">
             ← Torna a {mainWedding?.title || (mainWedding ? `${mainWedding.brideName} & ${mainWedding.groomName}` : 'Home')}
           </Button>
         </Link>
+        <ShareChapterButtons
+          urlPath={`/w/${slug}/chapter/${chapterSlug}`}
+          title={`${displayTitle} — ${wedding.brideName} & ${wedding.groomName}`}
+          label="Condividi capitolo:"
+        />
       </div>
 
 
@@ -126,16 +140,25 @@ export default async function PublicTimelinePage({ params, searchParams }: { par
           )}
 
           {wedding.locations && wedding.locations.length > 0 && (
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 text-stone-300">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-stone-200">
               {wedding.locations.map((loc: any, idx: number) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
-                  <span className="font-medium text-lg">{loc.name}</span>
-                  {loc.address && <span className="font-light opacity-80">- {loc.address}</span>}
+                <div key={idx} className="inline-flex items-center gap-2 bg-black/35 backdrop-blur-sm border border-white/15 px-4 py-2 rounded-full text-sm md:text-base">
+                  <MapPin className="w-4 h-4 text-rose-300 shrink-0" />
+                  <span className="font-medium">{loc.name}</span>
+                  {loc.address && <span className="font-light opacity-85">— {loc.address}</span>}
                 </div>
               ))}
             </div>
           )}
+
+          <div className="mt-8">
+            <ShareChapterButtons
+              urlPath={`/w/${slug}/chapter/${chapterSlug}`}
+              title={`${displayTitle} — ${wedding.brideName} & ${wedding.groomName}`}
+              variant="dark"
+              label="Condividi questo capitolo:"
+            />
+          </div>
         </div>
       </div>
 

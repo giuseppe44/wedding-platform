@@ -78,7 +78,13 @@ export async function createChapter(weddingId: string, formData: FormData) {
   const selectedGuestIds = formData.getAll("selectedGuests[]") as string[];
   const isPublic = visibility === "PUBLIC" || visibility === "INVITED"; 
   
-  const baseSlug = (title || type).toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString().slice(-4);
+  const { generateFriendlyChapterSlug } = await import("@/lib/slugify");
+  const baseSlug = await generateFriendlyChapterSlug(
+    baseWedding.brideName,
+    baseWedding.groomName,
+    title || "",
+    type
+  );
 
   let coverImage = "";
   const coverFile = formData.get("coverFile") as File | null;

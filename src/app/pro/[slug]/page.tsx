@@ -6,6 +6,8 @@ import { ExternalLink, Camera, Mail, Phone, MessageCircle, MapPin, Lock, ArrowUp
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import PublicReviewForm from "./PublicReviewForm";
+import ProContactBox from "./ProContactBox";
+import { getSession } from "@/lib/auth";
 
 const CATEGORY_LABELS: Record<string, string> = {
   PHOTOGRAPHER: "Fotografo",
@@ -66,6 +68,8 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
   });
 
   if (!profile) notFound();
+
+  const session = await getSession();
 
   // Controlla se il professionista ha un piano premium attivo
   const sub = await prisma.subscription.findUnique({
@@ -304,53 +308,14 @@ export default async function ProPublicProfile({ params }: { params: Promise<{ s
           </section>
         </div>
 
-        {/* Info Laterali */}
+        {/* Info Laterali - Contatto Protetto 100% Interno a GentiLuna */}
         <div className="space-y-8">
-          <div className="bg-stone-50 p-6 rounded-2xl border border-stone-200 shadow-sm sticky top-8">
-            <h3 className="font-serif text-lg text-stone-800 mb-6">Contatti</h3>
-            
-            <div className="space-y-4">
-              {!isPremium ? (
-                <div className="bg-white border border-stone-200 p-4 rounded-xl text-center">
-                  <p className="text-sm font-semibold text-stone-600 mb-2 flex justify-center items-center gap-2"><Lock className="w-4 h-4"/> Contatti Privati</p>
-                  <p className="text-xs text-stone-400 mb-3">Contatti in chiaro riservati ai profili Premium.</p>
-                  <Link href="/dashboard/billing"><Button variant="outline" size="sm" className="w-full text-stone-800 bg-white">Scopri come sbloccarli</Button></Link>
-                </div>
-              ) : (
-                <>
-                  {profile.contactEmail && (
-                    <a href={`mailto:${profile.contactEmail}`} className="flex items-center gap-3 text-stone-600 hover:text-stone-900 transition-colors">
-                      <Mail className="w-5 h-5 text-stone-400" /> {profile.contactEmail}
-                    </a>
-                  )}
-                  {profile.contactPhone && (
-                    <a href={`tel:${profile.contactPhone}`} className="flex items-center gap-3 text-stone-600 hover:text-stone-900 transition-colors">
-                      <Phone className="w-5 h-5 text-stone-400" /> {profile.contactPhone}
-                    </a>
-                  )}
-                  {profile.whatsapp && (
-                    <a href={`https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-green-600 hover:text-green-700 transition-colors">
-                      <MessageCircle className="w-5 h-5 text-green-500" /> WhatsApp
-                    </a>
-                  )}
-                </>
-              )}
-                {profile.website && (
-                  <a href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-stone-600 hover:text-stone-900 transition-colors">
-                    <ExternalLink className="w-5 h-5 text-stone-400" /> Sito Web
-                  </a>
-                )}
-              {profile.instagram && (
-                <a href={`https://instagram.com/${profile.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-stone-600 hover:text-stone-900 transition-colors">
-                  <Camera className="w-5 h-5 text-stone-400" /> Instagram
-                </a>
-              )}
-            </div>
-            
-            <div className="mt-8 pt-6 border-t border-stone-200">
-              <Button className="w-full bg-stone-900 text-white hover:bg-stone-800 rounded-xl">Richiedi Preventivo</Button>
-            </div>
-          </div>
+          <ProContactBox
+            proId={profile.id}
+            proName={profile.businessName}
+            serviceArea={profile.serviceArea}
+            isLoggedIn={Boolean(session)}
+          />
         </div>
       </div>
     </div>

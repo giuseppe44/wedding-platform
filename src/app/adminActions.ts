@@ -196,3 +196,45 @@ export async function updateUserPlan(userId: string, planName: string) {
 
   revalidatePath("/admin");
 }
+
+export async function migrateLegacyWeddingSlugs() {
+  await requireAuth(["ADMIN"]);
+  const { generateFriendlyWeddingSlug } = await import("@/lib/slugify");
+
+  const legacyItems = await prisma.timelineItem.findMany({
+    where: {
+      type: "WEDDING",
+      slug: { startsWith: "nozze-" },
+    },
+    select: {
+      id: true,
+      slug: true,
+      brideName: true,
+      groomName: true,
+      type: true,
+    },
+  });
+
+  const updated: { oldSlug: string; newSlug: string }[] = [];
+
+  for (const item of legacyItems) {
+    // Converti solo gli slug nel vecchio formato `nozze-<6caratteri>`
+    if (!/^nozze-[a-z0-9]{6}$/i.test(item.slug)) continue;
+    // Salta account di test con nomi segnaposto
+    const b = (item.brideName || "").trim();
+    const g = (item.groomName || "").trim();
+    if (!b || b.toLowerCase().includes("test")) continue;
+
+    const newSlug = await generateFriendlyWeddingSlug(b, g, item.type, item.id);
+    if (newSlug && newSlug !== item.slug) {
+      await prisma.timelineItem.update({
+        where: { id: item.id },
+        data: { slug: newSlug },
+      });
+      updated.push({ oldSlug: item.slug, newSlug });
+    }
+  }
+
+  revalidatePath("/admin");
+  return { count: updated.length, updated };
+}

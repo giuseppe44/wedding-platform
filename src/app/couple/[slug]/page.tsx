@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { verifyProAssignment } from "@/app/proAssignmentActions";
 import { headers } from "next/headers";
 import { requireAuth } from "@/lib/auth";
+import { resolveLegacyTimelineSlug } from "@/lib/slugify";
+import ShareChapterButtons from "@/components/ShareChapterButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,7 +31,13 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
     where: { slug: slug },
   });
 
-  if (!wedding) notFound();
+  if (!wedding) {
+    const newSlug = await resolveLegacyTimelineSlug(slug);
+    if (newSlug) {
+      permanentRedirect(`/couple/${newSlug}`);
+    }
+    notFound();
+  }
 
   
   const isOwner = wedding.ownerId === session.userId || wedding.coupleId === session.userId || session.role === "ADMIN";
@@ -319,6 +327,13 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
                         </Button>
                       </Link>
                     </div>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-stone-100">
+                    <ShareChapterButtons
+                      urlPath={`/w/${wedding.slug}/chapter/${chapter.slug}`}
+                      title={`${isWedding ? "Il Matrimonio" : (chapter.title || CHAPTER_TYPES[chapter.type] || "Capitolo")} — ${wedding.brideName} & ${wedding.groomName}`}
+                      label="Condividi questo capitolo:"
+                    />
                   </div>
                 </div>
               </div>

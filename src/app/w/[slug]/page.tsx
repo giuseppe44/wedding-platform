@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
 import EnvelopeOpening from "@/components/w/EnvelopeOpening";
 import ScratchDate from "@/components/w/ScratchDate";
+import ShareChapterButtons from "@/components/ShareChapterButtons";
 import { verifyTimelineAccess } from "@/lib/accessControl";
+import { resolveLegacyTimelineSlug } from "@/lib/slugify";
 import GuestLogin from "./GuestLogin";
 
 export default async function PublicHubPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
@@ -23,7 +25,13 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
     }
   });
 
-  if (!wedding) { return notFound(); }
+  if (!wedding) {
+    const newSlug = await resolveLegacyTimelineSlug(slug);
+    if (newSlug) {
+      permanentRedirect(`/w/${newSlug}${token ? `?token=${encodeURIComponent(token)}` : ""}`);
+    }
+    return notFound();
+  }
 
   const hasAccess = await verifyTimelineAccess(wedding, "VIEW_PUBLIC");
   if (!hasAccess) {
@@ -117,6 +125,15 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
                 <span className="text-lg">{wedding.locations[0].name}</span>
               </div>
             )}
+
+            <div className="mt-8">
+              <ShareChapterButtons
+                urlPath={`/w/${wedding.slug}`}
+                title={`${wedding.brideName} & ${wedding.groomName}`}
+                variant="dark"
+                label="Condividi sito:"
+              />
+            </div>
           </div>
         </div>
 
@@ -133,10 +150,11 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
             {authorizedChapters.map((c: any, index: number) => {
               const chapConfig = CHAPTER_TYPES[c.type] || CHAPTER_TYPES["CUSTOM"];
               const cTitle = c.type === "WEDDING" ? "Il Matrimonio" : (c.title || chapConfig.type);
+              const chapterPublicUrl = `/w/${wedding.slug}/chapter/${c.slug}`;
               
               return (
-                <Link key={c.id} href={`/w/${slug}/chapter/${c.slug}`}>
-                  <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-stone-200 overflow-hidden group cursor-pointer">
+                <Card key={c.id} className="h-full flex flex-col hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-stone-200 overflow-hidden group">
+                  <Link href={chapterPublicUrl} className="block">
                     {c.coverImage ? (
                       <div className="h-48 w-full relative overflow-hidden bg-stone-200">
                         <div 
@@ -161,16 +179,26 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
                         <h3 className="text-2xl font-serif text-stone-800">{cTitle}</h3>
                       </div>
                     )}
-                    <CardContent className="p-6">
+                  </Link>
+                  <CardContent className="p-6 flex-1 flex flex-col justify-between">
+                    <div>
                       <p className="text-stone-600 line-clamp-3 mb-4">
                         {c.description || `Esplora i dettagli, le foto e i contenuti speciali di questo capitolo.`}
                       </p>
-                      <Button variant="outline" className="w-full justify-between group-hover:bg-stone-900 group-hover:text-white transition-colors">
-                        Scopri di più <span className="text-xl">→</span>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                      <Link href={chapterPublicUrl}>
+                        <Button variant="outline" className="w-full justify-between group-hover:bg-stone-900 group-hover:text-white transition-colors">
+                          Scopri di più <span className="text-xl">→</span>
+                        </Button>
+                      </Link>
+                    </div>
+                    <ShareChapterButtons
+                      urlPath={chapterPublicUrl}
+                      title={`${cTitle} — ${wedding.brideName} & ${wedding.groomName}`}
+                      compact
+                      label="Condividi:"
+                    />
+                  </CardContent>
+                </Card>
               );
             })}
           </div>

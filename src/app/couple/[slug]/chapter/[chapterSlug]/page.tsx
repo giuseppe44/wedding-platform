@@ -1,5 +1,6 @@
 ﻿import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { resolveLegacyTimelineSlug } from "@/lib/slugify";
 import { verifyProAssignment } from "@/app/proAssignmentActions";
 import { requireAuth } from "@/lib/auth";
 import Link from "next/link";
@@ -35,7 +36,15 @@ export default async function ChapterDetailPage({ params, searchParams }: { para
     include: { guests: { orderBy: { name: "asc" } } },
   });
   
-  if (!wedding) { notFound(); return; }
+  if (!wedding) {
+    const newSlug = await resolveLegacyTimelineSlug(slug);
+    const newChap = (await resolveLegacyTimelineSlug(chapterSlug)) || chapterSlug;
+    if (newSlug) {
+      permanentRedirect(`/couple/${newSlug}/chapter/${newChap}`);
+    }
+    notFound();
+    return;
+  }
   const entitlements = await getUserEntitlements(wedding.ownerId);
 
   if (!wedding) notFound();

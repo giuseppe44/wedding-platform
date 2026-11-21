@@ -77,7 +77,49 @@ export default function TermsOfServicePage() {
               <ul className="list-disc pl-6 space-y-2 mt-2">
                 <li><strong>Alle Coppie e alle Famiglie (&ldquo;Sposi&rdquo;):</strong> di creare uno spazio digitale dedicato al proprio matrimonio e ai capitoli della propria vita, raccogliere foto e video dagli invitati tramite QR Code, gestire conferme di presenza (RSVP), allergie/intolleranze, disposizione dei tavoli, dediche e liste regalo.</li>
                 <li><strong>Agli Invitati (&ldquo;Ospiti&rdquo;):</strong> di visualizzare le informazioni dell&apos;evento, confermare la propria partecipazione e caricare fotografie, video e messaggi di auguri per gli Sposi.</li>
-                <li><strong>Ai Professionisti del Settore (&ldquo;Professionisti / Fornitori&rdquo;):</strong> di pubblicare una vetrina promozionale nella directory, caricare il proprio portfolio, consegnare gallerie fotografiche agli sposi e ricevere richieste di contatto o recensioni.</li>
+                <li><strong>Ai Professionisti del Settore (&ldquo;Professionisti / Fornitori&rdquo;):</strong> di pubblicare una vetrina promozionale nella directory, caricare il proprio portfolio, consegnare gallerie fotografiche agli sposi e ricevere richieste di preventivo tracciate, messaggi in Live Chat protetta e recensioni verificate.</li>
+              </ul>
+            </section>
+
+            {/* 2-BIS. ECOSISTEMA PROTETTO E COMUNICAZIONI INTERNE */}
+            <section>
+              <h2 className="text-2xl font-serif text-stone-900 mb-3">
+                2-bis. Ecosistema Protetto, Riservatezza dei Recapiti e Divieto di Disintermediazione
+              </h2>
+              <p>
+                Per tutelare la privacy degli utenti contro spam e raccolta automatizzata di dati, nonché per garantire la completa tracciabilità delle richieste di preventivo e la qualità del servizio all&apos;interno di <strong>GentiLuna</strong>:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 mt-2">
+                <li>
+                  <strong>Recapiti Riservati:</strong> i contatti diretti dei Professionisti (email, telefono, WhatsApp, siti web esterni e profili social) salvati nel pannello di gestione sono utilizzati esclusivamente da GentiLuna per la verifica dell&apos;account e l&apos;invio di notifiche operative e <strong>non vengono esposti pubblicamente in chiaro</strong> sulle vetrine.
+                </li>
+                <li>
+                  <strong>Comunicazioni tramite Piattaforma:</strong> tutte le richieste di preventivo e le conversazioni preliminari tra Sposi e Professionisti devono avvenire esclusivamente tramite i moduli di richiesta interni e la <strong>Live Chat protetta di GentiLuna</strong>.
+                </li>
+                <li>
+                  <strong>Filtro Anti-Scambio Contatti:</strong> è vietato inserire o scambiare numeri di telefono, indirizzi email personali, riferimenti WhatsApp, handle social o link a siti esterni nei moduli di richiesta, nelle descrizioni pubbliche e nella Live Chat interna. La piattaforma applica controlli automatici di blocco per salvaguardare l&apos;ecosistema e si riserva il diritto di limitare o sospendere gli account in caso di tentativi reiterati di aggiramento.
+                </li>
+              </ul>
+            </section>
+
+            {/* 2-TER. ASSISTENTE VIRTUALE AI (LUNA) - EU AI ACT */}
+            <section>
+              <h2 className="text-2xl font-serif text-stone-900 mb-3">
+                2-ter. Assistente Virtuale AI (&ldquo;Luna&rdquo;) — Informativa di Trasparenza (Art. 50 Reg. UE 2024/1689)
+              </h2>
+              <p>
+                <strong>GentiLuna</strong> mette a disposizione degli utenti un assistente virtuale automatizzato denominato <strong>&ldquo;Luna&rdquo;</strong> per fornire supporto informativo e guida alla compilazione delle pagine. Ai sensi dell&apos;<strong>Art. 50 del Regolamento (UE) 2024/1689 (AI Act)</strong> e della normativa italiana vigente:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 mt-2">
+                <li>
+                  <strong>Trasparenza:</strong> l&apos;utente è chiaramente informato tramite apposito badge e avviso in chat che sta interagendo con un sistema automatizzato di intelligenza artificiale e non con un operatore umano.
+                </li>
+                <li>
+                  <strong>Natura Informativa e Limiti:</strong> le risposte di &ldquo;Luna&rdquo; hanno finalità puramente orientative e di assistenza tecnica d&apos;uso della piattaforma e non costituiscono consulenza legale, fiscale o contrattuale vincolante.
+                </li>
+                <li>
+                  <strong>Tutela dei Dati (GDPR):</strong> l&apos;assistente non richiede né memorizza dati personali sensibili, password o coordinate bancarie; le conversazioni non vengono utilizzate per l&apos;addestramento di modelli pubblici. In ogni momento l&apos;utente può rivolgersi all&apos;assistenza umana tramite la pagina dedicata <a href="/assistenza" className="text-rose-600 underline">/assistenza</a>.
+                </li>
               </ul>
             </section>
 

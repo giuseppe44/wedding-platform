@@ -180,7 +180,7 @@ export const PLANS_CATALOG: Record<string, CatalogPlan> = {
     features: [
       "Gestione fino a 3 Eventi all'anno",
       "Profilo base nella directory Fornitori",
-      "Lead generation standard (Email)",
+      "Lead generation interna con notifiche e richieste tracciate",
       "Galleria privata per gli sposi"
     ]
   },
@@ -198,7 +198,7 @@ export const PLANS_CATALOG: Record<string, CatalogPlan> = {
     badge: "PIÙ SCELTO DAI PRO",
     features: [
       "Eventi Illimitati",
-      "Vetrina Premium ad alta visibilità con contatti diretti",
+      "Vetrina Premium ad alta visibilità con Preventivi Tracciati e Live Chat",
       "Modulo Upsell e Richiesta Stampe",
       "Download album in Alta Risoluzione",
       "Personalizzazione colori e logo galleria"
