@@ -121,17 +121,17 @@ export default function Home() {
       </nav>
 
       {/* HERO SECTION */}
-      <header className="relative min-h-[82vh] md:min-h-[90vh] flex flex-col justify-center overflow-hidden bg-stone-950">
+      <header className="relative min-h-[68vh] md:min-h-[76vh] flex flex-col justify-center overflow-hidden bg-stone-950">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" 
             alt="Wedding Memories"
             className="w-full h-full object-cover opacity-60 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/45 to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20 md:pt-24 md:pb-12 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20 md:pt-28 md:pb-24 text-center">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -144,53 +144,64 @@ export default function Home() {
               Il Vostro Spazio Unico, <br className="hidden md:block" />
               <span className="text-stone-300 italic font-light">per Ricordare, Condividere e Organizzare.</span>
             </h1>
-            <p className="text-base sm:text-xl md:text-2xl text-stone-300 font-light max-w-sm sm:max-w-3xl mx-auto mb-4 md:mb-10 leading-snug sm:leading-relaxed drop-shadow-md">
+            <p className="text-base sm:text-xl md:text-2xl text-stone-300 font-light max-w-sm sm:max-w-3xl mx-auto mb-7 leading-snug sm:leading-relaxed drop-shadow-md">
               Il matrimonio è solo l&apos;inizio della vostra storia: da qui in avanti, tutto ciò che vivrete insieme lo ritroverete qua.
             </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link href="/funzioni-sposi">
+                <Button className="rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold px-6 h-11 text-xs sm:text-sm shadow-lg shadow-rose-950/40">
+                  Per Sposi &amp; Eventi <ArrowRight className="w-4 h-4 ml-1.5" />
+                </Button>
+              </Link>
+              <Link href="/funzioni-professionisti">
+                <Button variant="outline" className="rounded-full bg-white/10 hover:bg-white/20 border-amber-300/40 text-amber-200 hover:text-white font-semibold px-6 h-11 text-xs sm:text-sm backdrop-blur-md">
+                  Per Fotografi &amp; Professionisti
+                </Button>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </header>
 
       
-        {/* THREE MAIN GATEWAYS - LUMINOSO E PREMIUM */}
-        <section className="pt-10 pb-16 md:pt-28 md:pb-32 bg-gradient-to-b from-stone-50 via-white to-white relative z-20 -mt-14 md:-mt-20 rounded-t-[2.5rem] sm:rounded-t-[4rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)]">
+        {/* THREE MAIN GATEWAYS - COMPATTO, RICCO E LUMINOSO */}
+        <section className="pt-6 pb-14 md:pt-10 md:pb-20 bg-gradient-to-b from-amber-50/40 via-white to-white relative z-20 -mt-10 md:-mt-14 rounded-t-[2.25rem] sm:rounded-t-[3.5rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)] border-t border-amber-100/60">
           <div className="max-w-7xl mx-auto px-6">
+            <div className="w-14 h-1 rounded-full bg-gradient-to-r from-amber-300/70 via-rose-300/70 to-amber-300/70 mx-auto mb-5 md:mb-7" />
             
-            
-              {/* Animazione introduttiva capitoli ESPANSA */}
-              <div className="relative z-30 mb-12 md:mb-24 max-w-5xl mx-auto text-center px-2 sm:px-4 pt-0 md:pt-10">
-                <div className="absolute inset-0 pointer-events-none hidden md:block">
-                  {/* Elementi fluttuanti di background */}
+              {/* Introduzione capitoli raccolta senza spazi vuoti */}
+              <div className="relative z-30 mb-8 md:mb-12 max-w-5xl mx-auto text-center px-2 sm:px-4">
+                <div className="absolute inset-0 pointer-events-none hidden xl:block">
                   <motion.div 
-                    animate={{ y: [0, -15, 0], rotate: [0, 5, -5, 0] }} 
+                    animate={{ y: [0, -10, 0], rotate: [0, 3, -3, 0] }} 
                     transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                    className="absolute top-0 left-0 lg:-left-20 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-rose-50 flex items-center gap-3"
+                    className="absolute top-2 -left-12 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-rose-100 flex items-center gap-2.5"
                   >
-                    <span className="text-3xl">💍</span> <span className="font-serif text-stone-700 font-medium">Il Matrimonio</span>
+                    <span className="text-2xl">💍</span> <span className="font-serif text-sm text-stone-700 font-medium">Il Matrimonio</span>
                   </motion.div>
                   
                   <motion.div 
-                    animate={{ y: [0, 20, 0], rotate: [0, -5, 5, 0] }} 
+                    animate={{ y: [0, 12, 0], rotate: [0, -3, 3, 0] }} 
                     transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1 }}
-                    className="absolute top-20 right-0 lg:-right-10 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-stone-100 flex items-center gap-3"
+                    className="absolute top-4 -right-10 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-amber-100 flex items-center gap-2.5"
                   >
-                    <span className="text-3xl">✈️</span> <span className="font-serif text-stone-700 font-medium">Luna di Miele</span>
+                    <span className="text-2xl">✈️</span> <span className="font-serif text-sm text-stone-700 font-medium">Luna di Miele</span>
                   </motion.div>
                   
                   <motion.div 
-                    animate={{ y: [0, -25, 0], rotate: [0, 10, -5, 0] }} 
+                    animate={{ y: [0, -12, 0], rotate: [0, 5, -3, 0] }} 
                     transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 2 }}
-                    className="absolute bottom-10 left-10 lg:left-0 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-blue-50 flex items-center gap-3"
+                    className="absolute bottom-2 -left-6 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-sky-100 flex items-center gap-2.5"
                   >
-                    <span className="text-3xl">🍼</span> <span className="font-serif text-stone-700 font-medium">La Nascita</span>
+                    <span className="text-2xl">🍼</span> <span className="font-serif text-sm text-stone-700 font-medium">La Nascita</span>
                   </motion.div>
 
                   <motion.div 
-                    animate={{ y: [0, 15, 0], rotate: [0, -8, 8, 0] }} 
+                    animate={{ y: [0, 10, 0], rotate: [0, -4, 4, 0] }} 
                     transition={{ duration: 4.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1.5 }}
-                    className="absolute -bottom-5 right-20 lg:right-10 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-xl border border-amber-50 flex items-center gap-3"
+                    className="absolute bottom-2 -right-6 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-amber-100 flex items-center gap-2.5"
                   >
-                    <span className="text-3xl">🎓</span> <span className="font-serif text-stone-700 font-medium">Traguardi</span>
+                    <span className="text-2xl">🎓</span> <span className="font-serif text-sm text-stone-700 font-medium">Traguardi</span>
                   </motion.div>
                 </div>
 
@@ -198,7 +209,7 @@ export default function Home() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  className="inline-flex items-center gap-2.5 sm:gap-4 bg-rose-50/80 backdrop-blur-md px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-inner border border-rose-100 mb-6 md:mb-8 mt-0 md:mt-12 relative z-10"
+                  className="inline-flex items-center gap-2.5 sm:gap-3.5 bg-rose-50/90 backdrop-blur-md px-3.5 sm:px-5 py-1.5 rounded-full shadow-inner border border-rose-200/70 mb-4 md:mb-5 relative z-10"
                 >
                   <div className="flex -space-x-2.5 sm:-space-x-3 shrink-0">
                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-400 flex items-center justify-center text-white text-[11px] sm:text-xs border-2 border-white shadow-sm z-30">M</div>
@@ -251,6 +262,24 @@ export default function Home() {
                 >
                   Da un matrimonio indimenticabile al primo sorriso di tuo figlio. Crea un portale privato, raccogli le foto degli invitati e costruisci un ricordo che durer&agrave; per sempre.
                 </motion.p>
+
+                {/* Pillole capitoli compatte per mobile & tablet */}
+                <div className="mt-5 flex flex-wrap justify-center gap-2 xl:hidden relative z-10">
+                  {[
+                    { emoji: "💍", label: "Matrimonio" },
+                    { emoji: "✈️", label: "Luna di Miele" },
+                    { emoji: "🍼", label: "Nascita" },
+                    { emoji: "🎓", label: "Traguardi" },
+                  ].map((chip) => (
+                    <span
+                      key={chip.label}
+                      className="inline-flex items-center gap-1.5 bg-white border border-stone-200/90 shadow-xs px-3 py-1 rounded-full text-xs font-serif text-stone-700"
+                    >
+                      <span>{chip.emoji}</span>
+                      <span>{chip.label}</span>
+                    </span>
+                  ))}
+                </div>
               </div>
 
             <motion.div 
