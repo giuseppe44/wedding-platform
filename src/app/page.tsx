@@ -7,7 +7,7 @@ import {
   Heart, Camera, Search, MapPin, Users, ArrowRight, 
   Briefcase, Calendar, Star, Menu, Sparkles, CheckCircle, 
   Gift, Share2, Image as ImageIcon, MessageCircle, Map,
-  Infinity, LayoutDashboard
+  Infinity, LayoutDashboard, Moon
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import { GentiLunaLogo } from "@/components/GentiLunaLogo";
@@ -137,16 +137,15 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            <span className="inline-block py-1 px-3 rounded-full border border-rose-500/30 bg-rose-500/20 text-rose-300 text-xs font-bold tracking-[0.2em] mb-6 backdrop-blur-md">
+            <span className="inline-block py-1 px-3 rounded-full border border-rose-500/30 bg-rose-500/20 text-rose-200 text-[10px] sm:text-xs font-bold tracking-[0.11em] sm:tracking-[0.2em] mb-5 backdrop-blur-md whitespace-nowrap">
               GENTILUNA • MOLTO PIÙ DI UN SITO WEB
             </span>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-6 leading-tight drop-shadow-xl">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-5 leading-tight drop-shadow-xl">
               Il Vostro Spazio Unico, <br className="hidden md:block" />
               <span className="text-stone-300 italic font-light">per Ricordare, Condividere e Organizzare.</span>
             </h1>
-            <p className="text-lg md:text-2xl text-stone-300 font-light max-w-3xl mx-auto mb-4 md:mb-10 leading-relaxed drop-shadow-md">
-              Il vostro matrimonio è solo l'inizio della vostra vita insieme. 
-              Da lì in avanti, tutto quello che farete lo ritroverete qua.
+            <p className="text-base sm:text-xl md:text-2xl text-stone-300 font-light max-w-sm sm:max-w-3xl mx-auto mb-4 md:mb-10 leading-snug sm:leading-relaxed drop-shadow-md">
+              Il matrimonio è solo l&apos;inizio della vostra storia: da qui in avanti, tutto ciò che vivrete insieme lo ritroverete qua.
             </p>
           </motion.div>
         </div>
@@ -199,23 +198,48 @@ export default function Home() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  className="inline-flex items-center gap-4 bg-rose-50/80 backdrop-blur-md px-5 py-2 rounded-full shadow-inner border border-rose-100 mb-6 md:mb-8 mt-0 md:mt-12 relative z-10"
+                  className="inline-flex items-center gap-2.5 sm:gap-4 bg-rose-50/80 backdrop-blur-md px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-inner border border-rose-100 mb-6 md:mb-8 mt-0 md:mt-12 relative z-10"
                 >
-                  <div className="flex -space-x-3">
-                    <div className="w-8 h-8 rounded-full bg-rose-400 flex items-center justify-center text-white text-xs border-2 border-white shadow-sm z-30">M</div>
-                    <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white text-xs border-2 border-white shadow-sm z-20">L</div>
-                    <div className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-white text-xs border-2 border-white shadow-sm z-10">F</div>
+                  <div className="flex -space-x-2.5 sm:-space-x-3 shrink-0">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-400 flex items-center justify-center text-white text-[11px] sm:text-xs border-2 border-white shadow-sm z-30">M</div>
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-400 flex items-center justify-center text-white text-[11px] sm:text-xs border-2 border-white shadow-sm z-20">L</div>
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-400 flex items-center justify-center text-white text-[11px] sm:text-xs border-2 border-white shadow-sm z-10">F</div>
                   </div>
-                  <span className="text-stone-600 font-serif italic text-sm tracking-wide">I Capitoli della Vostra Vita</span>
+                  <span className="text-stone-700 font-serif italic text-xs sm:text-sm tracking-normal sm:tracking-wide whitespace-nowrap">
+                    I Capitoli della Vostra Vita
+                  </span>
                 </motion.div>
                 
                 <motion.h2 
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-serif text-stone-900 mb-6 relative z-10 leading-tight drop-shadow-sm"
+                  className="text-3xl sm:text-5xl lg:text-6xl font-serif text-stone-900 mb-6 relative z-10 leading-tight drop-shadow-sm"
                 >
-                  Custodisci ogni <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-amber-500 italic">momento prezioso</span>
+                  Custodisci ogni{" "}
+                  <motion.span
+                    animate={{ y: [0, -2, 0] }}
+                    transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                    className="relative inline-flex items-center gap-1.5 px-1"
+                  >
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-rose-500 to-amber-500 italic font-semibold">
+                      momento prezioso
+                    </span>
+                    <motion.span
+                      animate={{ opacity: [0.35, 1, 0.35], scale: [0.85, 1.15, 0.85], rotate: [0, 12, 0] }}
+                      transition={{ duration: 2.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      className="inline-flex text-amber-500 shrink-0"
+                    >
+                      <Moon className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-300/60" />
+                    </motion.span>
+                    <motion.span
+                      animate={{ opacity: [0.2, 1, 0.2], scale: [0.7, 1.2, 0.7] }}
+                      transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, delay: 0.7, ease: "easeInOut" }}
+                      className="inline-flex text-amber-400 -ml-1 -mt-4 shrink-0"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    </motion.span>
+                  </motion.span>
                 </motion.h2>
                 
                 <motion.p 
@@ -284,7 +308,9 @@ export default function Home() {
                         className="absolute inset-0 w-full h-1/2 bg-gradient-to-b from-transparent via-stone-300/40 to-transparent"
                       ></motion.div>
                     </div>
-                    <h3 className="text-3xl font-serif text-stone-900 mb-4 group-hover:text-stone-700 transition-colors">Fornitori & Top Pro</h3>
+                    <h3 className="text-3xl font-serif text-stone-900 mb-4 group-hover:text-stone-700 transition-colors">
+                      Fornitori &amp; <span className="whitespace-nowrap">Top Pro</span>
+                    </h3>
                     <p className="text-stone-500 font-light leading-relaxed text-[1.1rem]">
                       Ricerca tra i migliori professionisti del settore. Esplora l'elenco generale dei nostri iscritti e trova fotografo, location, e molto altro.
                     </p>

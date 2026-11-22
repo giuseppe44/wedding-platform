@@ -67,7 +67,7 @@ export default function Countdown({
       </div>
       <h2 className="text-2xl sm:text-3xl font-serif text-stone-900 mb-6">{headline}</h2>
 
-      <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+      <div className="grid grid-cols-4 gap-2 sm:gap-5 max-w-[330px] sm:max-w-lg mx-auto">
         {[
           { label: "GIORNI", value: timeLeft.days },
           { label: "ORE", value: timeLeft.hours },
@@ -81,10 +81,12 @@ export default function Countdown({
             transition={{ duration: 0.45, delay: 0.1 + idx * 0.08 }}
             className="flex flex-col items-center"
           >
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-white border border-amber-200/80 rounded-full flex items-center justify-center shadow-md mb-2">
-              <span className="text-xl md:text-2xl font-serif font-bold text-stone-900">{item.value}</span>
+            <div className="w-14 h-14 sm:w-20 sm:h-20 bg-white border border-amber-200/80 rounded-full flex items-center justify-center shadow-md mb-1.5">
+              <span className="text-lg sm:text-2xl font-serif font-bold text-stone-900 tabular-nums">
+                {String(item.value).padStart(2, "0")}
+              </span>
             </div>
-            <span className="text-[10px] md:text-xs font-semibold tracking-widest text-stone-500">
+            <span className="text-[9px] sm:text-xs font-semibold tracking-wider sm:tracking-widest text-stone-500">
               {item.label}
             </span>
           </motion.div>

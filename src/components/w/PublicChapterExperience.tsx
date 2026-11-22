@@ -78,42 +78,28 @@ export default function PublicChapterExperience({
       sessionKey={slug}
     >
       <div className="min-h-screen bg-stone-50 font-sans text-stone-800 flex flex-col overflow-x-hidden">
-        <div className="bg-white/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-sm sticky top-0 z-40">
-          <div className="flex items-center gap-3">
+        <div className="bg-white/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-2 shadow-sm sticky top-0 z-40">
+          <div className="flex items-center gap-2.5 min-w-0">
             <Link
               href="/"
-              className="hidden sm:flex items-center gap-1.5 font-serif text-lg text-stone-900 pr-2 border-r border-stone-200"
+              className="flex items-center gap-1.5 font-serif text-base sm:text-lg text-stone-900 shrink-0"
             >
               <GentiLunaLogo className="w-5 h-5 shrink-0" />
               <span>GentiLuna</span>
             </Link>
-            {showHubBackLink ? (
-              <Link href={`/w/${slug}?hub=1`}>
+            {showHubBackLink && (
+              <Link href={`/w/${slug}?hub=1`} className="hidden sm:inline-block">
                 <Button
                   variant="ghost"
-                  className="gap-1.5 text-stone-700 hover:text-stone-900 rounded-full text-xs sm:text-sm h-9 px-3"
+                  className="gap-1 text-stone-600 hover:text-stone-900 rounded-full text-xs h-8 px-2.5"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
-                  <span>
-                    Storia di {mainWedding?.title || `${mainWedding.brideName} & ${mainWedding.groomName}`}
-                  </span>
+                  <span>Storia</span>
                 </Button>
               </Link>
-            ) : (
-              <span className="text-xs sm:text-sm font-serif font-semibold text-stone-700 px-1">
-                {coupleNames}
-              </span>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Link href={`/w/${slug}/upload`}>
-              <Button
-                size="sm"
-                className="rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold h-8 px-3.5 text-xs gap-1.5"
-              >
-                <Camera className="w-3.5 h-3.5" /> Invia Foto
-              </Button>
-            </Link>
+          <div className="flex items-center shrink-0">
             <ShareChapterButtons
               urlPath={sharePath}
               title={`${displayTitle} — ${coupleNames}`}
@@ -123,7 +109,7 @@ export default function PublicChapterExperience({
         </div>
 
         {/* 1. HERO DEL CAPITOLO */}
-        <div className="relative min-h-[54vh] md:min-h-[64vh] flex flex-col items-center justify-center p-6 py-14 text-center overflow-hidden bg-stone-900 text-white shadow-xl">
+        <div className="relative min-h-[54vh] md:min-h-[64vh] flex flex-col items-center justify-center p-6 py-12 text-center overflow-hidden bg-stone-900 text-white shadow-xl">
           {wedding.coverImage ? (
             <div
               className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
@@ -136,14 +122,23 @@ export default function PublicChapterExperience({
 
           <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-amber-200 text-[11px] font-bold uppercase tracking-widest mb-4 backdrop-blur-sm">
-              <Sparkles className="w-3.5 h-3.5" /> {isWeddingChapter ? "Il Nostro Matrimonio" : displayTitle}
+              <Sparkles className="w-3.5 h-3.5" />{" "}
+              {isWeddingChapter ? "Il Nostro Matrimonio" : displayTitle}
             </span>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-3 drop-shadow-lg tracking-tight">
-              {displayTitle}
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-serif font-semibold mb-3 drop-shadow-xl tracking-tight leading-none text-white">
+              {isWeddingChapter ? (
+                <>
+                  {wedding.brideName}{" "}
+                  <span className="text-amber-200 italic font-light">&amp;</span>{" "}
+                  {wedding.groomName}
+                </>
+              ) : (
+                displayTitle
+              )}
             </h1>
-            {wedding.brideName && wedding.groomName && displayTitle !== coupleNames && (
-              <p className="text-2xl md:text-3xl text-stone-200 font-serif italic mt-1 drop-shadow-md">
+            {!isWeddingChapter && wedding.brideName && wedding.groomName && (
+              <p className="text-xl sm:text-3xl text-stone-200 font-serif italic mt-1 drop-shadow-md">
                 {coupleNames}
               </p>
             )}

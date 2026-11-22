@@ -609,16 +609,34 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
 
         {/* INVITE PROS SECTION */}
         <div className="mt-8 bg-white border border-stone-200 p-8 md:p-10 rounded-3xl shadow-sm text-center">
-          <h3 className="text-2xl font-bold text-stone-800 mb-4 font-serif">Invita il tuo Fotografo</h3>
-          <p className="text-stone-500 mb-8 max-w-2xl mx-auto">
-            Vuoi che il tuo fotografo ufficiale carichi l'album in alta qualità direttamente nel vostro GentiLuna per farlo vedere a tutti gli invitati? Inviagli un link di invito.
+          <h3 className="text-2xl font-bold text-stone-800 mb-3 font-serif">
+            Invita i tuoi Professionisti (Fotografo, Planner, Location...)
+          </h3>
+          <p className="text-stone-500 mb-6 max-w-2xl mx-auto text-sm sm:text-base">
+            Vuoi che il tuo fotografo ufficiale, videomaker o wedding planner collabori su questo spazio su GentiLuna e carichi l&apos;album in alta qualità per gli invitati? Inviagli subito l&apos;invito diretto.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={`https://wa.me/?text=${encodeURIComponent(`Ciao! Stiamo organizzando il nostro spazio su GentiLuna per condividere tutte le foto del matrimonio. Ti andrebbe di iscriverti come nostro fotografo ufficiale? Potrai caricare l'album direttamente lì e mostrare il tuo lavoro a tutti gli invitati! Ecco il link: ${baseUrl}/professionisti`)}`} target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-stone-300 text-stone-700 hover:bg-stone-50 rounded-full font-semibold px-8 h-12">
-                <span className="text-emerald-500 mr-2">WhatsApp</span> Invia Invito al Fotografo
+          <div className="flex flex-wrap gap-3 justify-center">
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`Ciao! Stiamo organizzando il nostro matrimonio su GentiLuna (${baseUrl}/w/${wedding.slug}) per raccogliere le foto e coordinare i dettagli. Ci farebbe piacere averti come nostro professionista ufficiale collegato allo spazio! Registrati o entra da qui: ${baseUrl}/professionisti`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button size="lg" className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-semibold px-6 h-11">
+                Invia Invito ai Professionisti (WhatsApp)
               </Button>
             </a>
+            <a
+              href={`mailto:?subject=${encodeURIComponent(`Invito collaborazione matrimonio ${coupleNamesText} su GentiLuna`)}&body=${encodeURIComponent(`Ciao!\n\nStiamo usando GentiLuna (${baseUrl}/w/${wedding.slug}) per il nostro matrimonio.\nPuoi attivare la tua vetrina e collaborare direttamente sul nostro spazio da qui: ${baseUrl}/professionisti\n\nA presto!\n${coupleNamesText}`)}`}
+            >
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-stone-300 text-stone-700 hover:bg-stone-50 rounded-full font-semibold px-6 h-11">
+                Invia via Email
+              </Button>
+            </a>
+            <Link href="/fornitori">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto border-amber-300 text-amber-800 hover:bg-amber-50 rounded-full font-semibold px-6 h-11">
+                Cerca tra i Professionisti già Iscritti
+              </Button>
+            </Link>
           </div>
         </div>
 

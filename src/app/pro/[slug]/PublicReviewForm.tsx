@@ -39,10 +39,8 @@ export default function PublicReviewForm({ proId, proName }: { proId: string, pr
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <Button className="mt-6 md:mt-0 bg-stone-800 hover:bg-stone-700 text-white rounded-full px-6 shadow-md border-2 border-stone-800 transition-all hover:scale-105 group font-medium gap-2">
-          <MessageCircle className="w-4 h-4 text-stone-300 group-hover:text-white" /> Lascia una Recensione
-        </Button>
+      <DialogTrigger className="mt-6 md:mt-0 inline-flex items-center justify-center bg-stone-800 hover:bg-stone-700 text-white rounded-full px-6 py-2.5 h-10 text-sm shadow-md border-2 border-stone-800 transition-all hover:scale-105 group font-medium gap-2 cursor-pointer">
+        <MessageCircle className="w-4 h-4 text-stone-300 group-hover:text-white" /> Lascia una Recensione
       </DialogTrigger>
       <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>

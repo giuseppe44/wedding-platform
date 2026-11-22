@@ -104,30 +104,30 @@ export default function ProShareInviteCard({
       )}
 
       {/* Share Buttons Row */}
-      <div className="flex flex-wrap gap-2.5">
+      <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
         <button
           type="button"
           onClick={handleShareWhatsapp}
-          className="inline-flex items-center gap-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
         >
-          <MessageCircle className="w-4 h-4" /> Condividi su WhatsApp
+          <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
         </button>
 
         <button
           type="button"
           onClick={handleShareEmail}
-          className="inline-flex items-center gap-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 border border-blue-400/30 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 border border-blue-400/30 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
         >
-          <Mail className="w-4 h-4" /> Invia via Email
+          <Mail className="w-3.5 h-3.5" /> Email
         </button>
 
         <button
           type="button"
           onClick={handleCopyLink}
-          className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
         >
-          {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Link2 className="w-4 h-4" />}
-          <span>{copied ? "Link Vetrina Copiato!" : "Copia Link Vetrina"}</span>
+          {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Link2 className="w-3.5 h-3.5" />}
+          <span>{copied ? "Copiato!" : "Copia Link"}</span>
         </button>
       </div>
 

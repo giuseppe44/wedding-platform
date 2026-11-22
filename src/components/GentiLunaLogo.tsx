@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useId } from "react";
 
 interface GentiLunaLogoProps {
   className?: string;
@@ -9,8 +11,9 @@ export function GentiLunaLogo({
   className = "w-7 h-7",
   variant = "default",
 }: GentiLunaLogoProps) {
-  const gradId = variant === "pro" ? "gentiluna-moon-pro" : "gentiluna-moon-gold";
-  const ribbonId = variant === "pro" ? "gentiluna-ribbon-pro" : "gentiluna-ribbon-silk";
+  const uid = useId().replace(/:/g, "");
+  const moonGradId = `gl-moon-${variant}-${uid}`;
+  const windGradId = `gl-wind-${variant}-${uid}`;
 
   return (
     <svg
@@ -21,64 +24,63 @@ export function GentiLunaLogo({
       aria-hidden="true"
     >
       <defs>
-        <linearGradient id={gradId} x1="12" y1="8" x2="50" y2="56" gradientUnits="userSpaceOnUse">
+        {/* Oro Champagne Satinato: luminoso su sfondi scuri (Hero/Footer) e raffinato su sfondi chiari */}
+        <linearGradient id={moonGradId} x1="10" y1="8" x2="42" y2="54" gradientUnits="userSpaceOnUse">
           {variant === "pro" ? (
             <>
-              <stop offset="0%" stopColor="#fef3c7" />
-              <stop offset="50%" stopColor="#f59e0b" />
-              <stop offset="100%" stopColor="#d97706" />
+              <stop offset="0%" stopColor="#fffbeb" />
+              <stop offset="48%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#b45309" />
             </>
           ) : (
             <>
-              <stop offset="0%" stopColor="#fde68a" />
-              <stop offset="48%" stopColor="#fb7185" />
-              <stop offset="100%" stopColor="#f43f5e" />
+              <stop offset="0%" stopColor="#fffbeb" />
+              <stop offset="45%" stopColor="#f3d98b" />
+              <stop offset="100%" stopColor="#c5942d" />
             </>
           )}
         </linearGradient>
 
-        <linearGradient id={ribbonId} x1="8" y1="22" x2="58" y2="48" gradientUnits="userSpaceOnUse">
-          {variant === "pro" ? (
-            <>
-              <stop offset="0%" stopColor="#fffbeb" stopOpacity="0.95" />
-              <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.45" />
-            </>
-          ) : (
-            <>
-              <stop offset="0%" stopColor="#fff1f2" stopOpacity="0.95" />
-              <stop offset="55%" stopColor="#fecdd3" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#fde68a" stopOpacity="0.55" />
-            </>
-          )}
+        <linearGradient id={windGradId} x1="28" y1="22" x2="58" y2="48" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#fde68a" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#eab308" stopOpacity="0.85" />
         </linearGradient>
       </defs>
 
-      {/* Morbido velo di vento / nastro da festa attorno alla luna */}
+      {/* Mezza Luna Elegante sul lato sinistro, con contorno sottile champagne per visibilità garantita su ogni sfondo */}
       <path
-        d="M11 39C18 47 31 50 45 43C51 40 56 34 58 29C53 35 45 39 36 39C25 39 17 34 11 39Z"
-        fill={`url(#${ribbonId})`}
+        d="M34 11C22.4 12.2 13.5 21.9 13.5 33.7C13.5 46 23.4 55.5 35.6 54.8C40.6 54.5 45.1 52.5 48.5 49.3C39.6 49.5 31.8 42.8 31 33.5C30.2 24.8 35 16.9 42.4 13.4C39.7 11.9 36.9 10.7 34 11Z"
+        fill={`url(#${moonGradId})`}
+        stroke="#b88924"
+        strokeOpacity="0.35"
+        strokeWidth="0.9"
       />
+
+      {/* Sottili scie di vento leggero nello spazio aperto a destra (nessuna sovrapposizione con la luna) */}
       <path
-        d="M9 32C17 24 27 25 38 30C47 34 54 32 59 25"
-        stroke={`url(#${ribbonId})`}
-        strokeWidth="2.2"
+        d="M36 33C42 30 49 30.5 55 25.5"
+        stroke={`url(#${windGradId})`}
+        strokeWidth="2.1"
         strokeLinecap="round"
-        opacity="0.9"
+      />
+      <path
+        d="M38 39.5C44.5 37.5 50.5 38.5 57.5 34.5"
+        stroke={`url(#${windGradId})`}
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        opacity="0.85"
       />
 
-      {/* Mezza Luna Elegante e Gentile */}
+      {/* Stelle luminose festose nello spazio aperto della falce */}
       <path
-        d="M37.5 11.5C25.6 12.2 16 22.1 16 34.2C16 46.8 26.2 56.5 38.8 55.8C44.8 55.5 50.1 52.8 53.8 48.7C44.9 49.4 36.2 42.9 35.1 33.4C34.1 24.7 39.2 16.5 47.1 13.4C44.1 12.1 40.9 11.3 37.5 11.5Z"
-        fill={`url(#${gradId})`}
+        d="M46.5 16.5L47.7 20L51.2 21.2L47.7 22.4L46.5 25.9L45.3 22.4L41.8 21.2L45.3 20L46.5 16.5Z"
+        fill="#fde68a"
+        stroke="#c5942d"
+        strokeOpacity="0.4"
+        strokeWidth="0.5"
       />
-
-      {/* Scintille / stelle festose trasportate dal vento */}
-      <path
-        d="M46 18L47.1 21.1L50.2 22.2L47.1 23.3L46 26.4L44.9 23.3L41.8 22.2L44.9 21.1L46 18Z"
-        fill="#fef3c7"
-      />
-      <circle cx="53.5" cy="17.5" r="1.8" fill="#fde68a" />
-      <circle cx="14.5" cy="19.5" r="1.4" fill="#fecdd3" opacity="0.9" />
+      <circle cx="54.5" cy="16" r="1.8" fill="#fef3c7" />
+      <circle cx="52.5" cy="43.5" r="1.4" fill="#fde68a" opacity="0.9" />
     </svg>
   );
 }

@@ -211,7 +211,11 @@ export default function LunaAssistant() {
   };
 
   return (
-    <div className="fixed bottom-20 sm:bottom-24 right-3 sm:right-5 z-40 flex flex-col items-end pointer-events-none">
+    <div
+      className={`fixed right-3 sm:right-5 z-40 flex flex-col items-end pointer-events-none ${
+        pathname.startsWith("/login") ? "bottom-3 sm:bottom-6" : "bottom-4 sm:bottom-6"
+      }`}
+    >
       {/* FINESTRA CHAT */}
       {open && (
         <div className="pointer-events-auto mb-3 w-[calc(100vw-1.5rem)] sm:w-[380px] max-h-[70vh] bg-white rounded-3xl shadow-2xl border border-stone-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">
@@ -365,16 +369,16 @@ export default function LunaAssistant() {
       )}
 
       {/* PULSANTE FLOATING "CHIEDI A LUNA" / MINI STATO */}
-      {minimized && !open ? (
+      {(minimized || pathname.startsWith("/login")) && !open ? (
         <button
           type="button"
           onClick={() => {
-            handleToggleMinimize(false);
+            if (minimized) handleToggleMinimize(false);
             setOpen(true);
           }}
-          title="Riapri Assistente AI Luna"
-          aria-label="Riapri Assistente AI Luna"
-          className="pointer-events-auto flex items-center gap-1.5 bg-stone-900/90 hover:bg-stone-900 text-white p-2.5 sm:px-3 sm:py-2 rounded-full shadow-lg border border-white/15 backdrop-blur-md transition-all hover:scale-105 cursor-pointer"
+          title="Chiedi a Luna - Assistente AI"
+          aria-label="Apri Assistente AI Luna"
+          className="pointer-events-auto flex items-center gap-1.5 bg-stone-900/90 hover:bg-stone-900 text-white p-2 sm:px-3 sm:py-2 rounded-full shadow-lg border border-white/15 backdrop-blur-md transition-all hover:scale-105 cursor-pointer"
         >
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-tr from-rose-500 to-amber-400">
             <Moon className="w-3.5 h-3.5 text-white fill-white/25" />

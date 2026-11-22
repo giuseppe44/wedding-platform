@@ -168,25 +168,25 @@ export default function GuestRegistrationForm({
 
             <div className="space-y-3 pt-4 border-t border-stone-100">
               <div className="flex items-start gap-3">
-                <Checkbox id="privacy" required className="mt-1 shrink-0" />
-                <Label htmlFor="privacy" className="text-xs text-stone-500 leading-snug font-normal cursor-pointer">
-                  * Ho letto l&apos;
+                <Checkbox id="privacy" required className="mt-0.5 shrink-0" />
+                <label htmlFor="privacy" className="block text-xs text-stone-500 leading-relaxed font-normal cursor-pointer">
+                  * Ho letto l&apos;{" "}
                   <Link href="/privacy" target="_blank" className="underline text-rose-600 font-semibold">
                     Informativa sulla Privacy
                   </Link>{" "}
                   e accetto il trattamento dei dati personali per ricevere aggiornamenti sull&apos;evento.
-                </Label>
+                </label>
               </div>
               <div className="flex items-start gap-3">
                 <Checkbox
                   id="marketing"
                   checked={marketingConsent}
                   onCheckedChange={(val) => setMarketingConsent(Boolean(val))}
-                  className="mt-1 shrink-0"
+                  className="mt-0.5 shrink-0"
                 />
-                <Label htmlFor="marketing" className="text-xs text-stone-500 leading-snug font-normal cursor-pointer">
+                <label htmlFor="marketing" className="block text-xs text-stone-500 leading-relaxed font-normal cursor-pointer">
                   Acconsento a ricevere eventuali proposte dai fornitori ufficiali di questo evento (Opzionale).
-                </Label>
+                </label>
               </div>
             </div>
 
