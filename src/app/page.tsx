@@ -133,12 +133,12 @@ const LIFE_MILESTONES: LifeMilestone[] = [
 function LifeEventsStream() {
   return (
     <div className="relative w-full bg-[#fffaf3] bg-gradient-to-r from-[#fff7ec] via-[#fff0f4] to-[#fef9eb] border-b border-amber-200/75 overflow-hidden select-none">
-      {/* Linea luminosa superiore multicolore elegante */}
+      {/* Linea luminosa superiore oro champagne e oro rosa */}
       <motion.div
         animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
         transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
         style={{ backgroundSize: "200% 100%" }}
-        className="h-[3px] w-full bg-gradient-to-r from-amber-400 via-rose-400 via-violet-400 via-sky-400 to-amber-400"
+        className="h-[2.5px] w-full bg-gradient-to-r from-amber-300 via-yellow-500 via-rose-300 to-amber-300"
       />
 
       {/* Filo d'oro ondulato decorativo sullo sfondo */}
@@ -243,52 +243,55 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
       
-      {/* NAVBAR */}
-      <nav className="absolute top-0 w-full z-50 px-4 sm:px-6 py-5 sm:py-6 flex justify-between items-center gap-3 bg-gradient-to-b from-stone-900/60 to-transparent">
+      {/* NAVBAR LUXURY ESSENZIALE */}
+      <nav className="absolute top-0 w-full z-50 px-5 sm:px-8 lg:px-12 py-5 flex justify-between items-center gap-4 bg-gradient-to-b from-stone-950/75 via-stone-950/35 to-transparent">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex items-center gap-2.5 text-white font-serif text-xl sm:text-2xl drop-shadow-md shrink-0"
+          className="flex items-center gap-2.5 text-white font-serif text-xl sm:text-2xl tracking-wide drop-shadow-md shrink-0"
         >
           <GentiLunaLogo className="w-7 h-7 sm:w-8 sm:h-8 shrink-0" />
           <span>GentiLuna</span>
         </motion.div>
         
         <motion.div 
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="hidden xl:flex items-center gap-3 2xl:gap-5 text-[11px] font-medium tracking-[0.12em] text-white drop-shadow-md uppercase"
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="hidden xl:flex items-center gap-7 text-[11px] font-medium tracking-[0.18em] text-stone-200/95 uppercase"
         >
-          <Link
-            href="/funzioni-sposi"
-            className="bg-rose-500/25 hover:bg-rose-500/40 border border-rose-300/35 text-white px-3.5 py-2 rounded-full transition-colors font-semibold backdrop-blur-sm whitespace-nowrap"
-          >
-            Funzioni Sposi &amp; Eventi
+          <Link href="/funzioni-sposi" className="hover:text-amber-200 transition-colors whitespace-nowrap">
+            Sposi &amp; Eventi
           </Link>
-          <Link
-            href="/funzioni-professionisti"
-            className="bg-amber-500/20 hover:bg-amber-500/35 border border-amber-300/40 text-amber-200 px-3.5 py-2 rounded-full transition-colors font-semibold backdrop-blur-sm whitespace-nowrap"
-          >
-            Funzioni Professionisti
+          <Link href="/funzioni-professionisti" className="hover:text-amber-200 transition-colors whitespace-nowrap">
+            Professionisti
           </Link>
-          <Link href="/fornitori" className="hover:text-rose-300 transition-colors whitespace-nowrap px-1.5">FORNITORI</Link>
-          <Link href="/prezzi" className="hover:text-rose-300 transition-colors whitespace-nowrap px-1.5">ABBONAMENTI</Link>
-          <Link href="/blog" className="hover:text-rose-300 transition-colors whitespace-nowrap px-1.5">BLOG</Link>
-          <Link href="/professionisti" className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-1.5 whitespace-nowrap px-1.5">
-            <Briefcase className="w-3.5 h-3.5 shrink-0" /> SEI UN PROFESSIONISTA?
+          <Link href="/fornitori" className="hover:text-amber-200 transition-colors whitespace-nowrap">
+            Fornitori
+          </Link>
+          <Link href="/prezzi" className="hover:text-amber-200 transition-colors whitespace-nowrap">
+            Piani
+          </Link>
+          <Link href="/blog" className="hover:text-amber-200 transition-colors whitespace-nowrap">
+            Blog
           </Link>
         </motion.div>
 
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex items-center gap-2 sm:gap-3 shrink-0"
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="flex items-center gap-3 sm:gap-5 shrink-0"
         >
+          <Link
+            href="/professionisti"
+            className="hidden md:inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.16em] uppercase text-amber-200/90 hover:text-amber-100 transition-colors"
+          >
+            Area Pro
+          </Link>
           <Link href="/login">
-            <Button className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white hover:text-stone-900 rounded-full font-bold px-4 md:px-6">
+            <Button className="bg-white/10 backdrop-blur-md border border-amber-200/35 text-amber-50 hover:bg-amber-50 hover:text-stone-950 rounded-full font-medium tracking-wider text-xs uppercase px-5 sm:px-6 h-9 sm:h-10 transition-all">
               Accedi
             </Button>
           </Link>
@@ -296,167 +299,115 @@ export default function Home() {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Apri menu"
-            className="xl:hidden text-white p-1"
+            className="xl:hidden text-amber-100 p-1"
           >
-            <Menu className="w-7 h-7 sm:w-8 sm:h-8" />
+            <Menu className="w-7 h-7" />
           </button>
         </motion.div>
 
         {mobileMenuOpen && (
-          <div className="absolute top-20 left-4 right-4 bg-stone-900/95 backdrop-blur-xl border border-stone-800 rounded-3xl p-6 flex flex-col gap-3.5 text-center xl:hidden shadow-2xl z-50">
-            <Link href="/funzioni-sposi" onClick={() => setMobileMenuOpen(false)} className="bg-rose-500/20 border border-rose-400/30 text-rose-200 hover:text-white font-semibold py-2.5 px-4 rounded-full">
-              FUNZIONI SPOSI &amp; EVENTI
+          <div className="absolute top-20 left-4 right-4 bg-stone-950/95 backdrop-blur-xl border border-amber-200/20 rounded-3xl p-6 flex flex-col gap-3 text-center xl:hidden shadow-2xl z-50">
+            <Link href="/funzioni-sposi" onClick={() => setMobileMenuOpen(false)} className="text-stone-100 hover:text-amber-200 font-medium tracking-widest text-xs uppercase py-2.5 border-b border-stone-800/80">
+              Funzioni Sposi &amp; Eventi
             </Link>
-            <Link href="/funzioni-professionisti" onClick={() => setMobileMenuOpen(false)} className="bg-amber-500/20 border border-amber-400/30 text-amber-200 hover:text-white font-semibold py-2.5 px-4 rounded-full">
-              FUNZIONI PROFESSIONISTI
+            <Link href="/funzioni-professionisti" onClick={() => setMobileMenuOpen(false)} className="text-stone-100 hover:text-amber-200 font-medium tracking-widest text-xs uppercase py-2.5 border-b border-stone-800/80">
+              Funzioni Professionisti
             </Link>
-            <Link href="/sposi" onClick={() => setMobileMenuOpen(false)} className="text-white hover:text-rose-300 font-semibold py-2 border-b border-stone-800">
-              AREA SPOSI &amp; EVENTI
+            <Link href="/fornitori" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-amber-200 tracking-widest text-xs uppercase py-2.5 border-b border-stone-800/80">
+              Fornitori &amp; Top Pro
             </Link>
-            <Link href="/fornitori" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-rose-300 py-2 border-b border-stone-800">
-              FORNITORI &amp; TOP PRO
+            <Link href="/prezzi" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-amber-200 tracking-widest text-xs uppercase py-2.5 border-b border-stone-800/80">
+              Piani e Abbonamenti
             </Link>
-            <Link href="/prezzi" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-rose-300 py-2 border-b border-stone-800">
-              PIANI E ABBONAMENTI
+            <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-amber-200 tracking-widest text-xs uppercase py-2.5 border-b border-stone-800/80">
+              Blog &amp; Guide
             </Link>
-            <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="text-stone-200 hover:text-rose-300 py-2 border-b border-stone-800">
-              BLOG &amp; GUIDE SEO
-            </Link>
-            <Link href="/professionisti" onClick={() => setMobileMenuOpen(false)} className="text-amber-300 hover:text-amber-200 font-semibold py-2 flex items-center justify-center gap-2">
-              <Briefcase className="w-4 h-4" /> SEI UN PROFESSIONISTA?
+            <Link href="/professionisti" onClick={() => setMobileMenuOpen(false)} className="text-amber-300 hover:text-amber-200 font-semibold tracking-widest text-xs uppercase pt-2 flex items-center justify-center gap-2">
+              <Briefcase className="w-3.5 h-3.5" /> Sei un Professionista?
             </Link>
           </div>
         )}
       </nav>
 
-      {/* HERO SECTION - CALIBRATA PER MOSTRARE IL NASTRO ANIMATO E L'INVITO ALLO SCROLL NELLA PRIMA SCHERMATA */}
-      <header className="relative min-h-[52svh] md:min-h-[58svh] flex flex-col justify-center overflow-hidden bg-stone-950">
+      {/* HERO BENVENUTO LUXURY - PULITO, POETICO E COMPATTO */}
+      <header className="relative min-h-[42svh] md:min-h-[46svh] flex flex-col justify-center overflow-hidden bg-stone-950">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" 
             alt="Wedding Memories"
-            className="w-full h-full object-cover opacity-60 scale-105"
+            className="w-full h-full object-cover opacity-50 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/45 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-950/70 via-stone-950/45 to-stone-950/95" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.13),transparent_65%)]" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-14 sm:pt-24 sm:pb-16 md:pt-24 md:pb-16 text-center">
+        <div className="relative z-10 max-w-4xl mx-auto px-5 sm:px-6 pt-20 pb-12 sm:pt-24 sm:pb-14 text-center">
           <motion.div 
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, delay: 0.15 }}
+            transition={{ duration: 0.9, delay: 0.1 }}
           >
-            <span className="inline-block py-1 px-3 rounded-full border border-rose-500/30 bg-rose-500/20 text-rose-200 text-[10px] sm:text-xs font-bold tracking-[0.11em] sm:tracking-[0.2em] mb-3.5 sm:mb-4 backdrop-blur-md whitespace-nowrap">
-              GENTILUNA • MOLTO PIÙ DI UN SITO WEB
-            </span>
-            <h1 className="text-[1.9rem] sm:text-5xl lg:text-6xl font-serif text-white mb-3.5 sm:mb-4 leading-[1.15] drop-shadow-xl">
-              Il Vostro Spazio Unico, <br className="hidden md:block" />
-              <span className="text-stone-300 italic font-light">per Ricordare, Condividere e Organizzare.</span>
-            </h1>
-            <p className="text-sm sm:text-lg md:text-xl text-stone-300 font-light max-w-sm sm:max-w-2xl mx-auto mb-5 sm:mb-6 leading-snug sm:leading-relaxed drop-shadow-md">
-              Il matrimonio è solo l&apos;inizio della vostra storia: da qui in avanti, tutto ciò che vivrete insieme lo ritroverete qua.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-              <Link href="/funzioni-sposi">
-                <Button className="rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold px-4 sm:px-6 h-10 sm:h-11 text-xs sm:text-sm shadow-lg shadow-rose-950/40">
-                  Per Sposi &amp; Eventi <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" />
-                </Button>
-              </Link>
-              <Link href="/funzioni-professionisti">
-                <Button variant="outline" className="rounded-full bg-white/10 hover:bg-white/20 border-amber-300/40 text-amber-200 hover:text-white font-semibold px-4 sm:px-6 h-10 sm:h-11 text-xs sm:text-sm backdrop-blur-md">
-                  <span className="sm:hidden">Fotografi &amp; Pro</span>
-                  <span className="hidden sm:inline">Per Fotografi &amp; Professionisti</span>
-                </Button>
-              </Link>
+            {/* Filetto oro di benvenuto senza riquadri pesanti */}
+            <div className="inline-flex items-center justify-center gap-3 mb-4">
+              <span className="w-7 sm:w-10 h-[1px] bg-gradient-to-r from-transparent to-amber-300/80" />
+              <span className="text-amber-200/90 text-[10px] sm:text-xs font-medium tracking-[0.28em] uppercase">
+                Benvenuti su GentiLuna
+              </span>
+              <span className="w-7 sm:w-10 h-[1px] bg-gradient-to-l from-transparent to-amber-300/80" />
             </div>
+
+            <h1 className="text-[2rem] sm:text-5xl lg:text-[3.6rem] font-serif text-white mb-3.5 leading-[1.14] tracking-tight drop-shadow-xl">
+              Il Vostro Spazio Unico,{" "}
+              <br className="hidden sm:block" />
+              <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-200 to-rose-100">
+                dove ogni emozione resta per sempre.
+              </span>
+            </h1>
+
+            <p className="text-sm sm:text-base md:text-lg text-stone-300/90 font-light max-w-md sm:max-w-xl mx-auto leading-relaxed">
+              Dal giorno del vostro Sì a ogni nuovo capitolo della vita insieme.
+            </p>
           </motion.div>
         </div>
       </header>
 
       
-        {/* THREE MAIN GATEWAYS - NASTRO ANIMATO VISIBILE SUBITO IN BASSO + INVITO ALLO SCROLL */}
+        {/* THREE MAIN GATEWAYS - NASTRO ANIMATO IN EVIDENZA NELLA PRIMA SCHERMATA */}
         <section
           id="capitoli-vita"
-          className="pb-14 md:pb-20 bg-white relative z-20 -mt-8 sm:-mt-10 md:-mt-12 rounded-t-[2rem] sm:rounded-t-[3.25rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.35)] overflow-hidden"
+          className="pb-16 md:pb-24 bg-white relative z-20 -mt-8 sm:-mt-10 rounded-t-[2rem] sm:rounded-t-[3.25rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.4)] overflow-hidden"
         >
-          {/* Nastro animato a colori degli Eventi della Vita (visibile subito nella prima schermata) */}
+          {/* Nastro animato a colori degli Eventi della Vita */}
           <LifeEventsStream />
 
-          {/* Invito elegante e animato a scorrere verso il resto della Home */}
-          <div className="flex justify-center pt-3 sm:pt-4">
+          {/* Sottile indicatore luxury di scorrimento (senza pillole ingombranti) */}
+          <div className="flex justify-center pt-4 sm:pt-5">
             <a
               href="#esplora-capitoli"
-              className="group inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50/90 hover:bg-amber-100/90 border border-amber-200/80 text-[11px] sm:text-xs font-medium text-amber-900 transition-colors shadow-2xs"
+              aria-label="Scorri per scoprire GentiLuna"
+              className="group inline-flex flex-col items-center gap-1 text-stone-400 hover:text-amber-700 transition-colors"
             >
-              <span>Scorri e scopri tutto il mondo GentiLuna</span>
+              <span className="text-[10px] uppercase tracking-[0.25em] font-medium text-amber-800/70">
+                Scopri
+              </span>
               <motion.span
-                animate={{ y: [0, 3.5, 0] }}
-                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                className="inline-flex text-rose-500"
+                animate={{ y: [0, 4, 0] }}
+                transition={{ duration: 1.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                className="inline-flex text-amber-600"
               >
-                <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <ChevronDown className="w-4 h-4" />
               </motion.span>
             </a>
           </div>
 
-          <div id="esplora-capitoli" className="max-w-7xl mx-auto px-6 pt-4 md:pt-6">
-              {/* Introduzione capitoli raccolta senza spazi vuoti */}
-              <div className="relative z-30 mb-8 md:mb-12 max-w-5xl mx-auto text-center px-2 sm:px-4">
-                <div className="absolute inset-0 pointer-events-none hidden xl:block">
-                  <motion.div 
-                    animate={{ y: [0, -10, 0], rotate: [0, 3, -3, 0] }} 
-                    transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                    className="absolute top-2 -left-12 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-rose-100 flex items-center gap-2.5"
-                  >
-                    <span className="text-2xl">💍</span> <span className="font-serif text-sm text-stone-700 font-medium">Il Matrimonio</span>
-                  </motion.div>
-                  
-                  <motion.div 
-                    animate={{ y: [0, 12, 0], rotate: [0, -3, 3, 0] }} 
-                    transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1 }}
-                    className="absolute top-4 -right-10 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-amber-100 flex items-center gap-2.5"
-                  >
-                    <span className="text-2xl">✈️</span> <span className="font-serif text-sm text-stone-700 font-medium">Luna di Miele</span>
-                  </motion.div>
-                  
-                  <motion.div 
-                    animate={{ y: [0, -12, 0], rotate: [0, 5, -3, 0] }} 
-                    transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 2 }}
-                    className="absolute bottom-2 -left-6 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-sky-100 flex items-center gap-2.5"
-                  >
-                    <span className="text-2xl">🍼</span> <span className="font-serif text-sm text-stone-700 font-medium">La Nascita</span>
-                  </motion.div>
-
-                  <motion.div 
-                    animate={{ y: [0, 10, 0], rotate: [0, -4, 4, 0] }} 
-                    transition={{ duration: 4.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1.5 }}
-                    className="absolute bottom-2 -right-6 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-lg border border-amber-100 flex items-center gap-2.5"
-                  >
-                    <span className="text-2xl">🎓</span> <span className="font-serif text-sm text-stone-700 font-medium">Traguardi</span>
-                  </motion.div>
-                </div>
-
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  className="inline-flex items-center gap-2.5 sm:gap-3.5 bg-rose-50/90 backdrop-blur-md px-3.5 sm:px-5 py-1.5 rounded-full shadow-inner border border-rose-200/70 mb-4 md:mb-5 relative z-10"
-                >
-                  <div className="flex -space-x-2.5 sm:-space-x-3 shrink-0">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-400 flex items-center justify-center text-white text-[11px] sm:text-xs border-2 border-white shadow-sm z-30">M</div>
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-400 flex items-center justify-center text-white text-[11px] sm:text-xs border-2 border-white shadow-sm z-20">L</div>
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-amber-400 flex items-center justify-center text-white text-[11px] sm:text-xs border-2 border-white shadow-sm z-10">F</div>
-                  </div>
-                  <span className="text-stone-700 font-serif italic text-xs sm:text-sm tracking-normal sm:tracking-wide whitespace-nowrap">
-                    I Capitoli della Vostra Vita
-                  </span>
-                </motion.div>
-                
+          <div id="esplora-capitoli" className="max-w-7xl mx-auto px-6 pt-5 md:pt-8">
+              {/* Introduzione capitoli pulita ed editoriale */}
+              <div className="relative z-30 mb-10 md:mb-14 max-w-3xl mx-auto text-center px-2 sm:px-4">
                 <motion.h2 
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="text-3xl sm:text-5xl lg:text-6xl font-serif text-stone-900 mb-6 relative z-10 leading-tight drop-shadow-sm"
+                  className="text-3xl sm:text-5xl lg:text-6xl font-serif text-stone-900 mb-5 relative z-10 leading-tight"
                 >
                   Custodisci ogni{" "}
                   <motion.span
@@ -464,7 +415,7 @@ export default function Home() {
                     transition={{ duration: 3.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
                     className="relative inline-flex items-center gap-1.5 px-1 mt-1 sm:mt-0"
                   >
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-4xl sm:text-6xl lg:text-[4.2rem] drop-shadow-sm">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-4xl sm:text-6xl lg:text-[4.2rem]">
                       momento prezioso
                     </span>
                     <motion.span
@@ -488,7 +439,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
+                  transition={{ delay: 0.15 }}
                   className="text-base sm:text-xl text-stone-600 max-w-sm sm:max-w-2xl mx-auto font-light leading-relaxed relative z-10"
                 >
                   Da un matrimonio indimenticabile al primo sorriso di tuo figlio. Crea un portale privato, raccogli le foto degli invitati e costruisci un ricordo che durer&agrave; per sempre.
@@ -594,6 +545,25 @@ export default function Home() {
                 </motion.div>
               </Link>
             </motion.div>
+
+            {/* PERCORSI DEDICATI DISTRIBUITI CON ELEGANZA NELLA PAGINA */}
+            <div className="mt-12 pt-10 border-t border-stone-200/70 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-center">
+              <Link
+                href="/funzioni-sposi"
+                className="group inline-flex items-center gap-2 text-sm font-serif italic text-stone-700 hover:text-rose-600 transition-colors"
+              >
+                <span>Esplora tutte le Funzioni per Sposi &amp; Eventi</span>
+                <ArrowRight className="w-4 h-4 text-rose-500 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-amber-300" />
+              <Link
+                href="/funzioni-professionisti"
+                className="group inline-flex items-center gap-2 text-sm font-serif italic text-stone-700 hover:text-amber-700 transition-colors"
+              >
+                <span>Scopri GentiLuna per Fotografi &amp; Professionisti</span>
+                <ArrowRight className="w-4 h-4 text-amber-600 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </div>
         </section>
   
