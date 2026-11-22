@@ -380,67 +380,69 @@ export default function Home() {
           {/* Nastro animato a colori degli Eventi della Vita */}
           <LifeEventsStream />
 
-          {/* Sottile indicatore luxury di scorrimento (senza pillole ingombranti) */}
-          <div className="flex justify-center pt-4 sm:pt-5">
+          {/* Sottile indicatore luxury di scorrimento compatto */}
+          <div className="flex justify-center pt-2.5 sm:pt-3">
             <a
               href="#esplora-capitoli"
               aria-label="Scorri per scoprire GentiLuna"
-              className="group inline-flex flex-col items-center gap-1 text-stone-400 hover:text-amber-700 transition-colors"
+              className="group inline-flex items-center gap-1.5 text-stone-400 hover:text-amber-700 transition-colors"
             >
-              <span className="text-[10px] uppercase tracking-[0.25em] font-medium text-amber-800/70">
+              <span className="text-[10px] uppercase tracking-[0.25em] font-medium text-amber-800/75">
                 Scopri
               </span>
               <motion.span
-                animate={{ y: [0, 4, 0] }}
+                animate={{ y: [0, 3, 0] }}
                 transition={{ duration: 1.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
                 className="inline-flex text-amber-600"
               >
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className="w-3.5 h-3.5" />
               </motion.span>
             </a>
           </div>
 
-          <div id="esplora-capitoli" className="max-w-7xl mx-auto px-6 pt-5 md:pt-8">
-              {/* Introduzione capitoli pulita ed editoriale */}
-              <div className="relative z-30 mb-10 md:mb-14 max-w-3xl mx-auto text-center px-2 sm:px-4">
+          <div id="esplora-capitoli" className="max-w-7xl mx-auto px-6 pt-3 md:pt-4">
+              {/* Introduzione capitoli pulita ed editoriale - TUTTO SU UNA RIGA SU DESKTOP */}
+              <div className="relative z-30 mb-7 md:mb-9 max-w-5xl mx-auto text-center px-2 sm:px-4">
                 <motion.h2 
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="text-3xl sm:text-5xl lg:text-6xl font-serif text-stone-900 mb-5 relative z-10 leading-tight"
+                  className="text-2xl sm:text-4xl lg:text-5xl font-serif text-stone-900 mb-3 relative z-10 leading-tight whitespace-normal sm:whitespace-nowrap"
                 >
-                  Custodisci ogni{" "}
+                  <span>Custodisci ogni </span>
                   <motion.span
-                    animate={{ y: [0, -3, 0], scale: [1, 1.02, 1] }}
+                    animate={{ y: [0, -3, 0], scale: [1, 1.015, 1] }}
                     transition={{ duration: 3.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                    className="relative inline-flex items-center gap-1.5 px-1 mt-1 sm:mt-0"
+                    className="relative inline-flex items-center align-baseline"
                   >
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-4xl sm:text-6xl lg:text-[4.2rem]">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-3xl sm:text-5xl lg:text-[3.4rem] pr-2">
                       momento prezioso
                     </span>
-                    <motion.span
-                      animate={{ opacity: [0.45, 1, 0.45], scale: [0.9, 1.15, 0.9], rotate: [-4, 8, -4] }}
-                      transition={{ duration: 2.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                      className="inline-flex text-amber-600 shrink-0"
-                    >
-                      <Moon className="w-5 h-5 sm:w-6 sm:h-6 fill-amber-400/70" />
-                    </motion.span>
-                    <motion.span
-                      animate={{ opacity: [0.25, 1, 0.25], scale: [0.75, 1.25, 0.75] }}
-                      transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, delay: 0.6, ease: "easeInOut" }}
-                      className="inline-flex text-amber-500 -ml-1 -mt-5 shrink-0"
-                    >
-                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </motion.span>
+                    <span className="inline-flex items-center gap-1 ml-1 sm:ml-2 shrink-0 pointer-events-none select-none">
+                      <motion.span
+                        animate={{ opacity: [0.55, 1, 0.55], scale: [0.92, 1.12, 0.92], rotate: [-4, 6, -4] }}
+                        transition={{ duration: 2.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                        className="inline-flex text-amber-600"
+                      >
+                        <Moon className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-400/80 stroke-amber-600" />
+                      </motion.span>
+                      <motion.span
+                        animate={{ opacity: [0.35, 1, 0.35], scale: [0.8, 1.2, 0.8] }}
+                        transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, delay: 0.5, ease: "easeInOut" }}
+                        className="inline-flex text-amber-500"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-amber-500" />
+                      </motion.span>
+                    </span>
                   </motion.span>
                 </motion.h2>
                 
                 <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.15 }}
-                  className="text-base sm:text-xl text-stone-600 max-w-sm sm:max-w-2xl mx-auto font-light leading-relaxed relative z-10"
+                  className="text-sm sm:text-base md:text-lg text-stone-600 max-w-sm sm:max-w-2xl mx-auto font-light leading-relaxed relative z-10"
                 >
                   Da un matrimonio indimenticabile al primo sorriso di tuo figlio. Crea un portale privato, raccogli le foto degli invitati e costruisci un ricordo che durer&agrave; per sempre.
                 </motion.p>
