@@ -33,7 +33,7 @@ export default function GuestbookForm({ timelineItemId, buttonColor, displayAuth
     return (
       <div className="bg-green-50 p-6 rounded-2xl text-center border border-green-100">
         <CheckCircle2 className="mx-auto h-8 w-8 text-green-500 mb-2" />
-        <p className="text-green-800 font-medium">Messaggio inviato! {authorsText} lo vedrÃ  a breve.</p>
+        <p className="text-green-800 font-medium">Messaggio inviato! {authorsText} lo vedr&agrave; a breve nella propria area dedicata.</p>
         <Button variant="outline" className="mt-4" onClick={() => setSuccess(false)}>Invia un altro</Button>
       </div>
     );

@@ -218,26 +218,26 @@ export default function Home() {
                 >
                   Custodisci ogni{" "}
                   <motion.span
-                    animate={{ y: [0, -2, 0] }}
-                    transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                    className="relative inline-flex items-center gap-1.5 px-1"
+                    animate={{ y: [0, -3, 0], scale: [1, 1.02, 1] }}
+                    transition={{ duration: 3.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                    className="relative inline-flex items-center gap-1.5 px-1 mt-1 sm:mt-0"
                   >
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-rose-500 to-amber-500 italic font-semibold">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-4xl sm:text-6xl lg:text-[4.2rem] drop-shadow-sm">
                       momento prezioso
                     </span>
                     <motion.span
-                      animate={{ opacity: [0.35, 1, 0.35], scale: [0.85, 1.15, 0.85], rotate: [0, 12, 0] }}
+                      animate={{ opacity: [0.45, 1, 0.45], scale: [0.9, 1.15, 0.9], rotate: [-4, 8, -4] }}
                       transition={{ duration: 2.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                      className="inline-flex text-amber-500 shrink-0"
+                      className="inline-flex text-amber-600 shrink-0"
                     >
-                      <Moon className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-300/60" />
+                      <Moon className="w-5 h-5 sm:w-6 sm:h-6 fill-amber-400/70" />
                     </motion.span>
                     <motion.span
-                      animate={{ opacity: [0.2, 1, 0.2], scale: [0.7, 1.2, 0.7] }}
-                      transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, delay: 0.7, ease: "easeInOut" }}
-                      className="inline-flex text-amber-400 -ml-1 -mt-4 shrink-0"
+                      animate={{ opacity: [0.25, 1, 0.25], scale: [0.75, 1.25, 0.75] }}
+                      transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, delay: 0.6, ease: "easeInOut" }}
+                      className="inline-flex text-amber-500 -ml-1 -mt-5 shrink-0"
                     >
-                      <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                     </motion.span>
                   </motion.span>
                 </motion.h2>
@@ -247,9 +247,9 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2 }}
-                  className="text-lg md:text-xl text-stone-600 max-w-2xl mx-auto font-light leading-relaxed relative z-10"
+                  className="text-base sm:text-xl text-stone-600 max-w-sm sm:max-w-2xl mx-auto font-light leading-relaxed relative z-10"
                 >
-                  Da un matrimonio indimenticabile al primo sorriso di tuo figlio. Crea un portale privato, raccogli le foto degli invitati e costruisci una linea del tempo interattiva che durerà per sempre.
+                  Da un matrimonio indimenticabile al primo sorriso di tuo figlio. Crea un portale privato, raccogli le foto degli invitati e costruisci un ricordo che durer&agrave; per sempre.
                 </motion.p>
               </div>
 

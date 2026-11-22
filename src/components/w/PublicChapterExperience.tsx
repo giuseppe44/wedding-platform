@@ -18,6 +18,7 @@ import MusicPlayer from "@/components/w/MusicPlayer";
 import ScrollReveal from "@/components/w/ScrollReveal";
 import { parseDressCode } from "@/lib/dressCode";
 import { getLocationPresentation } from "@/lib/locationMeta";
+import { LocationCuteIcon } from "@/components/w/LocationCuteIcon";
 
 interface PublicChapterExperienceProps {
   wedding: any;
@@ -78,17 +79,24 @@ export default function PublicChapterExperience({
       sessionKey={slug}
     >
       <div className="min-h-screen bg-stone-50 font-sans text-stone-800 flex flex-col overflow-x-hidden">
-        <div className="bg-white/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-2 shadow-sm sticky top-0 z-40">
-          <div className="flex items-center gap-2.5 min-w-0">
+        <div className="bg-white/95 backdrop-blur-md border-b border-stone-200 px-4 sm:px-6 py-3 flex items-center justify-between gap-3 shadow-sm sticky top-0 z-40">
+          <Link
+            href="/"
+            className="flex items-center gap-2 font-serif text-lg sm:text-xl text-stone-900 shrink-0"
+          >
+            <GentiLunaLogo className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
+            <span>GentiLuna</span>
+          </Link>
+
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 justify-end">
             <Link
               href="/"
-              className="flex items-center gap-1.5 font-serif text-base sm:text-lg text-stone-900 shrink-0"
+              className="text-[11px] sm:text-xs font-medium text-stone-500 hover:text-stone-900 text-right leading-tight truncate max-w-[205px] sm:max-w-none transition-colors"
             >
-              <GentiLunaLogo className="w-5 h-5 shrink-0" />
-              <span>GentiLuna</span>
+              Il portale digitale per matrimoni, foto &amp; ricordi
             </Link>
             {showHubBackLink && (
-              <Link href={`/w/${slug}?hub=1`} className="hidden sm:inline-block">
+              <Link href={`/w/${slug}?hub=1`} className="hidden sm:inline-block shrink-0">
                 <Button
                   variant="ghost"
                   className="gap-1 text-stone-600 hover:text-stone-900 rounded-full text-xs h-8 px-2.5"
@@ -98,13 +106,6 @@ export default function PublicChapterExperience({
                 </Button>
               </Link>
             )}
-          </div>
-          <div className="flex items-center shrink-0">
-            <ShareChapterButtons
-              urlPath={sharePath}
-              title={`${displayTitle} — ${coupleNames}`}
-              label="Condividi:"
-            />
           </div>
         </div>
 
@@ -155,33 +156,15 @@ export default function PublicChapterExperience({
               </p>
             )}
 
-            {presentedLocations.length > 0 && (
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5 text-stone-100">
-                {presentedLocations.map(({ raw, meta }: any, idx: number) => (
-                  <a
-                    key={raw.id || idx}
-                    href="#luoghi-evento"
-                    className="inline-flex items-center gap-2 bg-black/40 hover:bg-black/55 backdrop-blur-sm border border-white/20 px-4 py-2 rounded-full text-xs sm:text-sm transition-colors"
-                  >
-                    <MapPin className="w-3.5 h-3.5 text-rose-300 shrink-0" />
-                    <span className="font-bold text-amber-200">{meta.roleBadge}:</span>
-                    <span className="font-medium">{meta.displayName}</span>
-                    {meta.cleanAddress && (
-                      <span className="font-light opacity-85 hidden sm:inline">
-                        — {meta.cleanAddress}
-                      </span>
-                    )}
-                  </a>
-                ))}
-              </div>
-            )}
-
-            <div className="mt-8">
+            <div className="mt-7 flex flex-col items-center gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-200/90">
+                Condividi questo evento
+              </span>
               <ShareChapterButtons
                 urlPath={sharePath}
                 title={`${displayTitle} — ${coupleNames}`}
                 variant="dark"
-                label="Condividi questo evento:"
+                label=""
               />
             </div>
           </div>
@@ -290,6 +273,7 @@ export default function PublicChapterExperience({
                       className="bg-white p-7 sm:p-8 rounded-3xl shadow-sm border border-stone-200/80 flex flex-col justify-between gap-5 transition-transform hover:-translate-y-1"
                     >
                       <div className="space-y-3 text-center">
+                        <LocationCuteIcon kind={meta.iconKind} />
                         <span
                           className={`inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${meta.badgeClass}`}
                         >
@@ -399,11 +383,11 @@ export default function PublicChapterExperience({
             <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full mb-4">
               <Camera className="w-3.5 h-3.5" /> Prima &amp; Durante il Matrimonio
             </span>
-            <h2 className="text-3xl md:text-4xl font-serif text-stone-800 mb-4">
+            <h2 className="text-3xl md:text-4xl font-serif text-stone-800 mb-3">
               Condividi le tue foto &amp; vecchi ricordi
             </h2>
-            <p className="text-stone-600 mb-8 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-light">
-              <strong className="font-semibold text-stone-800">Hai già vecchi ricordi insieme agli sposi?</strong> Puoi iniziare fin da subito caricando vecchie foto, viaggi o momenti divertenti passati con loro! E il giorno delle nozze inquadra il QR Code o premi il pulsante per condividere dal vivo tutti gli scatti della festa, senza scaricare nessuna app.
+            <p className="text-stone-600 mb-8 text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-light">
+              Carica subito vecchie foto o video che hai gi&agrave; con gli sposi per riempire l&apos;album in anticipo. Il giorno delle nozze inquadra il QR Code o premi sotto per inviare gli scatti in diretta.
             </p>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-10">
@@ -492,16 +476,30 @@ export default function PublicChapterExperience({
         {/* 6. DEDICHE */}
         {wedding.showGuestbook && (
           <div id="dediche" className="max-w-3xl mx-auto px-4 pt-20 pb-12 scroll-mt-20 w-full">
-            <h2 className="text-3xl font-serif text-stone-800 mb-4 text-center">Lascia un messaggio</h2>
-            <p className="text-center text-stone-500 mb-12 font-serif italic">
-              Scrivi un pensiero da conservare nella storia.
-            </p>
+            <div className="text-center mb-10 space-y-3">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-rose-100 via-pink-50 to-amber-50 border border-rose-200/80 flex items-center justify-center shadow-sm">
+                <svg viewBox="0 0 48 48" className="w-10 h-10" fill="none" aria-hidden="true">
+                  <rect x="6" y="13" width="36" height="24" rx="4" fill="#fff1f2" stroke="#e11d48" strokeWidth="2.2" />
+                  <path d="M8 15L24 27L40 15" stroke="#e11d48" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M24 9.5C22.4 7.8 19.5 8.5 19.5 10.7C19.5 12.9 24 15.8 24 15.8C24 15.8 28.5 12.9 28.5 10.7C28.5 8.5 25.6 7.8 24 9.5Z" fill="#f43f5e" />
+                  <circle cx="38" cy="10" r="1.6" fill="#d4af37" />
+                  <circle cx="10" cy="10" r="1.4" fill="#f59e0b" />
+                </svg>
+              </div>
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
+                Guestbook Digitale degli Sposi
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-serif text-stone-800">Lascia un messaggio agli Sposi</h2>
+              <p className="text-stone-600 max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
+                Il tuo augurio o ricordo arriver&agrave; <strong className="font-semibold text-stone-800">direttamente a {coupleNames}</strong> e rester&agrave; pubblicato per sempre nella loro pagina dedicata.
+              </p>
+            </div>
 
             <div className="mb-16">
               <GuestbookForm
                 timelineItemId={wedding.id}
                 buttonColor={themeColor}
-                displayAuthorsLabel={config.authors}
+                displayAuthorsLabel={coupleNames}
               />
             </div>
 

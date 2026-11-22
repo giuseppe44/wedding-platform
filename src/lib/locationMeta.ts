@@ -8,12 +8,21 @@ export interface LocationLike {
   type?: string | null;
 }
 
+export type LocationIconKind =
+  | "bride_home"
+  | "groom_home"
+  | "church"
+  | "civic"
+  | "hotel"
+  | "restaurant";
+
 export interface LocationPresentation {
   roleBadge: string;
   roleHelper: string;
   displayName: string;
   cleanAddress: string;
   badgeClass: string;
+  iconKind: LocationIconKind;
 }
 
 /**
@@ -29,8 +38,8 @@ export function normalizeLocationText(raw: string | null | undefined): string {
 }
 
 /**
- * Derives clear Italian role badges and helpful guest-facing context for each
- * wedding location so guests always know where each phase takes place.
+ * Derives clear Italian role badges, colorful icon category, and guest-facing
+ * descriptions for each wedding location card.
  */
 export function getLocationPresentation(loc: LocationLike): LocationPresentation {
   const rawName = normalizeLocationText(loc.name);
@@ -51,6 +60,7 @@ export function getLocationPresentation(loc: LocationLike): LocationPresentation
       displayName: lowerName === "casa" ? "Casa della Sposa" : rawName || "Casa della Sposa",
       cleanAddress: combinedAddress,
       badgeClass: "bg-rose-50 text-rose-700 border-rose-200",
+      iconKind: "bride_home",
     };
   }
 
@@ -61,16 +71,26 @@ export function getLocationPresentation(loc: LocationLike): LocationPresentation
       displayName: lowerName === "casa" ? "Casa dello Sposo" : rawName || "Casa dello Sposo",
       cleanAddress: combinedAddress,
       badgeClass: "bg-sky-50 text-sky-700 border-sky-200",
+      iconKind: "groom_home",
     };
   }
 
   if (upperType === "RECEPTION") {
+    const isHotelOrVilla =
+      lowerName.includes("hotel") ||
+      lowerName.includes("resort") ||
+      lowerName.includes("villa") ||
+      lowerName.includes("tenuta") ||
+      lowerName.includes("residen") ||
+      lowerName.includes("borgo") ||
+      lowerName.includes("castello");
     return {
       roleBadge: "Ricevimento & Festa",
       roleHelper: "Qui si festeggerà insieme tra brindisi, banchetto e musica.",
       displayName: rawName || "Location del Ricevimento",
       cleanAddress: combinedAddress,
       badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      iconKind: isHotelOrVilla ? "hotel" : "restaurant",
     };
   }
 
@@ -87,19 +107,45 @@ export function getLocationPresentation(loc: LocationLike): LocationPresentation
         : "Punto di ritrovo indicato dagli sposi prima del rito.",
       displayName: rawName || "Ritrovo Sposi",
       cleanAddress: combinedAddress,
-      badgeClass: "bg-stone-100 text-stone-700 border-stone-200",
+      badgeClass: isBride
+        ? "bg-rose-50 text-rose-700 border-rose-200"
+        : isGroom
+        ? "bg-sky-50 text-sky-700 border-sky-200"
+        : "bg-stone-100 text-stone-700 border-stone-200",
+      iconKind: isGroom ? "groom_home" : "bride_home",
     };
   }
 
-  if (lowerName.includes("villa") || lowerName.includes("ristorante") || lowerName.includes("tenuta") || lowerName.includes("hotel") || lowerName.includes("borgo") || lowerName.includes("agriturismo")) {
+  if (
+    lowerName.includes("villa") ||
+    lowerName.includes("ristorante") ||
+    lowerName.includes("tenuta") ||
+    lowerName.includes("hotel") ||
+    lowerName.includes("resort") ||
+    lowerName.includes("borgo") ||
+    lowerName.includes("agriturismo")
+  ) {
+    const isHotelOrVilla =
+      lowerName.includes("hotel") ||
+      lowerName.includes("resort") ||
+      lowerName.includes("villa") ||
+      lowerName.includes("tenuta") ||
+      lowerName.includes("borgo");
     return {
       roleBadge: "Ricevimento & Festa",
       roleHelper: "Qui si terranno il ricevimento, il pranzo/cena e i festeggiamenti.",
       displayName: rawName || "Location Ricevimento",
       cleanAddress: combinedAddress,
       badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      iconKind: isHotelOrVilla ? "hotel" : "restaurant",
     };
   }
+
+  const isCivic =
+    lowerName.includes("comune") ||
+    lowerName.includes("municipio") ||
+    lowerName.includes("sala ") ||
+    lowerName.includes("palazzo ");
 
   return {
     roleBadge: "Cerimonia & Rito",
@@ -107,5 +153,6 @@ export function getLocationPresentation(loc: LocationLike): LocationPresentation
     displayName: rawName || "Luogo della Cerimonia",
     cleanAddress: combinedAddress,
     badgeClass: "bg-amber-50 text-amber-800 border-amber-200",
+    iconKind: isCivic ? "civic" : "church",
   };
 }

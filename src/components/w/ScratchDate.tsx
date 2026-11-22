@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 
 interface ScratchDateProps {
   date: Date | string;
@@ -71,17 +70,17 @@ export default function ScratchDate({ date, revealKey, onReveal }: ScratchDatePr
 
       const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
       grad.addColorStop(0, "#d4af37");
-      grad.addColorStop(0.5, "#e6c667");
-      grad.addColorStop(1, "#b88f1e");
+      grad.addColorStop(0.5, "#edd178");
+      grad.addColorStop(1, "#a97d14");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (let i = 0; i < 450; i++) {
-        ctx.fillStyle = Math.random() > 0.5 ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.06)";
+        ctx.fillStyle = Math.random() > 0.5 ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.06)";
         ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
       }
 
-      ctx.fillStyle = "rgba(255,255,255,0.92)";
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
       ctx.font = "italic 18px serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -92,7 +91,7 @@ export default function ScratchDate({ date, revealKey, onReveal }: ScratchDatePr
 
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-    ctx.lineWidth = 42;
+    ctx.lineWidth = 44;
 
     const getPosition = (e: MouseEvent | TouchEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -126,7 +125,7 @@ export default function ScratchDate({ date, revealKey, onReveal }: ScratchDatePr
       }
 
       const percent = sampled > 0 ? transparentPixels / sampled : 0;
-      if (percent > 0.32) {
+      if (percent > 0.3) {
         triggerReveal();
       }
     };
@@ -156,7 +155,7 @@ export default function ScratchDate({ date, revealKey, onReveal }: ScratchDatePr
         e.preventDefault();
       }
 
-      if (Math.random() < 0.15) checkReveal();
+      if (Math.random() < 0.16) checkReveal();
     };
 
     const stopDrawing = () => {
@@ -191,9 +190,9 @@ export default function ScratchDate({ date, revealKey, onReveal }: ScratchDatePr
   const year = parsedDate.getFullYear();
 
   return (
-    <div className="w-full max-w-sm mx-auto my-6 select-none flex flex-col items-center gap-2.5">
+    <div className="w-full max-w-sm mx-auto my-6 select-none flex flex-col items-center">
       <div className="relative w-full" ref={containerRef}>
-        <div className="flex flex-col items-center justify-center p-8 bg-white/15 backdrop-blur-md rounded-2xl border border-amber-200/35 shadow-2xl">
+        <div className="flex flex-col items-center justify-center p-8 bg-white/15 backdrop-blur-md rounded-2xl border border-amber-200/40 shadow-2xl">
           <span className="text-5xl font-serif text-white tracking-widest drop-shadow">{day}</span>
           <span className="text-2xl font-light tracking-[0.3em] text-amber-100 my-2">{month}</span>
           <span className="text-xl text-stone-200 font-serif italic">{year}</span>
@@ -201,23 +200,12 @@ export default function ScratchDate({ date, revealKey, onReveal }: ScratchDatePr
 
         <motion.canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full rounded-2xl cursor-pointer touch-none shadow-xl"
+          className="absolute inset-0 w-full h-full rounded-2xl cursor-pointer touch-none shadow-xl border border-amber-200/50"
           animate={{ opacity: isRevealed ? 0 : 1 }}
           transition={{ duration: 0.75 }}
           style={{ pointerEvents: isRevealed ? "none" : "auto" }}
         />
       </div>
-
-      {!isRevealed && (
-        <button
-          type="button"
-          onClick={triggerReveal}
-          className="inline-flex items-center gap-1.5 text-xs text-amber-200/90 hover:text-white underline underline-offset-4 transition-colors cursor-pointer"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          Oppure tocca qui per scoprire subito la data
-        </button>
-      )}
     </div>
   );
 }
