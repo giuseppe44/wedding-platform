@@ -401,19 +401,19 @@ export default function Home() {
           </div>
 
           <div id="esplora-capitoli" className="max-w-7xl mx-auto px-6 pt-3 md:pt-4">
-              {/* Introduzione capitoli pulita ed editoriale - TUTTO SU UNA RIGA SU DESKTOP */}
+              {/* Introduzione capitoli pulita ed editoriale - 2 RIGHE SU MOBILE, 1 RIGA SU DESKTOP */}
               <div className="relative z-30 mb-7 md:mb-9 max-w-5xl mx-auto text-center px-2 sm:px-4">
                 <motion.h2 
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="text-2xl sm:text-4xl lg:text-5xl font-serif text-stone-900 mb-3 relative z-10 leading-tight whitespace-normal sm:whitespace-nowrap"
+                  className="text-3xl sm:text-4xl lg:text-5xl font-serif text-stone-900 mb-3.5 relative z-10 leading-[1.2] whitespace-normal sm:whitespace-nowrap"
                 >
-                  <span>Custodisci ogni </span>
+                  <span className="block sm:inline">Custodisci ogni tuo </span>
                   <motion.span
                     animate={{ y: [0, -3, 0], scale: [1, 1.015, 1] }}
                     transition={{ duration: 3.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                    className="relative inline-flex items-center align-baseline"
+                    className="relative inline-flex items-center align-baseline mt-1 sm:mt-0"
                   >
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-3xl sm:text-5xl lg:text-[3.4rem] pr-2">
                       momento prezioso
@@ -483,34 +483,39 @@ export default function Home() {
                 </motion.div>
               </Link>
   
-              {/* 2. Fornitori */}
+              {/* 2. Fornitori & Top Pro - ICONA SIMPATICA, COLORATA E LUMINOSA */}
               <Link href="/fornitori" className="block group h-full">
-                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-stone-100/60 via-white to-white border border-stone-200/50 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(41,37,36,0.2)] transition-all duration-500 h-full flex flex-col justify-between text-center md:text-left group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
-                  <div className="absolute top-0 right-0 w-48 h-48 bg-stone-100 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <motion.div variants={fadeUpVariant} className="bg-gradient-to-br from-sky-50/70 via-white to-white border border-sky-100/70 p-10 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-15px_rgba(14,165,233,0.22)] transition-all duration-500 h-full flex flex-col justify-between text-center md:text-left group-hover:-translate-y-4 relative overflow-hidden backdrop-blur-md">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-sky-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   
                   <div className="relative z-10">
-                    <div className="w-20 h-20 mx-auto md:mx-0 bg-gradient-to-br from-stone-100 to-stone-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative overflow-hidden group-hover:scale-110 transition-transform duration-500">
+                    <div className="w-20 h-20 mx-auto md:mx-0 bg-gradient-to-br from-sky-100 via-indigo-50 to-amber-50 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner relative group-hover:scale-110 transition-transform duration-500 border border-sky-200/60">
                       <motion.div
-                        animate={{ rotate: [0, 15, 0, -15, 0], scale: [1, 1.1, 1] }}
-                        transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                        animate={{ y: [0, -5, 0], rotate: [0, 6, -6, 0] }}
+                        transition={{ duration: 3.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                        className="relative flex items-center justify-center"
                       >
-                        <Search className="w-9 h-9 text-stone-700" strokeWidth={2.5} />
+                        <Camera className="w-9 h-9 text-sky-600" strokeWidth={2.2} />
+                        <motion.span
+                          animate={{ scale: [0.85, 1.3, 0.85], rotate: [0, 90, 180] }}
+                          transition={{ duration: 2.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                          className="absolute -top-2.5 -right-2.5 text-amber-500 text-sm leading-none"
+                        >
+                          ✦
+                        </motion.span>
                       </motion.div>
-                      {/* Scanning line effect */}
-                      <motion.div 
-                        animate={{ y: ['-100%', '200%'] }} 
-                        transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                        className="absolute inset-0 w-full h-1/2 bg-gradient-to-b from-transparent via-stone-300/40 to-transparent"
-                      ></motion.div>
+                      {/* Floating colorful particles */}
+                      <motion.div animate={{ y: [-4, -18], opacity: [0, 1, 0] }} transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: 0.3 }} className="absolute top-2 right-2.5 w-2 h-2 bg-sky-400 rounded-full" />
+                      <motion.div animate={{ y: [-4, -22], opacity: [0, 1, 0] }} transition={{ duration: 2.4, repeat: Number.POSITIVE_INFINITY, delay: 0.9 }} className="absolute top-3.5 left-2.5 w-1.5 h-1.5 bg-amber-400 rounded-full" />
                     </div>
-                    <h3 className="text-3xl font-serif text-stone-900 mb-4 group-hover:text-stone-700 transition-colors">
+                    <h3 className="text-3xl font-serif text-stone-900 mb-4 group-hover:text-sky-600 transition-colors">
                       Fornitori &amp; <span className="whitespace-nowrap">Top Pro</span>
                     </h3>
                     <p className="text-stone-500 font-light leading-relaxed text-[1.1rem]">
                       Ricerca tra i migliori professionisti del settore. Esplora l'elenco generale dei nostri iscritti e trova fotografo, location, e molto altro.
                     </p>
                   </div>
-                  <div className="mt-12 flex items-center justify-center md:justify-start text-stone-700 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
+                  <div className="mt-12 flex items-center justify-center md:justify-start text-sky-600 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
                     Cerca Fornitori <ArrowRight className="w-5 h-5 ml-2" />
                   </div>
                 </motion.div>
