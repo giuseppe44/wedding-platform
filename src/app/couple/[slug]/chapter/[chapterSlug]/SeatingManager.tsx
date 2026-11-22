@@ -9,8 +9,28 @@ import { createTable, deleteTable, createGuest, deleteGuest, assignGuestToTable,
 import { Trash2, Users, Printer, LayoutGrid, List, CheckCircle, XCircle, Clock } from "lucide-react";
 import { parseDietary } from "@/lib/dietary";
 import SeatingVisualizer from "./SeatingVisualizer";
+import { RestaurantShareCard } from "@/components/couple/RestaurantShareCard";
 
-export default function SeatingManager({ chapter, guests, tables, entitlements }: { chapter: any, guests: any[], tables: any[], entitlements?: any }) {
+interface RestaurantShareInfo {
+  coupleNames: string;
+  eventDateText?: string;
+  defaultVenueName?: string;
+  portalUrl: string;
+}
+
+export default function SeatingManager({
+  chapter,
+  guests,
+  tables,
+  entitlements,
+  restaurantShare,
+}: {
+  chapter: any;
+  guests: any[];
+  tables: any[];
+  entitlements?: any;
+  restaurantShare?: RestaurantShareInfo;
+}) {
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<"LIST" | "MAP">("LIST");
   
@@ -81,7 +101,16 @@ export default function SeatingManager({ chapter, guests, tables, entitlements }
 
   return (
     <div className="space-y-8">
-      
+      {restaurantShare && (
+        <RestaurantShareCard
+          coupleNames={restaurantShare.coupleNames}
+          eventDateText={restaurantShare.eventDateText}
+          defaultVenueName={restaurantShare.defaultVenueName}
+          portalUrl={restaurantShare.portalUrl}
+          compact
+        />
+      )}
+
         {/* RSVP STATS DASHBOARD */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col items-center justify-center">

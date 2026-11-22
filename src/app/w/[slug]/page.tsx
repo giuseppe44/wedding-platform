@@ -9,12 +9,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Camera, Users, QrCode, Sparkles, BookOpen, Tv, ArrowRight } from "lucide-react";
 import EnvelopeOpening from "@/components/w/EnvelopeOpening";
 import ScratchDate from "@/components/w/ScratchDate";
-import Countdown from "@/components/w/Countdown";
+import MagicCountdownSection from "@/components/w/MagicCountdownSection";
+import PublicChapterExperience from "@/components/w/PublicChapterExperience";
+import { getUserEntitlements } from "@/lib/entitlementHelper";
 import ShareChapterButtons from "@/components/ShareChapterButtons";
 import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import Footer from "@/components/Footer";
 import { verifyTimelineAccess } from "@/lib/accessControl";
 import { resolveLegacyTimelineSlug } from "@/lib/slugify";
+import { getLocationPresentation } from "@/lib/locationMeta";
 import GuestLogin from "./GuestLogin";
 
 export default async function PublicHubPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
@@ -91,12 +94,63 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
   const themeColor = wedding.themeColor || "#1c1917"; // stone-900
   const primaryChapterSlug = authorizedChapters[0]?.slug || wedding.slug;
   const uploadUrl = `${baseUrl}/w/${wedding.slug}/upload`;
+  const forceHub = resolvedParams?.hub === "1";
+
+  // Flusso diretto ottimizzato: quando gli sposi inviano il link /w/[slug],
+  // dopo l'unica busta d'invito gli ospiti atterrano subito sull'evento principale
+  // (con ScratchDate, Countdown, Luoghi e Foto) senza dover aprire due volte la busta.
+  if (!forceHub) {
+    const primaryTarget =
+      authorizedChapters.find((c: any) => c.type === "WEDDING") ||
+      authorizedChapters[0] ||
+      wedding;
+
+    const fullPrimaryChapter: any = await prisma.timelineItem.findUnique({
+      where: { id: primaryTarget.id },
+      include: {
+        locations: true,
+        giftOptions: true,
+        assignments: { include: { professionalProfile: true } },
+        schedule: { orderBy: { order: "asc" } },
+        messages: {
+          where: { status: "APPROVED" },
+          orderBy: { createdAt: "desc" },
+        },
+        media: {
+          where: { status: "APPROVED" },
+          orderBy: { createdAt: "desc" },
+          take: 31,
+        },
+      },
+    });
+
+    if (fullPrimaryChapter) {
+      const entitlements = await getUserEntitlements(fullPrimaryChapter.ownerId);
+      return (
+        <PublicChapterExperience
+          wedding={fullPrimaryChapter}
+          mainWedding={{
+            title: wedding.title,
+            brideName: wedding.brideName,
+            groomName: wedding.groomName,
+            themeColor,
+          }}
+          slug={wedding.slug}
+          chapterSlug={fullPrimaryChapter.slug}
+          baseUrl={baseUrl}
+          entitlements={entitlements}
+          showHubBackLink={authorizedChapters.length > 1}
+        />
+      );
+    }
+  }
 
   return (
     <EnvelopeOpening
       initials={`${wedding.brideName.charAt(0)}&${wedding.groomName.charAt(0)}`}
       coupleNames={`${wedding.brideName} & ${wedding.groomName}`}
       date={wedding.date}
+      sessionKey={wedding.slug}
     >
       <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-800 flex flex-col overflow-x-hidden">
         {/* TOP NAV DISCRETA & CONVENIENTE PER GLI OSPITI */}
@@ -149,8 +203,8 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
             </h1>
             
             {wedding.type === 'WEDDING' && wedding.date && (
-                <div className="mb-6">
-                  <ScratchDate date={wedding.date} />
+                <div className="mb-6 w-full">
+                  <ScratchDate date={wedding.date} revealKey={wedding.id} />
                 </div>
               )}
             
@@ -163,7 +217,7 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
             {wedding.locations && wedding.locations.length > 0 && (
               <div className="mt-6 inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/15 px-4 py-2 rounded-full text-stone-100 text-sm sm:text-base">
                 <MapPin className="w-4 h-4 text-rose-300 shrink-0" />
-                <span>{wedding.locations[0].name}</span>
+                <span>{getLocationPresentation(wedding.locations[0]).displayName}</span>
               </div>
             )}
 
@@ -194,9 +248,12 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
 
         {/* COUNTDOWN EVENTO */}
         {wedding.date && (
-          <div className="pt-8">
-            <Countdown date={wedding.date} />
-          </div>
+          <MagicCountdownSection
+            date={wedding.date}
+            revealKey={wedding.id}
+            waitForScratch={wedding.type === "WEDDING"}
+            headline="Manca questo tempo per l'evento"
+          />
         )}
 
         {/* ACCESSI RAPIDI PER GLI INVITATI */}
@@ -348,10 +405,10 @@ export default async function PublicHubPage({ params, searchParams }: { params: 
                 <QrCode className="w-3.5 h-3.5" /> Scatti degli Invitati
               </span>
               <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
-                Condividi questo sito o carica i tuoi scatti
+                Condividi le tue foto &amp; vecchi ricordi
               </h3>
               <p className="text-sm text-stone-600 leading-relaxed max-w-xl">
-                Hai scattato foto o video indimenticabili? Inquadra il QR Code qui accanto oppure invia il link agli altri invitati su WhatsApp per raccogliere insieme tutti i ricordi.
+                Hai già vecchie foto o ricordi speciali con gli sposi? Puoi condividerli qui fin da subito! E il giorno dell&apos;evento inquadra il QR Code per caricare in diretta tutti gli scatti della giornata.
               </p>
               <div className="pt-1 flex justify-center md:justify-start">
                 <ShareChapterButtons

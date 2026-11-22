@@ -70,7 +70,7 @@ export default async function MessagesPage({
           </div>
         ) : (
           <div className="space-y-4">
-            {conversations.map((conv: any) => (
+            {conversations.map((conv) => (
               <Link
                 key={conv.id}
                 href={`/dashboard/messages/${conv.id}`}

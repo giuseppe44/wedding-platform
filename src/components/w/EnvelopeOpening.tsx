@@ -8,6 +8,7 @@ interface EnvelopeOpeningProps {
   initials: string;
   coupleNames?: string;
   date?: Date | string | null;
+  sessionKey?: string;
   children: React.ReactNode;
 }
 
@@ -26,6 +27,7 @@ export default function EnvelopeOpening({
   initials,
   coupleNames,
   date,
+  sessionKey,
   children,
 }: EnvelopeOpeningProps) {
   const [phase, setPhase] = useState<"closed" | "opening" | "revealed">("closed");
@@ -33,11 +35,27 @@ export default function EnvelopeOpening({
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    if (sessionKey && typeof window !== "undefined") {
+      try {
+        if (window.sessionStorage.getItem(`gentiluna_env_${sessionKey}`) === "1") {
+          setPhase("revealed");
+        }
+      } catch {
+        // ignore storage restrictions
+      }
+    }
+  }, [sessionKey]);
 
   const handleOpen = () => {
     if (phase !== "closed") return;
     setPhase("opening");
+    if (sessionKey && typeof window !== "undefined") {
+      try {
+        window.sessionStorage.setItem(`gentiluna_env_${sessionKey}`, "1");
+      } catch {
+        // ignore storage restrictions
+      }
+    }
     setTimeout(() => {
       setPhase("revealed");
     }, 1350);

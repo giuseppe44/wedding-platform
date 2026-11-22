@@ -3,6 +3,8 @@ import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { resolveLegacyTimelineSlug } from "@/lib/slugify";
 import { verifyProAssignment } from "@/app/proAssignmentActions";
 import { getSession } from "@/lib/auth";
+import { headers } from "next/headers";
+import { createRestaurantPortalToken } from "@/lib/restaurantAccess";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,6 +35,11 @@ export default async function ChapterDetailPage({
   params: Promise<{ slug: string; chapterSlug: string }>;
   searchParams: Promise<{ albumId?: string; tab?: string }>;
 }) {
+  const headersList = await headers();
+  const host = headersList.get("x-forwarded-host") || headersList.get("host") || "localhost:3000";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
+
   const { slug, chapterSlug } = await params;
   const { albumId, tab } = await searchParams;
   
@@ -769,9 +776,29 @@ export default async function ChapterDetailPage({
           
             <TabsContent value="seating" className="space-y-6 animate-in fade-in">
               <div className="rounded-2xl bg-indigo-50/70 border border-indigo-200/80 px-4 py-3 text-xs sm:text-sm text-indigo-950">
-                <strong>🪑 Come funziona Invitati &amp; Tavoli:</strong> aggiungi gli invitati, invia loro il link personale per confermare la presenza (RSVP) e segnalare intolleranze, poi assegna i posti ai tavoli ed esporta il PDF per il ristorante.
+                <strong>🪑 Come funziona Invitati &amp; Tavoli:</strong> aggiungi gli invitati, invia loro il link personale per confermare la presenza (RSVP) e segnalare intolleranze, poi assegna i posti ai tavoli ed invia il link live al ristorante.
               </div>
-              <SeatingManager chapter={chapter} guests={chapter.guests || []} tables={chapter.tables || []} entitlements={entitlements} />
+              <SeatingManager
+                chapter={chapter}
+                guests={chapter.guests || []}
+                tables={chapter.tables || []}
+                entitlements={entitlements}
+                restaurantShare={{
+                  coupleNames: `${chapter.brideName} & ${chapter.groomName}`,
+                  eventDateText: chapter.date
+                    ? new Date(chapter.date).toLocaleDateString("it-IT", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })
+                    : undefined,
+                  defaultVenueName:
+                    chapter.locations?.find((l: any) => l.type === "RECEPTION")?.name || "",
+                  portalUrl: `${baseUrl}/w/${chapter.slug}/ristorante?key=${createRestaurantPortalToken(
+                    chapter.id
+                  )}`,
+                }}
+              />
             </TabsContent>
   
           

@@ -1,11 +1,14 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react/no-unescaped-entities */
-import { MapPin, Clock, Calendar as CalendarIcon, Info, Users, Map } from "lucide-react";
+import { MapPin, Clock, Info, Users, Map } from "lucide-react";
+import { parseDressCode } from "@/lib/dressCode";
+import { getLocationPresentation } from "@/lib/locationMeta";
 
 export default function WeddingDetails({ wedding }: { wedding: any }) {
-  // If not a wedding, we might skip, but let's just check if we have data
   const hasDetails = wedding.startTime || wedding.endTime || wedding.dressCode || wedding.usefulInfo || wedding.professionalsJson || (wedding.locations && wedding.locations.length > 0);
 
   if (!hasDetails) return null;
+
+  const parsedDress = parseDressCode(wedding.dressCode);
 
   const getLocation = (type: string) => wedding.locations?.find((l: any) => l.type === type);
   const ceremony = getLocation("CEREMONY");
@@ -15,24 +18,26 @@ export default function WeddingDetails({ wedding }: { wedding: any }) {
 
   const renderLocationInfo = (title: string, loc: any) => {
     if (!loc) return null;
+    const meta = getLocationPresentation(loc);
     return (
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-600">
+          <div className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 shrink-0">
             <MapPin className="w-5 h-5" />
           </div>
-          <h3 className="text-xl font-serif text-stone-800">{title}</h3>
+          <div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block">{title}</span>
+            <h3 className="text-xl font-serif text-stone-800">{meta.displayName}</h3>
+          </div>
         </div>
-        <div className="pl-13 text-stone-600">
-          {loc.name && <p className="font-medium text-stone-800">{loc.name}</p>}
-          {loc.address && <p>{loc.address}</p>}
-          {loc.city && <p>{loc.city}</p>}
+        <div className="text-stone-600 space-y-1">
+          <p className="text-xs text-stone-500">{meta.roleHelper}</p>
+          {meta.cleanAddress && <p className="font-medium text-stone-800 text-sm">{meta.cleanAddress}</p>}
           {loc.notes && <p className="text-sm mt-2 text-stone-500 italic">{loc.notes}</p>}
         </div>
         
         {loc.coordinates && (
-          <div className="w-full h-48 mt-4 rounded-xl overflow-hidden border border-stone-200">
-            {/* Simple OSM embed if coordinates are present (Format: lat, lng) */}
+          <div className="w-full h-48 mt-2 rounded-xl overflow-hidden border border-stone-200">
             <iframe 
               width="100%" 
               height="100%" 
@@ -78,12 +83,22 @@ export default function WeddingDetails({ wedding }: { wedding: any }) {
             </div>
           )}
 
-          {wedding.dressCode && (
+          {(parsedDress.text || parsedDress.colors.length > 0) && (
             <div className="flex items-start gap-4">
               <Users className="w-6 h-6 text-stone-400 shrink-0" />
               <div>
                 <p className="font-medium">Dress Code</p>
-                <p className="text-stone-300">{wedding.dressCode}</p>
+                {parsedDress.text && <p className="text-stone-300">{parsedDress.text}</p>}
+                {parsedDress.colors.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {parsedDress.colors.map((c) => (
+                      <span key={c.id} className="inline-flex items-center gap-1.5 text-xs text-stone-200 bg-white/10 px-2 py-0.5 rounded-full">
+                        <span className="w-3 h-3 rounded-full border border-white/40" style={{ backgroundColor: c.hex }} />
+                        {c.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

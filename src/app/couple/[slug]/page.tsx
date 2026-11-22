@@ -17,6 +17,8 @@ import { PlanWidget } from "@/components/PlanWidget";
 import { SubmitButton } from "@/components/SubmitButton";
 import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
 import { GuidedCoachBubble, type CoachTip } from "@/components/GuidedCoachBubble";
+import { RestaurantShareCard } from "@/components/couple/RestaurantShareCard";
+import { createRestaurantPortalToken } from "@/lib/restaurantAccess";
 
 export default async function CoupleDashboard({ params }: { params: Promise<{ slug: string }> }) {
   const headersList = await headers();
@@ -33,19 +35,6 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
   
   const wedding = await prisma.timelineItem.findUnique({
     where: { slug: slug },
-    include: {
-      _count: {
-        select: {
-          locations: true,
-          schedule: true,
-          guests: true,
-          tables: true,
-          giftOptions: true,
-          media: true,
-          assignments: true,
-        },
-      },
-    },
   });
 
   if (!wedding) {
@@ -145,7 +134,48 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
 
   const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
-  const weddingStats = (wedding as any)._count || {};
+  const weddingCounts = await prisma.timelineItem.findUnique({
+    where: { id: wedding.id },
+    select: {
+      _count: {
+        select: {
+          locations: true,
+          schedule: true,
+          guests: true,
+          tables: true,
+          giftOptions: true,
+          media: true,
+          assignments: true,
+        },
+      },
+    },
+  });
+
+  const receptionLocation = await prisma.location.findFirst({
+    where: { timelineItemId: wedding.id, type: "RECEPTION" },
+    select: { name: true },
+  });
+
+  const restaurantToken = createRestaurantPortalToken(wedding.id);
+  const restaurantPortalUrl = `${baseUrl}/w/${wedding.slug}/ristorante?key=${restaurantToken}`;
+  const coupleNamesText = `${wedding.brideName} & ${wedding.groomName}`;
+  const eventDateText = wedding.date
+    ? new Date(wedding.date).toLocaleDateString("it-IT", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : undefined;
+
+  const weddingStats = weddingCounts?._count ?? {
+    locations: 0,
+    schedule: 0,
+    guests: 0,
+    tables: 0,
+    giftOptions: 0,
+    media: 0,
+    assignments: 0,
+  };
   const coupleProgress = [
     Boolean(wedding.coverImage),
     (weddingStats.locations || 0) > 0,
@@ -202,6 +232,12 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
   }
 
   coupleCoachTips.push(
+    {
+      id: "hub-sug-restaurant",
+      kind: "SUGGESTION",
+      title: "Invia al Ristorante il link riservato per Tavoli & Intolleranze",
+      body: "Usa il riquadro verde qui sotto per avvisare su WhatsApp o Email il ristorante che gestite tutto su GentiLuna e dar loro accesso diretto a tavoli e allergie.",
+    },
     {
       id: "hub-sug-whatsapp",
       kind: "SUGGESTION",
@@ -260,6 +296,14 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
             completedCount={coupleDoneCount}
             totalSteps={coupleProgress.length}
             tips={coupleCoachTips}
+          />
+        )}
+        {isOwner && (
+          <RestaurantShareCard
+            coupleNames={coupleNamesText}
+            eventDateText={eventDateText}
+            defaultVenueName={receptionLocation?.name || ""}
+            portalUrl={restaurantPortalUrl}
           />
         )}
         {isOwner && (
