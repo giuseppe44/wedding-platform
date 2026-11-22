@@ -1,17 +1,226 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { 
   Heart, Camera, Search, MapPin, Users, ArrowRight, 
   Briefcase, Calendar, Star, Menu, Sparkles, CheckCircle, 
   Gift, Share2, Image as ImageIcon, MessageCircle, Map,
-  Infinity, LayoutDashboard, Moon
+  Infinity, LayoutDashboard, Moon, ChevronDown
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import { motion, Variants } from "framer-motion";
+
+type LifeMilestone = {
+  id: string;
+  label: string;
+  pillClass: string;
+  dotColor: string;
+  icon: ReactNode;
+};
+
+const LIFE_MILESTONES: LifeMilestone[] = [
+  {
+    id: "proposta",
+    label: "La Proposta",
+    pillClass: "border-rose-200/90 bg-white/95 text-rose-950 shadow-rose-200/40",
+    dotColor: "#fb7185",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" aria-hidden="true">
+        <circle cx="12" cy="15" r="5.5" stroke="#e11d48" strokeWidth="2" fill="#fff1f2" />
+        <path d="M9 9.5L12 5L15 9.5L12 11.5L9 9.5Z" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M12 2.5V4M16.5 4.5L15.5 5.5M7.5 4.5L8.5 5.5" stroke="#f59e0b" strokeWidth="1.4" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "matrimonio",
+    label: "Il Matrimonio",
+    pillClass: "border-amber-300/90 bg-white/95 text-amber-950 shadow-amber-200/50",
+    dotColor: "#f59e0b",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" aria-hidden="true">
+        <circle cx="9.5" cy="14" r="5" stroke="#d97706" strokeWidth="2.1" />
+        <circle cx="14.5" cy="14" r="5" stroke="#fb7185" strokeWidth="2.1" />
+        <path d="M12 4.2C11.1 3 9.3 3.2 9.3 4.7C9.3 6 12 7.5 12 7.5C12 7.5 14.7 6 14.7 4.7C14.7 3.2 12.9 3 12 4.2Z" fill="#f43f5e" />
+      </svg>
+    ),
+  },
+  {
+    id: "luna-di-miele",
+    label: "Luna di Miele",
+    pillClass: "border-sky-200/90 bg-white/95 text-sky-950 shadow-sky-200/50",
+    dotColor: "#0ea5e9",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" aria-hidden="true">
+        <circle cx="17.5" cy="6.5" r="3.2" fill="#fde047" stroke="#f59e0b" strokeWidth="1.2" />
+        <path d="M3.5 13.5L19.5 6.5L15.5 19.5L11.2 14.8L7.5 17L8.2 13.8L3.5 13.5Z" fill="#38bdf8" stroke="#0369a1" strokeWidth="1.3" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    id: "nascita",
+    label: "Dolce Attesa & Nascita",
+    pillClass: "border-pink-200/90 bg-white/95 text-pink-950 shadow-pink-200/50",
+    dotColor: "#ec4899",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" aria-hidden="true">
+        <path d="M5 13H19C19 17.2 15.9 20 12 20C8.1 20 5 17.2 5 13Z" fill="#fbcfe8" stroke="#db2777" strokeWidth="1.5" strokeLinejoin="round" />
+        <path d="M12 13V6C15.5 6 18.2 8.8 18.8 13" fill="#fce7f3" stroke="#db2777" strokeWidth="1.5" strokeLinejoin="round" />
+        <circle cx="8.5" cy="21" r="1.4" fill="#f59e0b" />
+        <circle cx="15.5" cy="21" r="1.4" fill="#f59e0b" />
+        <path d="M7.5 6.5L8.2 8L9.8 8.2L8.6 9.3L8.9 10.8L7.5 10L6.1 10.8L6.4 9.3L5.2 8.2L6.8 8L7.5 6.5Z" fill="#fbbf24" />
+      </svg>
+    ),
+  },
+  {
+    id: "battesimo",
+    label: "Il Battesimo",
+    pillClass: "border-indigo-200/90 bg-white/95 text-indigo-950 shadow-indigo-200/50",
+    dotColor: "#6366f1",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" aria-hidden="true">
+        <path d="M12 3.5L13.4 7.2L17.3 7.5L14.3 9.9L15.3 13.7L12 11.6L8.7 13.7L9.7 9.9L6.7 7.5L10.6 7.2L12 3.5Z" fill="#fde68a" stroke="#d97706" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M6.5 18.5C8.5 16.5 15.5 16.5 17.5 18.5" stroke="#6366f1" strokeWidth="1.7" strokeLinecap="round" />
+        <circle cx="12" cy="19.5" r="1.3" fill="#818cf8" />
+      </svg>
+    ),
+  },
+  {
+    id: "compleanni",
+    label: "Compleanni & Feste",
+    pillClass: "border-orange-200/90 bg-white/95 text-orange-950 shadow-orange-200/50",
+    dotColor: "#f97316",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" aria-hidden="true">
+        <rect x="5" y="12" width="14" height="7.5" rx="2" fill="#fed7aa" stroke="#ea580c" strokeWidth="1.5" />
+        <path d="M5 15.2C7 16.5 9 14 12 15.2C15 16.5 17 14 19 15.2" stroke="#f43f5e" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M12 8.2V12" stroke="#ea580c" strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M12 4C13.3 5.5 13.3 7.2 12 7.8C10.7 7.2 10.7 5.5 12 4Z" fill="#facc15" stroke="#f59e0b" strokeWidth="1" />
+      </svg>
+    ),
+  },
+  {
+    id: "traguardi",
+    label: "Lauree & Traguardi",
+    pillClass: "border-violet-200/90 bg-white/95 text-violet-950 shadow-violet-200/50",
+    dotColor: "#8b5cf6",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" aria-hidden="true">
+        <path d="M3 9.5L12 5L21 9.5L12 14L3 9.5Z" fill="#ddd6fe" stroke="#6d28d9" strokeWidth="1.5" strokeLinejoin="round" />
+        <path d="M7 11.8V16.2C7 17.8 9.5 19 12 19C14.5 19 17 17.8 17 16.2V11.8" stroke="#6d28d9" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M20 10V15.5" stroke="#f59e0b" strokeWidth="1.7" strokeLinecap="round" />
+        <circle cx="20" cy="16.3" r="1.3" fill="#f59e0b" />
+      </svg>
+    ),
+  },
+  {
+    id: "anniversari",
+    label: "Anniversari d'Oro",
+    pillClass: "border-emerald-200/90 bg-white/95 text-emerald-950 shadow-emerald-200/50",
+    dotColor: "#10b981",
+    icon: (
+      <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="none" aria-hidden="true">
+        <path d="M15.5 4.5C11.2 4.8 8 8.3 8 12.7C8 17.2 11.6 20.6 16.2 20.4C13.6 19.2 12 16.5 12 13.2C12 9.5 13.5 6.5 15.5 4.5Z" fill="#fcd34d" stroke="#d97706" strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M16.8 10.2C16.1 9.2 14.6 9.4 14.6 10.6C14.6 11.7 16.8 13 16.8 13C16.8 13 19 11.7 19 10.6C19 9.4 17.5 9.2 16.8 10.2Z" fill="#10b981" />
+      </svg>
+    ),
+  },
+];
+
+function LifeEventsStream() {
+  return (
+    <div className="relative w-full bg-[#fffaf3] bg-gradient-to-r from-[#fff7ec] via-[#fff0f4] to-[#fef9eb] border-b border-amber-200/75 overflow-hidden select-none">
+      {/* Linea luminosa superiore multicolore elegante */}
+      <motion.div
+        animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+        transition={{ duration: 10, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+        style={{ backgroundSize: "200% 100%" }}
+        className="h-[3px] w-full bg-gradient-to-r from-amber-400 via-rose-400 via-violet-400 via-sky-400 to-amber-400"
+      />
+
+      {/* Filo d'oro ondulato decorativo sullo sfondo */}
+      <svg
+        viewBox="0 0 1200 56"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-45"
+      >
+        <defs>
+          <linearGradient id="lifeWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.35" />
+            <stop offset="50%" stopColor="#fb7185" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#eab308" stopOpacity="0.35" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0,28 C150,10 300,46 450,28 C600,10 750,46 900,28 C1050,10 1125,38 1200,28"
+          fill="none"
+          stroke="url(#lifeWaveGrad)"
+          strokeWidth="2"
+          strokeDasharray="6 6"
+        />
+      </svg>
+
+      {/* Sfumature morbide ai bordi curvi */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-20 bg-gradient-to-r from-[#fff7ec] via-[#fff7ec]/80 to-transparent z-20" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-20 bg-gradient-to-l from-[#fef9eb] via-[#fef9eb]/80 to-transparent z-20" />
+
+      {/* Nastro animato continuo dei Capitoli della Vita */}
+      <div className="relative z-10 py-3 sm:py-3.5 overflow-hidden">
+        <motion.div
+          className="flex w-max items-center"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 34, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+        >
+          {[0, 1].map((copyIdx) => (
+            <div
+              key={copyIdx}
+              aria-hidden={copyIdx === 1}
+              className="flex items-center shrink-0"
+            >
+              {LIFE_MILESTONES.map((item, idx) => (
+                <div key={`${copyIdx}-${item.id}`} className="flex items-center shrink-0">
+                  <motion.div
+                    animate={{ y: idx % 2 === 0 ? [0, -2.5, 0] : [0, 2.5, 0] }}
+                    transition={{
+                      duration: 3 + (idx % 3) * 0.6,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "easeInOut",
+                      delay: idx * 0.2,
+                    }}
+                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border shadow-sm ${item.pillClass}`}
+                  >
+                    {item.icon}
+                    <span className="font-serif text-xs sm:text-[13px] font-semibold tracking-wide whitespace-nowrap">
+                      {item.label}
+                    </span>
+                  </motion.div>
+
+                  {/* Connettore dorato stilizzato tra un evento e il successivo */}
+                  <div className="flex items-center gap-1.5 mx-2.5 sm:mx-3.5 shrink-0" aria-hidden="true">
+                    <span className="w-3 sm:w-4 h-[1.5px] rounded-full bg-gradient-to-r from-amber-300 to-rose-300" />
+                    <motion.span
+                      animate={{ scale: [0.85, 1.25, 0.85], rotate: [0, 90, 180] }}
+                      transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: idx * 0.25 }}
+                      style={{ color: item.dotColor }}
+                      className="text-[11px] leading-none"
+                    >
+                      ✦
+                    </motion.span>
+                    <span className="w-3 sm:w-4 h-[1.5px] rounded-full bg-gradient-to-r from-rose-300 to-amber-300" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+}
 
 const staggerContainer: Variants = {
   hidden: { opacity: 0 },
@@ -120,8 +329,8 @@ export default function Home() {
         )}
       </nav>
 
-      {/* HERO SECTION */}
-      <header className="relative min-h-[68vh] md:min-h-[76vh] flex flex-col justify-center overflow-hidden bg-stone-950">
+      {/* HERO SECTION - CALIBRATA PER MOSTRARE IL NASTRO ANIMATO E L'INVITO ALLO SCROLL NELLA PRIMA SCHERMATA */}
+      <header className="relative min-h-[52svh] md:min-h-[58svh] flex flex-col justify-center overflow-hidden bg-stone-950">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069&auto=format&fit=crop" 
@@ -131,31 +340,32 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/45 to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-28 pb-20 md:pt-28 md:pb-24 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-14 sm:pt-24 sm:pb-16 md:pt-24 md:pb-16 text-center">
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
+            transition={{ duration: 0.85, delay: 0.15 }}
           >
-            <span className="inline-block py-1 px-3 rounded-full border border-rose-500/30 bg-rose-500/20 text-rose-200 text-[10px] sm:text-xs font-bold tracking-[0.11em] sm:tracking-[0.2em] mb-5 backdrop-blur-md whitespace-nowrap">
+            <span className="inline-block py-1 px-3 rounded-full border border-rose-500/30 bg-rose-500/20 text-rose-200 text-[10px] sm:text-xs font-bold tracking-[0.11em] sm:tracking-[0.2em] mb-3.5 sm:mb-4 backdrop-blur-md whitespace-nowrap">
               GENTILUNA • MOLTO PIÙ DI UN SITO WEB
             </span>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif text-white mb-5 leading-tight drop-shadow-xl">
+            <h1 className="text-[1.9rem] sm:text-5xl lg:text-6xl font-serif text-white mb-3.5 sm:mb-4 leading-[1.15] drop-shadow-xl">
               Il Vostro Spazio Unico, <br className="hidden md:block" />
               <span className="text-stone-300 italic font-light">per Ricordare, Condividere e Organizzare.</span>
             </h1>
-            <p className="text-base sm:text-xl md:text-2xl text-stone-300 font-light max-w-sm sm:max-w-3xl mx-auto mb-7 leading-snug sm:leading-relaxed drop-shadow-md">
+            <p className="text-sm sm:text-lg md:text-xl text-stone-300 font-light max-w-sm sm:max-w-2xl mx-auto mb-5 sm:mb-6 leading-snug sm:leading-relaxed drop-shadow-md">
               Il matrimonio è solo l&apos;inizio della vostra storia: da qui in avanti, tutto ciò che vivrete insieme lo ritroverete qua.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
               <Link href="/funzioni-sposi">
-                <Button className="rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold px-6 h-11 text-xs sm:text-sm shadow-lg shadow-rose-950/40">
-                  Per Sposi &amp; Eventi <ArrowRight className="w-4 h-4 ml-1.5" />
+                <Button className="rounded-full bg-rose-500 hover:bg-rose-600 text-white font-semibold px-4 sm:px-6 h-10 sm:h-11 text-xs sm:text-sm shadow-lg shadow-rose-950/40">
+                  Per Sposi &amp; Eventi <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" />
                 </Button>
               </Link>
               <Link href="/funzioni-professionisti">
-                <Button variant="outline" className="rounded-full bg-white/10 hover:bg-white/20 border-amber-300/40 text-amber-200 hover:text-white font-semibold px-6 h-11 text-xs sm:text-sm backdrop-blur-md">
-                  Per Fotografi &amp; Professionisti
+                <Button variant="outline" className="rounded-full bg-white/10 hover:bg-white/20 border-amber-300/40 text-amber-200 hover:text-white font-semibold px-4 sm:px-6 h-10 sm:h-11 text-xs sm:text-sm backdrop-blur-md">
+                  <span className="sm:hidden">Fotografi &amp; Pro</span>
+                  <span className="hidden sm:inline">Per Fotografi &amp; Professionisti</span>
                 </Button>
               </Link>
             </div>
@@ -164,11 +374,32 @@ export default function Home() {
       </header>
 
       
-        {/* THREE MAIN GATEWAYS - COMPATTO, RICCO E LUMINOSO */}
-        <section className="pt-6 pb-14 md:pt-10 md:pb-20 bg-gradient-to-b from-amber-50/40 via-white to-white relative z-20 -mt-10 md:-mt-14 rounded-t-[2.25rem] sm:rounded-t-[3.5rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.3)] border-t border-amber-100/60">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="w-14 h-1 rounded-full bg-gradient-to-r from-amber-300/70 via-rose-300/70 to-amber-300/70 mx-auto mb-5 md:mb-7" />
-            
+        {/* THREE MAIN GATEWAYS - NASTRO ANIMATO VISIBILE SUBITO IN BASSO + INVITO ALLO SCROLL */}
+        <section
+          id="capitoli-vita"
+          className="pb-14 md:pb-20 bg-white relative z-20 -mt-8 sm:-mt-10 md:-mt-12 rounded-t-[2rem] sm:rounded-t-[3.25rem] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.35)] overflow-hidden"
+        >
+          {/* Nastro animato a colori degli Eventi della Vita (visibile subito nella prima schermata) */}
+          <LifeEventsStream />
+
+          {/* Invito elegante e animato a scorrere verso il resto della Home */}
+          <div className="flex justify-center pt-3 sm:pt-4">
+            <a
+              href="#esplora-capitoli"
+              className="group inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-50/90 hover:bg-amber-100/90 border border-amber-200/80 text-[11px] sm:text-xs font-medium text-amber-900 transition-colors shadow-2xs"
+            >
+              <span>Scorri e scopri tutto il mondo GentiLuna</span>
+              <motion.span
+                animate={{ y: [0, 3.5, 0] }}
+                transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                className="inline-flex text-rose-500"
+              >
+                <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </motion.span>
+            </a>
+          </div>
+
+          <div id="esplora-capitoli" className="max-w-7xl mx-auto px-6 pt-4 md:pt-6">
               {/* Introduzione capitoli raccolta senza spazi vuoti */}
               <div className="relative z-30 mb-8 md:mb-12 max-w-5xl mx-auto text-center px-2 sm:px-4">
                 <div className="absolute inset-0 pointer-events-none hidden xl:block">
@@ -262,24 +493,6 @@ export default function Home() {
                 >
                   Da un matrimonio indimenticabile al primo sorriso di tuo figlio. Crea un portale privato, raccogli le foto degli invitati e costruisci un ricordo che durer&agrave; per sempre.
                 </motion.p>
-
-                {/* Pillole capitoli compatte per mobile & tablet */}
-                <div className="mt-5 flex flex-wrap justify-center gap-2 xl:hidden relative z-10">
-                  {[
-                    { emoji: "💍", label: "Matrimonio" },
-                    { emoji: "✈️", label: "Luna di Miele" },
-                    { emoji: "🍼", label: "Nascita" },
-                    { emoji: "🎓", label: "Traguardi" },
-                  ].map((chip) => (
-                    <span
-                      key={chip.label}
-                      className="inline-flex items-center gap-1.5 bg-white border border-stone-200/90 shadow-xs px-3 py-1 rounded-full text-xs font-serif text-stone-700"
-                    >
-                      <span>{chip.emoji}</span>
-                      <span>{chip.label}</span>
-                    </span>
-                  ))}
-                </div>
               </div>
 
             <motion.div 

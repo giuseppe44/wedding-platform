@@ -63,6 +63,7 @@ export async function upsertProfile(data: any) {
 
   revalidatePath("/dashboard/profile", "page");
   revalidatePath(`/pro/${profile.slug}`, "page");
+  revalidatePath("/fornitori", "page");
   return profile;
 }
 

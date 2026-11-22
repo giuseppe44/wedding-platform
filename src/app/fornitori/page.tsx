@@ -1,67 +1,129 @@
-"use client";
+import { prisma } from "@/lib/prisma";
+import FornitoriDirectoryClient, {
+  type DirectoryProItem,
+} from "./FornitoriDirectoryClient";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Search, MapPin, Briefcase } from "lucide-react";
-import Footer from "@/components/Footer";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
-import PortalSearch from "@/components/PortalSearch";
-import { motion } from "framer-motion";
+export const dynamic = "force-dynamic";
 
-export default function FornitoriPage() {
-  return (
-    <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
-      
-      {/* NAVBAR */}
-      <nav className="absolute top-0 w-full z-50 px-4 sm:px-6 py-5 sm:py-6 flex justify-between items-center gap-2 bg-transparent">
-        <Link href="/" className="shrink-0">
-          <div className="flex items-center gap-2 text-stone-900 font-serif text-xl sm:text-2xl">
-            <GentiLunaLogo className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
-            <span>GentiLuna</span>
-          </div>
-        </Link>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/login" className="hidden md:block">
-            <Button className="bg-white text-stone-900 border border-stone-200 hover:bg-stone-100 rounded-full font-bold px-6 shadow-sm">
-              Accedi
-            </Button>
-          </Link>
-          <Link href="/professionisti">
-            <Button className="bg-stone-900 text-white hover:bg-stone-800 rounded-full font-bold px-4 sm:px-6 py-2 h-auto min-h-10 text-xs sm:text-sm shadow-xl whitespace-normal text-center">
-              Sei un professionista?
-            </Button>
-          </Link>
-        </div>
-      </nav>
+const CATEGORY_LABELS: Record<string, string> = {
+  PHOTOGRAPHER: "Fotografo",
+  VIDEOMAKER: "Videomaker",
+  WEDDING_PLANNER: "Wedding Planner",
+  DJ: "DJ",
+  MUSICIAN: "Musicista / Band",
+  LOCATION: "Location",
+  CATERING: "Catering / Ristorante",
+  FLORIST: "Fiorista",
+  MAKEUP_ARTIST: "Make-up Artist",
+  HAIR_STYLIST: "Hair Stylist",
+  OTHER: "Professionista Eventi",
+};
 
-      <main className="flex-grow pt-32 pb-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h1 className="text-4xl md:text-5xl font-serif text-stone-900 mb-6">
-              Trova i migliori professionisti
-            </h1>
-            <p className="text-stone-500 text-lg md:text-xl font-light max-w-2xl mx-auto">
-              Fotografi, location, videomaker e molto altro. Cerca tra i migliori fornitori per rendere il tuo evento indimenticabile.
-            </p>
-          </motion.div>
+function getFilterGroup(
+  category: string
+): "FOTO_VIDEO" | "LOCATION" | "PLANNER_MUSICA" {
+  if (category === "PHOTOGRAPHER" || category === "VIDEOMAKER") {
+    return "FOTO_VIDEO";
+  }
+  if (category === "LOCATION" || category === "CATERING") {
+    return "LOCATION";
+  }
+  return "PLANNER_MUSICA";
+}
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-white p-8 rounded-3xl shadow-xl shadow-stone-200/50 border border-stone-100"
-          >
-            <PortalSearch />
-          </motion.div>
-        </div>
-      </main>
+function resolveProImg(raw?: string | null): string | null {
+  if (!raw || !raw.trim()) return null;
+  if (
+    raw.startsWith("uploads/pro-") ||
+    raw.includes("/object/public/wedding-media/uploads/pro-")
+  ) {
+    return `/api/media/pro?path=${encodeURIComponent(raw)}`;
+  }
+  return raw;
+}
 
-      <Footer />
-    </div>
-  );
+const PLACEHOLDER_NAMES =
+  /^(studio professionale|nuovo utente|test|prova|demo|utente)$/i;
+
+export default async function FornitoriPage() {
+  let pros: DirectoryProItem[] = [];
+
+  try {
+    const rawProfiles = await prisma.professionalProfile.findMany({
+      where: { isActive: true },
+      include: {
+        services: { orderBy: { order: "asc" }, take: 3 },
+        reviews: { select: { rating: true } },
+      },
+      orderBy: { updatedAt: "desc" },
+    });
+
+    const compiledProfiles = rawProfiles
+      .filter((p) => {
+        const cleanName = (p.businessName || "").trim();
+        if (!cleanName || PLACEHOLDER_NAMES.test(cleanName)) {
+          return false;
+        }
+        const hasDesc = Boolean(p.description && p.description.trim().length >= 15);
+        const hasImages =
+          Boolean(p.coverImage || p.profileImage || p.logoUrl) ||
+          (Array.isArray(p.gallery) && p.gallery.length > 0);
+        const hasServices = Array.isArray(p.services) && p.services.length > 0;
+        const hasDetails = Boolean(
+          (p.serviceArea && p.serviceArea.trim().length >= 2) ||
+            p.website ||
+            p.instagram ||
+            p.whatsapp
+        );
+        return hasDesc || hasImages || hasServices || hasDetails;
+      })
+      .map((p) => {
+        let score = 0;
+        if (p.coverImage) score += 3;
+        if (Array.isArray(p.gallery) && p.gallery.length > 0) score += 3;
+        if (p.profileImage || p.logoUrl) score += 2;
+        if (p.description && p.description.trim().length >= 15) score += 2;
+        if (p.serviceArea) score += 1;
+        if (p.services.length > 0) score += 1;
+        if (p.reviews.length > 0) score += 2;
+        return { profile: p, score };
+      })
+      .sort((a, b) => b.score - a.score);
+
+    pros = compiledProfiles.map(({ profile: p }) => {
+      const reviewCount = p.reviews.length;
+      const avgRating =
+        reviewCount > 0
+          ? (
+              p.reviews.reduce((acc, r) => acc + r.rating, 0) / reviewCount
+            ).toFixed(1)
+          : null;
+
+      const galleryPreview = (p.gallery || [])
+        .map((url) => resolveProImg(url))
+        .filter((u): u is string => Boolean(u))
+        .slice(0, 3);
+
+      return {
+        id: p.id,
+        slug: p.slug,
+        businessName: p.businessName,
+        category: p.category,
+        categoryLabel: CATEGORY_LABELS[p.category] || "Professionista Eventi",
+        filterGroup: getFilterGroup(p.category),
+        description: p.description,
+        serviceArea: p.serviceArea,
+        coverUrl: resolveProImg(p.coverImage),
+        avatarUrl: resolveProImg(p.profileImage || p.logoUrl),
+        galleryPreview,
+        serviceNames: p.services.map((s) => s.name).slice(0, 3),
+        reviewCount,
+        avgRating,
+      };
+    });
+  } catch (err) {
+    console.error("Errore caricamento fornitori:", err);
+  }
+
+  return <FornitoriDirectoryClient pros={pros} />;
 }
