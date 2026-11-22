@@ -401,24 +401,27 @@ export default function Home() {
           </div>
 
           <div id="esplora-capitoli" className="max-w-7xl mx-auto px-6 pt-3 md:pt-4">
-              {/* Introduzione capitoli pulita ed editoriale - 2 RIGHE SU MOBILE, 1 RIGA SU DESKTOP */}
+              {/* Introduzione capitoli pulita ed editoriale - CENTRATURA PERFETTA ANCHE SU MOBILE */}
               <div className="relative z-30 mb-7 md:mb-9 max-w-5xl mx-auto text-center px-2 sm:px-4">
                 <motion.h2 
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="text-3xl sm:text-4xl lg:text-5xl font-serif text-stone-900 mb-3.5 relative z-10 leading-[1.2] whitespace-normal sm:whitespace-nowrap"
+                  className="text-3xl sm:text-4xl lg:text-5xl font-serif text-stone-900 mb-3.5 relative z-10 leading-[1.25] text-center"
                 >
-                  <span className="block sm:inline">Custodisci ogni tuo </span>
+                  <span className="block sm:inline sm:mr-2">Custodisci ogni tuo</span>
+                  
                   <motion.span
                     animate={{ y: [0, -3, 0], scale: [1, 1.015, 1] }}
                     transition={{ duration: 3.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                    className="relative inline-flex items-center align-baseline mt-1 sm:mt-0"
+                    className="relative inline-block align-baseline mt-1 sm:mt-0"
                   >
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-3xl sm:text-5xl lg:text-[3.4rem] pr-2">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-3xl sm:text-5xl lg:text-[3.4rem]">
                       momento prezioso
                     </span>
-                    <span className="inline-flex items-center gap-1 ml-1 sm:ml-2 shrink-0 pointer-events-none select-none">
+
+                    {/* Luna e stelline posizionate in assoluto a destra: non sbilanciano la centratura del testo */}
+                    <span className="absolute left-full top-1/2 -translate-y-1/2 flex items-center gap-1 pl-1.5 sm:pl-2 pointer-events-none select-none whitespace-nowrap">
                       <motion.span
                         animate={{ opacity: [0.55, 1, 0.55], scale: [0.92, 1.12, 0.92], rotate: [-4, 6, -4] }}
                         transition={{ duration: 2.8, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
