@@ -9,6 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { loginAction, registerAction } from "@/app/actions";
 import { getCatalogPlan } from "@/lib/plans";
+import {
+  PRO_CATEGORY_GROUPS,
+  PRO_CATEGORY_MAP,
+  getProCategoryMeta,
+} from "@/lib/proCategories";
 import Link from "next/link";
 import { Camera, Heart, Shield, ArrowLeft, CheckCircle2, Star, CreditCard, Sparkles, Loader2 } from "lucide-react";
 
@@ -18,11 +23,23 @@ function AuthFlow() {
   const roleParam = searchParams.get("role")?.toUpperCase();
   const modeParam = searchParams.get("mode")?.toUpperCase();
   const planParam = searchParams.get("plan")?.toUpperCase() || "";
+  const categoryParam = searchParams.get("category")?.toUpperCase() || "";
+  const partnerParam = searchParams.get("partner")?.toUpperCase() || "";
   const selectedPlan = getCatalogPlan(planParam);
 
+  const initialCategory =
+    categoryParam && PRO_CATEGORY_MAP[categoryParam]
+      ? categoryParam
+      : "PHOTOGRAPHER";
+
   const initialRole: "COUPLE" | "PHOTOGRAPHER" | "ADMIN" =
-    selectedPlan?.role ? selectedPlan.role :
-    (roleParam === "PHOTOGRAPHER" || roleParam === "ADMIN") ? roleParam : "COUPLE";
+    selectedPlan?.role
+      ? selectedPlan.role
+      : categoryParam && PRO_CATEGORY_MAP[categoryParam]
+      ? "PHOTOGRAPHER"
+      : roleParam === "PHOTOGRAPHER" || roleParam === "ADMIN"
+      ? roleParam
+      : "COUPLE";
 
   const [activeRole, setActiveRole] = useState<"COUPLE" | "PHOTOGRAPHER" | "ADMIN">(initialRole);
   const [mode, setMode] = useState<"LOGIN" | "REGISTER">(modeParam === "REGISTER" ? "REGISTER" : "LOGIN");
@@ -34,11 +51,18 @@ function AuthFlow() {
 
   const [regName, setRegName] = useState("");
   const [regBusinessName, setRegBusinessName] = useState("");
+  const [regCategory, setRegCategory] = useState(initialCategory);
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
+  const activeProMeta = getProCategoryMeta(regCategory);
+
   useEffect(() => {
+    if (categoryParam && PRO_CATEGORY_MAP[categoryParam]) {
+      setRegCategory(categoryParam);
+      setActiveRole("PHOTOGRAPHER");
+    }
     if (selectedPlan?.role) {
       setActiveRole(selectedPlan.role);
     } else if (roleParam === "PHOTOGRAPHER" || roleParam === "ADMIN" || roleParam === "COUPLE") {
@@ -49,7 +73,7 @@ function AuthFlow() {
     } else if (modeParam === "LOGIN") {
       setMode("LOGIN");
     }
-  }, [roleParam, modeParam, selectedPlan]);
+  }, [roleParam, modeParam, selectedPlan, categoryParam]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,11 +93,13 @@ function AuthFlow() {
           email: regEmail,
           password: regPassword,
           businessName: regBusinessName,
+          category: regCategory,
         });
       }
 
       if (selectedPlan) {
-        router.push(`/dashboard/billing?plan=${encodeURIComponent(selectedPlan.code)}&autocheckout=true`);
+        const pQuery = partnerParam ? `&partner=${encodeURIComponent(partnerParam)}` : "";
+        router.push(`/dashboard/billing?plan=${encodeURIComponent(selectedPlan.code)}&autocheckout=true${pQuery}`);
         return;
       }
 
@@ -309,17 +335,38 @@ function AuthFlow() {
             />
           </div>
           {activeRole === "PHOTOGRAPHER" && (
-            <div className="space-y-2">
-              <Label htmlFor="regBusinessName">Nome Studio / Attività</Label>
-              <Input
-                id="regBusinessName"
-                placeholder="Es. Studio Fotografico Rossi"
-                value={regBusinessName}
-                onChange={(e) => setRegBusinessName(e.target.value)}
-                className="bg-stone-50 h-12"
-                required
-              />
-            </div>
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="regCategory">Categoria Attività</Label>
+                <select
+                  id="regCategory"
+                  value={regCategory}
+                  onChange={(e) => setRegCategory(e.target.value)}
+                  className="flex h-12 w-full rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-900 font-medium outline-none focus:border-amber-500"
+                >
+                  {PRO_CATEGORY_GROUPS.map((grp) => (
+                    <optgroup key={grp.groupName} label={grp.groupName}>
+                      {grp.items.map((item) => (
+                        <option key={item.code} value={item.code}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="regBusinessName">Nome Attività / Struttura / Studio</Label>
+                <Input
+                  id="regBusinessName"
+                  placeholder={activeProMeta.businessPlaceholder}
+                  value={regBusinessName}
+                  onChange={(e) => setRegBusinessName(e.target.value)}
+                  className="bg-stone-50 h-12"
+                  required
+                />
+              </div>
+            </>
           )}
           <div className="space-y-2">
             <Label htmlFor="regEmail">Email</Label>
@@ -408,11 +455,14 @@ function AuthFlow() {
       <div className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="space-y-8 pr-0 lg:pr-8 text-center lg:text-left">
           <div>
+            <span className="inline-block px-3 py-1 rounded-full bg-amber-100 border border-amber-300/80 text-amber-900 text-xs font-bold uppercase tracking-wider mb-3">
+              Categoria: {activeProMeta.label}
+            </span>
             <h1 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight mb-4">
               Trasforma ogni evento in una macchina trova-clienti.
             </h1>
             <p className="text-lg text-stone-600">
-              Porta il tuo brand e i tuoi contatti sugli smartphone di centinaia di invitati. Raccogli foto, offri stampe e ricevi recensioni a 5 stelle in modo automatico.
+              {activeProMeta.proValuePitch}
             </p>
           </div>
 
@@ -422,19 +472,19 @@ function AuthFlow() {
                 <Star className="text-amber-400 w-5 h-5" /> Offerta Lancio Founders Club (€ 49/anno invece di € 299)
               </h3>
               <ul className="space-y-2.5 text-stone-300 text-sm">
-                <li className="flex gap-2"><span>•</span> Spazi Evento illimitati con il tuo brand</li>
-                <li className="flex gap-2"><span>•</span> Contatti diretti (WhatsApp, Email, Tel) in Vetrina</li>
-                <li className="flex gap-2"><span>•</span> Modulo richiesta stampe e upsell (0% commissioni)</li>
-                <li className="flex gap-2"><span>•</span> Posizionamento prioritario nella directory Fornitori</li>
+                <li className="flex gap-2"><span>•</span> Vetrina verificata per Ristoranti, Fotografi, Agenzie Viaggi, Pasticcerie, NCC &amp; Partner</li>
+                <li className="flex gap-2"><span>•</span> Visibilità via QR Code sugli smartphone di tutti gli invitati</li>
+                <li className="flex gap-2"><span>•</span> Preventivi diretti, Live Chat protetta e 0% commissioni</li>
+                <li className="flex gap-2"><span>•</span> Posizionamento prioritario nella directory ufficiale GentiLuna</li>
               </ul>
             </div>
 
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
-              <h3 className="font-bold text-stone-900 text-lg mb-3 flex items-center gap-2">
-                <CheckCircle2 className="text-emerald-500 w-5 h-5" /> Attivazione Immediata
+              <h3 className="font-bold text-stone-900 text-lg mb-2 flex items-center gap-2">
+                <CheckCircle2 className="text-emerald-500 w-5 h-5" /> Pagamento Veloce &amp; Sicuro
               </h3>
-              <p className="text-stone-600 text-sm">
-                Registrati in 30 secondi, scegli il tuo piano nella sezione Fatturazione e inizia subito a creare gli spazi per i tuoi clienti.
+              <p className="text-stone-600 text-sm leading-relaxed">
+                Attiva in 30 secondi con <strong>Carta, PostePay, Apple Pay o Google Pay</strong> su Stripe, oppure richiedi attivazione con <strong>Bonifico Aziendale / Fattura P.IVA</strong> nella pagina successiva.
               </p>
             </div>
           </div>

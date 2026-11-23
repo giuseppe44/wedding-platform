@@ -8,14 +8,14 @@ import { BLOG_POSTS } from "@/data/blogPosts";
 import { BlogClientGrid } from "./BlogClientGrid";
 
 export const metadata: Metadata = {
-  title: "Blog & Guide per Matrimoni, Eventi e Fotografi Professionisti",
+  title: "Blog & Guide per Matrimoni, Ristoranti, Eventi e Professionisti",
   description:
-    "Approfondimenti pratici su sito matrimonio personalizzato, raccolta foto invitati con QR Code, RSVP e allergie, tableau digitale, consegna album fotografici HD e visibilità per professionisti del wedding.",
+    "22 guide pratiche su sito matrimonio personalizzato, QR Code foto invitati, Portale Ristorante allergie e tavoli, Agenzie Viaggi Luna di Miele, Pasticcerie, NCC Auto Sposi e vetrina gratuita fornitori.",
   keywords: [
     "blog matrimonio digitale",
-    "guida foto matrimonio qr code",
-    "guida gestione rsvp tavoli",
-    "consigli fotografi matrimonio trovare clienti",
+    "portale ristorante matrimonio allergie",
+    "lista viaggio di nozze agenzia viaggi",
+    "ncc auto matrimonio e pasticceria torte",
     "gentiluna blog",
   ],
   alternates: {
@@ -39,6 +39,9 @@ export default function BlogIndexPage() {
             </Link>
             <Link href="/funzioni-professionisti" className="text-stone-600 hover:text-stone-900 px-2.5 py-1.5 rounded-full hover:bg-stone-100 transition-colors">
               Funzioni Professionisti
+            </Link>
+            <Link href="/partner" className="text-emerald-700 hover:text-emerald-800 font-semibold px-2.5 py-1.5 rounded-full hover:bg-emerald-50 transition-colors hidden md:inline-block">
+              Ristoranti &amp; Partner
             </Link>
             <Link href="/fornitori" className="text-stone-600 hover:text-stone-900 px-2.5 py-1.5 rounded-full hover:bg-stone-100 transition-colors hidden sm:inline-block">
               Fornitori

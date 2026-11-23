@@ -8,10 +8,11 @@ import {
   PenLine,
   Camera,
   MapPin,
-  Video,
   HeartHandshake,
-  Music,
   Send,
+  Plane,
+  CakeSlice,
+  Car,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,52 +26,61 @@ import {
 import { submitLead } from "@/app/actions/leadActions";
 
 const TYPEWRITER_EXAMPLES = [
+  "Cerco un ristorante o villa con giardino per 120 invitati...",
   "Cerco fotografo stile reportage in Sardegna per Giugno 2027...",
-  "Vorremmo una villa con giardino in Puglia per 120 invitati...",
+  "Cerchiamo agenzia viaggi per Luna di Miele in Giappone o Polinesia...",
+  "Vorremmo pasticceria per wedding cake e NCC auto d'epoca per gli sposi...",
   "Cerco videomaker con drone e musica live in Toscana...",
-  "Cerchiamo Wedding Planner e fiorista a Roma o Lago di Como...",
 ];
 
 const QUICK_SUGGESTIONS = [
   {
-    label: "Fotografo reportage",
+    label: "Ristorante o Villa",
+    icon: MapPin,
+    prompt: "Cerco un ristorante o villa esclusiva per ricevimento con gestione menù e allergie",
+    chipClass: "border-emerald-200 bg-emerald-50/90 text-emerald-900 hover:bg-emerald-100",
+  },
+  {
+    label: "Fotografo & Video",
     icon: Camera,
-    prompt: "Cerco un fotografo stile reportage spontaneo ed emozionale",
+    prompt: "Cerco un fotografo stile reportage e videomaker con drone",
     chipClass: "border-rose-200 bg-rose-50/90 text-rose-900 hover:bg-rose-100",
   },
   {
-    label: "Villa o Ristorante",
-    icon: MapPin,
-    prompt: "Cerco una villa o ristorante esclusivo per il ricevimento di matrimonio",
-    chipClass: "border-amber-200 bg-amber-50/90 text-amber-900 hover:bg-amber-100",
-  },
-  {
-    label: "Videomaker & Drone",
-    icon: Video,
-    prompt: "Cerco un videomaker matrimonialista con riprese drone cinematografiche",
+    label: "Viaggio di Nozze",
+    icon: Plane,
+    prompt: "Cerco un'agenzia viaggi specializzata in Luna di Miele e lista viaggio",
     chipClass: "border-sky-200 bg-sky-50/90 text-sky-900 hover:bg-sky-100",
   },
   {
-    label: "Wedding Planner & Fiori",
-    icon: HeartHandshake,
-    prompt: "Cerco Wedding Planner e floral designer per coordinare l'evento",
-    chipClass: "border-violet-200 bg-violet-50/90 text-violet-900 hover:bg-violet-100",
+    label: "Pasticceria & Torte",
+    icon: CakeSlice,
+    prompt: "Cerco una pasticceria e cake designer per torta nuziale e sweet table",
+    chipClass: "border-pink-200 bg-pink-50/90 text-pink-900 hover:bg-pink-100",
   },
   {
-    label: "Musica Live & DJ",
-    icon: Music,
-    prompt: "Cerco musica dal vivo per l'aperitivo e DJ set per la festa",
-    chipClass: "border-emerald-200 bg-emerald-50/90 text-emerald-900 hover:bg-emerald-100",
+    label: "NCC & Auto Sposi",
+    icon: Car,
+    prompt: "Cerco noleggio auto per matrimonio o servizio NCC con conducente per sposi e invitati",
+    chipClass: "border-amber-200 bg-amber-50/90 text-amber-900 hover:bg-amber-100",
+  },
+  {
+    label: "Planner, Fiori & Musica",
+    icon: HeartHandshake,
+    prompt: "Cerco Wedding Planner, fiorista e musica live / DJ per l'evento",
+    chipClass: "border-violet-200 bg-violet-50/90 text-violet-900 hover:bg-violet-100",
   },
 ];
 
 export type PortalSearchProps = {
+  initialQuery?: string;
   presetQuery?: string;
   presetNonce?: number;
   openSegnalaNonce?: number;
 };
 
 export default function PortalSearch({
+  initialQuery = "",
   presetQuery,
   presetNonce,
   openSegnalaNonce,
@@ -78,7 +88,7 @@ export default function PortalSearch({
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"preventivo" | "segnala" | "success">("preventivo");
   const [isLoading, setIsLoading] = useState(false);
-  const [aiQuery, setAiQuery] = useState("");
+  const [aiQuery, setAiQuery] = useState(initialQuery);
   const [isFocused, setIsFocused] = useState(false);
   const [emptyHintPulse, setEmptyHintPulse] = useState(false);
 

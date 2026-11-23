@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { BLOG_POSTS } from "@/data/blogPosts";
+import { getAllLocalSeoSlugs } from "@/lib/localSeoData";
 
 const BASE_URL = "https://www.gentiluna.com";
 
@@ -34,6 +35,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${BASE_URL}/professionisti`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/partner`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/demo`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.9,
@@ -83,6 +96,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  const localSeoRoutes: MetadataRoute.Sitemap = getAllLocalSeoSlugs().map((slug) => ({
+    url: `${BASE_URL}/fornitori/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.75,
+  }));
+
   try {
     const proProfiles = await prisma.professionalProfile.findMany({
       where: { isActive: true },
@@ -96,8 +116,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
-    return [...staticRoutes, ...blogRoutes, ...proRoutes];
+    return [...staticRoutes, ...blogRoutes, ...localSeoRoutes, ...proRoutes];
   } catch {
-    return [...staticRoutes, ...blogRoutes];
+    return [...staticRoutes, ...blogRoutes, ...localSeoRoutes];
   }
 }

@@ -11,6 +11,10 @@ import {
   getServerStripeConfig,
   MASKED_SECRET_PLACEHOLDER,
 } from "@/lib/stripeServer";
+import {
+  calculatePartnerDiscountedCents,
+  resolvePartnerByInviteCode,
+} from "@/lib/partnerReferral";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -85,16 +89,22 @@ export async function saveStripeAdminConfig(data: {
 /**
  * Avvia il pagamento per un piano (supporta sia Stripe Payment Links che Stripe Checkout dinamico)
  */
-export async function createCheckoutSession(planCodeOrId: string) {
+export async function createCheckoutSession(
+  planCodeOrId: string,
+  category?: string,
+  partnerCode?: string
+) {
   const session = await getSession();
+  const catQuery = category ? `&category=${encodeURIComponent(category)}` : "";
+  const partnerQuery = partnerCode ? `&partner=${encodeURIComponent(partnerCode)}` : "";
 
   if (!session || !session.userId) {
-    redirect(`/login?mode=REGISTER&plan=${encodeURIComponent(planCodeOrId)}`);
+    redirect(`/login?mode=REGISTER&plan=${encodeURIComponent(planCodeOrId)}${catQuery}${partnerQuery}`);
   }
 
   const user = await prisma.user.findUnique({ where: { id: session.userId } });
   if (!user) {
-    redirect(`/login?mode=REGISTER&plan=${encodeURIComponent(planCodeOrId)}`);
+    redirect(`/login?mode=REGISTER&plan=${encodeURIComponent(planCodeOrId)}${catQuery}${partnerQuery}`);
   }
 
   await ensureCatalogPlansInDb();
@@ -111,8 +121,20 @@ export async function createCheckoutSession(planCodeOrId: string) {
     process.env[`STRIPE_LINK_${planCode}`] || process.env[`NEXT_PUBLIC_STRIPE_LINK_${planCode}`];
   const configuredTarget = dbPlan?.stripePriceId?.trim() || envLink?.trim() || "";
 
-  // CASO 1: Stripe Payment Link diretto (https://buy.stripe.com/...)
-  if (configuredTarget.startsWith("http://") || configuredTarget.startsWith("https://")) {
+  const adminStripe = await getServerStripeConfig();
+  const activeSecretKey = adminStripe.activeSecretKey;
+
+  // Verifica eventuale Codice Sconto Partner (-15% sui piani Sposi)
+  const partnerRef =
+    catalogPlan?.role === "COUPLE" && partnerCode
+      ? await resolvePartnerByInviteCode(partnerCode)
+      : null;
+
+  // CASO 1: Stripe Payment Link diretto (https://buy.stripe.com/...) — usato se non c'è sconto Partner dinamico o manca Secret Key API
+  if (
+    (configuredTarget.startsWith("http://") || configuredTarget.startsWith("https://")) &&
+    (!partnerRef || !activeSecretKey)
+  ) {
     const urlObj = new URL(configuredTarget);
     urlObj.searchParams.set("client_reference_id", `${user.id}__${planCode}`);
     if (user.email) {
@@ -127,9 +149,6 @@ export async function createCheckoutSession(planCodeOrId: string) {
   const protocol = host.includes("localhost") ? "http" : "https";
   const appUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
 
-  const adminStripe = await getServerStripeConfig();
-  const activeSecretKey = adminStripe.activeSecretKey;
-
   if (!activeSecretKey) {
     redirect(`/dashboard/billing?plan=${encodeURIComponent(planCode)}&setup_pending=true`);
   }
@@ -138,13 +157,14 @@ export async function createCheckoutSession(planCodeOrId: string) {
     apiVersion: "2023-10-16" as any,
   });
 
-  // CASO 2: Price ID di Stripe (price_...)
-  if (configuredTarget.startsWith("price_")) {
+  // CASO 2: Price ID di Stripe (price_...) — solo se non c'è sconto Partner dinamico
+  if (configuredTarget.startsWith("price_") && !partnerRef) {
     const stripeSession = await stripeClient.checkout.sessions.create({
       success_url: `${appUrl}/dashboard/billing?success=true&plan=${encodeURIComponent(planCode)}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/dashboard/billing?canceled=true&plan=${encodeURIComponent(planCode)}`,
       payment_method_types: ["card"],
       mode: "payment",
+      allow_promotion_codes: true,
       customer_email: user.email || undefined,
       billing_address_collection: "auto",
       line_items: [{ price: configuredTarget, quantity: 1 }],
@@ -160,13 +180,18 @@ export async function createCheckoutSession(planCodeOrId: string) {
     }
   }
 
-  // CASO 3: Creazione automatica del Checkout Stripe con l'importo esatto del piano
-  const amountCents = catalogPlan ? catalogPlan.priceCents : dbPlan?.price || 14900;
+  // CASO 3: Creazione automatica del Checkout Stripe con l'importo esatto del piano (ed eventuale Sconto Partner -15%)
+  const baseAmountCents = catalogPlan ? catalogPlan.priceCents : dbPlan?.price || 14900;
+  const amountCents = partnerRef
+    ? calculatePartnerDiscountedCents(baseAmountCents)
+    : baseAmountCents;
   const productName = catalogPlan
-    ? `GentiLuna - ${catalogPlan.name}`
+    ? `GentiLuna - ${catalogPlan.name}${partnerRef ? " (Promo Partner -15%)" : ""}`
     : `GentiLuna - Piano ${planCode}`;
   const productDesc = catalogPlan
-    ? `${catalogPlan.subtitle} (${catalogPlan.renewalNote})`
+    ? `${catalogPlan.subtitle} (${catalogPlan.renewalNote})${
+        partnerRef ? ` • Sconto -15% offerto da ${partnerRef.businessName}` : ""
+      }`
     : "Attivazione piano GentiLuna";
 
   const stripeSession = await stripeClient.checkout.sessions.create({
@@ -174,6 +199,7 @@ export async function createCheckoutSession(planCodeOrId: string) {
     cancel_url: `${appUrl}/dashboard/billing?canceled=true&plan=${encodeURIComponent(planCode)}`,
     payment_method_types: ["card"],
     mode: "payment",
+    allow_promotion_codes: true,
     customer_email: user.email || undefined,
     billing_address_collection: "auto",
     line_items: [
@@ -193,6 +219,14 @@ export async function createCheckoutSession(planCodeOrId: string) {
     metadata: {
       userId: user.id,
       planCode,
+      ...(partnerRef
+        ? {
+            partnerProId: partnerRef.proId,
+            partnerUserId: partnerRef.userId,
+            partnerCode: partnerRef.inviteCode,
+            partnerBusinessName: partnerRef.businessName,
+          }
+        : {}),
     },
   });
 

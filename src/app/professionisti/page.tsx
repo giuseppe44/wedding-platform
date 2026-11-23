@@ -480,6 +480,26 @@ export default function ProfessionistiPage() {
               </Button>
             </div>
           </div>
+
+          {/* CALLOUT PARALLELO RISTORANTI, AGENZIE VIAGGI, PASTICCERIE & NCC */}
+          <div className="mt-14 max-w-5xl mx-auto rounded-3xl bg-stone-900/90 border border-amber-400/30 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div className="space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
+                Nuovi Settori Ufficiali GentiLuna
+              </span>
+              <h3 className="text-xl sm:text-2xl font-serif text-white">
+                Sei un Ristorante, Agenzia di Viaggi, Pasticceria o NCC Auto Sposi?
+              </h3>
+              <p className="text-sm text-stone-400 max-w-2xl">
+                Scopri la pagina dedicata con la Regia Sala &amp; Allergie live per ristoranti, la Lista Viaggio a tappe per agenzie e l&apos;attivazione rapida con categoria pre-impostata.
+              </p>
+            </div>
+            <Link href="/partner" className="shrink-0 w-full md:w-auto">
+              <Button className="w-full md:w-auto h-12 px-6 rounded-full bg-amber-400 hover:bg-amber-500 text-stone-950 font-bold border-none">
+                Vai al Programma Ristoranti &amp; Partner →
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

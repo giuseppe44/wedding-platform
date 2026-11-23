@@ -12,6 +12,9 @@ import { Camera, HardDrive, Users, Settings, CreditCard } from "lucide-react";
 import { PlanWidget } from "@/components/PlanWidget";
 import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
 import { GuidedCoachBubble, type CoachTip } from "@/components/GuidedCoachBubble";
+import { PartnerGrowthToolkit } from "@/components/pro/PartnerGrowthToolkit";
+import { buildPartnerInviteCode, countPartnerReferralConversions } from "@/lib/partnerReferral";
+import { getProCategoryLabel } from "@/lib/proCategories";
 
 export default async function DashboardPage() {
   const headersList = await headers();
@@ -75,6 +78,11 @@ export default async function DashboardPage() {
     where: { userId: session.userId },
     include: { services: true },
   });
+
+  const partnerInviteCode = proProfile ? buildPartnerInviteCode(proProfile.slug) : "";
+  const partnerConvertedCount = proProfile
+    ? await countPartnerReferralConversions(proProfile.id)
+    : 0;
 
   const hasBioAndArea = Boolean(proProfile?.description?.trim() && proProfile?.serviceArea?.trim());
   const hasAvatarAndCover = Boolean((proProfile?.profileImage || proProfile?.logoUrl) && proProfile?.coverImage);
@@ -259,6 +267,16 @@ export default async function DashboardPage() {
           upgradeLink="/dashboard/billing" 
           stripeConfigured={true}
         />
+
+        {proProfile && (
+          <PartnerGrowthToolkit
+            slug={proProfile.slug}
+            businessName={proProfile.businessName}
+            categoryLabel={getProCategoryLabel(proProfile.category)}
+            inviteCode={partnerInviteCode}
+            convertedCount={partnerConvertedCount}
+          />
+        )}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-8">

@@ -53,7 +53,7 @@ export function BlogClientGrid({ posts }: { posts: BlogPost[] }) {
           }`}
         >
           <Briefcase className="w-4 h-4 text-amber-500" />
-          Fotografi &amp; Professionisti
+          Ristoranti, Partner &amp; Pro
         </button>
       </div>
 

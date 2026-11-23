@@ -175,6 +175,68 @@ export async function verifyAndActivateStripeReturn(params: {
         const customerId = typeof checkoutSession.customer === "string" ? checkoutSession.customer : undefined;
         const subId = typeof checkoutSession.subscription === "string" ? checkoutSession.subscription : undefined;
         await activateUserPlanInDb(userId, verifiedPlan, customerId, subId);
+
+        // Tracciamento automatico & premio Partner se la coppia ha usato un Codice Invito Partner
+        const partnerProId = checkoutSession.metadata?.partnerProId;
+        const partnerUserId = checkoutSession.metadata?.partnerUserId;
+        const partnerCode = checkoutSession.metadata?.partnerCode;
+        if (partnerProId && partnerUserId) {
+          try {
+            const alreadyLogged = await prisma.lead.findFirst({
+              where: {
+                intent: "REFERRAL_PARTNER_CONVERTED",
+                details: { contains: checkoutSession.id },
+              },
+            });
+            if (!alreadyLogged) {
+              await prisma.lead.create({
+                data: {
+                  email: userEmail || "coppia@gentiluna.com",
+                  intent: "REFERRAL_PARTNER_CONVERTED",
+                  details: JSON.stringify({
+                    sessionId: checkoutSession.id,
+                    proId: partnerProId,
+                    partnerCode,
+                    coupleUserId: userId,
+                    planCode: verifiedPlan,
+                  }),
+                },
+              });
+
+              const totalConverted = await prisma.lead.count({
+                where: {
+                  intent: "REFERRAL_PARTNER_CONVERTED",
+                  details: { contains: partnerProId },
+                },
+              });
+
+              await prisma.notification.create({
+                data: {
+                  userId: partnerUserId,
+                  type: "INFO",
+                  title: "🎉 Nuova coppia attivata col tuo Codice Partner!",
+                  message: `Una coppia ha appena attivato il piano ${verifiedPlan} usando il tuo codice (${partnerCode}). Totale coppie attivate: ${totalConverted}.`,
+                  link: "/dashboard",
+                },
+              });
+
+              if (totalConverted > 0 && totalConverted % 3 === 0) {
+                await activateUserPlanInDb(partnerUserId, "PRO_299");
+                await prisma.notification.create({
+                  data: {
+                    userId: partnerUserId,
+                    type: "ALERT",
+                    title: "🏆 Premio Sbloccato: 1 Anno di Piano VIP PRO in Omaggio!",
+                    message:
+                      "Complimenti! Hai raggiunto 3 coppie invitate attive su GentiLuna: ti abbiamo attivato gratuitamente 12 mesi completi di Piano VIP PRO!",
+                    link: "/dashboard/billing",
+                  },
+                });
+              }
+            }
+          } catch {}
+        }
+
         return true;
       }
       return false;

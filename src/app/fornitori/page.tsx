@@ -1,35 +1,14 @@
 import { prisma } from "@/lib/prisma";
+import {
+  getProCategoryLabel,
+  getProCategoryMeta,
+  getProFilterGroup,
+} from "@/lib/proCategories";
 import FornitoriDirectoryClient, {
   type DirectoryProItem,
 } from "./FornitoriDirectoryClient";
 
 export const dynamic = "force-dynamic";
-
-const CATEGORY_LABELS: Record<string, string> = {
-  PHOTOGRAPHER: "Fotografo",
-  VIDEOMAKER: "Videomaker",
-  WEDDING_PLANNER: "Wedding Planner",
-  DJ: "DJ",
-  MUSICIAN: "Musicista / Band",
-  LOCATION: "Location",
-  CATERING: "Catering / Ristorante",
-  FLORIST: "Fiorista",
-  MAKEUP_ARTIST: "Make-up Artist",
-  HAIR_STYLIST: "Hair Stylist",
-  OTHER: "Professionista Eventi",
-};
-
-function getFilterGroup(
-  category: string
-): "FOTO_VIDEO" | "LOCATION" | "PLANNER_MUSICA" {
-  if (category === "PHOTOGRAPHER" || category === "VIDEOMAKER") {
-    return "FOTO_VIDEO";
-  }
-  if (category === "LOCATION" || category === "CATERING") {
-    return "LOCATION";
-  }
-  return "PLANNER_MUSICA";
-}
 
 function resolveProImg(raw?: string | null): string | null {
   if (!raw || !raw.trim()) return null;
@@ -104,14 +83,16 @@ export default async function FornitoriPage() {
         .filter((u): u is string => Boolean(u))
         .slice(0, 3);
 
+      const meta = getProCategoryMeta(p.category);
+
       return {
         id: p.id,
         slug: p.slug,
         businessName: p.businessName,
         category: p.category,
-        categoryLabel: CATEGORY_LABELS[p.category] || "Professionista Eventi",
-        filterGroup: getFilterGroup(p.category),
-        description: p.description,
+        categoryLabel: getProCategoryLabel(p.category),
+        filterGroup: getProFilterGroup(p.category),
+        description: p.description || meta.publicFallbackDescription(p.businessName),
         serviceArea: p.serviceArea,
         coverUrl: resolveProImg(p.coverImage),
         avatarUrl: resolveProImg(p.profileImage || p.logoUrl),

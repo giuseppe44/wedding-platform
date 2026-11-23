@@ -576,19 +576,24 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
               <p className="text-stone-500 max-w-lg mb-6">
                 Salva questo QR code o stampalo per metterlo sui tavoli del tuo matrimonio. I tuoi invitati dovranno semplicemente inquadrarlo con il loro telefono per inviarvi foto e video in diretta!
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center md:justify-start">
+                <Link href={`/couple/${wedding.slug}/print-cards`}>
+                  <Button size="lg" className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-stone-950 rounded-full font-bold px-7 h-12 shadow-md border-none">
+                    <QrCode className="mr-2 h-5 w-5" /> Stampa Cartoncini QR da Tavolo (A4)
+                  </Button>
+                </Link>
                 <a 
                   href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${baseUrl}/w/${wedding.slug}/upload`}
                   download="QR_Code_Matrimonio.png"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button size="lg" className="w-full sm:w-auto bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold px-8 h-12 shadow-md">
-                    <QrCode className="mr-2 h-5 w-5" /> Scarica in Alta Qualità
+                  <Button size="lg" className="w-full sm:w-auto bg-rose-500 hover:bg-rose-600 text-white rounded-full font-semibold px-7 h-12 shadow-md">
+                    Scarica Solo PNG
                   </Button>
                 </a>
                 <Link href={`/live/${wedding.slug}`} target="_blank">
-                  <Button size="lg" className="w-full sm:w-auto bg-stone-900 hover:bg-stone-800 text-white rounded-full font-semibold px-8 h-12 shadow-md border-2 border-stone-800 hover:border-stone-700">
+                  <Button size="lg" className="w-full sm:w-auto bg-stone-900 hover:bg-stone-800 text-white rounded-full font-semibold px-7 h-12 shadow-md border-2 border-stone-800 hover:border-stone-700">
                     Avvia GentiLuna LIVE 🚀
                   </Button>
                 </Link>

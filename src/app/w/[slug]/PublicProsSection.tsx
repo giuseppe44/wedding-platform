@@ -4,20 +4,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ShieldCheck, ArrowRight } from "lucide-react";
 import Link from "next/link";
-
-const CATEGORY_IT: Record<string, string> = {
-  PHOTOGRAPHER: "Fotografo",
-  VIDEOMAKER: "Videomaker",
-  WEDDING_PLANNER: "Wedding Planner",
-  DJ: "DJ",
-  MUSICIAN: "Musicista / Band",
-  LOCATION: "Location",
-  CATERING: "Catering / Ristorante",
-  FLORIST: "Fiorista",
-  MAKEUP_ARTIST: "Make-up Artist",
-  HAIR_STYLIST: "Hair Stylist",
-  OTHER: "Professionista Eventi",
-};
+import { getProCategoryLabel } from "@/lib/proCategories";
 
 function resolveLogo(raw?: string | null) {
   if (!raw) return "";
@@ -65,7 +52,7 @@ export default function PublicProsSection({ assignments }: { assignments: any[] 
                     )}
 
                     <span className="text-[11px] font-bold uppercase tracking-wider text-rose-600 mb-1">
-                      {a.role || CATEGORY_IT[p.category] || p.category}
+                      {a.role || getProCategoryLabel(p.category)}
                     </span>
                     <h3 className="text-xl font-serif font-bold text-stone-900 group-hover:text-rose-600 transition-colors">
                       {p.businessName}

@@ -10,10 +10,11 @@ import {
   CheckCircle2,
   Sparkles,
   Camera,
-  Building2,
-  Music,
+  UtensilsCrossed,
+  Plane,
+  CakeSlice,
+  Car,
   HeartHandshake,
-  Gem,
   UserPlus,
   Send,
   Menu,
@@ -24,6 +25,8 @@ import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import PortalSearch from "@/components/PortalSearch";
+import type { ProFilterGroup } from "@/lib/proCategories";
+import { getFeaturedLocalSeoSlugs } from "@/lib/localSeoData";
 
 export type DirectoryProItem = {
   id: string;
@@ -31,7 +34,7 @@ export type DirectoryProItem = {
   businessName: string;
   category: string;
   categoryLabel: string;
-  filterGroup: "FOTO_VIDEO" | "LOCATION" | "PLANNER_MUSICA";
+  filterGroup: ProFilterGroup;
   description: string | null;
   serviceArea: string | null;
   coverUrl: string | null;
@@ -44,106 +47,123 @@ export type DirectoryProItem = {
 
 type OpenSlotCard = {
   id: string;
+  categoryCode: string;
   badge: string;
   title: string;
   subtitle: string;
   description: string;
-  filterGroup: "FOTO_VIDEO" | "LOCATION" | "PLANNER_MUSICA";
+  filterGroup: ProFilterGroup;
   accentBorder: string;
   accentBg: string;
   badgeClass: string;
   iconBg: string;
   couplePrompt: string;
   ctaLabel: string;
-  ctaHref: string;
-  icon: "camera" | "location" | "planner" | "music" | "beauty";
+  icon: "restaurant" | "travel" | "pastry" | "ncc" | "camera" | "planner";
 };
 
 const OPEN_PARTNER_SLOTS: OpenSlotCard[] = [
   {
-    id: "slot-foto-video",
-    badge: "Qui potresti esserci tu • Selezione Aperta",
-    title: "Fotografi & Videomaker",
-    subtitle: "Cerchiamo studi selezionati nelle province ancora scoperte",
+    id: "slot-ristoranti",
+    categoryCode: "RESTAURANT",
+    badge: "Vetrina Free + Regia Live",
+    title: "Ristoranti, Ville & Open Bar",
+    subtitle: "Regia tavoli & allergie live + nuovi banchetti tutto l'anno",
     description:
-      "Consegni gallerie HD sul dominio GentiLuna, compari con il tuo QR Code durante il ricevimento davanti a tutti gli invitati e lavori a 0% commissioni.",
-    filterGroup: "FOTO_VIDEO",
-    accentBorder: "border-amber-300/80 hover:border-amber-400",
-    accentBg: "from-[#fffbf2] via-white to-[#fff7ed]",
-    badgeClass: "bg-amber-100 text-amber-900 border-amber-300/80",
-    iconBg: "bg-amber-100 text-amber-700 border-amber-200",
-    couplePrompt: "Cerco fotografo e videomaker per il mio matrimonio",
-    ctaLabel: "Crea la tua Vetrina Pro",
-    ctaHref: "/professionisti",
-    icon: "camera",
+      "Crea gratis la tua vetrina e scopri il Portale Ristorante Live (celiaci, intolleranze e menù bimbi già contati tavolo per tavolo) e il Live Photo Wall in sala.",
+    filterGroup: "RISTORANTI_LOCATION",
+    accentBorder: "border-emerald-300/90 hover:border-emerald-500",
+    accentBg: "from-[#f0fdf4] via-white to-[#ecfdf5]",
+    badgeClass: "bg-emerald-100 text-emerald-900 border-emerald-300/80",
+    iconBg: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    couplePrompt: "Cerco ristorante, villa o sala ricevimenti per il mio evento",
+    ctaLabel: "Crea Vetrina Gratis (Ristorante)",
+    icon: "restaurant",
   },
   {
-    id: "slot-location",
-    badge: "Cerchiamo Partner in Zona",
-    title: "Ville, Location & Ristoranti",
-    subtitle: "Posiziona la tua struttura tra le mete consigliate agli sposi",
+    id: "slot-viaggi",
+    categoryCode: "TRAVEL_AGENCY",
+    badge: "Vetrina Free • Nuova Categoria",
+    title: "Agenzie di Viaggi & Hotel Ospiti",
+    subtitle: "Lista viaggio a tappe + alloggi invitati fuori sede",
     description:
-      "Oltre alla vetrina pubblica, GentiLuna offre il Portale Ristorante live condiviso con gli sposi per ricevere tavoli, intolleranze e allergie senza file sparsi.",
-    filterGroup: "LOCATION",
+      "Posiziona gratis la tua agenzia viaggi (con Lista Luna di Miele a tappe su GentiLuna) oppure il tuo Hotel/B&B per ospitare decine di invitati fuori sede.",
+    filterGroup: "VIAGGI_AUTO_TORTE",
+    accentBorder: "border-sky-300/90 hover:border-sky-500",
+    accentBg: "from-[#f0f9ff] via-white to-[#e0f2fe]/50",
+    badgeClass: "bg-sky-100 text-sky-900 border-sky-200",
+    iconBg: "bg-sky-100 text-sky-700 border-sky-200",
+    couplePrompt: "Cerco agenzia di viaggi per Luna di Miele o hotel per invitati",
+    ctaLabel: "Crea Vetrina Gratis (Viaggi / Hotel)",
+    icon: "travel",
+  },
+  {
+    id: "slot-pasticcerie",
+    categoryCode: "PASTRY_CAKE",
+    badge: "Vetrina Free • Cerchiamo in Zona",
+    title: "Pasticcerie, Negozi di Torte & Cake Design",
+    subtitle: "Torte nuziali, sweet table, battesimi, comunioni e lauree",
+    description:
+      "Pubblica gratis le tue wedding cake, confettate e creazioni artigianali: fatti scegliere nel momento più fotografato dell'evento, a 0% commissioni.",
+    filterGroup: "VIAGGI_AUTO_TORTE",
     accentBorder: "border-rose-200/90 hover:border-rose-400",
     accentBg: "from-[#fff5f7] via-white to-[#fff1f2]",
     badgeClass: "bg-rose-100 text-rose-900 border-rose-200",
     iconBg: "bg-rose-100 text-rose-600 border-rose-200",
-    couplePrompt: "Cerco villa, masseria o ristorante per ricevimento di matrimonio",
-    ctaLabel: "Candida la tua Location",
-    ctaHref: "/professionisti",
-    icon: "location",
+    couplePrompt: "Cerco pasticceria o negozio di torte per wedding cake e confettata",
+    ctaLabel: "Crea Vetrina Gratis (Pasticceria)",
+    icon: "pastry",
   },
   {
-    id: "slot-planner",
-    badge: "Spazio Riservato • Collaboratori Ricercati",
-    title: "Wedding Planner & Flower Design",
+    id: "slot-ncc",
+    categoryCode: "NCC_CARS",
+    badge: "Vetrina Free • Sposi & Navette",
+    title: "NCC (Noleggio con Conducente) & Auto Sposi",
+    subtitle: "Auto d'epoca, luxury car e transfer sicuro per gli invitati",
+    description:
+      "Registra gratis la tua flotta: proponi sia l'auto da cerimonia per gli sposi sia il servizio navetta/NCC per il rientro sicuro degli ospiti dalla location.",
+    filterGroup: "VIAGGI_AUTO_TORTE",
+    accentBorder: "border-amber-300/90 hover:border-amber-500",
+    accentBg: "from-[#fffbf2] via-white to-[#fef3c7]/40",
+    badgeClass: "bg-amber-100 text-amber-900 border-amber-300/80",
+    iconBg: "bg-amber-100 text-amber-800 border-amber-200",
+    couplePrompt: "Cerco auto per matrimonio o servizio NCC noleggio con conducente",
+    ctaLabel: "Crea Vetrina Gratis (Auto / NCC)",
+    icon: "ncc",
+  },
+  {
+    id: "slot-foto-video",
+    categoryCode: "PHOTOGRAPHER",
+    badge: "Vetrina Free + Piani PRO",
+    title: "Fotografi & Videomaker",
+    subtitle: "Cerchiamo studi selezionati nelle province ancora scoperte",
+    description:
+      "Parti dalla Vetrina Base gratuita o sblocca il piano PRO (da 49€/1° anno) per consegne gallerie HD illimitate e QR Code sui tavoli davanti agli invitati.",
+    filterGroup: "FOTO_VIDEO",
+    accentBorder: "border-indigo-200/90 hover:border-indigo-400",
+    accentBg: "from-[#f5f7ff] via-white to-[#eef2ff]/60",
+    badgeClass: "bg-indigo-100 text-indigo-900 border-indigo-200",
+    iconBg: "bg-indigo-100 text-indigo-700 border-indigo-200",
+    couplePrompt: "Cerco fotografo e videomaker per il mio matrimonio",
+    ctaLabel: "Crea Vetrina Gratis (Foto / Video)",
+    icon: "camera",
+  },
+  {
+    id: "slot-planner-stile",
+    categoryCode: "STATIONERY_FAVORS",
+    badge: "Vetrina Free • Collaboratori",
+    title: "Planner, Fioristi, Musica, Tipografie & Atelier",
     subtitle: "Diventa il punto di riferimento per le coppie della tua città",
     description:
-      "Coordina timeline, tavoli e fornitori in un unico spazio condiviso con gli sposi e mostra i tuoi allestimenti con una vetrina editoriale curata.",
-    filterGroup: "PLANNER_MUSICA",
+      "Vetrina gratuita aperta a Wedding Planner, fioristi, musicisti/DJ, tipografie partecipazioni, bomboniere, photo booth, atelier sposi e make-up/hair artist.",
+    filterGroup: "PLANNER_MUSICA_STILE",
     accentBorder: "border-violet-200/90 hover:border-violet-400",
     accentBg: "from-[#faf7ff] via-white to-[#f5f3ff]",
     badgeClass: "bg-violet-100 text-violet-900 border-violet-200",
     iconBg: "bg-violet-100 text-violet-700 border-violet-200",
-    couplePrompt: "Cerco Wedding Planner e floral designer per matrimonio",
-    ctaLabel: "Unisciti come Partner",
-    ctaHref: "/professionisti",
+    couplePrompt: "Cerco Wedding Planner, fiorista, musica, partecipazioni o atelier",
+    ctaLabel: "Scopri Tutte le Categorie Partner",
     icon: "planner",
-  },
-  {
-    id: "slot-music",
-    badge: "Qui potresti esserci tu",
-    title: "Musica Live, Band & DJ Wedding",
-    subtitle: "Fatti scoprire dagli sposi e dai loro ospiti in sala",
-    description:
-      "Ogni invitato che apre il portale dell'evento vede i fornitori ufficiali della giornata: il modo più naturale per ricevere richieste per le prossime date.",
-    filterGroup: "PLANNER_MUSICA",
-    accentBorder: "border-sky-200/90 hover:border-sky-400",
-    accentBg: "from-[#f2f9ff] via-white to-[#f0f9ff]",
-    badgeClass: "bg-sky-100 text-sky-900 border-sky-200",
-    iconBg: "bg-sky-100 text-sky-700 border-sky-200",
-    couplePrompt: "Cerco band musica dal vivo e DJ per matrimonio",
-    ctaLabel: "Attiva Scheda Artista",
-    ctaHref: "/professionisti",
-    icon: "music",
-  },
-  {
-    id: "slot-beauty",
-    badge: "Posti Fondatore • 49€ / 1° anno",
-    title: "Make-up, Hair, Atelier & Cake",
-    subtitle: "Cerchiamo eccellenze artigianali e bridal specialist",
-    description:
-      "Compila la tua scheda con foto, video, servizi e pulsante diretto WhatsApp. Blocca ora la tariffa lancio riservata ai primi 50 professionisti iscritti.",
-    filterGroup: "PLANNER_MUSICA",
-    accentBorder: "border-emerald-200/90 hover:border-emerald-400",
-    accentBg: "from-[#f2fcf7] via-white to-[#ecfdf5]",
-    badgeClass: "bg-emerald-100 text-emerald-900 border-emerald-200",
-    iconBg: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    couplePrompt: "Cerco make-up artist, hair stylist o atelier sposa",
-    ctaLabel: "Scopri Promo Fondatori",
-    ctaHref: "/professionisti",
-    icon: "beauty",
   },
 ];
 
@@ -164,16 +184,18 @@ const EXPANSION_REGIONS = [
 
 function SlotIcon({ kind }: { kind: OpenSlotCard["icon"] }) {
   switch (kind) {
+    case "restaurant":
+      return <UtensilsCrossed className="w-6 h-6" />;
+    case "travel":
+      return <Plane className="w-6 h-6" />;
+    case "pastry":
+      return <CakeSlice className="w-6 h-6" />;
+    case "ncc":
+      return <Car className="w-6 h-6" />;
     case "camera":
       return <Camera className="w-6 h-6" />;
-    case "location":
-      return <Building2 className="w-6 h-6" />;
     case "planner":
       return <HeartHandshake className="w-6 h-6" />;
-    case "music":
-      return <Music className="w-6 h-6" />;
-    case "beauty":
-      return <Gem className="w-6 h-6" />;
   }
 }
 
@@ -183,7 +205,7 @@ export default function FornitoriDirectoryClient({
   pros: DirectoryProItem[];
 }) {
   const [activeFilter, setActiveFilter] = useState<
-    "ALL" | "FOTO_VIDEO" | "LOCATION" | "PLANNER_MUSICA" | "OPEN_SLOTS"
+    "ALL" | ProFilterGroup | "OPEN_SLOTS"
   >("ALL");
   const [presetQuery, setPresetQuery] = useState("");
   const [presetNonce, setPresetNonce] = useState(0);
@@ -221,10 +243,13 @@ export default function FornitoriDirectoryClient({
 
           <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-stone-600">
             <Link href="/funzioni-sposi" className="hover:text-rose-600 transition-colors">
-              Funzioni Sposi &amp; Eventi
+              Sposi &amp; Eventi
+            </Link>
+            <Link href="/partner" className="text-emerald-700 hover:text-emerald-800 font-semibold transition-colors">
+              Ristoranti, Viaggi &amp; Partner
             </Link>
             <Link href="/funzioni-professionisti" className="hover:text-amber-600 transition-colors">
-              Funzioni Professionisti
+              Fotografi &amp; Pro
             </Link>
             <Link href="/blog" className="hover:text-stone-900 transition-colors">
               Blog
@@ -240,9 +265,9 @@ export default function FornitoriDirectoryClient({
                 Accedi
               </Button>
             </Link>
-            <Link href="/professionisti">
+            <Link href="/partner">
               <Button className="bg-stone-900 text-white hover:bg-stone-800 rounded-full font-semibold px-5 h-10 text-xs sm:text-sm shadow-md">
-                Sei un professionista?
+                Sei un&apos;attività? Unisciti
               </Button>
             </Link>
           </div>
@@ -267,11 +292,18 @@ export default function FornitoriDirectoryClient({
               Funzioni Sposi &amp; Eventi
             </Link>
             <Link
+              href="/partner"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded-xl text-sm font-semibold text-emerald-700 bg-emerald-50/70"
+            >
+              Ristoranti, Agenzie Viaggi, Torte &amp; NCC
+            </Link>
+            <Link
               href="/funzioni-professionisti"
               onClick={() => setMobileMenuOpen(false)}
               className="px-3 py-2 rounded-xl text-sm font-medium text-stone-700 hover:bg-stone-100"
             >
-              Funzioni Professionisti
+              Funzioni Fotografi &amp; Pro
             </Link>
             <Link
               href="/blog"
@@ -286,9 +318,9 @@ export default function FornitoriDirectoryClient({
                   Accedi
                 </Button>
               </Link>
-              <Link href="/professionisti" className="flex-1">
+              <Link href="/partner" className="flex-1">
                 <Button className="w-full rounded-full bg-stone-900 text-white">
-                  Area Pro
+                  Diventa Partner
                 </Button>
               </Link>
             </div>
@@ -307,17 +339,16 @@ export default function FornitoriDirectoryClient({
           >
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100/80 border border-amber-300/70 text-amber-900 text-xs font-bold uppercase tracking-wider mb-4">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              Directory Ufficiale &amp; Matchmaking Sposi
+              Directory Ufficiale &amp; Matchmaking Eventi
             </span>
             <h1 className="text-3xl sm:text-5xl font-serif text-stone-900 mb-4 leading-tight">
-              Trova i Professionisti Giusti{" "}
-              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-amber-800 via-rose-600 to-amber-700">
+              <span className="block">Trova i Professionisti e le Strutture</span>
+              <span className="inline-block px-2 -mx-2 box-decoration-clone italic text-transparent bg-clip-text bg-gradient-to-r from-amber-800 via-rose-600 to-amber-700">
                 per il Tuo Evento
               </span>
             </h1>
             <p className="text-stone-600 text-base sm:text-lg font-light leading-relaxed">
-              Esplora le vetrine dei professionisti verificati già presenti su GentiLuna oppure
-              descrivi qui sotto cosa stai cercando per ricevere gratuitamente proposte su misura.
+              Ristoranti, fotografi, agenzie di viaggi, pasticcerie, auto NCC, wedding planner e molto altro: esplora le vetrine verificate oppure scrivi cosa stai cercando.
             </p>
           </motion.div>
 
@@ -350,19 +381,18 @@ export default function FornitoriDirectoryClient({
                   Vetrine Ufficiali &amp; Nuove Selezioni di Zona
                 </h2>
                 <p className="text-stone-600 text-sm sm:text-base max-w-2xl">
-                  Qui trovi i primi professionisti verificati che hanno già completato la propria
-                  scheda ufficiale e le categorie in cui stiamo ancora selezionando nuovi partner
-                  sul territorio.
+                  Qui trovi i professionisti verificati che hanno già completato la propria scheda e le categorie strategiche (Ristoranti, Agenzie Viaggi, Pasticcerie, NCC e Partner) con selezioni aperte.
                 </p>
               </div>
 
-              {/* FILTRI RAPIDI */}
+              {/* FILTRI RAPIDI MULTI-SETTORE */}
               <div className="flex flex-wrap gap-2">
                 {[
                   { id: "ALL", label: "Tutti" },
+                  { id: "RISTORANTI_LOCATION", label: "Ristoranti & Location" },
                   { id: "FOTO_VIDEO", label: "Foto & Video" },
-                  { id: "LOCATION", label: "Location & Ristoranti" },
-                  { id: "PLANNER_MUSICA", label: "Planner, Fiori & Musica" },
+                  { id: "VIAGGI_AUTO_TORTE", label: "Viaggi, Torte & NCC" },
+                  { id: "PLANNER_MUSICA_STILE", label: "Planner, Musica & Stile" },
                   { id: "OPEN_SLOTS", label: "Candidature Aperte" },
                 ].map((tab) => {
                   const isActive = activeFilter === tab.id;
@@ -372,15 +402,10 @@ export default function FornitoriDirectoryClient({
                       type="button"
                       onClick={() =>
                         setActiveFilter(
-                          tab.id as
-                            | "ALL"
-                            | "FOTO_VIDEO"
-                            | "LOCATION"
-                            | "PLANNER_MUSICA"
-                            | "OPEN_SLOTS"
+                          tab.id as "ALL" | ProFilterGroup | "OPEN_SLOTS"
                         )
                       }
-                      className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
+                      className={`px-3.5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer border ${
                         isActive
                           ? "bg-stone-900 text-white border-stone-900 shadow-sm"
                           : "bg-white text-stone-600 border-stone-200 hover:border-stone-300 hover:text-stone-900"
@@ -403,7 +428,6 @@ export default function FornitoriDirectoryClient({
                     key={pro.id}
                     className="group bg-white rounded-[2rem] border border-stone-200/90 hover:border-amber-300 shadow-[0_12px_35px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_50px_-15px_rgba(217,119,6,0.2)] transition-all duration-300 overflow-hidden flex flex-col"
                   >
-                    {/* IMMAGINE DI COPERTINA */}
                     <div className="relative h-52 bg-gradient-to-br from-stone-900 via-stone-800 to-amber-950 overflow-hidden">
                       {heroImg ? (
                         <img
@@ -418,7 +442,6 @@ export default function FornitoriDirectoryClient({
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-stone-950/75 via-stone-950/15 to-transparent" />
 
-                      {/* BADGE VERIFICATO */}
                       <div className="absolute top-3.5 left-3.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/95 text-white text-[11px] font-bold shadow-md backdrop-blur-xs">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Vetrina Verificata
@@ -429,7 +452,6 @@ export default function FornitoriDirectoryClient({
                         {pro.categoryLabel}
                       </div>
 
-                      {/* AVATAR + NOME */}
                       <div className="absolute bottom-3.5 left-4 right-4 flex items-end gap-3">
                         <div className="w-14 h-14 rounded-2xl bg-white p-0.5 shadow-lg border border-amber-200 shrink-0 overflow-hidden">
                           {pro.avatarUrl ? (
@@ -456,10 +478,8 @@ export default function FornitoriDirectoryClient({
                       </div>
                     </div>
 
-                    {/* CONTENUTO CARD */}
                     <div className="p-6 flex-1 flex flex-col justify-between gap-4">
                       <div>
-                        {/* RATING O PARTNER FONDATORE */}
                         <div className="flex items-center justify-between gap-2 mb-3">
                           {pro.reviewCount > 0 && pro.avgRating ? (
                             <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">
@@ -476,11 +496,9 @@ export default function FornitoriDirectoryClient({
                         </div>
 
                         <p className="text-sm text-stone-600 line-clamp-3 leading-relaxed mb-4">
-                          {pro.description ||
-                            `Scopri il portfolio fotografico, i servizi dedicati agli sposi e contatta direttamente ${pro.businessName} nella sua vetrina ufficiale.`}
+                          {pro.description}
                         </p>
 
-                        {/* MINI ANTEPRIMA PORTFOLIO */}
                         {pro.galleryPreview.length > 1 && (
                           <div className="grid grid-cols-3 gap-2 mb-3">
                             {pro.galleryPreview.slice(0, 3).map((imgUrl, idx) => (
@@ -523,7 +541,7 @@ export default function FornitoriDirectoryClient({
                 );
               })}
 
-              {/* 2. CARD INVITO "QUI POTRESTI ESSERCI TU / CERCHIAMO COLLABORATORI" */}
+              {/* 2. CARD INVITO "QUI POTRESTI ESSERCI TU / NUOVE CATEGORIE" */}
               {filteredSlots.map((slot) => (
                 <div
                   key={slot.id}
@@ -555,20 +573,35 @@ export default function FornitoriDirectoryClient({
                     </p>
                   </div>
 
-                  <div className="space-y-2.5 pt-2 border-t border-stone-200/60">
-                    <Link href={slot.ctaHref} className="block">
-                      <Button className="w-full h-11 rounded-xl bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold flex items-center justify-center gap-2 border-none shadow-sm">
+                  <div className="space-y-2 pt-2 border-t border-stone-200/60">
+                    <Link
+                      href={
+                        slot.id === "slot-planner-stile"
+                          ? "/partner"
+                          : `/login?role=PHOTOGRAPHER&mode=REGISTER&category=${slot.categoryCode}`
+                      }
+                      className="block"
+                    >
+                      <Button className="w-full h-11 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-bold flex items-center justify-center gap-2 border-none shadow-sm text-xs sm:text-sm">
                         {slot.ctaLabel}
                         <ArrowRight className="w-4 h-4" />
                       </Button>
                     </Link>
-                    <button
-                      type="button"
-                      onClick={() => triggerSearchPreset(slot.couplePrompt)}
-                      className="w-full text-center text-xs font-semibold text-stone-600 hover:text-rose-600 py-1 transition-colors cursor-pointer"
-                    >
-                      Sei uno sposo e cerchi questa categoria? Richiedi Match ↑
-                    </button>
+                    <div className="flex items-center justify-between gap-2 pt-0.5">
+                      <Link
+                        href={`/login?role=PHOTOGRAPHER&mode=REGISTER&category=${slot.categoryCode}&plan=PRO_FOUNDERS_49`}
+                        className="text-[11px] font-bold text-amber-800 hover:text-amber-950 underline"
+                      >
+                        Oppure VIP PRO 49€/anno →
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => triggerSearchPreset(slot.couplePrompt)}
+                        className="text-[11px] font-semibold text-stone-600 hover:text-rose-600 transition-colors cursor-pointer"
+                      >
+                        Sposi: richiedi Match ↑
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -581,12 +614,10 @@ export default function FornitoriDirectoryClient({
                     Consigliato dagli Sposi
                   </div>
                   <h3 className="font-serif text-xl sm:text-2xl font-bold text-stone-900 mb-2">
-                    Conosci un professionista speciale nella tua zona?
+                    Conosci un ristorante o fornitore speciale nella tua zona?
                   </h3>
                   <p className="text-sm text-stone-600 leading-relaxed">
-                    Stiamo selezionando fotografi, location, musicisti e fornitori di qualità in
-                    ogni provincia italiana. Segnalaci un talento di fiducia: lo inviteremo nella
-                    directory GentiLuna!
+                    Stiamo selezionando ristoranti, agenzie viaggi, pasticcerie, NCC, fotografi e fornitori d&apos;eccellenza in ogni provincia. Segnalacelo e lo inviteremo su GentiLuna!
                   </p>
                 </div>
 
@@ -596,7 +627,7 @@ export default function FornitoriDirectoryClient({
                   onClick={() => setOpenSegnalaNonce((n) => n + 1)}
                   className="w-full h-11 rounded-xl bg-white border-rose-300 text-rose-700 hover:bg-rose-50 font-bold"
                 >
-                  Segnala un Professionista
+                  Segnala un&apos;Attività
                 </Button>
               </div>
             </div>
@@ -608,17 +639,15 @@ export default function FornitoriDirectoryClient({
               <div className="lg:col-span-7">
                 <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
                   <MapPin className="w-3.5 h-3.5" />
-                  Copertura Italia • Cerchiamo Collaboratori &amp; Partner
+                  Copertura Italia • Ristoranti, Viaggi, Torte, NCC &amp; Pro
                 </span>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-white mb-3 leading-tight">
                   Nella tua zona ci sono ancora{" "}
                   <span className="text-amber-300 italic">posti liberi in prima fila.</span>
                 </h2>
                 <p className="text-stone-300 text-sm sm:text-base font-light leading-relaxed mb-6">
-                  Se sei una <strong className="text-white">coppia di sposi</strong>, clicca la tua
-                  regione per cercare subito i fornitori disponibili. Se sei un{" "}
-                  <strong className="text-amber-200">professionista del matrimonio</strong>, prenota
-                  adesso la tua vetrina ufficiale prima che la tua provincia si completi.
+                  Se organizzi un evento, clicca la tua regione per ricevere fino a 3 proposte su misura. Se gestisci un{" "}
+                  <strong className="text-amber-200">ristorante, agenzia viaggi, pasticceria, flotta NCC o studio professionale</strong>, scopri il nuovo programma Partner.
                 </p>
 
                 <div className="flex flex-wrap gap-2">
@@ -628,7 +657,7 @@ export default function FornitoriDirectoryClient({
                       type="button"
                       onClick={() =>
                         triggerSearchPreset(
-                          `Cerco fornitori per matrimonio in ${region}`
+                          `Cerco ristorante e fornitori per matrimonio in ${region}`
                         )
                       }
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-amber-400/20 border border-white/15 hover:border-amber-300/50 text-xs font-medium text-stone-200 hover:text-white transition-all cursor-pointer"
@@ -642,7 +671,7 @@ export default function FornitoriDirectoryClient({
 
               <div className="lg:col-span-5 bg-white/5 border border-amber-300/25 rounded-3xl p-6 sm:p-7 backdrop-blur-sm">
                 <div className="text-amber-300 text-xs font-bold uppercase tracking-widest mb-2">
-                  Offerta Primi 50 Professionisti
+                  Vetrina Base Gratuita + Piani PRO
                 </div>
                 <h3 className="font-serif text-2xl text-white mb-2">
                   Qui potresti esserci tu!
@@ -650,33 +679,56 @@ export default function FornitoriDirectoryClient({
                 <ul className="space-y-2.5 text-sm text-stone-300 mb-6">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>Vetrina verificata con portfolio foto, video e recensioni reali</span>
+                    <span><strong>Vetrina Base Free (0€):</strong> iscriviti gratis e pubblica la tua scheda</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>QR Code personale e visibilità diretta agli invitati degli eventi</span>
+                    <span><strong>Regia Ristorante Live</strong> (tavoli + allergie) e Lista Viaggio inclusi</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span>Zero commissioni sui preventivi • Solo 49,00 € il 1° anno</span>
+                    <span><strong>Upgrade VIP PRO a 49€/1° anno</strong> (poi Entry, PRO o Diamond) • 0% commissioni</span>
                   </li>
                 </ul>
                 <div className="flex flex-col sm:flex-row gap-2.5">
-                  <Link href="/professionisti" className="flex-1">
+                  <Link href="/partner" className="flex-1">
                     <Button className="w-full h-11 rounded-full bg-amber-400 hover:bg-amber-500 text-stone-950 font-bold border-none">
-                      Diventa Partner Ora
+                      Programma Ristoranti &amp; Partner
                     </Button>
                   </Link>
-                  <Link href="/funzioni-professionisti" className="flex-1">
+                  <Link href="/professionisti" className="flex-1">
                     <Button
                       variant="outline"
                       className="w-full h-11 rounded-full bg-transparent border-stone-600 text-stone-200 hover:bg-white/10 hover:text-white"
                     >
-                      Scopri tutte le funzioni
+                      Piani Pro
                     </Button>
                   </Link>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* HUB PAGINE SEO LOCALI PER CATEGORIA & REGIONE */}
+          <section className="mt-14 bg-white rounded-3xl border border-stone-200/80 p-6 sm:p-8 shadow-2xs">
+            <h3 className="font-serif text-xl sm:text-2xl font-bold text-stone-900 mb-2">
+              Ricerche Rapide per Categoria e Regione in Italia
+            </h3>
+            <p className="text-xs sm:text-sm text-stone-500 mb-4">
+              Esplora le selezioni locali dedicate a ristoranti, fotografi, agenzie viaggi, pasticcerie e servizi NCC nelle principali destinazioni italiane:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {getFeaturedLocalSeoSlugs()
+                .slice(0, 20)
+                .map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={`/fornitori/${item.slug}`}
+                    className="px-3 py-1.5 rounded-full bg-stone-50 hover:bg-amber-50 border border-stone-200 hover:border-amber-300 text-xs font-medium text-stone-700 hover:text-stone-950 transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
             </div>
           </section>
         </div>

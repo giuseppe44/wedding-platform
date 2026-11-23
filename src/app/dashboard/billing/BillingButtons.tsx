@@ -11,6 +11,7 @@ export function BillingButtons({
   hasActiveSubscription,
   autoTrigger = false,
   variant = "primary",
+  partnerCode,
 }: {
   planId?: string;
   planLabel?: string;
@@ -18,6 +19,7 @@ export function BillingButtons({
   hasActiveSubscription: boolean;
   autoTrigger?: boolean;
   variant?: "primary" | "rose" | "amber";
+  partnerCode?: string;
 }) {
   const [isPending, startTransition] = useTransition();
   const triggeredRef = useRef(false);
@@ -25,7 +27,7 @@ export function BillingButtons({
   const handleSubscribe = () => {
     if (!planId) return;
     startTransition(() => {
-      createCheckoutSession(planId);
+      createCheckoutSession(planId, undefined, partnerCode);
     });
   };
 

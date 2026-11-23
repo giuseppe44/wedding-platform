@@ -4,6 +4,11 @@ import { redirect } from "next/navigation";
 import { BillingButtons } from "./BillingButtons";
 import { PLANS_CATALOG, getCatalogPlan } from "@/lib/plans";
 import { verifyAndActivateStripeReturn } from "@/lib/stripeServer";
+import {
+  calculatePartnerDiscountedCents,
+  formatEuroFromCents,
+  resolvePartnerByInviteCode,
+} from "@/lib/partnerReferral";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Sparkles, ShieldCheck, AlertCircle, Heart, Camera } from "lucide-react";
 
@@ -20,6 +25,7 @@ export default async function BillingPage({
   const canceledParam = resolvedParams.canceled === "true";
   const setupPendingParam = resolvedParams.setup_pending === "true";
   const planParam = typeof resolvedParams.plan === "string" ? resolvedParams.plan.toUpperCase() : "";
+  const partnerParam = typeof resolvedParams.partner === "string" ? resolvedParams.partner.toUpperCase() : "";
   const sessionIdParam = typeof resolvedParams.session_id === "string" ? resolvedParams.session_id : undefined;
   const autoCheckoutParam = resolvedParams.autocheckout === "true" && !setupPendingParam && !successParam && !canceledParam;
 
@@ -76,6 +82,7 @@ export default async function BillingPage({
 
   const activeCatalogPlan = getCatalogPlan(subscription?.plan?.name);
   const selectedPlan = getCatalogPlan(planParam);
+  const partnerRef = !isPro && partnerParam ? await resolvePartnerByInviteCode(partnerParam) : null;
 
   // Filtra i piani del catalogo per il ruolo dell'utente
   const rolePlans = Object.values(PLANS_CATALOG).filter(
@@ -169,10 +176,15 @@ export default async function BillingPage({
               <BillingButtons
                 planId={selectedPlan.code}
                 planLabel="Completa Pagamento Ora"
-                priceDisplay={selectedPlan.priceDisplay}
+                priceDisplay={
+                  partnerRef && selectedPlan.role === "COUPLE"
+                    ? formatEuroFromCents(calculatePartnerDiscountedCents(selectedPlan.priceCents))
+                    : selectedPlan.priceDisplay
+                }
                 hasActiveSubscription={false}
                 autoTrigger={autoCheckoutParam}
                 variant={isPro ? "amber" : "rose"}
+                partnerCode={partnerRef?.inviteCode}
               />
             </div>
           </div>
@@ -282,9 +294,14 @@ export default async function BillingPage({
                   <BillingButtons
                     planId={plan.code}
                     planLabel="Attiva Ora"
-                    priceDisplay={plan.priceDisplay}
+                    priceDisplay={
+                      partnerRef && plan.role === "COUPLE"
+                        ? formatEuroFromCents(calculatePartnerDiscountedCents(plan.priceCents))
+                        : plan.priceDisplay
+                    }
                     hasActiveSubscription={false}
                     variant={isHighlighted ? (isPro ? "amber" : "rose") : "primary"}
+                    partnerCode={partnerRef?.inviteCode}
                   />
                 )}
               </div>
@@ -292,20 +309,42 @@ export default async function BillingPage({
           })}
         </div>
 
-        {/* FOOTER SICUREZZA */}
-        <div className="mt-12 p-6 bg-white rounded-2xl border border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
-          <div className="flex items-center gap-3">
-            <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-            <span>
-              Transazioni crittografate SSL a 256-bit gestite direttamente da <strong>Stripe</strong>. GentiLuna non memorizza i dati della tua carta di credito.
-            </span>
+        {/* FOOTER SICUREZZA & AGEVOLAZIONE B2B */}
+        <div className="mt-12 space-y-4">
+          <div className="p-6 bg-white rounded-2xl border border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-600">
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+              <span>
+                Pagamento immediato protetto SSL a 256-bit su <strong>Stripe</strong> con{" "}
+                <strong>Carta di Credito/Debito, PostePay, Apple Pay e Google Pay</strong>. GentiLuna non memorizza i dati della tua carta.
+              </span>
+            </div>
+            <div className="shrink-0">
+              Assistenza o fattura:{" "}
+              <a href="mailto:info@gentiluna.com" className="underline font-semibold text-stone-900">
+                info@gentiluna.com
+              </a>
+            </div>
           </div>
-          <div>
-            Hai bisogno di supporto o fattura? Scrivi a{" "}
-            <a href="mailto:info@gentiluna.com" className="underline font-semibold text-stone-800">
-              info@gentiluna.com
-            </a>
-          </div>
+
+          {isPro && !isActive && (
+            <div className="p-5 bg-amber-50/80 rounded-2xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-amber-950">
+              <div>
+                <strong>Sei un Ristorante, Agenzia di Viaggi, Pasticceria, NCC o Società?</strong> Se la tua amministrazione preferisce pagare tramite{" "}
+                <strong>Bonifico Bancario Aziendale con Fattura Elettronica P.IVA</strong> anziché carta, richiedi le coordinate IBAN e ti attiviamo subito il profilo.
+              </div>
+              <a
+                href={`mailto:info@gentiluna.com?subject=${encodeURIComponent(
+                  `Richiesta Attivazione tramite Bonifico Aziendale (${user.email})`
+                )}&body=${encodeURIComponent(
+                  `Buongiorno Team GentiLuna,\n\nvorremmo attivare il nostro abbonamento Partner (${user.email}) tramite Bonifico Bancario Aziendale con Fattura Elettronica.\n\nRagione Sociale:\nPartita IVA / SDI:\nPiano scelto (es. Promo 49€):\n`
+                )}`}
+                className="shrink-0 px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold whitespace-nowrap transition-colors"
+              >
+                Richiedi IBAN Aziendale →
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>

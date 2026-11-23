@@ -359,7 +359,7 @@ export default function Home() {
             <h1 className="text-[2rem] sm:text-5xl lg:text-[3.6rem] font-serif text-white mb-3.5 leading-[1.14] tracking-tight drop-shadow-xl">
               Il Vostro Spazio Unico,{" "}
               <br className="hidden sm:block" />
-              <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-200 to-rose-100">
+              <span className="inline-block px-2 -mx-2 box-decoration-clone italic font-light text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-200 to-rose-100">
                 dove ogni emozione resta per sempre.
               </span>
             </h1>
@@ -416,7 +416,7 @@ export default function Home() {
                     transition={{ duration: 3.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
                     className="relative inline-block align-baseline mt-1 sm:mt-0"
                   >
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-3xl sm:text-5xl lg:text-[3.4rem]">
+                    <span className="inline-block px-1.5 -mx-1.5 box-decoration-clone text-transparent bg-clip-text bg-gradient-to-r from-amber-900 via-yellow-600 to-amber-800 italic font-bold text-3xl sm:text-5xl lg:text-[3.4rem]">
                       momento prezioso
                     </span>
 
@@ -515,7 +515,7 @@ export default function Home() {
                       Fornitori &amp; <span className="whitespace-nowrap">Top Pro</span>
                     </h3>
                     <p className="text-stone-500 font-light leading-relaxed text-[1.1rem]">
-                      Ricerca tra i migliori professionisti del settore. Esplora l'elenco generale dei nostri iscritti e trova fotografo, location, e molto altro.
+                      Esplora la directory ufficiale e trova fotografi, ristoranti, agenzie di viaggi, pasticcerie, auto NCC e molto altro.
                     </p>
                   </div>
                   <div className="mt-12 flex items-center justify-center md:justify-start text-sky-600 font-semibold text-lg group-hover:gap-4 transition-all relative z-10">
@@ -557,7 +557,7 @@ export default function Home() {
             </motion.div>
 
             {/* PERCORSI DEDICATI DISTRIBUITI CON ELEGANZA NELLA PAGINA */}
-            <div className="mt-12 pt-10 border-t border-stone-200/70 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-center">
+            <div className="mt-12 pt-10 border-t border-stone-200/70 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-7 text-center">
               <Link
                 href="/funzioni-sposi"
                 className="group inline-flex items-center gap-2 text-sm font-serif italic text-stone-700 hover:text-rose-600 transition-colors"
@@ -570,8 +570,16 @@ export default function Home() {
                 href="/funzioni-professionisti"
                 className="group inline-flex items-center gap-2 text-sm font-serif italic text-stone-700 hover:text-amber-700 transition-colors"
               >
-                <span>Scopri GentiLuna per Fotografi &amp; Professionisti</span>
+                <span>Fotografi &amp; Professionisti</span>
                 <ArrowRight className="w-4 h-4 text-amber-600 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-emerald-300" />
+              <Link
+                href="/partner"
+                className="group inline-flex items-center gap-2 text-sm font-serif italic text-stone-700 hover:text-emerald-700 transition-colors"
+              >
+                <span>Ristoranti, Agenzie Viaggi, Torte &amp; NCC</span>
+                <ArrowRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
           </div>
@@ -755,9 +763,19 @@ export default function Home() {
                   Scopri Funzioni Professionisti
                 </Button>
               </Link>
+              <Link href="/partner">
+                <Button className="rounded-full bg-emerald-700 hover:bg-emerald-800 text-white px-6 h-11 font-semibold">
+                  Ristoranti, Viaggi, Torte &amp; NCC
+                </Button>
+              </Link>
+              <Link href="/demo">
+                <Button className="rounded-full bg-amber-400 hover:bg-amber-500 text-stone-950 px-6 h-11 font-bold border-none">
+                  Prova Demo Interattiva Live ✨
+                </Button>
+              </Link>
               <Link href="/blog">
                 <Button variant="outline" className="rounded-full border-stone-300 text-stone-800 hover:bg-white px-6 h-11 font-semibold">
-                  Leggi le 15 Guide nel Blog
+                  Leggi le 22 Guide nel Blog
                 </Button>
               </Link>
             </div>
@@ -868,6 +886,103 @@ export default function Home() {
                 <p className="text-stone-200 text-lg font-light">{feature}</p>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SEZIONE ECOSISTEMA PARTNER: RISTORANTI, VIAGGI, PASTICCERIE, NCC & STRUTTURE */}
+      <section className="py-20 md:py-24 bg-white border-y border-stone-200/70">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <span className="inline-block px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold uppercase tracking-widest mb-3">
+              Rete Partner Ufficiale • Vetrina Base Gratuita
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-serif text-stone-900 mb-4 leading-tight">
+              Accogliamo tutte le eccellenze{" "}
+              <span className="italic text-amber-700">del mondo eventi</span>
+            </h2>
+            <p className="text-stone-600 text-base sm:text-lg font-light leading-relaxed">
+              Non solo fotografia: GentiLuna collega sposi, invitati e strutture per matrimoni, battesimi, comunioni e lauree. Ogni attività parte dalla <strong>Vetrina Gratuita (0€)</strong> e può sbloccare gli strumenti PRO a 0% commissioni.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            {[
+              {
+                emoji: "🍽️",
+                title: "Ristoranti, Ville & Sale",
+                desc: "Portale Sala & Cucina live con tavoli, celiaci e intolleranze già contati, più Live Photo Wall su TV/proiettore.",
+                href: "/partner#ristoranti",
+                border: "border-emerald-200/80 hover:border-emerald-400 bg-emerald-50/30",
+              },
+              {
+                emoji: "✈️",
+                title: "Agenzie di Viaggi",
+                desc: "Lista Viaggio di Nozze a tappe interattiva e area Documenti già pronte per le tue coppie, con visibilità agli ospiti.",
+                href: "/partner#categorie-partner",
+                border: "border-sky-200/80 hover:border-sky-400 bg-sky-50/30",
+              },
+              {
+                emoji: "🎂",
+                title: "Pasticcerie & Negozi di Torte",
+                desc: "Mostra wedding cake, sweet table e confettate nel momento clou del taglio torta per nozze, battesimi e lauree.",
+                href: "/partner#categorie-partner",
+                border: "border-rose-200/80 hover:border-rose-400 bg-rose-50/30",
+              },
+              {
+                emoji: "🚘",
+                title: "NCC & Auto per Matrimoni",
+                desc: "Noleggio con conducente, auto d'epoca/luxury per gli sposi e navette sicure di rientro per gli invitati.",
+                href: "/partner#categorie-partner",
+                border: "border-amber-200/80 hover:border-amber-400 bg-amber-50/30",
+              },
+              {
+                emoji: "🏨",
+                title: "Hotel, B&B & Open Bar",
+                desc: "Alloggi convenzionati per gli ospiti fuori sede, cocktail catering, sommelier e angolo sigari & distillati.",
+                href: "/partner#categorie-partner",
+                border: "border-indigo-200/80 hover:border-indigo-400 bg-indigo-50/30",
+              },
+              {
+                emoji: "💌",
+                title: "Tipografie, Fiori & Atelier",
+                desc: "Partecipazioni e menù con QR Code integrato, bomboniere, floral design, musica live, photo booth e abiti.",
+                href: "/fornitori",
+                border: "border-violet-200/80 hover:border-violet-400 bg-violet-50/30",
+              },
+            ].map((card) => (
+              <Link
+                key={card.title}
+                href={card.href}
+                className={`group rounded-3xl border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between gap-4 ${card.border}`}
+              >
+                <div>
+                  <div className="text-3xl mb-3">{card.emoji}</div>
+                  <h3 className="font-serif text-xl font-bold text-stone-900 mb-2 group-hover:text-amber-800 transition-colors">
+                    {card.title}
+                  </h3>
+                  <p className="text-sm text-stone-600 font-light leading-relaxed">
+                    {card.desc}
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-800 group-hover:text-amber-700">
+                  Scopri vantaggi &amp; Vetrina Free <ArrowRight className="w-3.5 h-3.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link href="/partner">
+              <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold px-7 h-12">
+                Sei un&apos;Attività? Crea Vetrina Gratis →
+              </Button>
+            </Link>
+            <Link href="/fornitori">
+              <Button variant="outline" className="rounded-full border-stone-300 text-stone-800 hover:bg-stone-50 font-semibold px-7 h-12">
+                Esplora Tutte le Categorie in Directory
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

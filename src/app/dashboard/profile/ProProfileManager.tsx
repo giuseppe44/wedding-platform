@@ -11,6 +11,7 @@ import { upsertProfile, createService, updateService, deleteService, uploadProMe
 import Image from "next/image";
 import { ExternalLink, Plus, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { PRO_CATEGORY_GROUPS } from "@/lib/proCategories";
 
 export default function ProProfileManager({ initialProfile }: { initialProfile: any }) {
   const router = useRouter();
@@ -151,23 +152,21 @@ export default function ProProfileManager({ initialProfile }: { initialProfile: 
   </div>
                 </div>
                 <div className="space-y-2 md:col-span-2">
-                  <Label>Categoria</Label>
+                  <Label>Categoria Attività</Label>
                   <select 
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     value={profile.category}
                     onChange={e => setProfile({...profile, category: e.target.value})}
                   >
-                    <option value="PHOTOGRAPHER">Fotografo</option>
-                    <option value="VIDEOMAKER">Videomaker</option>
-                    <option value="WEDDING_PLANNER">Wedding Planner</option>
-                    <option value="DJ">DJ</option>
-                    <option value="MUSICIAN">Musicista / Band</option>
-                    <option value="LOCATION">Location</option>
-                    <option value="CATERING">Catering / Ristorante</option>
-                    <option value="FLORIST">Fiorista</option>
-                    <option value="MAKEUP_ARTIST">Make-up Artist</option>
-                    <option value="HAIR_STYLIST">Hair Stylist</option>
-                    <option value="OTHER">Altro</option>
+                    {PRO_CATEGORY_GROUPS.map((grp) => (
+                      <optgroup key={grp.groupName} label={grp.groupName}>
+                        {grp.items.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
                   </select>
                 </div>
                 <div className="space-y-2">

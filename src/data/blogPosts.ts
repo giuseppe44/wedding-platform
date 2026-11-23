@@ -28,6 +28,329 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "portale-ristorante-matrimonio-gestione-tavoli-allergie-intolleranze-live",
+    title: "Portale Ristorante Matrimonio: come inviare tavoli, celiaci e intolleranze alla cucina in tempo reale",
+    seoTitle: "Portale Ristorante Matrimonio: Tavoli e Allergie Live | GentiLuna",
+    metaDescription:
+      "Basta fogli Excel e telefonate dell'ultimo minuto prima del ricevimento: scopri il Portale Ristorante Live di GentiLuna per condividere tavoli, allergie, celiaci e menù bimbi tra sposi, sala e cucina.",
+    keywords: [
+      "portale ristorante matrimonio",
+      "gestione allergie matrimonio ristorante",
+      "lista tavoli matrimonio cucina",
+      "software sale ricevimenti matrimoni",
+      "intolleranze invitati matrimonio",
+    ],
+    category: "Ristoranti & Location",
+    audience: "TUTTI",
+    readTime: "5 min",
+    publishedAt: "2026-11-23",
+    image: "/blog/16-portale-ristorante-tavoli-allergie.jpg",
+    imageAlt: "Terrazza di ristorante italiano per matrimoni al tramonto con tavoli rotondi apparecchiati e maitre con tablet regia sala",
+    excerpt:
+      "Negli ultimi dieci giorni prima del banchetto ogni cambio posto rischia di mandare in tilt sala e cucina: ecco come il link protetto per il ristorante azzera gli errori e valorizza la location.",
+    sections: [
+      {
+        heading: "Il vero problema degli ultimi giorni prima di un ricevimento",
+        paragraphs: [
+          "Chi dirige una sala ricevimenti, una villa o un ristorante per cerimonie conosce bene la scena: fogli stampati corretti a penna, messaggi vocali sugli ospiti celiaci o intolleranti al lattosio e cambi di tavolo comunicati la sera prima dell'evento.",
+          "Anche per gli sposi dover ricopiare a mano tre volte le stesse informazioni tra RSVP, tableau e lista per lo chef diventa fonte di stress inutile proprio alla vigilia della festa.",
+        ],
+      },
+      {
+        heading: "Un unico link protetto e sincronizzato per Direttore di Sala e Chef",
+        paragraphs: [
+          "Su GentiLuna gli sposi generano dalla propria dashboard un Link Ristorante dedicato e firmato crittograficamente, da inviare su WhatsApp o via email al responsabile del banchetto senza obbligarlo a creare account complicati.",
+        ],
+        bullets: [
+          "Riepilogo automatico in alto di celiaci, intolleranze al lattosio, vegetariani, vegani, allergie gravi, menù bambini e seggioloni.",
+          "Dettaglio tavolo per tavolo sempre aggiornato in tempo reale a ogni modifica degli sposi.",
+          "Modalità stampa pulita in un clic per consegnare il foglio ufficiale direttamente alla brigata di cucina.",
+          "Vetrina ufficiale del Ristorante collegata all'evento e visibile a tutti i 150 invitati presenti in sala.",
+        ],
+      },
+      {
+        heading: "Perché conviene a Ristoranti, Ville e Sale per tutte le cerimonie dell'anno",
+        paragraphs: [
+          "Oltre ai matrimoni estivi, la stessa regia funziona per battesimi, comunioni, feste di laurea, diciottesimi e anniversari: il ristorante lavora meglio, può offrire il Live Photo Wall sugli schermi di sala e riceve nuovi contatti diretti a 0% commissioni partendo anche dalla Vetrina Base Gratuita.",
+        ],
+      },
+    ],
+    ctaLabel: "Scopri il Programma Ristoranti & Location",
+    ctaHref: "/partner#ristoranti",
+    secondaryCtaLabel: "Crea Vetrina Ristorante Gratis",
+    secondaryCtaHref: "/login?role=PHOTOGRAPHER&mode=REGISTER&category=RESTAURANT",
+  },
+  {
+    slug: "agenzia-viaggi-lista-nozze-luna-di-miele-online-a-tappe",
+    title: "Lista Viaggio di Nozze a tappe e Agenzie di Viaggi: come unire regali degli invitati e documenti in un solo spazio",
+    seoTitle: "Lista Viaggio di Nozze Online per Sposi e Agenzie Viaggi | GentiLuna",
+    metaDescription:
+      "Come creare una Lista Luna di Miele suddivisa in tappe emozionanti su GentiLuna e perché le Agenzie di Viaggi trovano nuovi clienti sposi senza commissioni.",
+    keywords: [
+      "lista viaggio di nozze online",
+      "agenzia viaggi matrimonio lista nozze",
+      "luna di miele a tappe",
+      "regalo viaggio di nozze invitati",
+    ],
+    category: "Viaggi di Nozze",
+    audience: "TUTTI",
+    readTime: "4 min",
+    publishedAt: "2026-11-23",
+    image: "/blog/17-agenzia-viaggi-luna-di-miele.jpg",
+    imageAlt: "Scrivania di agenzia viaggi boutique italiana con passaporti in lino, mappamondo in ottone e cartoline tropicali",
+    excerpt:
+      "Dalle tappe dell'itinerario ai voucher di viaggio custoditi in un'area riservata: il modo più elegante per raccontare la Luna di Miele agli ospiti e valorizzare l'Agenzia di Viaggi.",
+    sections: [
+      {
+        heading: "Perché una lista viaggio a tappe coinvolge molto più di un semplice IBAN freddo",
+        paragraphs: [
+          "Gli invitati amano sapere che il loro pensiero si trasformerà in una cena sull'oceano, in un safari all'alba o in un volo verso il Giappone. Su GentiLuna la sezione Lista Nozze permette di raccontare ogni tappa dell'itinerario con titolo, data, luogo, obiettivo e messaggio di ringraziamento.",
+          "Il contributo arriva direttamente agli sposi o secondo le modalità concordate con la propria agenzia di fiducia, senza trattenute percentuali da parte della piattaforma.",
+        ],
+      },
+      {
+        heading: "Un vantaggio enorme per le Agenzie di Viaggi Partner",
+        paragraphs: [
+          "Molte agenzie viaggi perdono ore per realizzare mini-siti artigianali per ogni coppia di sposi. Entrando nella rete GentiLuna (a partire dalla Vetrina Gratuita), l'agenzia offre un portale di livello luxury già pronto e ottiene visibilità diretta davanti a tutti gli invitati del matrimonio.",
+        ],
+        bullets: [
+          "Sezione Documenti di Viaggio dedicata per raccogliere biglietti, voucher e itinerari della coppia.",
+          "Capitolo 'Luna di Miele' che gli sposi possono riaprire al rientro per condividere i ricordi del viaggio.",
+          "Presenza del marchio dell'Agenzia Viaggi tra i Partner Ufficiali dell'evento davanti a decine di nuove coppie.",
+        ],
+      },
+    ],
+    ctaLabel: "Programma per Agenzie di Viaggi",
+    ctaHref: "/partner#categorie-partner",
+    secondaryCtaLabel: "Esplora la Directory Fornitori",
+    secondaryCtaHref: "/fornitori",
+  },
+  {
+    slug: "torta-nuziale-pasticceria-cake-design-sweet-table-matrimonio",
+    title: "Torta Nuziale, Pasticcerie e Cake Design: come brillare al taglio torta e ricevere ordini tutto l'anno",
+    seoTitle: "Pasticcerie Torte Matrimonio, Cake Design e Sweet Table | GentiLuna",
+    metaDescription:
+      "Guida per sposi e pasticcerie artigianali: scelta della wedding cake, gestione intolleranze alimentari per il dessert e visibilità digitale per negozi di torte e cake designer.",
+    keywords: [
+      "pasticceria torte matrimonio",
+      "cake design torta nuziale",
+      "negozio torte cerimonie",
+      "sweet table confettata matrimonio",
+      "torta matrimonio senza glutine lattosio",
+    ],
+    category: "Pasticcerie & Cake Design",
+    audience: "TUTTI",
+    readTime: "4 min",
+    publishedAt: "2026-11-22",
+    image: "/blog/18-pasticceria-torta-nuziale-cake-design.jpg",
+    imageAlt: "Torta nuziale italiana a tre piani con foglia oro, rose cipria e sweet table con confetti in giardino storico",
+    excerpt:
+      "Il taglio della torta è l'istante più fotografato dell'intero ricevimento: ecco come pasticcerie e negozi di torte trasformano quell'emozione in nuovi clienti per nozze, battesimi e lauree.",
+    sections: [
+      {
+        heading: "Il momento clou della serata (e l'importanza delle intolleranze)",
+        paragraphs: [
+          "Che si tratti di una millefoglie espressa montata davanti agli ospiti o di una wedding cake monumentale a più piani abbinata a confettata e sweet table, il dessert chiude il banchetto lasciando il ricordo più dolce.",
+          "Grazie alla raccolta RSVP con note alimentari di GentiLuna, sposi e pasticceri sanno in anticipo quante monoporzioni senza glutine, senza lattosio o vegane preparare, facendo sentire coccolato ogni singolo invitato.",
+        ],
+      },
+      {
+        heading: "Come una Pasticceria o Cake Designer moltiplica le richieste con GentiLuna",
+        paragraphs: [
+          "Durante il taglio torta tutti gli ospiti hanno lo smartphone in mano per caricare le foto tramite il QR Code dell'evento. Essere collegati come Pasticceria Partner significa far scoprire immediatamente il proprio laboratorio a 150 persone della stessa zona.",
+        ],
+        bullets: [
+          "Vetrina Base Gratuita con galleria fotografica delle tue migliori creazioni, listino indicativo e richiesta preventivo.",
+          "Clienti ricorrenti 12 mesi l'anno: chi scopre la tua torta a un matrimonio ti ricontatta per battesimi, comunioni, lauree e compleanni.",
+          "Zero commissioni sugli ordini ricevuti tramite la piattaforma.",
+        ],
+      },
+    ],
+    ctaLabel: "Iscrivi Gratis la tua Pasticceria",
+    ctaHref: "/login?role=PHOTOGRAPHER&mode=REGISTER&category=PASTRY_CAKE",
+    secondaryCtaLabel: "Scopri il Programma Partner",
+    secondaryCtaHref: "/partner",
+  },
+  {
+    slug: "noleggio-auto-matrimonio-ncc-conducente-navetta-invitati",
+    title: "Auto per il Matrimonio e NCC (Noleggio con Conducente): eleganza per gli sposi e rientro sicuro per gli ospiti",
+    seoTitle: "NCC e Auto per Matrimoni: Auto d'Epoca e Navette Ospiti | GentiLuna",
+    metaDescription:
+      "Come organizzare l'auto degli sposi e il servizio navetta NCC per gli invitati: consigli pratici sulle tempistiche e vantaggi della vetrina GentiLuna per autonoleggi con conducente.",
+    keywords: [
+      "ncc matrimonio noleggio con conducente",
+      "noleggio auto matrimonio epoca",
+      "navetta invitati matrimonio",
+      "transfer ospiti matrimonio sicuro",
+    ],
+    category: "NCC & Auto Sposi",
+    audience: "TUTTI",
+    readTime: "5 min",
+    publishedAt: "2026-11-22",
+    image: "/blog/19-ncc-auto-sposi-navetta-invitati.jpg",
+    imageAlt: "Auto d'epoca decappottabile color crema e berlina NCC di lusso con autista lungo un viale di cipressi in Toscana",
+    excerpt:
+      "Dall'arrivo scenografico della sposa al servizio transfer notturno per far brindare gli amici senza pensieri: perché l'NCC è oggi uno dei servizi più apprezzati nei matrimoni moderni.",
+    sections: [
+      {
+        heading: "Due esigenze preziose in un solo grande giorno",
+        paragraphs: [
+          "Quando si parla di auto per matrimoni si pensa subito alla vettura d'epoca, sportiva o d'alta rappresentanza che accompagna gli sposi dalla casa alla cerimonia e poi allo shooting fotografico.",
+          "Oggi però sempre più coppie affiancano all'auto nuziale un servizio van o navetta NCC dedicato agli invitati: comodissimo per chi arriva in aeroporto o treno e fondamentale a fine open bar per rientrare in hotel in totale sicurezza.",
+        ],
+      },
+      {
+        heading: "Come comunicare orari navette sul sito evento (e far crescere la tua flotta NCC)",
+        paragraphs: [
+          "All'interno del portale evento GentiLuna gli sposi possono indicare orari e punti di ritrovo delle navette nelle informazioni utili, collegando direttamente la vetrina dell'operatore NCC ufficiale.",
+        ],
+        bullets: [
+          "Per gli operatori NCC e Autonoleggi Cerimonia: Vetrina Gratuita nella directory provinciale con foto della flotta e servizi offerti.",
+          "Richieste dirette anche dagli invitati fuori sede che necessitano di transfer privati da aeroporti, stazioni e hotel.",
+          "Zero intermediari e possibilità di upgrade al piano VIP Partner a soli 49€/1° anno.",
+        ],
+      },
+    ],
+    ctaLabel: "Iscrivi Gratis la tua Flotta NCC / Auto",
+    ctaHref: "/login?role=PHOTOGRAPHER&mode=REGISTER&category=NCC_CARS",
+    secondaryCtaLabel: "Cerca Auto & NCC in Directory",
+    secondaryCtaHref: "/fornitori",
+  },
+  {
+    slug: "partecipazioni-matrimonio-con-qr-code-tipografie-bomboniere",
+    title: "Partecipazioni, Menù e Segnaposto con QR Code: quando la tipografia artigianale incontra il digitale",
+    seoTitle: "Partecipazioni Matrimonio con QR Code e Tipografie | GentiLuna",
+    metaDescription:
+      "Carta pregiata e tecnologia: come integrare il QR Code di GentiLuna su partecipazioni, tableau e cavalierini da tavolo e nuove opportunità per tipografie e negozi di bomboniere.",
+    keywords: [
+      "partecipazioni matrimonio con qr code",
+      "cartoncino qr code foto matrimonio",
+      "tipografia partecipazioni matrimonio",
+      "bomboniere e coordinato grafico nozze",
+    ],
+    category: "Partecipazioni & Stile",
+    audience: "TUTTI",
+    readTime: "4 min",
+    publishedAt: "2026-11-21",
+    image: "/blog/20-partecipazioni-qr-code-tipografia.jpg",
+    imageAlt: "Partecipazioni di matrimonio in carta cotone italiana con ceralacca oro, nastri di seta, bomboniere e cartoncino QR Code",
+    excerpt:
+      "Il digitale non sostituisce la magia della carta d'autore: la esalta! Scopri come un piccolo QR Code trasforma inviti, menù e bomboniere in un ricordo vivo.",
+    sections: [
+      {
+        heading: "L'eleganza della carta cotone + la praticità dell'aggiornamento istantaneo",
+        paragraphs: [
+          "Consegnare a mano una partecipazione su carta pregiata con sigillo in ceralacca resta un rito insostituibile. Aggiungere un discreto talloncino con il QR Code dello spazio GentiLuna permette però agli invitati di confermare l'RSVP in 10 secondi, aprire le mappe GPS e scoprire eventuali aggiornamenti d'orario senza appesantire la grafica dell'invito.",
+        ],
+      },
+      {
+        heading: "Un'opportunità d'oro per Tipografie, Grafici e Negozi di Bomboniere",
+        paragraphs: [
+          "Le tipografie e gli studi grafici sono spesso il primo fornitore scelto dalla coppia. Proporre il coordinato cartaceo completo per il giorno dell'evento aumenta lo scontrino medio e offre un servizio memorabile.",
+        ],
+        bullets: [
+          "Cartoncini da tavolo e menù con il QR Code per la raccolta foto live degli invitati.",
+          "Tag per confetti e bomboniere che rimandano alla galleria ringraziamenti dopo le nozze.",
+          "Vetrina Gratuita per Tipografie e Bomboniere su GentiLuna per farsi trovare dalle nuove coppie della propria città.",
+        ],
+      },
+    ],
+    ctaLabel: "Scopri i Vantaggi per Tipografie & Partner",
+    ctaHref: "/partner",
+    secondaryCtaLabel: "Funzioni per Sposi & Invitati",
+    secondaryCtaHref: "/funzioni-sposi",
+  },
+  {
+    slug: "portale-digitale-battesimo-comunione-laurea-diciottesimo-anniversario",
+    title: "Oltre il Matrimonio: come usare GentiLuna per Battesimi, Comunioni, Lauree, Diciottesimi e Nozze d'Oro",
+    seoTitle: "Sito e Foto QR Code per Battesimo, Laurea, Comunione e Anniversari | GentiLuna",
+    metaDescription:
+      "Un unico spazio digitale per tutti i capitoli della famiglia: inviti, gestione tavoli ristorante, allergie e raccolta foto con QR Code per battesimi, comunioni, lauree e anniversari.",
+    keywords: [
+      "raccolta foto battesimo qr code",
+      "organizzare festa di laurea tavoli foto",
+      "invito digitale comunione e battesimo",
+      "festa anniversario nozze d oro foto invitati",
+    ],
+    category: "Capitoli della Vita",
+    audience: "SPOSI",
+    readTime: "4 min",
+    publishedAt: "2026-11-20",
+    image: "/blog/21-eventi-battesimo-laurea-anniversari.jpg",
+    imageAlt: "Tavolata italiana di festa in uliveto per battesimo, laurea e anniversario con brindisi tra generazioni",
+    excerpt:
+      "La storia di una famiglia continua: dal primo sorriso di un figlio alla corona d'alloro fino alle Nozze d'Argento e d'Oro, custoditi capitolo dopo capitolo.",
+    sections: [
+      {
+        heading: "Ogni traguardo merita di non disperdersi nelle chat",
+        paragraphs: [
+          "Chi ha provato la comodità del QR Code sui tavoli e della mappa posti durante il matrimonio ci chiede subito la stessa esperienza per il battesimo del primo figlio, per una festa di laurea, un diciottesimo o i 25 e 50 anni di matrimonio dei genitori.",
+          "Su GentiLuna non devi ricominciare da zero: puoi aggiungere nuovi Capitoli alla tua storia familiare scegliendo chi invitare a ciascun evento.",
+        ],
+      },
+      {
+        heading: "Ideale anche per Ristoranti, Pasticcerie e Fotografi in tutte le stagioni",
+        paragraphs: [
+          "Mentre i matrimoni si concentrano nei mesi caldi, lauree, battesimi, comunioni e compleanni animano ristoranti, pasticcerie e studi fotografici per tutti i 12 mesi dell'anno.",
+        ],
+        bullets: [
+          "Invito digitale condivisibile su WhatsApp con orari, mappa location e conferma presenze.",
+          "Gestione tavoli e intolleranze pronta per il ristorante anche nei pranzi di battesimo e comunione.",
+          "Galleria privata dove nonni, zii e amici caricano e rivedono foto e dediche in alta qualità.",
+        ],
+      },
+    ],
+    ctaLabel: "Crea lo Spazio per il tuo Evento",
+    ctaHref: "/sposi",
+    secondaryCtaLabel: "Vedi i Piani Sposi & Famiglia",
+    secondaryCtaHref: "/prezzi",
+  },
+  {
+    slug: "vetrina-gratuita-fornitori-matrimonio-zero-commissioni-abbonamenti-pro",
+    title: "Vetrina Gratuita vs Piani PRO per Ristoranti e Fornitori Eventi: come acquisire clienti a 0% commissioni",
+    seoTitle: "Vetrina Gratuita Fornitori Matrimonio e Ristoranti 0% Commissioni | GentiLuna",
+    metaDescription:
+      "Come funziona l'iscrizione per Ristoranti, Fotografi, Agenzie Viaggi, Pasticcerie e NCC su GentiLuna: Vetrina Base Gratuita subito attiva e upgrade facoltativi ai livelli PRO.",
+    keywords: [
+      "vetrina gratuita fornitori matrimonio",
+      "portale matrimonio senza commissioni",
+      "iscrivere ristorante portale matrimoni gratis",
+      "pubblicita fornitori eventi italia",
+    ],
+    category: "Guida Partner B2B",
+    audience: "PROFESSIONISTI",
+    readTime: "5 min",
+    publishedAt: "2026-11-19",
+    image: "/blog/22-vetrina-gratuita-partner-eventi.jpg",
+    imageAlt: "Chef, floral designer e wedding planner italiani al lavoro intorno a un tavolo luminoso con moodboard e portatile",
+    excerpt:
+      "Nessun vincolo d'ingresso e nessuna percentuale sui tuoi lavori: parti gratis con la Vetrina Verificata nella directory nazionale e scegli tu se e quando passare ai piani PRO.",
+    sections: [
+      {
+        heading: "Perché abbiamo scelto un ingresso gratuito trasparente",
+        paragraphs: [
+          "I portali tradizionali chiedono abbonamenti annuali di migliaia di euro prima ancora di aver ricevuto una sola richiesta reale. Su GentiLuna ribaltiamo il paradigma: ogni professionista serio — dal ristorante alla pasticceria, dall'agenzia viaggi all'NCC fino al fotografo — può registrarsi gratuitamente e compilare subito la propria Vetrina Base.",
+        ],
+      },
+      {
+        heading: "Cosa include la Vetrina Free e cosa sbloccano i Piani PRO",
+        paragraphs: [
+          "La crescita avviene per gradi chiari e sostenibili, sempre con la regola aurea dello 0% di commissioni sui preventivi firmati.",
+        ],
+        bullets: [
+          "Vetrina Base Free (0€): presenza nella directory ufficiale /fornitori, pagina pubblica /pro/tuo-nome, foto copertina/portfolio, fino a 3 servizi e modulo richiesta preventivo.",
+          "Founders Club PRO (49,00 € per 12 mesi per i primi 50 iscritti, poi piani Entry 120€ e PRO 299€): badge VIP Partner, servizi illimitati, spazi evento illimitati, Live Chat e acquisizione lead via QR Code in sala.",
+          "Diamond White-Label (449,00 €/anno): pensato per Ristoranti, Location, Agenzie Viaggi e Wedding Planner che desiderano pacchetti sposi inclusi da offrire ai propri clienti col proprio logo.",
+          "Pagamenti rapidi con Carta, Apple Pay e Google Pay su Stripe, oppure tramite Bonifico Aziendale con Fattura Elettronica P.IVA.",
+        ],
+      },
+    ],
+    ctaLabel: "Crea Ora la tua Vetrina Gratuita",
+    ctaHref: "/partner#attiva-ora",
+    secondaryCtaLabel: "Confronta tutti i Livelli PRO",
+    secondaryCtaHref: "/professionisti#pricing",
+  },
+  {
     slug: "come-raccogliere-foto-invitati-matrimonio-qr-code-senza-app",
     title: "Come raccogliere tutte le foto degli invitati al matrimonio con un QR Code (senza app)",
     seoTitle: "Foto Invitati Matrimonio con QR Code Senza App | GentiLuna",

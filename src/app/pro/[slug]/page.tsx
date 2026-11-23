@@ -25,20 +25,7 @@ import ShareChapterButtons from "@/components/ShareChapterButtons";
 import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import Footer from "@/components/Footer";
 import { getSession } from "@/lib/auth";
-
-const CATEGORY_LABELS: Record<string, string> = {
-  PHOTOGRAPHER: "Fotografo",
-  VIDEOMAKER: "Videomaker",
-  WEDDING_PLANNER: "Wedding Planner",
-  DJ: "DJ",
-  MUSICIAN: "Musicista / Band",
-  LOCATION: "Location",
-  CATERING: "Catering / Ristorante",
-  FLORIST: "Fiorista",
-  MAKEUP_ARTIST: "Make-up Artist",
-  HAIR_STYLIST: "Hair Stylist",
-  OTHER: "Professionista Eventi",
-};
+import { getProCategoryLabel } from "@/lib/proCategories";
 
 export async function generateMetadata({
   params,
@@ -55,7 +42,7 @@ export async function generateMetadata({
     return { title: "Professionista non trovato" };
   }
 
-  const catLabel = CATEGORY_LABELS[profile.category] || "Professionista Eventi";
+  const catLabel = getProCategoryLabel(profile.category);
   const areaText = profile.serviceArea ? ` a ${profile.serviceArea}` : "";
   const title = `${profile.businessName} – ${catLabel} Matrimonio${areaText}`;
   const description =
@@ -101,7 +88,7 @@ export default async function ProPublicProfile({
     sub.plan?.name.toUpperCase() !== "FREE" &&
     sub.plan?.name.toUpperCase() !== "BASE";
 
-  const categoryLabel = CATEGORY_LABELS[profile.category] || "Professionista";
+  const categoryLabel = getProCategoryLabel(profile.category);
   const services = profile.services?.sort((a, b) => a.order - b.order) || [];
   const resolveProImg = (raw?: string | null) => {
     if (!raw) return "";
