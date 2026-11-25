@@ -7,7 +7,7 @@ export async function validatePartnerCodeAction(rawCode: string) {
   if (!resolved) {
     return {
       valid: false as const,
-      error: "Codice invito non trovato. Verifica di averlo scritto correttamente (es. GL-NOME-PARTNER).",
+      error: "Codice invito non trovato. Verifica di averlo scritto correttamente (es. F01, W01, R01 o codice Partner).",
     };
   }
 

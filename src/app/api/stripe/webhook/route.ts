@@ -93,6 +93,74 @@ export async function POST(req: Request) {
             customerId,
             subscriptionId
           );
+
+          // Accredito automatico Codice Partner anche da Webhook (5 matrimoni = -50% rinnovo, 10 matrimoni = 100% gratis)
+          try {
+            let partnerProId = session.metadata?.partnerProId || "";
+            let partnerUserId = session.metadata?.partnerUserId || "";
+            let partnerCode = session.metadata?.partnerCode || "";
+
+            if (!partnerProId) {
+              const regLead = await prisma.lead.findFirst({
+                where: {
+                  intent: "REFERRAL_PARTNER_REGISTERED",
+                  details: { contains: userId },
+                },
+                orderBy: { createdAt: "desc" },
+              });
+              if (regLead?.details) {
+                const parsed = JSON.parse(regLead.details);
+                if (parsed.proId) {
+                  const proRow = await prisma.professionalProfile.findUnique({
+                    where: { id: parsed.proId },
+                    select: { id: true, userId: true, parentUserId: true, partnerCode: true },
+                  });
+                  if (proRow) {
+                    partnerProId = proRow.id;
+                    partnerUserId = proRow.parentUserId || proRow.userId;
+                    partnerCode = proRow.partnerCode || parsed.partnerCode || "";
+                  }
+                }
+              }
+            }
+
+            if (partnerProId && partnerUserId) {
+              const alreadyLogged = await prisma.lead.findFirst({
+                where: {
+                  intent: "REFERRAL_PARTNER_CONVERTED",
+                  details: { contains: session.id },
+                },
+              });
+              if (!alreadyLogged) {
+                await prisma.lead.create({
+                  data: {
+                    email: customerEmail || "coppia@gentiluna.com",
+                    intent: "REFERRAL_PARTNER_CONVERTED",
+                    details: JSON.stringify({
+                      sessionId: session.id,
+                      proId: partnerProId,
+                      partnerCode,
+                      coupleUserId: userId,
+                      planCode: planCode || "PREMIUM_ANNUAL",
+                    }),
+                  },
+                });
+
+                const yearStart = new Date(new Date().getFullYear(), 0, 1);
+                const totalConverted = await prisma.lead.count({
+                  where: {
+                    intent: "REFERRAL_PARTNER_CONVERTED",
+                    details: { contains: partnerProId },
+                    createdAt: { gte: yearStart },
+                  },
+                });
+
+                if (totalConverted >= 10 && totalConverted % 10 === 0) {
+                  await activateUserPlanInDb(partnerUserId, "PRO_299");
+                }
+              }
+            }
+          } catch {}
         }
         break;
       }

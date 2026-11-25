@@ -13,6 +13,8 @@ import {
 } from "@/lib/stripeServer";
 import {
   calculatePartnerDiscountedCents,
+  countPartnerReferralConversions,
+  PARTNER_LOYALTY_HALF_TARGET,
   resolvePartnerByInviteCode,
 } from "@/lib/partnerReferral";
 import { revalidatePath } from "next/cache";
@@ -124,16 +126,54 @@ export async function createCheckoutSession(
   const adminStripe = await getServerStripeConfig();
   const activeSecretKey = adminStripe.activeSecretKey;
 
-  // Verifica eventuale Codice Sconto Partner (-15% sui piani Sposi)
+  // Verifica eventuale Codice Sconto Partner (-15% sui piani Sposi, incluso codice salvato in registrazione)
+  let effectivePartnerCode = partnerCode || "";
+  if (catalogPlan?.role === "COUPLE" && !effectivePartnerCode) {
+    try {
+      const regLead = await prisma.lead.findFirst({
+        where: {
+          intent: "REFERRAL_PARTNER_REGISTERED",
+          details: { contains: user.id },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+      if (regLead?.details) {
+        const parsed = JSON.parse(regLead.details);
+        if (parsed.partnerCode) effectivePartnerCode = parsed.partnerCode;
+      }
+    } catch {}
+  }
+
   const partnerRef =
-    catalogPlan?.role === "COUPLE" && partnerCode
-      ? await resolvePartnerByInviteCode(partnerCode)
+    catalogPlan?.role === "COUPLE" && effectivePartnerCode
+      ? await resolvePartnerByInviteCode(effectivePartnerCode)
       : null;
 
-  // CASO 1: Stripe Payment Link diretto (https://buy.stripe.com/...) — usato se non c'è sconto Partner dinamico o manca Secret Key API
+  // Verifica Buono Fedeltà Fornitore (-50% sul rinnovo annuale al raggiungimento di 5 matrimoni)
+  let proLoyaltyHalfOff = false;
+  if (
+    catalogPlan?.role === "PHOTOGRAPHER" &&
+    catalogPlan.code !== "PRO_FOUNDERS_49"
+  ) {
+    try {
+      const proProfiles = await prisma.professionalProfile.findMany({
+        where: { OR: [{ userId: user.id }, { parentUserId: user.id }] },
+        select: { id: true },
+      });
+      let convertedTotal = 0;
+      for (const pp of proProfiles) {
+        convertedTotal += await countPartnerReferralConversions(pp.id);
+      }
+      if (convertedTotal >= PARTNER_LOYALTY_HALF_TARGET) {
+        proLoyaltyHalfOff = true;
+      }
+    } catch {}
+  }
+
+  // CASO 1: Stripe Payment Link diretto (https://buy.stripe.com/...) — usato se non c'è sconto dinamico o manca Secret Key API
   if (
     (configuredTarget.startsWith("http://") || configuredTarget.startsWith("https://")) &&
-    (!partnerRef || !activeSecretKey)
+    ((!partnerRef && !proLoyaltyHalfOff) || !activeSecretKey)
   ) {
     const urlObj = new URL(configuredTarget);
     urlObj.searchParams.set("client_reference_id", `${user.id}__${planCode}`);
@@ -157,51 +197,71 @@ export async function createCheckoutSession(
     apiVersion: "2023-10-16" as any,
   });
 
-  // CASO 2: Price ID di Stripe (price_...) — solo se non c'è sconto Partner dinamico
-  if (configuredTarget.startsWith("price_") && !partnerRef) {
-    const stripeSession = await stripeClient.checkout.sessions.create({
+  // CASO 2: Price ID di Stripe (price_...) — solo se non c'è sconto dinamico
+  if (configuredTarget.startsWith("price_") && !partnerRef && !proLoyaltyHalfOff) {
+    let stripeSession: Stripe.Checkout.Session;
+    const baseSessionArgs = {
       success_url: `${appUrl}/dashboard/billing?success=true&plan=${encodeURIComponent(planCode)}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/dashboard/billing?canceled=true&plan=${encodeURIComponent(planCode)}`,
-      payment_method_types: ["card"],
-      mode: "payment",
+      mode: "payment" as const,
       allow_promotion_codes: true,
       customer_email: user.email || undefined,
-      billing_address_collection: "auto",
+      billing_address_collection: "auto" as const,
       line_items: [{ price: configuredTarget, quantity: 1 }],
       client_reference_id: `${user.id}__${planCode}`,
       metadata: {
         userId: user.id,
         planCode,
       },
-    });
+    };
+    try {
+      // Abilita automaticamente tutti i metodi attivi su Stripe (Carte, Apple/Google Pay, PayPal, Klarna, SEPA)
+      stripeSession = await stripeClient.checkout.sessions.create(baseSessionArgs);
+    } catch {
+      stripeSession = await stripeClient.checkout.sessions.create({
+        ...baseSessionArgs,
+        payment_method_types: ["card"],
+      });
+    }
 
     if (stripeSession.url) {
       redirect(stripeSession.url);
     }
   }
 
-  // CASO 3: Creazione automatica del Checkout Stripe con l'importo esatto del piano (ed eventuale Sconto Partner -15%)
+  // CASO 3: Creazione automatica del Checkout Stripe con l'importo esatto del piano (ed eventuale Sconto Partner -15% o Fedeltà -50%)
   const baseAmountCents = catalogPlan ? catalogPlan.priceCents : dbPlan?.price || 14900;
   const amountCents = partnerRef
     ? calculatePartnerDiscountedCents(baseAmountCents)
+    : proLoyaltyHalfOff
+    ? Math.round(baseAmountCents * 0.5)
     : baseAmountCents;
   const productName = catalogPlan
-    ? `GentiLuna - ${catalogPlan.name}${partnerRef ? " (Promo Partner -15%)" : ""}`
+    ? `GentiLuna - ${catalogPlan.name}${
+        partnerRef
+          ? ` (Codice Partner ${partnerRef.inviteCode} -15%)`
+          : proLoyaltyHalfOff
+          ? " (Buono Fedeltà Partner -50%)"
+          : ""
+      }`
     : `GentiLuna - Piano ${planCode}`;
   const productDesc = catalogPlan
     ? `${catalogPlan.subtitle} (${catalogPlan.renewalNote})${
-        partnerRef ? ` • Sconto -15% offerto da ${partnerRef.businessName}` : ""
+        partnerRef
+          ? ` • Sconto -15% offerto da ${partnerRef.businessName} (${partnerRef.inviteCode})`
+          : proLoyaltyHalfOff
+          ? " • Sconto Fedeltà -50% (5+ matrimoni attivati)"
+          : ""
       }`
     : "Attivazione piano GentiLuna";
 
-  const stripeSession = await stripeClient.checkout.sessions.create({
+  const dynamicSessionArgs = {
     success_url: `${appUrl}/dashboard/billing?success=true&plan=${encodeURIComponent(planCode)}&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/dashboard/billing?canceled=true&plan=${encodeURIComponent(planCode)}`,
-    payment_method_types: ["card"],
-    mode: "payment",
+    mode: "payment" as const,
     allow_promotion_codes: true,
     customer_email: user.email || undefined,
-    billing_address_collection: "auto",
+    billing_address_collection: "auto" as const,
     line_items: [
       {
         price_data: {
@@ -228,7 +288,18 @@ export async function createCheckoutSession(
           }
         : {}),
     },
-  });
+  };
+
+  let stripeSession: Stripe.Checkout.Session;
+  try {
+    // Supporta in automatico Carte, Apple Pay, Google Pay, PayPal, Klarna ecc. se abilitati su Stripe Dashboard
+    stripeSession = await stripeClient.checkout.sessions.create(dynamicSessionArgs);
+  } catch {
+    stripeSession = await stripeClient.checkout.sessions.create({
+      ...dynamicSessionArgs,
+      payment_method_types: ["card"],
+    });
+  }
 
   if (!stripeSession.url) {
     throw new Error("Errore durante la creazione della sessione di pagamento Stripe.");

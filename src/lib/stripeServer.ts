@@ -176,10 +176,38 @@ export async function verifyAndActivateStripeReturn(params: {
         const subId = typeof checkoutSession.subscription === "string" ? checkoutSession.subscription : undefined;
         await activateUserPlanInDb(userId, verifiedPlan, customerId, subId);
 
-        // Tracciamento automatico & premio Partner se la coppia ha usato un Codice Invito Partner
-        const partnerProId = checkoutSession.metadata?.partnerProId;
-        const partnerUserId = checkoutSession.metadata?.partnerUserId;
-        const partnerCode = checkoutSession.metadata?.partnerCode;
+        // Tracciamento automatico & Programma Fidelizzazione Partner (-50% a 5 matrimoni, 100% gratis a 10 matrimoni)
+        let partnerProId = checkoutSession.metadata?.partnerProId || "";
+        let partnerUserId = checkoutSession.metadata?.partnerUserId || "";
+        let partnerCode = checkoutSession.metadata?.partnerCode || "";
+
+        // Se la coppia si era già iscritta col codice del fornitore in fase di registrazione, accredita comunque il Partner!
+        if (!partnerProId) {
+          try {
+            const regLead = await prisma.lead.findFirst({
+              where: {
+                intent: "REFERRAL_PARTNER_REGISTERED",
+                details: { contains: userId },
+              },
+              orderBy: { createdAt: "desc" },
+            });
+            if (regLead?.details) {
+              const parsedLead = JSON.parse(regLead.details);
+              if (parsedLead.proId) {
+                const proRow = await prisma.professionalProfile.findUnique({
+                  where: { id: parsedLead.proId },
+                  select: { id: true, userId: true, parentUserId: true, partnerCode: true },
+                });
+                if (proRow) {
+                  partnerProId = proRow.id;
+                  partnerUserId = proRow.parentUserId || proRow.userId;
+                  partnerCode = proRow.partnerCode || parsedLead.partnerCode || "";
+                }
+              }
+            }
+          } catch {}
+        }
+
         if (partnerProId && partnerUserId) {
           try {
             const alreadyLogged = await prisma.lead.findFirst({
@@ -203,10 +231,12 @@ export async function verifyAndActivateStripeReturn(params: {
                 },
               });
 
+              const yearStart = new Date(new Date().getFullYear(), 0, 1);
               const totalConverted = await prisma.lead.count({
                 where: {
                   intent: "REFERRAL_PARTNER_CONVERTED",
                   details: { contains: partnerProId },
+                  createdAt: { gte: yearStart },
                 },
               });
 
@@ -214,21 +244,32 @@ export async function verifyAndActivateStripeReturn(params: {
                 data: {
                   userId: partnerUserId,
                   type: "INFO",
-                  title: "🎉 Nuova coppia attivata col tuo Codice Partner!",
-                  message: `Una coppia ha appena attivato il piano ${verifiedPlan} usando il tuo codice (${partnerCode}). Totale coppie attivate: ${totalConverted}.`,
+                  title: `🎉 Matrimonio #${totalConverted} attivato col tuo Codice ${partnerCode}!`,
+                  message: `Una coppia ha appena attivato il piano ${verifiedPlan} col tuo codice Partner (${partnerCode}). Totale quest'anno: ${totalConverted} (5 = Buono -50% rinnovo • 10 = Rinnovo 100% GRATIS).`,
                   link: "/dashboard",
                 },
               });
 
-              if (totalConverted > 0 && totalConverted % 3 === 0) {
+              if (totalConverted === 5) {
+                await prisma.notification.create({
+                  data: {
+                    userId: partnerUserId,
+                    type: "ALERT",
+                    title: "🏅 Traguardo 5 Matrimoni: Sbloccato Buono Sconto -50% sul Rinnovo!",
+                    message:
+                      "Complimenti! Hai raggiunto 5 coppie attive quest'anno: nella pagina Fatturazione hai ora il -50% automatico sul rinnovo annuale della tua Vetrina PRO. A 10 coppie il rinnovo diventa 100% GRATUITO!",
+                    link: "/dashboard/billing",
+                  },
+                });
+              } else if (totalConverted >= 10 && totalConverted % 10 === 0) {
                 await activateUserPlanInDb(partnerUserId, "PRO_299");
                 await prisma.notification.create({
                   data: {
                     userId: partnerUserId,
                     type: "ALERT",
-                    title: "🏆 Premio Sbloccato: 1 Anno di Piano VIP PRO in Omaggio!",
+                    title: "🏆 Traguardo 10 Matrimoni: Rinnovo Annuale Vetrina 100% GRATUITO!",
                     message:
-                      "Complimenti! Hai raggiunto 3 coppie invitate attive su GentiLuna: ti abbiamo attivato gratuitamente 12 mesi completi di Piano VIP PRO!",
+                      "Straordinario! Hai raggiunto 10 coppie attive su GentiLuna col tuo codice Partner: ti abbiamo attivato/esteso gratuitamente 12 mesi completi di Piano VIP PRO (sconto 100%)!",
                     link: "/dashboard/billing",
                   },
                 });

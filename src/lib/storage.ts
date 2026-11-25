@@ -1,4 +1,4 @@
-﻿import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 import fs from 'fs'
 import path from 'path'
 
@@ -85,6 +85,36 @@ export async function getSignedUrl(rawUrl: string): Promise<string | null> {
   }
   
   return data.signedUrl;
+}
+
+/**
+ * Genera un Signed Upload URL temporaneo su Supabase Storage per caricare file HD
+ * direttamente dal browser allo storage cloud, bypassando il limite 4.5MB di Vercel Serverless.
+ */
+export async function createSignedUploadSlot(
+  timelineOrFolderId: string,
+  uniqueName: string
+): Promise<{ filePath: string; signedUrl: string | null }> {
+  const filePath = `uploads/${timelineOrFolderId}/${uniqueName}`;
+  if (!isCloudStorage || !supabase) {
+    return { filePath, signedUrl: null };
+  }
+
+  try {
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .createSignedUploadUrl(filePath);
+
+    if (error || !data?.signedUrl) {
+      console.error("Failed to create signed upload URL:", error);
+      return { filePath, signedUrl: null };
+    }
+
+    return { filePath, signedUrl: data.signedUrl };
+  } catch (e) {
+    console.error("Exception creating signed upload URL:", e);
+    return { filePath, signedUrl: null };
+  }
 }
 
 export async function downloadFileBuffer(rawUrl: string): Promise<Buffer | null> {

@@ -243,7 +243,7 @@ function PrezziContent() {
                   <Input
                     value={codeInput}
                     onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-                    placeholder="Es. GL-MICHELE-MELIS"
+                    placeholder="Es. F01, W01, R01"
                     className="h-11 bg-white border-stone-300 text-stone-900 font-mono uppercase text-sm rounded-xl"
                   />
                   <Button

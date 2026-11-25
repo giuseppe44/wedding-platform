@@ -277,8 +277,39 @@ export async function registerAction(role: string, data: any) {
   let redirectUrl = "/dashboard";
 
   if (safeRole === "PHOTOGRAPHER") {
+    const { cleanVatNumber, getProvinceMeta, isValidItalianOrEuVat } = await import(
+      "@/lib/provinceQuota"
+    );
+    const { checkProvinceSlotAction } = await import("@/app/actions/provinceQuotaAction");
+    const { ensurePartnerShortCode } = await import("@/lib/partnerReferral");
+
+    if (data.vatNumber && !isValidItalianOrEuVat(data.vatNumber)) {
+      throw new Error(
+        "Formato Partita IVA non valido. Inserisci le 11 cifre (es. 02656280902) oppure lascia il campo vuoto."
+      );
+    }
+
     const bizName = data.businessName || data.name || "Studio Professionale";
-    await prisma.professionalProfile.create({
+    const categoryCode = String(data.category || "PHOTOGRAPHER").toUpperCase();
+    const provMeta = getProvinceMeta(data.province);
+    const provCode = provMeta ? provMeta.code : null;
+
+    let initialActive = true;
+    if (provCode) {
+      const slotInfo = await checkProvinceSlotAction(provCode, categoryCode);
+      if (slotInfo && slotInfo.isFull) {
+        initialActive = false;
+        await prisma.lead.create({
+          data: {
+            email: cleanEmail,
+            intent: "WAITLIST_NUMERO_CHIUSO",
+            details: `Candidatura Lista d'Attesa Numero Chiuso: ${bizName} (${categoryCode}) in provincia ${slotInfo.provinceName}`,
+          },
+        });
+      }
+    }
+
+    const createdPro = await prisma.professionalProfile.create({
       data: {
         userId: user.id,
         businessName: bizName,
@@ -289,18 +320,25 @@ export async function registerAction(role: string, data: any) {
             .replace(/^-|-$/g, "") +
           "-" +
           user.id.slice(0, 4),
-        category: data.category || "PHOTOGRAPHER",
+        category: categoryCode,
         contactEmail: cleanEmail,
+        province: provCode,
+        serviceArea: provMeta ? `${provMeta.name} e provincia (${provMeta.region})` : null,
+        vatNumber: cleanVatNumber(data.vatNumber),
+        isActive: initialActive,
       },
     });
+
+    await ensurePartnerShortCode(createdPro.id);
     redirectUrl = "/dashboard";
   } else {
     const { generateFriendlyWeddingSlug } = await import("@/lib/slugify");
+    const { resolvePartnerByInviteCode } = await import("@/lib/partnerReferral");
     const parts = (data.name || "Sposa e Sposo").split(/\s+(?:e|&)\s+|\s+/i);
     const brideName = parts[0] || "Partner 1";
     const groomName = parts[1] || "Partner 2";
     const slug = await generateFriendlyWeddingSlug(brideName, groomName, "WEDDING");
-    await prisma.timelineItem.create({
+    const createdWedding = await prisma.timelineItem.create({
       data: {
         title: "Il nostro evento",
         slug,
@@ -311,7 +349,60 @@ export async function registerAction(role: string, data: any) {
         groomName,
       },
     });
-    redirectUrl = `/couple/${slug}`;
+
+    // Se gli sposi si sono iscritti col Codice Identificativo del loro Fornitore (es. F01, W01, R01...)
+    let verifiedPartnerCode = "";
+    if (data.partnerCode && String(data.partnerCode).trim()) {
+      const partnerRef = await resolvePartnerByInviteCode(String(data.partnerCode));
+      if (partnerRef) {
+        verifiedPartnerCode = partnerRef.inviteCode;
+        try {
+          await prisma.eventAssignment.upsert({
+            where: {
+              timelineItemId_professionalProfileId: {
+                timelineItemId: createdWedding.id,
+                professionalProfileId: partnerRef.proId,
+              },
+            },
+            update: { status: "ACTIVE" },
+            create: {
+              timelineItemId: createdWedding.id,
+              professionalProfileId: partnerRef.proId,
+              role: partnerRef.categoryLabel,
+              status: "ACTIVE",
+            },
+          });
+
+          await prisma.lead.create({
+            data: {
+              email: cleanEmail,
+              intent: "REFERRAL_PARTNER_REGISTERED",
+              details: JSON.stringify({
+                proId: partnerRef.proId,
+                partnerCode: partnerRef.inviteCode,
+                coupleUserId: user.id,
+                weddingId: createdWedding.id,
+                weddingSlug: slug,
+              }),
+            },
+          });
+
+          await prisma.notification.create({
+            data: {
+              userId: partnerRef.userId,
+              type: "INFO",
+              title: `Nuovi Sposi iscritti col tuo Codice ${partnerRef.inviteCode}!`,
+              message: `${brideName} & ${groomName} hanno creato il loro spazio GentiLuna inserendo il tuo Codice Partner (${partnerRef.inviteCode}). Quando attiveranno il piano avranno il -15% e il matrimonio conterà per i tuoi bonus rinnovo (-50% a 5 eventi, 100% gratis a 10 eventi).`,
+              link: "/dashboard",
+            },
+          });
+        } catch {}
+      }
+    }
+
+    redirectUrl = verifiedPartnerCode
+      ? `/couple/${slug}?partner=${encodeURIComponent(verifiedPartnerCode)}`
+      : `/couple/${slug}`;
   }
 
   await setSession(user.id, safeRole, true);

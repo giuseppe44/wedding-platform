@@ -79,8 +79,9 @@ export default async function ProPublicProfile({
 
   const session = await getSession();
 
+  const ownerForSub = profile.parentUserId || profile.userId;
   const sub = await prisma.subscription.findUnique({
-    where: { userId: profile.userId },
+    where: { userId: ownerForSub },
     include: { plan: true },
   });
   const isPremium =
@@ -192,6 +193,12 @@ export default async function ProPublicProfile({
               <span className="inline-flex items-center gap-1.5 bg-rose-500/20 text-rose-200 border border-rose-400/30 rounded-full px-4 py-1.5 text-xs font-bold tracking-widest uppercase shadow-sm backdrop-blur-sm">
                 <MapPin className="w-3.5 h-3.5" />
                 {profile.serviceArea}
+              </span>
+            )}
+            {profile.vatNumber && (
+              <span className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-200 border border-emerald-400/30 rounded-full px-3.5 py-1.5 text-xs font-bold tracking-wider uppercase shadow-sm backdrop-blur-sm">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                P.IVA Verificata
               </span>
             )}
             {avgRating && (

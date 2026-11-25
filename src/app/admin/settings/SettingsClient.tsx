@@ -31,6 +31,9 @@ export default function SettingsClient({
     smtpUser: initialConfig.smtpUser || "",
     smtpPass: initialConfig.smtpPass || "",
     senderEmail: initialConfig.senderEmail || "",
+    paypalLink: initialConfig.paypalLink || "",
+    bankIban: initialConfig.bankIban || "",
+    bankAccountName: initialConfig.bankAccountName || "",
   });
 
   const [stripeLinks, setStripeLinks] = useState<Record<string, string>>(
@@ -301,13 +304,66 @@ export default function SettingsClient({
             />
           </div>
 
+          {/* PAGAMENTI ALTERNATIVI OPZIONALI: PAYPAL & IBAN BONIFICO */}
+          <div className="space-y-4 pt-6 border-t border-stone-200">
+            <div>
+              <h3 className="text-base font-bold text-stone-800">
+                Opzioni Pagamento Aggiuntive: PayPal Diretto &amp; IBAN Bonifico (Opzionali)
+              </h3>
+              <p className="text-xs text-stone-500 mt-0.5">
+                Nota: se abiliti PayPal direttamente nella tua Dashboard Stripe, apparirà già in automatico nel Checkout Stripe. Qui puoi anche aggiungere un link PayPal.me diretto o un IBAN per chi preferisce il bonifico.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-stone-700">
+                  Link PayPal.me o Checkout PayPal (Opzionale)
+                </label>
+                <input
+                  name="paypalLink"
+                  value={form.paypalLink}
+                  onChange={handleChange}
+                  placeholder="es. https://www.paypal.com/paypalme/..."
+                  className="w-full border border-stone-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-rose-500 outline-none"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-stone-700">
+                  Intestatario Conto Bonifico (Opzionale)
+                </label>
+                <input
+                  name="bankAccountName"
+                  value={form.bankAccountName}
+                  onChange={handleChange}
+                  placeholder="es. GentiLuna / TopIdea"
+                  className="w-full border border-stone-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-rose-500 outline-none"
+                />
+              </div>
+
+              <div className="space-y-1.5 md:col-span-2">
+                <label className="text-xs font-semibold text-stone-700">
+                  IBAN per Bonifico Bancario / Istantaneo (Opzionale)
+                </label>
+                <input
+                  name="bankIban"
+                  value={form.bankIban}
+                  onChange={handleChange}
+                  placeholder="es. IT00 X000 0000 0000 0000 0000 000"
+                  className="w-full border border-stone-200 rounded-xl p-3 text-sm font-mono focus:ring-2 focus:ring-rose-500 outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
           <button
             type="submit"
             disabled={loadingSmtp}
             className="flex items-center gap-2 bg-stone-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-stone-800 disabled:opacity-50 transition-all"
           >
             <Save className="w-5 h-5" />
-            {loadingSmtp ? "Salvataggio..." : savedSmtp ? "Salvato! ✓" : "Salva Impostazioni SMTP"}
+            {loadingSmtp ? "Salvataggio..." : savedSmtp ? "Salvato! ✓" : "Salva Impostazioni SMTP & PayPal/IBAN"}
           </button>
         </form>
       </div>

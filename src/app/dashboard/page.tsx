@@ -13,7 +13,12 @@ import { PlanWidget } from "@/components/PlanWidget";
 import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
 import { GuidedCoachBubble, type CoachTip } from "@/components/GuidedCoachBubble";
 import { PartnerGrowthToolkit } from "@/components/pro/PartnerGrowthToolkit";
-import { buildPartnerInviteCode, countPartnerReferralConversions } from "@/lib/partnerReferral";
+import {
+  buildPartnerInviteCode,
+  countPartnerReferralConversions,
+  countPartnerReferralRegistrations,
+  ensurePartnerShortCode,
+} from "@/lib/partnerReferral";
 import { getProCategoryLabel } from "@/lib/proCategories";
 
 export default async function DashboardPage() {
@@ -74,15 +79,25 @@ export default async function DashboardPage() {
 
   const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
-  const proProfile = await prisma.professionalProfile.findUnique({
-    where: { userId: session.userId },
+  const proProfiles = await prisma.professionalProfile.findMany({
+    where: {
+      OR: [{ userId: session.userId }, { parentUserId: session.userId }],
+    },
     include: { services: true },
+    orderBy: { createdAt: "asc" },
   });
+  const proProfile = proProfiles[0] || null;
 
-  const partnerInviteCode = proProfile ? buildPartnerInviteCode(proProfile.slug) : "";
-  const partnerConvertedCount = proProfile
-    ? await countPartnerReferralConversions(proProfile.id)
-    : 0;
+  const partnerInviteCode = proProfile
+    ? await ensurePartnerShortCode(proProfile.id)
+    : "";
+
+  let partnerConvertedCount = 0;
+  let partnerRegisteredCount = 0;
+  for (const pp of proProfiles) {
+    partnerConvertedCount += await countPartnerReferralConversions(pp.id);
+    partnerRegisteredCount += await countPartnerReferralRegistrations(pp.id);
+  }
 
   const hasBioAndArea = Boolean(proProfile?.description?.trim() && proProfile?.serviceArea?.trim());
   const hasAvatarAndCover = Boolean((proProfile?.profileImage || proProfile?.logoUrl) && proProfile?.coverImage);
@@ -238,11 +253,11 @@ export default async function DashboardPage() {
       {/* REFERRAL SYSTEM: ESPANDI IL TUO NETWORK */}
       <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white border border-stone-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-          <h3 className="font-bold text-lg text-stone-800 mb-2 font-serif">Invita gli Sposi</h3>
-          <p className="text-stone-500 text-sm mb-6">Fai registrare i tuoi prossimi sposi per creare il loro spazio su GentiLuna. Sarai impostato come fotografo ufficiale.</p>
-          <a href={`https://wa.me/?text=${encodeURIComponent(`Ciao! Per il vostro matrimonio useremo GentiLuna, una piattaforma per raccogliere le foto di tutti gli invitati e la mia galleria ufficiale. Registratevi qui per creare il vostro spazio: ${baseUrl}/sposi`)}`} target="_blank" rel="noopener noreferrer">
+          <h3 className="font-bold text-lg text-stone-800 mb-2 font-serif">Invita gli Sposi ({partnerInviteCode || "Codice Partner"})</h3>
+          <p className="text-stone-500 text-sm mb-6">Fai registrare i tuoi prossimi sposi col tuo codice: avranno il -15% sui piani, e tu sblocchi il -50% di rinnovo a 5 matrimoni e il 100% gratis a 10 matrimoni.</p>
+          <a href={`https://wa.me/?text=${encodeURIComponent(`Ciao! Per il vostro matrimonio useremo GentiLuna per raccogliere le foto di tutti gli invitati, la mappa tavoli e la galleria ufficiale. Registratevi col mio Codice Partner ${partnerInviteCode} per avere il -15% di sconto: ${baseUrl}/login?mode=REGISTER&partner=${partnerInviteCode}`)}`} target="_blank" rel="noopener noreferrer">
             <Button variant="outline" className="w-full border-stone-300 text-stone-700 hover:bg-stone-50 rounded-full font-semibold">
-              <span className="text-emerald-500 mr-2">WhatsApp</span> Invia Link agli Sposi
+              <span className="text-emerald-500 mr-2">WhatsApp</span> Invia Codice {partnerInviteCode} agli Sposi
             </Button>
           </a>
         </div>
@@ -275,6 +290,7 @@ export default async function DashboardPage() {
             categoryLabel={getProCategoryLabel(proProfile.category)}
             inviteCode={partnerInviteCode}
             convertedCount={partnerConvertedCount}
+            registeredCount={partnerRegisteredCount}
           />
         )}
       </div>

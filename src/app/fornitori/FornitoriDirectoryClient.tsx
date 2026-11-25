@@ -339,7 +339,7 @@ export default function FornitoriDirectoryClient({
           >
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100/80 border border-amber-300/70 text-amber-900 text-xs font-bold uppercase tracking-wider mb-4">
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              Directory Ufficiale &amp; Matchmaking Eventi
+              Selezione Ufficiale a Numero Chiuso per Provincia
             </span>
             <h1 className="text-3xl sm:text-5xl font-serif text-stone-900 mb-4 leading-tight">
               <span className="block">Trova i Professionisti e le Strutture</span>
@@ -348,7 +348,7 @@ export default function FornitoriDirectoryClient({
               </span>
             </h1>
             <p className="text-stone-600 text-base sm:text-lg font-light leading-relaxed">
-              Ristoranti, fotografi, agenzie di viaggi, pasticcerie, auto NCC, wedding planner e molto altro: esplora le vetrine verificate oppure scrivi cosa stai cercando.
+              A differenza dei portali di massa, GentiLuna seleziona un <strong className="font-semibold text-stone-800">numero limitato di fornitori per provincia</strong> (Ristoranti, Fotografi, Agenzie Viaggi, Pasticcerie, NCC e Partner) con recensioni verificate degli ultimi 24 mesi.
             </p>
           </motion.div>
 

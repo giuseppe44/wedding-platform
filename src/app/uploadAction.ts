@@ -105,7 +105,7 @@ export async function uploadMediaAction(timelineItemId: string, formData: FormDa
           // Controlli di sicurezza e Copyright
       const isAudio = mimeType.startsWith("audio/");
       
-      const isPro = session && session.role === "PROFESSIONAL";
+      const isPro = session && (session.role === "PHOTOGRAPHER" || session.role === "ADMIN");
       if (isAudio && !isPro) {
          throw new Error("ATTENZIONE: L'upload di file audio (es. MP3) è riservato esclusivamente al professionista incaricato (Fotografo/Videomaker) per tutelare i diritti di copyright e licenze d'uso.");
       }

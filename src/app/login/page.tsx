@@ -8,14 +8,28 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { loginAction, registerAction } from "@/app/actions";
+import { checkProvinceSlotAction, type ProvinceSlotCheckResult } from "@/app/actions/provinceQuotaAction";
 import { getCatalogPlan } from "@/lib/plans";
 import {
   PRO_CATEGORY_GROUPS,
   PRO_CATEGORY_MAP,
   getProCategoryMeta,
 } from "@/lib/proCategories";
+import { ITALIAN_PROVINCES } from "@/lib/provinceQuota";
 import Link from "next/link";
-import { Camera, Heart, Shield, ArrowLeft, CheckCircle2, Star, CreditCard, Sparkles, Loader2 } from "lucide-react";
+import {
+  Camera,
+  Heart,
+  Shield,
+  ArrowLeft,
+  CheckCircle2,
+  Star,
+  CreditCard,
+  Sparkles,
+  Loader2,
+  Gift,
+  MapPin,
+} from "lucide-react";
 
 function AuthFlow() {
   const router = useRouter();
@@ -52,9 +66,14 @@ function AuthFlow() {
   const [regName, setRegName] = useState("");
   const [regBusinessName, setRegBusinessName] = useState("");
   const [regCategory, setRegCategory] = useState(initialCategory);
+  const [regProvince, setRegProvince] = useState("");
+  const [regVatNumber, setRegVatNumber] = useState("");
+  const [regPartnerCode, setRegPartnerCode] = useState(partnerParam);
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  const [slotStatus, setSlotStatus] = useState<ProvinceSlotCheckResult | null>(null);
 
   const activeProMeta = getProCategoryMeta(regCategory);
 
@@ -62,6 +81,9 @@ function AuthFlow() {
     if (categoryParam && PRO_CATEGORY_MAP[categoryParam]) {
       setRegCategory(categoryParam);
       setActiveRole("PHOTOGRAPHER");
+    }
+    if (partnerParam) {
+      setRegPartnerCode(partnerParam);
     }
     if (selectedPlan?.role) {
       setActiveRole(selectedPlan.role);
@@ -73,7 +95,21 @@ function AuthFlow() {
     } else if (modeParam === "LOGIN") {
       setMode("LOGIN");
     }
-  }, [roleParam, modeParam, selectedPlan, categoryParam]);
+  }, [roleParam, modeParam, selectedPlan, categoryParam, partnerParam]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (activeRole === "PHOTOGRAPHER" && mode === "REGISTER" && regProvince) {
+      checkProvinceSlotAction(regProvince, regCategory).then((res) => {
+        if (!cancelled) setSlotStatus(res);
+      });
+    } else {
+      setSlotStatus(null);
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [activeRole, mode, regProvince, regCategory]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,12 +130,18 @@ function AuthFlow() {
           password: regPassword,
           businessName: regBusinessName,
           category: regCategory,
+          province: regProvince,
+          vatNumber: regVatNumber,
+          partnerCode: regPartnerCode,
         });
       }
 
+      const activePartner = (regPartnerCode || partnerParam).trim().toUpperCase();
       if (selectedPlan) {
-        const pQuery = partnerParam ? `&partner=${encodeURIComponent(partnerParam)}` : "";
-        router.push(`/dashboard/billing?plan=${encodeURIComponent(selectedPlan.code)}&autocheckout=true${pQuery}`);
+        const pQuery = activePartner ? `&partner=${encodeURIComponent(activePartner)}` : "";
+        router.push(
+          `/dashboard/billing?plan=${encodeURIComponent(selectedPlan.code)}&autocheckout=true${pQuery}`
+        );
         return;
       }
 
@@ -114,25 +156,6 @@ function AuthFlow() {
       }
     } catch (error: any) {
       alert(error.message || "Si è verificato un errore durante l'autenticazione.");
-      setLoading(false);
-    }
-  };
-
-  const handleDemoLogin = async () => {
-    setLoading(true);
-    try {
-      const demoEmail =
-        activeRole === "PHOTOGRAPHER"
-          ? "demo@fotografo.it"
-          : activeRole === "ADMIN"
-          ? "admin@gentiluna.com"
-          : "sposi@demo.it";
-      const result = await loginAction(activeRole, demoEmail, "password123", false);
-      if (result?.redirectUrl) {
-        router.push(result.redirectUrl);
-      }
-    } catch (err: any) {
-      alert(err.message || "Errore accesso demo");
       setLoading(false);
     }
   };
@@ -201,7 +224,7 @@ function AuthFlow() {
             {activeRole === "COUPLE"
               ? "Accedi alla tua area privata per gestire il tuo spazio, le foto e gli invitati."
               : activeRole === "PHOTOGRAPHER"
-              ? "Accedi per gestire la tua vetrina e i tuoi eventi."
+              ? "Accedi per gestire la tua vetrina (o Doppia Vetrina) e i tuoi eventi."
               : "Pannello di controllo globale."}
           </CardDescription>
         </div>
@@ -309,18 +332,18 @@ function AuthFlow() {
         </div>
         <div className="space-y-2">
           <CardTitle className="text-2xl sm:text-3xl font-serif text-stone-800">
-            {activeRole === "COUPLE" ? "Crea il tuo Spazio" : "Registrati come Professionista"}
+            {activeRole === "COUPLE" ? "Crea il tuo Spazio" : "Candidati come Partner Ufficiale"}
           </CardTitle>
           <CardDescription className="text-stone-500 text-sm">
             {activeRole === "COUPLE"
               ? "Crea il tuo account per ricordare, condividere e organizzare i tuoi eventi."
-              : "Unisciti alla rete ufficiale di professionisti GentiLuna."}
+              : "Rete a Numero Chiuso per Provincia: niente caos da portale di massa, solo fornitori selezionati."}
           </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="p-5 sm:p-8 pt-4">
         {selectedPlanBanner}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="regName">
               {activeRole === "COUPLE" ? "Nomi (es. Chiara e Matteo)" : "Nome e Cognome Referente"}
@@ -330,10 +353,11 @@ function AuthFlow() {
               placeholder={activeRole === "COUPLE" ? "Es. Chiara e Matteo" : "Es. Marco Rossi"}
               value={regName}
               onChange={(e) => setRegName(e.target.value)}
-              className="bg-stone-50 h-12"
+              className="bg-stone-50 h-11"
               required
             />
           </div>
+
           {activeRole === "PHOTOGRAPHER" && (
             <>
               <div className="space-y-2">
@@ -342,7 +366,7 @@ function AuthFlow() {
                   id="regCategory"
                   value={regCategory}
                   onChange={(e) => setRegCategory(e.target.value)}
-                  className="flex h-12 w-full rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-900 font-medium outline-none focus:border-amber-500"
+                  className="flex h-11 w-full rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-900 font-medium outline-none focus:border-amber-500"
                 >
                   {PRO_CATEGORY_GROUPS.map((grp) => (
                     <optgroup key={grp.groupName} label={grp.groupName}>
@@ -355,6 +379,53 @@ function AuthFlow() {
                   ))}
                 </select>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="regProvince" className="flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Provincia Principale (Selezione a Numero Chiuso)</span>
+                </Label>
+                <select
+                  id="regProvince"
+                  value={regProvince}
+                  onChange={(e) => setRegProvince(e.target.value)}
+                  required
+                  className="flex h-11 w-full rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-900 font-medium outline-none focus:border-amber-500"
+                >
+                  <option value="">Scegli la tua Provincia...</option>
+                  {ITALIAN_PROVINCES.map((p) => (
+                    <option key={p.code} value={p.code}>
+                      {p.name} ({p.code}) — Max {p.maxPerCategory} posti
+                    </option>
+                  ))}
+                </select>
+
+                {slotStatus && (
+                  <div
+                    className={`p-3 rounded-xl border text-xs leading-relaxed ${
+                      slotStatus.isFull
+                        ? "bg-amber-50 border-amber-300 text-amber-950"
+                        : "bg-emerald-50 border-emerald-200 text-emerald-950"
+                    }`}
+                  >
+                    {slotStatus.isFull ? (
+                      <>
+                        <strong>Posti al completo per {slotStatus.categoryLabel} a {slotStatus.provinceName}:</strong>{" "}
+                        registrandoti ora entrerai gratuitamente in <strong>Lista d&apos;Attesa Prioritaria</strong>.
+                      </>
+                    ) : (
+                      <>
+                        <strong>Esclusività {slotStatus.provinceName}:</strong> ancora{" "}
+                        <strong className="text-emerald-700">
+                          {slotStatus.remainingSlots} posti disponibili su {slotStatus.maxSlots}
+                        </strong>{" "}
+                        per la categoria <strong>{slotStatus.categoryLabel}</strong>.
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="regBusinessName">Nome Attività / Struttura / Studio</Label>
                 <Input
@@ -362,12 +433,42 @@ function AuthFlow() {
                   placeholder={activeProMeta.businessPlaceholder}
                   value={regBusinessName}
                   onChange={(e) => setRegBusinessName(e.target.value)}
-                  className="bg-stone-50 h-12"
+                  className="bg-stone-50 h-11"
                   required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="regVatNumber">
+                  Partita IVA <span className="text-stone-400 font-normal">(Opzionale — sblocca Doppia Vetrina)</span>
+                </Label>
+                <Input
+                  id="regVatNumber"
+                  placeholder="Es. 02656280902 (puoi inserirla anche dopo)"
+                  value={regVatNumber}
+                  onChange={(e) => setRegVatNumber(e.target.value)}
+                  className="bg-stone-50 h-11"
                 />
               </div>
             </>
           )}
+
+          {activeRole === "COUPLE" && (
+            <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/90 space-y-1.5">
+              <Label htmlFor="regPartnerCode" className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
+                <Gift className="w-3.5 h-3.5 text-amber-600" />
+                Hai il Codice di un Fotografo o Fornitore Partner? (Opzionale)
+              </Label>
+              <Input
+                id="regPartnerCode"
+                placeholder="Es. F01, W01, R01 (sblocca subito il -15% sui piani)"
+                value={regPartnerCode}
+                onChange={(e) => setRegPartnerCode(e.target.value.toUpperCase())}
+                className="bg-white h-10 font-mono uppercase text-sm border-amber-300"
+              />
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="regEmail">Email</Label>
             <Input
@@ -376,7 +477,7 @@ function AuthFlow() {
               placeholder="nome@esempio.it"
               value={regEmail}
               onChange={(e) => setRegEmail(e.target.value)}
-              className="bg-stone-50 h-12"
+              className="bg-stone-50 h-11"
               required
             />
           </div>
@@ -388,12 +489,12 @@ function AuthFlow() {
               placeholder="Minimo 6 caratteri"
               value={regPassword}
               onChange={(e) => setRegPassword(e.target.value)}
-              className="bg-stone-50 h-12"
+              className="bg-stone-50 h-11"
               required
             />
           </div>
 
-          <div className="flex items-start gap-3 p-3.5 sm:p-4 rounded-xl bg-stone-50 border border-stone-200 w-full">
+          <div className="flex items-start gap-3 p-3.5 rounded-xl bg-stone-50 border border-stone-200 w-full">
             <Checkbox
               id="regTerms"
               checked={acceptedTerms}
@@ -402,13 +503,13 @@ function AuthFlow() {
             />
             <label
               htmlFor="regTerms"
-              className="block flex-1 min-w-0 text-xs sm:text-[13px] text-stone-700 leading-relaxed font-normal cursor-pointer text-left break-words"
+              className="block flex-1 min-w-0 text-xs text-stone-700 leading-relaxed font-normal cursor-pointer text-left break-words"
             >
               Dichiaro di aver letto e accettato integralmente i{" "}
               <Link href="/terms" target="_blank" className="underline font-semibold text-stone-900 hover:text-rose-600">
                 Termini e Condizioni
               </Link>{" "}
-              (inclusi gli artt. 3, 4, 5, 6, 7 e 8 su responsabilità esclusiva dei contenuti caricati, licenze d&apos;autore e manleva) e l&apos;{" "}
+              (inclusi gli artt. 3–8 su responsabilità contenuti, licenze d&apos;autore e manleva) e l&apos;{" "}
               <Link href="/privacy" target="_blank" className="underline font-semibold text-stone-900 hover:text-rose-600">
                 Informativa sulla Privacy
               </Link>
@@ -433,7 +534,7 @@ function AuthFlow() {
             )}
           </Button>
 
-          <div className="text-center pt-4 border-t border-stone-100">
+          <div className="text-center pt-3 border-t border-stone-100">
             <p className="text-sm text-stone-500">
               Hai già un account?{" "}
               <button
@@ -452,39 +553,62 @@ function AuthFlow() {
 
   if (mode === "REGISTER" && activeRole === "PHOTOGRAPHER") {
     return (
-      <div className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="space-y-8 pr-0 lg:pr-8 text-center lg:text-left">
+      <div className="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div className="space-y-7 pr-0 lg:pr-8 text-center lg:text-left lg:pt-4">
           <div>
-            <span className="inline-block px-3 py-1 rounded-full bg-amber-100 border border-amber-300/80 text-amber-900 text-xs font-bold uppercase tracking-wider mb-3">
-              Categoria: {activeProMeta.label}
-            </span>
+            <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-3">
+              <span className="inline-block px-3 py-1 rounded-full bg-amber-100 border border-amber-300/80 text-amber-900 text-xs font-bold uppercase tracking-wider">
+                Categoria: {activeProMeta.label}
+              </span>
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-stone-900 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-3 h-3" /> Selezione a Numero Chiuso
+              </span>
+            </div>
             <h1 className="text-4xl md:text-5xl font-serif text-stone-900 leading-tight mb-4">
-              Trasforma ogni evento in una macchina trova-clienti.
+              Pochi professionisti scelti per provincia. Infiniti eventi.
             </h1>
-            <p className="text-lg text-stone-600">
-              {activeProMeta.proValuePitch}
-            </p>
+            <p className="text-lg text-stone-600">{activeProMeta.proValuePitch}</p>
           </div>
 
-          <div className="space-y-6 text-left">
-            <div className="bg-gradient-to-br from-stone-900 to-stone-800 p-6 rounded-2xl shadow-xl text-white border border-amber-500/30">
+          <div className="space-y-5 text-left">
+            <div className="bg-gradient-to-br from-stone-950 via-stone-900 to-stone-950 p-6 rounded-2xl shadow-xl text-white border border-amber-500/35">
               <h3 className="font-bold text-amber-400 text-lg mb-3 flex items-center gap-2">
-                <Star className="text-amber-400 w-5 h-5" /> Offerta Lancio Founders Club (€ 49/anno invece di € 299)
+                <Star className="text-amber-400 w-5 h-5 shrink-0" /> Perché GentiLuna non è il solito portale affollato
               </h3>
               <ul className="space-y-2.5 text-stone-300 text-sm">
-                <li className="flex gap-2"><span>•</span> Vetrina verificata per Ristoranti, Fotografi, Agenzie Viaggi, Pasticcerie, NCC &amp; Partner</li>
-                <li className="flex gap-2"><span>•</span> Visibilità via QR Code sugli smartphone di tutti gli invitati</li>
-                <li className="flex gap-2"><span>•</span> Preventivi diretti, Live Chat protetta e 0% commissioni</li>
-                <li className="flex gap-2"><span>•</span> Posizionamento prioritario nella directory ufficiale GentiLuna</li>
+                <li className="flex gap-2">
+                  <span className="text-amber-400 font-bold">✦</span>
+                  <span>
+                    <strong className="text-white">Numero Chiuso Territoriale:</strong> max 15–30 Partner per categoria in ogni provincia (niente 150 concorrenti nella stessa città!).
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-amber-400 font-bold">✦</span>
+                  <span>
+                    <strong className="text-white">Codice Partner Personale (es. F01, W01):</strong> regali il -15% ai tuoi sposi; con 5 matrimoni hai il <strong className="text-amber-300">-50% sul rinnovo</strong> e con 10 matrimoni il <strong className="text-emerald-400">100% di rinnovo GRATUITO</strong>!
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-amber-400 font-bold">✦</span>
+                  <span>
+                    <strong className="text-white">Doppia Vetrina Stessa P.IVA:</strong> gestisci fino a 2 vetrine distinte (es. Foto + Video) con un unico account.
+                  </span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-amber-400 font-bold">✦</span>
+                  <span>
+                    <strong className="text-white">Promo Founders Club:</strong> € 49/anno invece di € 299 (o parti dalla Vetrina Base 0€).
+                  </span>
+                </li>
               </ul>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-200">
-              <h3 className="font-bold text-stone-900 text-lg mb-2 flex items-center gap-2">
-                <CheckCircle2 className="text-emerald-500 w-5 h-5" /> Pagamento Veloce &amp; Sicuro
+            <div className="bg-white p-5 rounded-2xl shadow-sm border border-stone-200">
+              <h3 className="font-bold text-stone-900 text-base mb-1.5 flex items-center gap-2">
+                <CheckCircle2 className="text-emerald-500 w-5 h-5" /> Pagamento Sicuro &amp; Fatturazione P.IVA
               </h3>
               <p className="text-stone-600 text-sm leading-relaxed">
-                Attiva in 30 secondi con <strong>Carta, PostePay, Apple Pay o Google Pay</strong> su Stripe, oppure richiedi attivazione con <strong>Bonifico Aziendale / Fattura P.IVA</strong> nella pagina successiva.
+                Attiva in 30 secondi con <strong>Carta, PostePay, Apple Pay, Google Pay, PayPal</strong> oppure tramite <strong>Bonifico Aziendale</strong>.
               </p>
             </div>
           </div>

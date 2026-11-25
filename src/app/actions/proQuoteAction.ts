@@ -50,6 +50,7 @@ export async function requestProQuote(data: {
         businessName: true,
         slug: true,
         userId: true,
+        parentUserId: true,
         contactEmail: true,
         user: { select: { email: true } },
       },
@@ -76,11 +77,12 @@ export async function requestProQuote(data: {
       },
     });
 
-    // 2. Crea notifica interna nella dashboard del Professionista
+    // 2. Crea notifica interna nella dashboard del Professionista (anche se è la 2ª Vetrina collegata)
+    const targetOwnerUserId = pro.parentUserId || pro.userId;
     await createSystemNotification(
-      pro.userId,
+      targetOwnerUserId,
       `Nuova Richiesta Preventivo da ${coupleName}`,
-      `Data evento: ${weddingDate || "Da definire"} — "${message.slice(0, 140)}${message.length > 140 ? "..." : ""}"`,
+      `Vetrina: ${pro.businessName} • Data evento: ${weddingDate || "Da definire"} — "${message.slice(0, 140)}${message.length > 140 ? "..." : ""}"`,
       "LEAD",
       "/dashboard/notifications"
     );

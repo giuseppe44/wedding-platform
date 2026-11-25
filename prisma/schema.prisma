@@ -262,6 +262,10 @@ model ProfessionalProfile {
   video1       String?
   video2       String?
   serviceArea  String?
+  province     String?
+  vatNumber    String?
+  partnerCode  String?
+  parentUserId String?
   isActive     Boolean  @default(true)
 
   userId String @unique
@@ -309,11 +313,13 @@ model EventAssignment {
 }
 
 model Review {
-  id         String  @id @default(cuid())
-  authorId   String
-  authorRole String  @default("COUPLE")
-  rating     Int
-  text       String?
+  id          String    @id @default(cuid())
+  authorId    String
+  authorEmail String?
+  authorRole  String    @default("COUPLE")
+  rating      Int
+  text        String?
+  eventDate   DateTime?
 
   timelineItemId String       @map("weddingId")
   timelineItem   TimelineItem @relation(fields: [timelineItemId], references: [id], onDelete: Cascade)
@@ -422,11 +428,14 @@ model TravelDocument {
 
 
 model SystemConfig {
-  id          String   @id @default("default")
-  smtpHost    String?
-  smtpPort    String?
-  smtpUser    String?
-  smtpPass    String?
-  senderEmail String?
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default("default")
+  smtpHost        String?
+  smtpPort        String?
+  smtpUser        String?
+  smtpPass        String?
+  senderEmail     String?
+  paypalLink      String?
+  bankIban        String?
+  bankAccountName String?
+  updatedAt       DateTime @updatedAt
 }

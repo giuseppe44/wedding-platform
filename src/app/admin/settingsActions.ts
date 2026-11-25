@@ -11,7 +11,6 @@ export async function getSystemConfig() {
   if (!config) {
     config = await prisma.systemConfig.create({ data: { id: "default" } });
   }
-  // Maschera smtpPass prima di inviare la configurazione al Client Component Admin
   return {
     ...config,
     smtpPass: config.smtpPass ? MASKED_SECRET_PLACEHOLDER : "",
@@ -24,6 +23,9 @@ export async function updateSystemConfig(data: {
   smtpUser?: string;
   smtpPass?: string;
   senderEmail?: string;
+  paypalLink?: string;
+  bankIban?: string;
+  bankAccountName?: string;
 }) {
   await requireAuth(["ADMIN"]);
   const existing = await prisma.systemConfig.findUnique({ where: { id: "default" } });
@@ -34,11 +36,16 @@ export async function updateSystemConfig(data: {
   await prisma.systemConfig.upsert({
     where: { id: "default" },
     update: {
-      smtpHost: data.smtpHost,
-      smtpPort: data.smtpPort,
-      smtpUser: data.smtpUser,
-      smtpPass: resolvedSmtpPass,
-      senderEmail: data.senderEmail,
+      ...(data.smtpHost !== undefined ? { smtpHost: data.smtpHost } : {}),
+      ...(data.smtpPort !== undefined ? { smtpPort: data.smtpPort } : {}),
+      ...(data.smtpUser !== undefined ? { smtpUser: data.smtpUser } : {}),
+      ...(data.smtpPass !== undefined ? { smtpPass: resolvedSmtpPass } : {}),
+      ...(data.senderEmail !== undefined ? { senderEmail: data.senderEmail } : {}),
+      ...(data.paypalLink !== undefined ? { paypalLink: data.paypalLink?.trim() || null } : {}),
+      ...(data.bankIban !== undefined ? { bankIban: data.bankIban?.trim() || null } : {}),
+      ...(data.bankAccountName !== undefined
+        ? { bankAccountName: data.bankAccountName?.trim() || null }
+        : {}),
     },
     create: {
       id: "default",
@@ -47,8 +54,12 @@ export async function updateSystemConfig(data: {
       smtpUser: data.smtpUser,
       smtpPass: resolvedSmtpPass,
       senderEmail: data.senderEmail,
+      paypalLink: data.paypalLink?.trim() || null,
+      bankIban: data.bankIban?.trim() || null,
+      bankAccountName: data.bankAccountName?.trim() || null,
     },
   });
   revalidatePath("/admin");
   revalidatePath("/admin/settings");
+  revalidatePath("/dashboard/billing");
 }

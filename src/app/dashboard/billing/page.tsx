@@ -6,7 +6,9 @@ import { PLANS_CATALOG, getCatalogPlan } from "@/lib/plans";
 import { verifyAndActivateStripeReturn } from "@/lib/stripeServer";
 import {
   calculatePartnerDiscountedCents,
+  countPartnerReferralConversions,
   formatEuroFromCents,
+  PARTNER_LOYALTY_HALF_TARGET,
   resolvePartnerByInviteCode,
 } from "@/lib/partnerReferral";
 import Link from "next/link";
@@ -82,7 +84,47 @@ export default async function BillingPage({
 
   const activeCatalogPlan = getCatalogPlan(subscription?.plan?.name);
   const selectedPlan = getCatalogPlan(planParam);
-  const partnerRef = !isPro && partnerParam ? await resolvePartnerByInviteCode(partnerParam) : null;
+
+  let effectivePartnerCode = partnerParam;
+  if (!isPro && !effectivePartnerCode) {
+    try {
+      const regLead = await prisma.lead.findFirst({
+        where: {
+          intent: "REFERRAL_PARTNER_REGISTERED",
+          details: { contains: user.id },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+      if (regLead?.details) {
+        const parsed = JSON.parse(regLead.details);
+        if (parsed.partnerCode) effectivePartnerCode = String(parsed.partnerCode).toUpperCase();
+      }
+    } catch {}
+  }
+
+  const partnerRef =
+    !isPro && effectivePartnerCode
+      ? await resolvePartnerByInviteCode(effectivePartnerCode)
+      : null;
+
+  let proLoyaltyHalfOff = false;
+  if (isPro) {
+    try {
+      const proProfiles = await prisma.professionalProfile.findMany({
+        where: { OR: [{ userId: user.id }, { parentUserId: user.id }] },
+        select: { id: true },
+      });
+      let convertedTotal = 0;
+      for (const pp of proProfiles) {
+        convertedTotal += await countPartnerReferralConversions(pp.id);
+      }
+      if (convertedTotal >= PARTNER_LOYALTY_HALF_TARGET) {
+        proLoyaltyHalfOff = true;
+      }
+    } catch {}
+  }
+
+  const sysCfg = await prisma.systemConfig.findUnique({ where: { id: "default" } }).catch(() => null);
 
   // Filtra i piani del catalogo per il ruolo dell'utente
   const rolePlans = Object.values(PLANS_CATALOG).filter(
@@ -297,6 +339,8 @@ export default async function BillingPage({
                     priceDisplay={
                       partnerRef && plan.role === "COUPLE"
                         ? formatEuroFromCents(calculatePartnerDiscountedCents(plan.priceCents))
+                        : proLoyaltyHalfOff && plan.role === "PHOTOGRAPHER" && plan.code !== "PRO_FOUNDERS_49"
+                        ? formatEuroFromCents(Math.round(plan.priceCents * 0.5))
                         : plan.priceDisplay
                     }
                     hasActiveSubscription={false}
@@ -309,14 +353,14 @@ export default async function BillingPage({
           })}
         </div>
 
-        {/* FOOTER SICUREZZA & AGEVOLAZIONE B2B */}
+        {/* FOOTER SICUREZZA, PAYPAL & AGEVOLAZIONE B2B */}
         <div className="mt-12 space-y-4">
           <div className="p-6 bg-white rounded-2xl border border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-600">
             <div className="flex items-center gap-3">
               <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
               <span>
                 Pagamento immediato protetto SSL a 256-bit su <strong>Stripe</strong> con{" "}
-                <strong>Carta di Credito/Debito, PostePay, Apple Pay e Google Pay</strong>. GentiLuna non memorizza i dati della tua carta.
+                <strong>Carta di Credito/Debito, PostePay, Apple Pay, Google Pay e PayPal</strong>. GentiLuna non memorizza mai i dati della tua carta.
               </span>
             </div>
             <div className="shrink-0">
@@ -326,6 +370,35 @@ export default async function BillingPage({
               </a>
             </div>
           </div>
+
+          {(sysCfg?.paypalLink || sysCfg?.bankIban) && (
+            <div className="p-5 bg-stone-100/80 rounded-2xl border border-stone-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-stone-800">
+              <div className="space-y-1">
+                <strong className="text-sm text-stone-900 block">
+                  Preferisci pagare con PayPal diretto o Bonifico Bancario?
+                </strong>
+                {sysCfg?.bankIban && (
+                  <p>
+                    IBAN ({sysCfg.bankAccountName || "GentiLuna"}):{" "}
+                    <code className="font-mono font-bold bg-white px-2 py-0.5 rounded border border-stone-200">
+                      {sysCfg.bankIban}
+                    </code>{" "}
+                    (indica nella causale la tua email <strong>{user.email}</strong>).
+                  </p>
+                )}
+              </div>
+              {sysCfg?.paypalLink && (
+                <a
+                  href={sysCfg.paypalLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 px-5 py-2.5 rounded-xl bg-[#0070ba] hover:bg-[#005ea6] text-white font-bold whitespace-nowrap transition-colors"
+                >
+                  Paga con PayPal →
+                </a>
+              )}
+            </div>
+          )}
 
           {isPro && !isActive && (
             <div className="p-5 bg-amber-50/80 rounded-2xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-amber-950">

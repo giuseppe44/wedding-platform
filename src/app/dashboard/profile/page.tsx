@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 import ProProfileManager from "./ProProfileManager";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { VideoGuidePlayer } from "@/components/VideoGuidePlayer";
 import { GuidedCoachBubble, type CoachTip } from "@/components/GuidedCoachBubble";
+import { ensurePartnerShortCode } from "@/lib/partnerReferral";
 
 export default async function ProDashboardProfile() {
   const session = await getSession();
@@ -14,13 +14,26 @@ export default async function ProDashboardProfile() {
     redirect("/login?role=PHOTOGRAPHER");
   }
 
-  const profile = await prisma.professionalProfile.findUnique({
-    where: { userId: session.userId },
-    include: { services: true }
+  const rawProfiles = await prisma.professionalProfile.findMany({
+    where: {
+      OR: [{ userId: session.userId }, { parentUserId: session.userId }],
+    },
+    include: { services: true },
+    orderBy: { createdAt: "asc" },
   });
 
+  // Assicura che ogni vetrina abbia già il proprio Codice Partner corto (es. F01, W01, R01)
+  const profiles = await Promise.all(
+    rawProfiles.map(async (p) => {
+      const code = p.partnerCode || (await ensurePartnerShortCode(p.id));
+      return { ...p, partnerCode: code };
+    })
+  );
+
+  const profile = profiles[0] || null;
+
   const hasBio = Boolean(profile?.description?.trim());
-  const hasArea = Boolean(profile?.serviceArea?.trim());
+  const hasArea = Boolean(profile?.serviceArea?.trim() || profile?.province);
   const hasLogo = Boolean(profile?.profileImage || profile?.logoUrl);
   const hasCover = Boolean(profile?.coverImage);
   const galleryCount = profile?.gallery?.filter((u: string) => u.trim() !== "").length || 0;
@@ -39,7 +52,7 @@ export default async function ProDashboardProfile() {
       id: "prof-todo-img",
       kind: "TODO",
       title: "Completa Logo Studio e Immagine di Copertina",
-      body: "Sono la prima cosa che gli sposi vedono nella directory Fornitori. Carica un logo pulito e una foto di copertina rappresentativa del tuo stile.",
+      body: "Sono la prima cosa che gli sposi vedono nella directory Fornitori. Ora il caricamento ottimizza in automatico anche scatti grandi da fotocamera e li salva subito!",
     });
   } else {
     profileTips.push({
@@ -55,7 +68,7 @@ export default async function ProDashboardProfile() {
       id: "prof-todo-gallery",
       kind: "TODO",
       title: `Arricchisci il Portfolio (ora hai ${galleryCount}/15 foto)`,
-      body: "Puoi caricare scatti in alta qualità fino a 25 MB ciascuno nei formati JPG, PNG, WebP, HEIC o TIFF per mostrare il tuo lavoro migliore.",
+      body: "Puoi selezionare anche 10–15 scatti ad alta risoluzione tutti insieme (fino a 40 MB l'uno): vengono ottimizzati in Ultra-HD e salvati in automatico.",
     });
   } else {
     profileTips.push({
@@ -80,24 +93,29 @@ export default async function ProDashboardProfile() {
           : "Puoi aggiornare o aggiungere pacchetti stagionali in qualunque momento.",
     },
     {
-      id: "prof-dyk-security",
+      id: "prof-dyk-double-showcase",
       kind: "DID_YOU_KNOW",
-      title: "I tuoi contatti privati sono protetti dai bot ma sempre operativi",
-      body: "Nella vetrina pubblica gli sposi ti contattano tramite 'Richiedi Preventivo Gratuito' e Live Chat interna: zero spam e tutti i lead tracciati nella tua dashboard.",
-      ctaLabel: "Vedi I Miei Messaggi",
-      ctaHref: "/dashboard/messages",
+      title: "Novità: Doppia Vetrina con la stessa Partita IVA",
+      body: "Se offri due servizi distinti (es. Fotografia + Videomaking, oppure Location + Ristorante), puoi attivare gratuitamente una 2ª Vetrina separata collegata allo stesso account.",
     }
   );
 
   return (
     <div className="container mx-auto p-4 md:p-8 min-h-screen bg-stone-50 overflow-x-hidden">
       <div className="mb-6 flex items-center gap-4">
-        <Link href="/dashboard" className="inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground h-10 w-10"
+        >
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-3xl font-bold text-stone-800">Profilo Professionale</h1>
-          <p className="text-stone-500">Gestisci la tua vetrina pubblica e i tuoi servizi.</p>
+          <h1 className="text-3xl font-bold text-stone-800 font-serif">
+            Profilo &amp; Vetrine Professionali
+          </h1>
+          <p className="text-stone-500">
+            Gestisci la tua vetrina pubblica, eventuale 2ª Vetrina (stessa P.IVA), portfolio HD e servizi.
+          </p>
         </div>
       </div>
 
@@ -109,7 +127,7 @@ export default async function ProDashboardProfile() {
         totalSteps={5}
         tips={profileTips}
       />
-      <ProProfileManager initialProfile={profile} />
+      <ProProfileManager initialProfiles={profiles} />
     </div>
   );
 }

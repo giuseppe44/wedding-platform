@@ -28,11 +28,17 @@ export async function getConversations() {
     }
 
     if (session.role === "PHOTOGRAPHER") {
-      const profile = await prisma.professionalProfile.findUnique({ where: { userId: session.userId } });
-      if (!profile) return [];
+      const profiles = await prisma.professionalProfile.findMany({
+        where: {
+          OR: [{ userId: session.userId }, { parentUserId: session.userId }],
+        },
+        select: { id: true },
+      });
+      if (profiles.length === 0) return [];
+      const profileIds = profiles.map((p) => p.id);
 
       return await prisma.conversation.findMany({
-        where: { professionalProfileId: profile.id },
+        where: { professionalProfileId: { in: profileIds } },
         orderBy: { updatedAt: "desc" },
         include: {
           timelineItem: true,
@@ -128,7 +134,9 @@ export async function getMessages(conversationId: string) {
   const isCouple =
     conversation.timelineItem.ownerId === session.userId ||
     conversation.timelineItem.coupleId === session.userId;
-  const isPro = conversation.professionalProfile.userId === session.userId;
+  const isPro =
+    conversation.professionalProfile.userId === session.userId ||
+    conversation.professionalProfile.parentUserId === session.userId;
   const isAdmin = session.role === "ADMIN";
 
   if (!isCouple && !isPro && !isAdmin) throw new Error("Accesso negato");
@@ -204,7 +212,9 @@ export async function sendMessage(weddingId: string, proId: string, text: string
   }
 
   const isCouple = timelineItem.ownerId === session.userId || timelineItem.coupleId === session.userId;
-  const isPro = professionalProfile.userId === session.userId;
+  const isPro =
+    professionalProfile.userId === session.userId ||
+    professionalProfile.parentUserId === session.userId;
 
   if (!isCouple && !isPro) throw new Error("Accesso negato");
 
@@ -230,7 +240,8 @@ export async function sendMessage(weddingId: string, proId: string, text: string
     update: { updatedAt: new Date() },
   });
 
-  const recipientId = isPro ? timelineItem.ownerId : professionalProfile.userId;
+  const proOwnerUserId = professionalProfile.parentUserId || professionalProfile.userId;
+  const recipientId = isPro ? timelineItem.ownerId : proOwnerUserId;
   await createSystemNotification(
     recipientId,
     "Nuovo Messaggio",
