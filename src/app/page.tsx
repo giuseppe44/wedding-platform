@@ -589,19 +589,11 @@ export default function Home() {
                 <span>Ristoranti, Agenzie Viaggi, Torte &amp; NCC</span>
                 <ArrowRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-rose-300" />
-              <Link
-                href="/budget-matrimonio"
-                className="group inline-flex items-center gap-2 text-sm font-serif italic font-semibold text-rose-700 hover:text-rose-600 transition-colors"
-              >
-                <span>Parti dal Budget &amp; Organizza ✨</span>
-                <ArrowRight className="w-4 h-4 text-rose-500 group-hover:translate-x-1 transition-transform" />
-              </Link>
             </div>
           </div>
         </section>
 
-        {/* SIMULATORE RAPIDO DI BUDGET & IDEE INTERATTIVO */}
+        {/* PRESENTAZIONE BREVE ED ELEGANTE STRUMENTO BUDGET */}
         <HomeBudgetTeaser />
   
         
@@ -773,28 +765,28 @@ export default function Home() {
             </div>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Link href="/funzioni-sposi">
-                <Button className="rounded-full bg-rose-500 hover:bg-rose-600 text-white px-6 h-11 font-semibold">
+                <Button className="rounded-full bg-rose-500 hover:bg-rose-600 text-white px-5 min-h-11 h-auto py-2.5 font-semibold whitespace-normal text-center leading-snug">
                   Scopri Funzioni Sposi &amp; Eventi
                 </Button>
               </Link>
               <Link href="/funzioni-professionisti">
-                <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 px-6 h-11 font-semibold">
+                <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 px-5 min-h-11 h-auto py-2.5 font-semibold whitespace-normal text-center leading-snug">
                   Scopri Funzioni Professionisti
                 </Button>
               </Link>
               <Link href="/partner">
-                <Button className="rounded-full bg-emerald-700 hover:bg-emerald-800 text-white px-6 h-11 font-semibold">
-                  Ristoranti, Viaggi, Torte &amp; NCC
+                <Button className="rounded-full bg-emerald-700 hover:bg-emerald-800 text-white px-5 min-h-11 h-auto py-2.5 font-semibold whitespace-normal text-center leading-snug">
+                  Ristoranti, Liste Nozze &amp; Partner
                 </Button>
               </Link>
               <Link href="/demo">
-                <Button className="rounded-full bg-amber-400 hover:bg-amber-500 text-stone-950 px-6 h-11 font-bold border-none">
-                  Prova Demo Interattiva Live ✨
+                <Button className="rounded-full bg-amber-400 hover:bg-amber-500 text-stone-950 px-5 min-h-11 h-auto py-2.5 font-bold border-none whitespace-normal text-center leading-snug">
+                  Prova Demo Live ✨
                 </Button>
               </Link>
               <Link href="/blog">
-                <Button variant="outline" className="rounded-full border-stone-300 text-stone-800 hover:bg-white px-6 h-11 font-semibold">
-                  Leggi le 22 Guide nel Blog
+                <Button variant="outline" className="rounded-full border-stone-300 text-stone-800 hover:bg-white px-5 min-h-11 h-auto py-2.5 font-semibold whitespace-normal text-center leading-snug">
+                  Leggi le Guide nel Blog
                 </Button>
               </Link>
             </div>
@@ -993,13 +985,13 @@ export default function Home() {
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link href="/partner">
-              <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold px-7 h-12">
-                Sei un&apos;Attività o Negozio? Entra nel Sistema →
+              <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold px-6 min-h-12 h-auto py-3 whitespace-normal text-center leading-snug">
+                Sei un&apos;Attività? Entra nel Sistema →
               </Button>
             </Link>
             <Link href="/fornitori">
-              <Button variant="outline" className="rounded-full border-stone-300 text-stone-800 hover:bg-stone-50 font-semibold px-7 h-12">
-                Esplora Tutte le Categorie in Directory
+              <Button variant="outline" className="rounded-full border-stone-300 text-stone-800 hover:bg-stone-50 font-semibold px-6 min-h-12 h-auto py-3 whitespace-normal text-center leading-snug">
+                Esplora Tutte le Categorie
               </Button>
             </Link>
           </div>

@@ -648,14 +648,14 @@ export default function BudgetPlannerClient({
                   <Button
                     type="button"
                     onClick={() => applyScenarioPreset(sc.presetInput)}
-                    className={`w-full rounded-full h-11 font-bold text-xs sm:text-sm ${
+                    className={`w-full rounded-full min-h-11 h-auto py-2.5 px-4 font-bold text-xs sm:text-sm whitespace-normal text-center leading-snug ${
                       isDark
                         ? "bg-amber-400 hover:bg-amber-300 text-stone-950"
                         : "bg-stone-900 hover:bg-stone-800 text-white"
                     }`}
                   >
-                    <span>Apri e Personalizza nel Simulatore</span>
-                    <ArrowRight className="w-4 h-4 ml-2 shrink-0" />
+                    <span>Personalizza questa Idea</span>
+                    <ArrowRight className="w-4 h-4 ml-1.5 shrink-0" />
                   </Button>
                 </div>
               );
@@ -1131,31 +1131,31 @@ export default function BudgetPlannerClient({
                 </div>
 
                 {/* Pulsanti Condivisione Virale, Stampa e Consulenza */}
-                <div className="pt-4 border-t border-stone-200/80 flex flex-wrap items-center gap-2.5 print:hidden">
+                <div className="pt-4 border-t border-stone-200/80 flex flex-wrap items-center gap-2 print:hidden">
                   <Button
                     type="button"
                     onClick={handleWhatsAppShare}
-                    className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 h-10"
+                    className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 min-h-10 h-auto py-2 whitespace-normal text-center"
                   >
-                    <Share2 className="w-3.5 h-3.5 mr-1.5" />
-                    Invia al Partner su WhatsApp
+                    <Share2 className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                    <span>Invia su WhatsApp</span>
                   </Button>
 
                   <Button
                     type="button"
                     variant="outline"
                     onClick={handleCopyShareLink}
-                    className="rounded-full border-stone-300 text-stone-800 text-xs font-semibold px-4 h-10"
+                    className="rounded-full border-stone-300 text-stone-800 text-xs font-semibold px-4 min-h-10 h-auto py-2 whitespace-normal text-center"
                   >
                     {copiedLink ? (
                       <>
-                        <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
-                        Link Copiato!
+                        <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-600 shrink-0" />
+                        <span>Copiato!</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3.5 h-3.5 mr-1.5" />
-                        Copia Link Ipotesi
+                        <Copy className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                        <span>Copia Link</span>
                       </>
                     )}
                   </Button>
@@ -1164,19 +1164,19 @@ export default function BudgetPlannerClient({
                     type="button"
                     variant="outline"
                     onClick={() => window.print()}
-                    className="rounded-full border-stone-300 text-stone-800 text-xs font-semibold px-4 h-10"
+                    className="rounded-full border-stone-300 text-stone-800 text-xs font-semibold px-4 min-h-10 h-auto py-2 whitespace-normal text-center"
                   >
-                    <Printer className="w-3.5 h-3.5 mr-1.5" />
-                    Stampa / PDF
+                    <Printer className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                    <span>Stampa PDF</span>
                   </Button>
 
                   <Button
                     type="button"
                     onClick={() => openLeadModal()}
-                    className="rounded-full bg-amber-400 hover:bg-amber-500 text-stone-950 text-xs font-bold px-4 h-10 ml-auto"
+                    className="rounded-full bg-amber-400 hover:bg-amber-500 text-stone-950 text-xs font-bold px-4 min-h-10 h-auto py-2 sm:ml-auto whitespace-normal text-center"
                   >
-                    <Send className="w-3.5 h-3.5 mr-1.5" />
-                    Chiedi Suggerimenti Gratuiti
+                    <Send className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                    <span>Chiedi Consigli</span>
                   </Button>
                 </div>
               </div>
@@ -1408,9 +1408,9 @@ export default function BudgetPlannerClient({
                                     type="button"
                                     variant="outline"
                                     size="sm"
-                                    className="rounded-full text-xs border-stone-300"
+                                    className="rounded-full text-xs border-stone-300 min-h-9 h-auto py-1.5 px-3.5 whitespace-normal text-center leading-snug"
                                   >
-                                    Esplora Directory {item.shortTitle} →
+                                    Vedi Fornitori →
                                   </Button>
                                 </Link>
                               )}
@@ -1418,9 +1418,9 @@ export default function BudgetPlannerClient({
                                 type="button"
                                 size="sm"
                                 onClick={() => openLeadModal(item.shortTitle)}
-                                className="rounded-full text-xs bg-stone-900 hover:bg-stone-800 text-amber-200"
+                                className="rounded-full text-xs bg-stone-900 hover:bg-stone-800 text-amber-200 min-h-9 h-auto py-1.5 px-3.5 whitespace-normal text-center leading-snug"
                               >
-                                Suggeritemi contatti per {item.shortTitle}
+                                Chiedi contatti
                               </Button>
                             </div>
                           </div>
@@ -1559,16 +1559,16 @@ export default function BudgetPlannerClient({
 
           <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full sm:w-auto">
             <Link href="/login?role=COUPLE&mode=REGISTER">
-              <Button className="w-full sm:w-auto rounded-full bg-stone-950 hover:bg-stone-900 text-amber-300 font-bold px-7 h-12 text-sm shadow-lg">
-                Crea Spazio Evento Gratis →
+              <Button className="w-full sm:w-auto rounded-full bg-stone-950 hover:bg-stone-900 text-amber-300 font-bold px-6 min-h-12 h-auto py-3 text-sm shadow-lg whitespace-normal text-center leading-snug">
+                Crea Spazio Gratis →
               </Button>
             </Link>
             <Link href="/fornitori">
               <Button
                 variant="outline"
-                className="w-full sm:w-auto rounded-full bg-white/15 border-white/40 text-white hover:bg-white hover:text-stone-900 font-semibold px-6 h-12 text-sm"
+                className="w-full sm:w-auto rounded-full bg-white/15 border-white/40 text-white hover:bg-white hover:text-stone-900 font-semibold px-6 min-h-12 h-auto py-3 text-sm whitespace-normal text-center leading-snug"
               >
-                Esplora Fornitori Verificati
+                Vedi Fornitori
               </Button>
             </Link>
           </div>
@@ -1667,11 +1667,11 @@ export default function BudgetPlannerClient({
               <Button
                 type="submit"
                 disabled={leadSubmitting}
-                className="w-full rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold h-11"
+                className="w-full rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold min-h-11 h-auto py-2.5 px-4 whitespace-normal text-center leading-snug"
               >
                 {leadSubmitting
                   ? "Invio in corso..."
-                  : "Invia Ipotesi & Ricevi Consigli Gratuiti"}
+                  : "Invia Richiesta Gratuita"}
               </Button>
             </form>
           )}
