@@ -934,6 +934,13 @@ export default function Home() {
                 border: "border-emerald-200/80 hover:border-emerald-400 bg-emerald-50/30",
               },
               {
+                emoji: "🎁",
+                title: "Negozi Liste Nozze & Regali",
+                desc: "Collega le tue Liste Nozze, regali, casa e arredo direttamente allo spazio degli sposi davanti a tutti gli invitati.",
+                href: "/partner#categorie-partner",
+                border: "border-amber-300/80 hover:border-amber-500 bg-amber-50/40",
+              },
+              {
                 emoji: "✈️",
                 title: "Agenzie di Viaggi",
                 desc: "Lista Viaggio di Nozze a tappe interattiva e area Documenti già pronte per le tue coppie, con visibilità agli ospiti.",
@@ -949,15 +956,8 @@ export default function Home() {
               },
               {
                 emoji: "🚘",
-                title: "NCC & Auto per Matrimoni",
-                desc: "Noleggio con conducente, auto d'epoca/luxury per gli sposi e navette sicure di rientro per gli invitati.",
-                href: "/partner#categorie-partner",
-                border: "border-amber-200/80 hover:border-amber-400 bg-amber-50/30",
-              },
-              {
-                emoji: "🏨",
-                title: "Hotel, B&B & Open Bar",
-                desc: "Alloggi convenzionati per gli ospiti fuori sede, cocktail catering, sommelier e angolo sigari & distillati.",
+                title: "NCC, Auto Sposi & Hotel",
+                desc: "Auto d'epoca/luxury per gli sposi, navette sicure per gli invitati, hotel/B&B convenzionati e open bar mixology.",
                 href: "/partner#categorie-partner",
                 border: "border-indigo-200/80 hover:border-indigo-400 bg-indigo-50/30",
               },
@@ -993,7 +993,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link href="/partner">
               <Button className="rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold px-7 h-12">
-                Sei un&apos;Attività? Crea Vetrina Gratis →
+                Sei un&apos;Attività o Negozio? Entra nel Sistema →
               </Button>
             </Link>
             <Link href="/fornitori">

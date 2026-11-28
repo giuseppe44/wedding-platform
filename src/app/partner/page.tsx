@@ -3,9 +3,9 @@ import PartnerHubClient from "./PartnerHubClient";
 
 export const metadata: Metadata = {
   title:
-    "Ristoranti, Agenzie Viaggi, Pasticcerie, NCC & Partner Eventi | GentiLuna",
+    "Entra nel Sistema Partner: Ristoranti, Liste Nozze, Viaggi, Torte & NCC | GentiLuna",
   description:
-    "Unisciti a GentiLuna come Ristorante, Location, Agenzia di Viaggi, Pasticceria Cake Design, NCC Auto per Matrimoni o Tipografia: regia tavoli e allergie live, QR Code in sala e nuovi clienti a 0% commissioni.",
+    "Entra nel sistema GentiLuna come Ristorante, Location, Negozio Liste Nozze e Regali, Agenzia di Viaggi, Pasticceria Cake Design, NCC Auto per Matrimoni o Tipografia.",
   alternates: {
     canonical: "/partner",
   },

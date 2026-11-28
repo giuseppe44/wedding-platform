@@ -235,7 +235,7 @@ export const PRIORITY_META: Record<
 };
 
 export const BUDGET_DISCLAIMER_TEXT =
-  "Nota di Trasparenza: Tutte le cifre, le ripartizioni percentuali e gli scenari mostrati rappresentano un'ipotesi orientativa e non vincolante, elaborata sulle fasce medie del settore eventi in Italia. Non costituiscono preventivo né offerta contrattuale. I costi effettivi variano in base alla provincia, alla stagionalità, al numero reale di invitati confermati, alle scelte di menù o allestimento e alle tariffe dei singoli professionisti, e andranno sempre rettificati e confermati direttamente con location, ristoranti e fornitori.";
+  "Nota informativa: Gli importi, le percentuali e gli scenari mostrati sono un'idea ipotetica e orientativa pensata per aiutarti ad abbozzare l'organizzazione. Non costituiscono preventivo definitivo: ogni voce andrà poi verificata, rettificata e confermata direttamente in base a location, ristoranti, data, numero di invitati e professionisti scelti.";
 
 function roundTo50(val: number): number {
   if (val < 400) return Math.max(50, Math.round(val / 10) * 10);
@@ -316,24 +316,24 @@ export function calculateSmartBudgetPlan(
 
   if (input.venueFormula === "VILLA_CATERING" && rawFoodEstimate > totalBudget * 0.64) {
     sustainabilityStatus = "STRETCHED";
-    sustainabilityHeadline = "Attenzione: Affitto Villa + Catering assorbe troppo budget";
-    sustainabilityMessage = `Con ${guestsCount} invitati e ${formatEuro(totalBudget)}, sommare l'affitto di una villa nuda (${formatEuro(baseVenueRental)} circa) al catering esterno lascerebbe troppo poco margine per foto, abiti, fiori e musica.`;
+    sustainabilityHeadline = "Attenzione: Affitto Villa + Catering assorbe gran parte del budget";
+    sustainabilityMessage = `Con ${guestsCount} invitati e ${formatEuro(totalBudget)}, sommare l'affitto di una villa (${formatEuro(baseVenueRental)} circa) al catering esterno lascia meno spazio per foto, abiti, fiori e musica.`;
     smartSuggestionTip =
-      "Consiglio onesto: valuta un Ristorante con parco/giardino o una Tenuta con cucina interna (risparmi subito l'affitto location), oppure scegli un Venerdì/Domenica per ridurre i minimi garantiti del 12-15%.";
+      "Suggerimento utile: valuta anche un Ristorante con parco/giardino o una Tenuta con cucina interna (dove la sala è già compresa), oppure un Venerdì/Domenica per avere condizioni più agevoli.";
   } else if (perGuestOverall < 115 && input.venueFormula !== "DYNAMIC_PARTY") {
     sustainabilityStatus = "STRETCHED";
-    sustainabilityHeadline = "Budget sfidante rispetto al numero di invitati";
-    sustainabilityMessage = `Il budget medio complessivo è di circa ${formatEuro(perGuestOverall)} per ospite (tutto incluso, non solo il pranzo). Per non sforare dovrai fare scelte molto mirate sui costi fissi.`;
+    sustainabilityHeadline = "Budget da calibrare con attenzione sul numero di invitati";
+    sustainabilityMessage = `La media complessiva è di circa ${formatEuro(perGuestOverall)} per ospite considerando l'intero evento. Conviene fare scelte mirate sulle voci principali.`;
     smartSuggestionTip =
-      "Consiglio onesto: valuta un Agriturismo di charme o una formula Cocktail/Buffet dinamico, concentra i fiori sui punti focali riutilizzabili e sfrutta gli inviti digitali con QR Code.";
+      "Suggerimento utile: valuta un Agriturismo di charme o una formula Cocktail/Buffet dinamico, scegli fiori di stagione e utilizza gli inviti digitali con QR Code.";
   } else if (rawFoodEstimate > totalBudget * 0.56) {
     sustainabilityStatus = "BALANCED";
-    sustainabilityHeadline = "Piano fattibile con gestione attenta dei fornitori";
+    sustainabilityHeadline = "Buon equilibrio generale per il tuo evento";
     sustainabilityMessage =
-      "La ristorazione rappresenta la fetta principale dell'investimento (normale con molti ospiti). Confrontando 2-3 preventivi chiari per categoria resterai perfettamente nei binari.";
+      "La ristorazione rappresenta la quota principale del budget, come avviene normalmente con questo numero di ospiti. Confrontando 2-3 preventivi per categoria potrai gestire tutto con tranquillità.";
     if (input.season === "PEAK_WEEKEND") {
       smartSuggestionTip =
-        "Idea furba: se la data non è ancora bloccata, sposarsi di venerdì o in maggio/ fine settembre può liberare 1.500€–3.000€ da reinvestire nei servizi che ami di più.";
+        "Spunto utile: se la data è flessibile, valutare un venerdì o mesi come maggio e fine settembre permette spesso di liberare budget extra per i servizi che ami di più.";
     }
   }
 
@@ -667,8 +667,8 @@ export function calculateSmartBudgetPlan(
       ],
       bookingTiming: "Sito e Inviti 5 – 4 mesi prima • Bomboniere 3 mesi prima",
       gentilunaTip:
-        "Dalla tua Area Sposi GentiLuna generi gratis i cartoncini tavolo pronti per la stampa con QR Code integrato e gestisci conferme RSVP via WhatsApp.",
-      matchingCategoryCodes: ["STATIONERY_FAVORS"],
+        "Dalla tua Area Sposi GentiLuna generi gratis i cartoncini tavolo pronti per la stampa con QR Code, gestisci gli inviti digitali e colleghi la tua Lista Nozze.",
+      matchingCategoryCodes: ["STATIONERY_FAVORS", "GIFT_REGISTRY_STORE"],
       fornitoriFilterGroup: "PLANNER_MUSICA_STILE",
       isPriorityBoosted: hasPriority("GUEST_EXPERIENCE"),
     },
@@ -695,15 +695,15 @@ export function calculateSmartBudgetPlan(
       proComparisonNote:
         "Prenotare tramite un'Agenzia di Viaggi specializzata in Honeymoon ti tutela su coincidenze voli, assicurazioni mediche/annullamento, visti e assistenza H24 in caso di cambi operativi aerei.",
       honestAdvice:
-        "Anche se hai scelto di includerlo nel budget, puoi attivare la Lista Viaggio a tappe per recuperare buona parte della spesa grazie ai regali degli invitati!",
+        "Anche includendolo nel budget, puoi attivare la Lista Viaggio a tappe o collegare la tua Lista Nozze per ricevere comodamente i contributi regalo degli invitati.",
       questionsToAsk: [
         "Qual è il periodo climatico migliore per la meta che sogniamo (evitando stagione piogge o tifoni)?",
         "Nel preventivo sono già incluse tasse aeroportuali, assicurazione medico-bagaglio ad alto massimale e annullamento?",
       ],
       bookingTiming: "Da bloccare 9 – 6 mesi prima per le tariffe voli migliori",
       gentilunaTip:
-        "Con GentiLuna crei la Lista Viaggio a Tappe a 0% trattenute e custodisci biglietti e voucher nell'area Documenti riservata.",
-      matchingCategoryCodes: ["TRAVEL_AGENCY"],
+        "Su GentiLuna crei facilmente la Lista Viaggio a Tappe per gli ospiti e custodisci biglietti e voucher nell'area Documenti riservata.",
+      matchingCategoryCodes: ["TRAVEL_AGENCY", "GIFT_REGISTRY_STORE"],
       fornitoriFilterGroup: "VIAGGI_AUTO_TORTE",
     });
   }
@@ -1058,8 +1058,8 @@ export const BUDGET_IDEA_SCENARIOS: BudgetIdeaScenario[] = [
       "Abiti sposa e sposo in atelier, fedi in oro e pacchetto bridal make-up & hair.",
     ],
     smartTradeoffs: [
-      "Valutare un venerdì pomeriggio/sera in estate regala tramonti magici e spesso sconti importanti sul menù.",
-      "Finanzia la Luna di Miele tramite la Lista Viaggio a tappe a 0% commissioni anziché intaccare questo budget.",
+      "Valutare un venerdì pomeriggio/sera in estate regala tramonti magici e spesso condizioni vantaggiose sul menù.",
+      "Gestisci la Luna di Miele o i regali tramite la Lista Nozze / Lista Viaggio dedicata così da lasciare intatto il budget dell'evento.",
     ],
     presetInput: {
       eventType: "WEDDING",

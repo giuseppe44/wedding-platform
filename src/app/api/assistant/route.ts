@@ -50,7 +50,7 @@ function buildKnowledgeBase(activeProsCount: number): KnowledgeEntry[] {
         "differenza ristorante villa",
       ],
       answer:
-        "Su GentiLuna trovi il nuovo strumento gratuito **'Parti dal Budget & Organizza'** ✨:\n• **Simulatore su misura:** inserisci il tuo budget ipotetico, il numero di invitati e la formula preferita (Ristorante con cucina interna, Agriturismo o Villa + Catering esterno) per vedere come distribuire le voci con onestà, chi contattare e cosa chiedere prima di firmare.\n• **6 Idee di Budget pronte:** scopri cosa puoi realizzare concretamente da 8.000€ fino a oltre 60.000€ (più una sezione dedicata a Battesimi, Lauree e Anniversari).\n*(Nota: i calcoli sono simulazioni orientative e ipotetiche da confermare poi con location e professionisti.)*",
+        "Su GentiLuna trovi lo strumento gratuito **'Parti dal Budget & Organizza'** ✨:\n• **Simulatore su misura:** inserisci il tuo budget ipotetico, il numero di invitati e la formula preferita (Ristorante con cucina interna, Agriturismo o Villa + Catering esterno) per vedere come distribuire le voci, chi contattare e come muoverti passo dopo passo.\n• **6 Idee di Budget pronte:** scopri cosa puoi realizzare concretamente da 8.000€ fino a oltre 60.000€ (più una sezione per Battesimi, Lauree e Anniversari).\n*(Nota: si tratta di un'idea ipotetica e orientativa da confermare poi con location e professionisti.)*",
       links: [
         { label: "Apri Simulatore Budget", href: "/budget-matrimonio" },
         { label: "Vedi 6 Idee di Budget", href: "/budget-matrimonio?tab=idee" },

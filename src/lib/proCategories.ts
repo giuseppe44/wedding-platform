@@ -78,12 +78,24 @@ export const PRO_CATEGORIES: ProCategoryMeta[] = [
       "Porta i tuoi cocktail bar mobili e angoli degustazione davanti a tutti gli ospiti del party serale e ricevi preventivi diretti a 0% commissioni.",
   },
 
-  // 2. Viaggi, Auto NCC & Ospitalità
+  // 2. Viaggi, Liste Nozze, Auto NCC & Ospitalità
+  {
+    code: "GIFT_REGISTRY_STORE",
+    label: "Negozio Liste Nozze, Regali & Casa",
+    shortLabel: "Liste Nozze & Regali",
+    groupName: "Viaggi, Liste Nozze, Auto (NCC) & Ospitalità",
+    filterGroup: "VIAGGI_AUTO_TORTE",
+    businessPlaceholder: "Es. Boutique Lista Nozze, Regali & Casa",
+    publicFallbackDescription: (name) =>
+      `Scopri la Lista Nozze, le idee regalo, gli articoli per la casa, tavola, design e arredo proposti da ${name} su GentiLuna.`,
+    proValuePitch:
+      "Collega le tue Liste Nozze e proposte regalo direttamente allo spazio digitale degli sposi e fatti conoscere da tutti gli invitati di matrimoni, battesimi, lauree e anniversari.",
+  },
   {
     code: "TRAVEL_AGENCY",
     label: "Agenzia di Viaggi & Luna di Miele",
     shortLabel: "Agenzia Viaggi",
-    groupName: "Viaggi, Auto Sposi (NCC) & Ospitalità",
+    groupName: "Viaggi, Liste Nozze, Auto (NCC) & Ospitalità",
     filterGroup: "VIAGGI_AUTO_TORTE",
     businessPlaceholder: "Es. Orizzonti Viaggi & Honeymoon",
     publicFallbackDescription: (name) =>
@@ -95,7 +107,7 @@ export const PRO_CATEGORIES: ProCategoryMeta[] = [
     code: "NCC_CARS",
     label: "NCC (Noleggio con Conducente) & Auto Matrimoni",
     shortLabel: "NCC & Auto Sposi",
-    groupName: "Viaggi, Auto Sposi (NCC) & Ospitalità",
+    groupName: "Viaggi, Liste Nozze, Auto (NCC) & Ospitalità",
     filterGroup: "VIAGGI_AUTO_TORTE",
     businessPlaceholder: "Es. Prestige NCC & Auto Sposi d'Epoca",
     publicFallbackDescription: (name) =>
@@ -107,7 +119,7 @@ export const PRO_CATEGORIES: ProCategoryMeta[] = [
     code: "HOTEL_HOSPITALITY",
     label: "Hotel, B&B, Resort & Alloggi per Invitati",
     shortLabel: "Hotel & Ospitalità",
-    groupName: "Viaggi, Auto Sposi (NCC) & Ospitalità",
+    groupName: "Viaggi, Liste Nozze, Auto (NCC) & Ospitalità",
     filterGroup: "VIAGGI_AUTO_TORTE",
     businessPlaceholder: "Es. Relais & Boutique Hotel Bellavista",
     publicFallbackDescription: (name) =>
@@ -271,7 +283,7 @@ export const PRO_CATEGORY_MAP: Record<string, ProCategoryMeta> = Object.fromEntr
 
 export const PRO_CATEGORY_GROUPS: { groupName: string; items: ProCategoryMeta[] }[] = [
   "Ristoranti, Ville & Banchetto",
-  "Viaggi, Auto Sposi (NCC) & Ospitalità",
+  "Viaggi, Liste Nozze, Auto (NCC) & Ospitalità",
   "Foto, Video & Intrattenimento",
   "Regia, Fiori, Partecipazioni & Stile",
 ].map((groupName) => ({

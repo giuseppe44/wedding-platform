@@ -13,6 +13,7 @@ export const CATEGORY_CODE_PREFIX: Record<string, string> = {
   LOCATION: "L",
   CATERING: "C",
   PASTRY_CAKE: "P",
+  GIFT_REGISTRY_STORE: "LN",
   TRAVEL_AGENCY: "T",
   NCC_CARS: "N",
   HOTEL_HOSPITALITY: "H",

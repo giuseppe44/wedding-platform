@@ -111,14 +111,14 @@ export default function SposiLandingPage() {
       <section className="py-20 bg-stone-950 text-white border-t border-stone-800">
         <div className="max-w-5xl mx-auto px-4 text-center space-y-6">
           <span className="inline-block px-4 py-1.5 rounded-full bg-amber-400/15 border border-amber-300/35 text-amber-200 text-xs font-bold uppercase tracking-widest">
-            Nuovo Strumento Gratuito • Guida Onesta
+            Nuovo Strumento Gratuito per i Tuoi Eventi
           </span>
           <h2 className="text-3xl md:text-5xl font-serif leading-tight">
             Non sapete come dividere il budget tra{" "}
             <span className="italic text-amber-300">Ristorante, Villa e Professionisti?</span>
           </h2>
           <p className="text-base sm:text-lg text-stone-300 max-w-2xl mx-auto font-light leading-relaxed">
-            Inserite il vostro budget ipotetico o esplorate le nostre 6 Idee di Matrimonio già pronte: vi mostriamo in modo trasparente cosa fare, chi contattare e le domande giuste da fare prima di firmare qualsiasi preventivo.
+            Inserite la cifra che avete in mente o scoprite le nostre 6 Idee di Matrimonio già pronte: vedrete subito cosa fare, chi contattare e i dettagli utili da verificare per organizzare tutto passo dopo passo.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Link href="/budget-matrimonio">

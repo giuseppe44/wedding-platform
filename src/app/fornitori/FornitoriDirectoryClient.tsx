@@ -20,6 +20,7 @@ import {
   Menu,
   X,
   Award,
+  Gift,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
@@ -59,7 +60,7 @@ type OpenSlotCard = {
   iconBg: string;
   couplePrompt: string;
   ctaLabel: string;
-  icon: "restaurant" | "travel" | "pastry" | "ncc" | "camera" | "planner";
+  icon: "restaurant" | "travel" | "pastry" | "ncc" | "camera" | "planner" | "gift";
 };
 
 const OPEN_PARTNER_SLOTS: OpenSlotCard[] = [
@@ -79,6 +80,23 @@ const OPEN_PARTNER_SLOTS: OpenSlotCard[] = [
     couplePrompt: "Cerco ristorante, villa o sala ricevimenti per il mio evento",
     ctaLabel: "Crea Vetrina Gratis (Ristorante)",
     icon: "restaurant",
+  },
+  {
+    id: "slot-liste-nozze",
+    categoryCode: "GIFT_REGISTRY_STORE",
+    badge: "Vetrina Free • Nuova Categoria",
+    title: "Negozi Liste Nozze, Regali & Casa",
+    subtitle: "Liste regalo per casa, arredo, tavola ed elettrodomestici",
+    description:
+      "Entra gratis nel sistema come negozio di Liste Nozze e Regali: collega le tue proposte direttamente allo spazio degli sposi e fatti scoprire da tutti gli invitati.",
+    filterGroup: "VIAGGI_AUTO_TORTE",
+    accentBorder: "border-amber-300/90 hover:border-amber-500",
+    accentBg: "from-[#fffbeb] via-white to-[#fef3c7]/50",
+    badgeClass: "bg-amber-100 text-amber-900 border-amber-300",
+    iconBg: "bg-amber-100 text-amber-800 border-amber-200",
+    couplePrompt: "Cerco negozio per Lista Nozze, regali matrimonio e articoli casa",
+    ctaLabel: "Entra nel Sistema (Negozio Liste Nozze)",
+    icon: "gift",
   },
   {
     id: "slot-viaggi",
@@ -196,6 +214,8 @@ function SlotIcon({ kind }: { kind: OpenSlotCard["icon"] }) {
       return <Camera className="w-6 h-6" />;
     case "planner":
       return <HeartHandshake className="w-6 h-6" />;
+    case "gift":
+      return <Gift className="w-6 h-6" />;
   }
 }
 
@@ -274,7 +294,7 @@ export default function FornitoriDirectoryClient({
             </Link>
             <Link href="/partner">
               <Button className="bg-stone-900 text-white hover:bg-stone-800 rounded-full font-semibold px-5 h-10 text-xs sm:text-sm shadow-md">
-                Sei un&apos;attività? Unisciti
+                Sei un&apos;attività? Entra nel sistema
               </Button>
             </Link>
           </div>
@@ -391,7 +411,7 @@ export default function FornitoriDirectoryClient({
                 Prima di chiedere preventivi, hai già un&apos;idea di come dividere il budget?
               </h3>
               <p className="text-xs sm:text-sm text-stone-300 font-light mt-1">
-                Usa la nostra bussola onesta per confrontare Ristorante vs Villa + Catering, vedere 6 scenari pronti e sapere cosa chiedere a ogni professionista.
+                Usa il nostro simulatore gratuito per confrontare Ristorante vs Villa + Catering, vedere 6 idee già pronte e orientarti tra le varie categorie.
               </p>
             </div>
             <Link href="/budget-matrimonio" className="shrink-0 w-full md:w-auto">
@@ -427,7 +447,7 @@ export default function FornitoriDirectoryClient({
                   { id: "ALL", label: "Tutti" },
                   { id: "RISTORANTI_LOCATION", label: "Ristoranti & Location" },
                   { id: "FOTO_VIDEO", label: "Foto & Video" },
-                  { id: "VIAGGI_AUTO_TORTE", label: "Viaggi, Torte & NCC" },
+                  { id: "VIAGGI_AUTO_TORTE", label: "Viaggi, Liste Nozze, Torte & NCC" },
                   { id: "PLANNER_MUSICA_STILE", label: "Planner, Musica & Stile" },
                   { id: "OPEN_SLOTS", label: "Candidature Aperte" },
                 ].map((tab) => {

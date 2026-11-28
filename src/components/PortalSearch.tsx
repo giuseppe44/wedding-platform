@@ -13,6 +13,7 @@ import {
   Plane,
   CakeSlice,
   Car,
+  Gift,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,10 +28,10 @@ import { submitLead } from "@/app/actions/leadActions";
 
 const TYPEWRITER_EXAMPLES = [
   "Cerco un ristorante o villa con giardino per 120 invitati...",
+  "Cerco negozio per Lista Nozze, regali e articoli casa...",
   "Cerco fotografo stile reportage in Sardegna per Giugno 2027...",
   "Cerchiamo agenzia viaggi per Luna di Miele in Giappone o Polinesia...",
   "Vorremmo pasticceria per wedding cake e NCC auto d'epoca per gli sposi...",
-  "Cerco videomaker con drone e musica live in Toscana...",
 ];
 
 const QUICK_SUGGESTIONS = [
@@ -51,6 +52,12 @@ const QUICK_SUGGESTIONS = [
     icon: Plane,
     prompt: "Cerco un'agenzia viaggi specializzata in Luna di Miele e lista viaggio",
     chipClass: "border-sky-200 bg-sky-50/90 text-sky-900 hover:bg-sky-100",
+  },
+  {
+    label: "Liste Nozze & Regali",
+    icon: Gift,
+    prompt: "Cerco un negozio specializzato in Liste Nozze, regali matrimonio e articoli per la casa",
+    chipClass: "border-amber-300 bg-amber-50/90 text-amber-950 hover:bg-amber-100",
   },
   {
     label: "Pasticceria & Torte",

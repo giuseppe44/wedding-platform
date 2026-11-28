@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title:
     "Parti dal Budget & Organizza il Matrimonio – Simulatore & Idee di Budget | GentiLuna",
   description:
-    "Hai in mente un budget per il matrimonio o il tuo evento? Inserisci la cifra o esplora 6 idee di budget reali: scopri le differenze tra ristorante e villa con catering, chi contattare e come organizzare tutto con onestà.",
+    "Hai in mente un budget per il matrimonio o per il tuo evento? Inserisci la cifra o scopri 6 idee di budget pronte: confronta ristorante e villa, vedi chi contattare e organizza tutto con semplicità.",
   keywords: [
     "budget matrimonio",
     "calcolo budget matrimonio online",

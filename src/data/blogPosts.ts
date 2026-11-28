@@ -53,7 +53,7 @@ export const BLOG_POSTS: BlogPost[] = [
         heading: "Perché i classici schemi percentuali fissi fanno sbagliare i conti",
         paragraphs: [
           "Online si legge spesso di destinare sempre una percentuale identica al ricevimento a prescindere da tutto. Nella realtà italiana, però, sposarsi con 50 invitati o con 150 invitati cambia radicalmente il peso del banchetto rispetto ai costi fissi come fotografo, abiti, musica o fedi.",
-          "Per avere una bussola onesta bisogna partire da tre numeri chiari: il budget complessivo ipotetico, la stima realistica degli ospiti e il tipo di struttura desiderata.",
+          "Per orientarsi in modo semplice conviene partire da tre elementi chiari: il budget complessivo ipotetico, la stima degli ospiti e il tipo di struttura desiderata.",
         ],
       },
       {
@@ -70,8 +70,8 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         heading: "Prova gratis il Simulatore Ipotetico e le 6 Idee di Budget su GentiLuna",
         paragraphs: [
-          "Abbiamo creato uno strumento gratuito e imparziale dove puoi sia inserire il tuo budget per ricevere una ripartizione ragionata e le domande da fare prima di firmare, sia esplorare 6 scenari di matrimonio già pronti da condividere su WhatsApp col tuo partner.",
-          "Naturalmente ogni simulazione è un'idea orientativa e ipotetica che andrà poi verificata e confermata direttamente con le strutture e i professionisti scelti, a 0% commissioni.",
+          "Abbiamo messo a disposizione uno strumento gratuito e immediato dove puoi sia inserire il tuo budget per ricevere una traccia pratica e i consigli su chi contattare, sia esplorare 6 scenari di matrimonio già pronti da condividere su WhatsApp col tuo partner.",
+          "Naturalmente ogni simulazione è un'idea orientativa e ipotetica che andrà poi verificata, adattata e confermata direttamente con le strutture e i professionisti scelti.",
         ],
       },
     ],

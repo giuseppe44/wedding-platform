@@ -182,7 +182,7 @@ function AuthFlow() {
             : "text-stone-500 hover:text-stone-800"
         }`}
       >
-        <Camera className="w-3.5 h-3.5 shrink-0" /> <span>Professionisti</span>
+        <Camera className="w-3.5 h-3.5 shrink-0" /> <span>Professionisti &amp; Attività</span>
       </button>
     </div>
   );
@@ -332,12 +332,12 @@ function AuthFlow() {
         </div>
         <div className="space-y-2">
           <CardTitle className="text-2xl sm:text-3xl font-serif text-stone-800">
-            {activeRole === "COUPLE" ? "Crea il tuo Spazio" : "Candidati come Partner Ufficiale"}
+            {activeRole === "COUPLE" ? "Crea il tuo Spazio" : "Entra nel Sistema GentiLuna"}
           </CardTitle>
           <CardDescription className="text-stone-500 text-sm">
             {activeRole === "COUPLE"
               ? "Crea il tuo account per ricordare, condividere e organizzare i tuoi eventi."
-              : "Rete a Numero Chiuso per Provincia: niente caos da portale di massa, solo fornitori selezionati."}
+              : "Per Fotografi, Ristoranti, Ville, Negozi Liste Nozze & Regali, Agenzie Viaggi, Pasticcerie, NCC e Fornitori (Selezione per Provincia)."}
           </CardDescription>
         </div>
       </CardHeader>

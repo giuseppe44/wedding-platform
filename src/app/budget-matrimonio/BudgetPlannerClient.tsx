@@ -466,7 +466,7 @@ export default function BudgetPlannerClient({
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/15 border border-amber-300/35 text-amber-200 text-xs font-bold uppercase tracking-widest mb-5">
             <Calculator className="w-3.5 h-3.5 text-amber-300" /> Strumento
-            Gratuito • Guida Onesta 0% Commissioni
+            Gratuito • Pianifica il tuo Evento
           </span>
 
           <h1 className="text-3xl sm:text-5xl lg:text-[3.4rem] font-serif leading-[1.15] mb-4">
@@ -529,12 +529,11 @@ export default function BudgetPlannerClient({
         <div className="bg-amber-50/95 backdrop-blur-md border border-amber-200/90 rounded-2xl p-4 sm:p-5 shadow-md flex items-start gap-3.5">
           <Info className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
           <p className="text-xs sm:text-[13px] text-amber-950/90 leading-relaxed">
-            <strong>Idea ipotetica e bussola orientativa:</strong> questo
-            strumento nasce per darti una base realistica, coerente e imparziale
-            da cui partire. Non è un preventivo definitivo: ogni cifra andrà poi{" "}
-            <strong>rettificata e confermata direttamente</strong> in base alla
-            location o al ristorante scelto, alla data, al numero effettivo di
-            ospiti e alle tariffe dei singoli professionisti.
+            <strong>Idea ipotetica da personalizzare:</strong> questo strumento
+            ti offre una traccia pratica per iniziare a organizzare l&apos;evento.
+            Non è un preventivo definitivo: tutte le voci andranno poi{" "}
+            <strong>rettificate e confermate</strong> in base alla location o al
+            ristorante scelto, al numero di invitati e ai professionisti.
           </p>
         </div>
       </div>
@@ -946,11 +945,11 @@ export default function BudgetPlannerClient({
                         }`}
                       >
                         <span className="font-bold block">
-                          ✈️ Auto-finanziata con Lista Viaggio / Regali (Consigliato)
+                          ✈️ Gestita con Lista Viaggio / Lista Nozze (Consigliato)
                         </span>
                         <span className="text-[11px] text-stone-600">
-                          Dedica il 100% di questa cifra alla festa e copri il
-                          viaggio con la Lista Tappe a 0% trattenute.
+                          Dedica l&apos;intero importo alla festa e organizza il
+                          viaggio o i regali tramite la Lista dedicata agli ospiti.
                         </span>
                       </button>
                       <button
@@ -1297,7 +1296,7 @@ export default function BudgetPlannerClient({
 
                           <div className="bg-white p-4 rounded-2xl border border-stone-200/80">
                             <p className="text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1.5">
-                              🤝 Consiglio Onesto per Risparmiare Bene
+                              💡 Consiglio Pratico
                             </p>
                             <p className="text-xs text-stone-600 leading-relaxed">
                               {item.honestAdvice}
@@ -1345,10 +1344,10 @@ export default function BudgetPlannerClient({
                                 </p>
                                 <p className="text-[11px] text-stone-500">
                                   {localPros.length > 0 && selectedProvinceMeta
-                                    ? `Professionisti presenti su GentiLuna per ${selectedProvinceMeta.name} (0% commissioni), oppure scegli liberamente i tuoi contatti di fiducia.`
+                                    ? `Alcune attività presenti su GentiLuna per ${selectedProvinceMeta.name} (puoi valutare loro o i tuoi fornitori di fiducia):`
                                     : displayPros.length > 0
-                                    ? "Alcuni professionisti verificati su GentiLuna (a 0% commissioni), senza alcun vincolo: puoi usare questa guida con qualsiasi fornitore."
-                                    : "Stiamo selezionando i partner di questa categoria (Numero Chiuso provinciale): puoi usare le domande qui sopra con qualsiasi professionista o chiederci suggerimenti gratuiti."}
+                                    ? "Alcuni professionisti e partner presenti su GentiLuna che puoi consultare per farti un'idea:"
+                                    : "Stiamo ampliando i partner di questa categoria nella tua zona: usa pure le domande qui sopra o richiedici qualche spunto gratuito."}
                                 </p>
                               </div>
                             </div>
@@ -1584,14 +1583,14 @@ export default function BudgetPlannerClient({
             <DialogTitle className="font-serif text-2xl text-stone-900">
               {leadSuccess
                 ? "Richiesta ricevuta con successo! ✨"
-                : "Vuoi suggerimenti onesti per questo budget?"}
+                : "Vuoi ricevere spunti utili per questo budget?"}
             </DialogTitle>
             <DialogDescription className="text-stone-600 text-sm">
               {leadSuccess
-                ? "Il Team di GentiLuna.com analizzerà la tua simulazione e ti risponderà via email con spunti mirati e senza alcun impegno."
+                ? "Il Team di GentiLuna.com analizzerà la tua simulazione e ti risponderà via email con suggerimenti dedicati."
                 : `Inviaci questa ipotesi (${formatEuro(plan.input.totalBudget)} • ${plan.input.guestsCount} ospiti${
                     leadFocusCategory ? ` • Focus: ${leadFocusCategory}` : ""
-                  }): ti aiuteremo gratuitamente a orientarti nella tua zona.`}
+                  }): ti aiuteremo volentieri a orientarti nella tua zona.`}
             </DialogDescription>
           </DialogHeader>
 
@@ -1661,8 +1660,9 @@ export default function BudgetPlannerClient({
               </div>
 
               <p className="text-[11px] text-stone-500 leading-snug">
-                Zero spam e 0% commissioni: riceverai solo consigli coerenti da{" "}
-                <strong>Il Team di GentiLuna.com</strong>.
+                Servizio gratuito curato da{" "}
+                <strong>Il Team di GentiLuna.com</strong> per aiutarti a
+                orientarti tra location e fornitori.
               </p>
 
               <Button

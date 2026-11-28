@@ -61,7 +61,7 @@ export default function HomeBudgetTeaser() {
               <div>
                 <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/15 border border-amber-300/35 text-amber-200 text-[11px] font-bold uppercase tracking-widest mb-3">
                   <Calculator className="w-3.5 h-3.5 text-amber-300" /> Nuovo
-                  Strumento Gratuito • Guida Onesta
+                  Strumento Gratuito • Organizza il tuo Evento
                 </span>
                 <h2 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-serif leading-[1.15] mb-3">
                   Hai già in mente un budget?{" "}

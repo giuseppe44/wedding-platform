@@ -22,6 +22,7 @@ import {
   Menu,
   X,
   Mail,
+  Gift,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
@@ -29,6 +30,21 @@ import { GentiLunaLogo } from "@/components/GentiLunaLogo";
 import { PRO_CATEGORIES, getProCategoryMeta } from "@/lib/proCategories";
 
 const HIGHLIGHT_SECTORS = [
+  {
+    code: "GIFT_REGISTRY_STORE",
+    icon: Gift,
+    badge: "Nuova Categoria Richiestissima",
+    title: "Negozi Liste Nozze, Regali, Casa & Arredo",
+    subtitle: "Collega le tue liste regalo direttamente allo spazio digitale degli sposi",
+    accentClass: "from-amber-50 via-white to-rose-50/50 border-amber-300/90",
+    iconClass: "bg-amber-100 text-amber-800 border-amber-200",
+    btnClass: "bg-amber-500 hover:bg-amber-600 text-stone-950",
+    points: [
+      "Permetti agli sposi di inserire il link o i riferimenti della tua Lista Nozze direttamente nel loro sito evento",
+      "Fatti conoscere da 100–150 invitati per evento che cercano il regalo giusto per casa, tavola, design ed elettrodomestici",
+      "Ideale non solo per i matrimoni, ma anche per regali importanti di battesimi, lauree, comunioni e anniversari",
+    ],
+  },
   {
     code: "TRAVEL_AGENCY",
     icon: Plane,
@@ -205,20 +221,21 @@ export default function PartnerHubClient() {
           </span>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif leading-tight mb-5">
-            <span className="block">Ristoranti, Viaggi, Pasticcerie e NCC:</span>
+            <span className="block">Ristoranti, Liste Nozze, Viaggi, Torte e NCC:</span>
             <span className="inline-block px-2 -mx-2 box-decoration-clone italic text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-rose-200">
-              trasforma ogni cerimonia in nuovi clienti.
+              entra nel sistema e acquisisci nuovi clienti.
             </span>
           </h1>
 
           <p className="text-stone-300 text-base sm:text-xl font-light max-w-3xl mx-auto leading-relaxed mb-8">
-            GentiLuna unisce in un solo ecosistema digitale <strong className="text-white">matrimoni, battesimi, comunioni, lauree e anniversari</strong>: strumenti operativi reali per la sala e visibilità diretta sugli smartphone di tutti gli invitati.
+            GentiLuna unisce in un solo ecosistema digitale <strong className="text-white">matrimoni, battesimi, comunioni, lauree e anniversari</strong>: strumenti pratici e visibilità diretta sugli smartphone di tutti gli invitati.
           </p>
 
           {/* PILLOLE RAPIDE SETTORI */}
           <div className="flex flex-wrap justify-center gap-2.5 mb-8">
             {[
               { href: "#ristoranti", label: "🍽️ Ristoranti & Ville" },
+              { href: "#categorie-partner", label: "🎁 Negozi Liste Nozze & Regali" },
               { href: "#categorie-partner", label: "✈️ Agenzie di Viaggi" },
               { href: "#categorie-partner", label: "🎂 Pasticcerie & Torte" },
               { href: "#categorie-partner", label: "🚘 NCC & Auto Matrimoni" },

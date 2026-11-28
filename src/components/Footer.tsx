@@ -34,7 +34,7 @@ export default function Footer() {
             <li><Link href="/demo" className="text-amber-300/90 hover:text-amber-200 transition-colors">Prova Demo Live ✨</Link></li>
             <li><Link href="/funzioni-sposi" className="hover:text-white transition-colors">Funzioni Sposi &amp; Eventi</Link></li>
             <li><Link href="/professionisti" className="hover:text-white transition-colors">Per i Professionisti</Link></li>
-            <li><Link href="/partner" className="text-amber-300/90 hover:text-amber-200 transition-colors">Ristoranti, Viaggi, Torte &amp; NCC</Link></li>
+            <li><Link href="/partner" className="text-amber-300/90 hover:text-amber-200 transition-colors">Ristoranti, Liste Nozze, Viaggi &amp; Partner</Link></li>
             <li><Link href="/funzioni-professionisti" className="hover:text-white transition-colors">Funzioni Professionisti</Link></li>
             <li><Link href="/fornitori" className="hover:text-white transition-colors">Directory Fornitori</Link></li>
             <li><Link href="/prezzi" className="hover:text-white transition-colors">Tariffe &amp; Abbonamenti</Link></li>
