@@ -30,6 +30,33 @@ function buildKnowledgeBase(activeProsCount: number): KnowledgeEntry[] {
 
   return [
     {
+      id: "budget-planner",
+      contexts: ["PUBLIC", "LOGIN", "COUPLE", "PRO"],
+      keywords: [
+        "budget",
+        "spesa",
+        "spendere",
+        "calcolo",
+        "calcolatore",
+        "simulatore",
+        "quanto costa sposarsi",
+        "organizzare budget",
+        "idee di budget",
+        "10000",
+        "15000",
+        "20000",
+        "25000",
+        "30000",
+        "differenza ristorante villa",
+      ],
+      answer:
+        "Su GentiLuna trovi il nuovo strumento gratuito **'Parti dal Budget & Organizza'** ✨:\n• **Simulatore su misura:** inserisci il tuo budget ipotetico, il numero di invitati e la formula preferita (Ristorante con cucina interna, Agriturismo o Villa + Catering esterno) per vedere come distribuire le voci con onestà, chi contattare e cosa chiedere prima di firmare.\n• **6 Idee di Budget pronte:** scopri cosa puoi realizzare concretamente da 8.000€ fino a oltre 60.000€ (più una sezione dedicata a Battesimi, Lauree e Anniversari).\n*(Nota: i calcoli sono simulazioni orientative e ipotetiche da confermare poi con location e professionisti.)*",
+      links: [
+        { label: "Apri Simulatore Budget", href: "/budget-matrimonio" },
+        { label: "Vedi 6 Idee di Budget", href: "/budget-matrimonio?tab=idee" },
+      ],
+    },
+    {
       id: "what-is-gentiluna",
       contexts: ["PUBLIC", "LOGIN", "COUPLE", "PRO"],
       keywords: ["cos'e", "cosa e", "gentiluna", "funziona", "piattaforma", "serve", "presentazione", "spiegami"],

@@ -201,13 +201,17 @@ function SlotIcon({ kind }: { kind: OpenSlotCard["icon"] }) {
 
 export default function FornitoriDirectoryClient({
   pros,
+  initialFilterGroup = "ALL",
+  initialSearchQuery = "",
 }: {
   pros: DirectoryProItem[];
+  initialFilterGroup?: "ALL" | ProFilterGroup | "OPEN_SLOTS";
+  initialSearchQuery?: string;
 }) {
   const [activeFilter, setActiveFilter] = useState<
     "ALL" | ProFilterGroup | "OPEN_SLOTS"
-  >("ALL");
-  const [presetQuery, setPresetQuery] = useState("");
+  >(initialFilterGroup);
+  const [presetQuery, setPresetQuery] = useState(initialSearchQuery);
   const [presetNonce, setPresetNonce] = useState(0);
   const [openSegnalaNonce, setOpenSegnalaNonce] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -244,6 +248,9 @@ export default function FornitoriDirectoryClient({
           <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-stone-600">
             <Link href="/funzioni-sposi" className="hover:text-rose-600 transition-colors">
               Sposi &amp; Eventi
+            </Link>
+            <Link href="/budget-matrimonio" className="text-amber-700 hover:text-amber-800 font-bold transition-colors">
+              Budget &amp; Idee ✨
             </Link>
             <Link href="/partner" className="text-emerald-700 hover:text-emerald-800 font-semibold transition-colors">
               Ristoranti, Viaggi &amp; Partner
@@ -290,6 +297,13 @@ export default function FornitoriDirectoryClient({
               className="px-3 py-2 rounded-xl text-sm font-medium text-stone-700 hover:bg-stone-100"
             >
               Funzioni Sposi &amp; Eventi
+            </Link>
+            <Link
+              href="/budget-matrimonio"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded-xl text-sm font-bold text-amber-800 bg-amber-50/80"
+            >
+              Parti dal Budget &amp; Idee ✨
             </Link>
             <Link
               href="/partner"
@@ -357,14 +371,36 @@ export default function FornitoriDirectoryClient({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-gradient-to-b from-white via-[#fffcf7] to-white p-5 sm:p-8 md:p-10 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.12)] border border-amber-200/70 mb-14 sm:mb-20"
+            className="bg-gradient-to-b from-white via-[#fffcf7] to-white p-5 sm:p-8 md:p-10 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.12)] border border-amber-200/70 mb-8"
           >
             <PortalSearch
+              initialQuery={initialSearchQuery}
               presetQuery={presetQuery}
               presetNonce={presetNonce}
               openSegnalaNonce={openSegnalaNonce}
             />
           </motion.div>
+
+          {/* BANNER SIMULATORE BUDGET & IDEE */}
+          <div className="mb-14 sm:mb-16 rounded-3xl bg-stone-950 text-white p-5 sm:p-7 border border-amber-300/30 flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg">
+            <div className="text-center md:text-left">
+              <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-amber-300 bg-amber-400/15 px-3 py-0.5 rounded-full mb-1.5">
+                Nuovo Strumento Gratuito per Sposi ed Eventi
+              </span>
+              <h3 className="font-serif text-lg sm:text-2xl font-bold">
+                Prima di chiedere preventivi, hai già un&apos;idea di come dividere il budget?
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-300 font-light mt-1">
+                Usa la nostra bussola onesta per confrontare Ristorante vs Villa + Catering, vedere 6 scenari pronti e sapere cosa chiedere a ogni professionista.
+              </p>
+            </div>
+            <Link href="/budget-matrimonio" className="shrink-0 w-full md:w-auto">
+              <Button className="w-full md:w-auto rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold px-6 h-11 text-xs sm:text-sm">
+                <span>Parti dal Budget &amp; Organizza</span>
+                <ArrowRight className="w-4 h-4 ml-1.5 shrink-0" />
+              </Button>
+            </Link>
+          </div>
 
           {/* SEZIONE VETRINE PROFESSIONISTI + SPAZI APERTI */}
           <section aria-labelledby="directory-heading" className="mb-16 sm:mb-20">

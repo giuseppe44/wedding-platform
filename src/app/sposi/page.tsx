@@ -40,6 +40,11 @@ export default function SposiLandingPage() {
                 <span>Inizia Ora Gratuitamente</span> <ArrowRight className="ml-2 w-5 h-5 shrink-0" />
               </Button>
             </Link>
+            <Link href="/budget-matrimonio" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto min-h-14 h-auto py-3.5 px-6 sm:px-8 text-base sm:text-lg rounded-full bg-white/10 backdrop-blur-md border-amber-300/50 text-amber-100 hover:bg-amber-400 hover:text-stone-950 transition-all whitespace-normal text-center leading-snug">
+                <span>Hai un Budget? Parti da lì ✨</span>
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -98,6 +103,34 @@ export default function SposiLandingPage() {
                 <img src="/press/GentiLuna_Showcase_Regali_Guestbook.jpg" alt="Lista Regali IBAN, Tappe Viaggio Nozze e Guestbook Dediche" className="w-full object-cover aspect-[16/9]" />
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* STRUMENTO GRATUITO BUDGET & IDEE */}
+      <section className="py-20 bg-stone-950 text-white border-t border-stone-800">
+        <div className="max-w-5xl mx-auto px-4 text-center space-y-6">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-amber-400/15 border border-amber-300/35 text-amber-200 text-xs font-bold uppercase tracking-widest">
+            Nuovo Strumento Gratuito • Guida Onesta
+          </span>
+          <h2 className="text-3xl md:text-5xl font-serif leading-tight">
+            Non sapete come dividere il budget tra{" "}
+            <span className="italic text-amber-300">Ristorante, Villa e Professionisti?</span>
+          </h2>
+          <p className="text-base sm:text-lg text-stone-300 max-w-2xl mx-auto font-light leading-relaxed">
+            Inserite il vostro budget ipotetico o esplorate le nostre 6 Idee di Matrimonio già pronte: vi mostriamo in modo trasparente cosa fare, chi contattare e le domande giuste da fare prima di firmare qualsiasi preventivo.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <Link href="/budget-matrimonio">
+              <Button size="lg" className="w-full sm:w-auto rounded-full bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold px-8 h-13">
+                <span>Simula il Tuo Budget Gratis</span> <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+            <Link href="/budget-matrimonio?tab=idee">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto rounded-full bg-transparent border-stone-600 text-white hover:bg-white/10 px-7 h-13">
+                Esplora 6 Idee di Budget
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

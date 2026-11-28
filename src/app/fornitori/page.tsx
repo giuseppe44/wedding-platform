@@ -3,6 +3,7 @@ import {
   getProCategoryLabel,
   getProCategoryMeta,
   getProFilterGroup,
+  type ProFilterGroup,
 } from "@/lib/proCategories";
 import FornitoriDirectoryClient, {
   type DirectoryProItem,
@@ -24,7 +25,12 @@ function resolveProImg(raw?: string | null): string | null {
 const PLACEHOLDER_NAMES =
   /^(studio professionale|nuovo utente|test|prova|demo|utente)$/i;
 
-export default async function FornitoriPage() {
+export default async function FornitoriPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ group?: string; q?: string }>;
+}) {
+  const sp = searchParams ? await searchParams : {};
   let pros: DirectoryProItem[] = [];
 
   try {
@@ -106,5 +112,24 @@ export default async function FornitoriPage() {
     console.error("Errore caricamento fornitori:", err);
   }
 
-  return <FornitoriDirectoryClient pros={pros} />;
+  const validGroups: Array<"ALL" | ProFilterGroup | "OPEN_SLOTS"> = [
+    "ALL",
+    "FOTO_VIDEO",
+    "RISTORANTI_LOCATION",
+    "VIAGGI_AUTO_TORTE",
+    "PLANNER_MUSICA_STILE",
+    "OPEN_SLOTS",
+  ];
+  const initialFilterGroup =
+    sp.group && validGroups.includes(sp.group as ProFilterGroup)
+      ? (sp.group as "ALL" | ProFilterGroup | "OPEN_SLOTS")
+      : "ALL";
+
+  return (
+    <FornitoriDirectoryClient
+      pros={pros}
+      initialFilterGroup={initialFilterGroup}
+      initialSearchQuery={sp.q || ""}
+    />
+  );
 }

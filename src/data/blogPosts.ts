@@ -28,6 +28,59 @@ export interface BlogPost {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
+    slug: "organizzare-matrimonio-partendo-dal-budget-ristorante-villa-fornitori",
+    title: "Come organizzare il matrimonio partendo dal budget: differenze vere tra Ristorante, Villa con Catering e Professionisti",
+    seoTitle: "Organizzare Matrimonio Partendo dal Budget: Guida & Simulatore | GentiLuna",
+    metaDescription:
+      "Hai in mente un budget per sposarti ma non sai come dividerlo? Scopri le differenze reali tra Ristorante e Villa + Catering, costi fissi vs costi a persona e usa gratis il Simulatore di Budget GentiLuna.",
+    keywords: [
+      "organizzare matrimonio partendo dal budget",
+      "calcolo budget matrimonio",
+      "differenza ristorante e villa catering matrimonio",
+      "quanto costa sposarsi 100 invitati",
+      "idee budget matrimonio 15000 25000 euro",
+    ],
+    category: "Organizzazione & Budget",
+    audience: "SPOSI",
+    readTime: "6 min",
+    publishedAt: "2026-11-28",
+    image: "/press/GentiLuna_Showcase_Planner.jpg",
+    imageAlt: "Coppia di sposi che pianifica il budget del matrimonio con regia tavoli e fornitori su GentiLuna",
+    excerpt:
+      "Dividere il budget in percentuali astratte porta quasi sempre fuori strada: ecco come distinguere costi a invitato e ingaggi fissi, evitare sorprese tra location e ristoranti e partire col piede giusto.",
+    sections: [
+      {
+        heading: "Perché i classici schemi percentuali fissi fanno sbagliare i conti",
+        paragraphs: [
+          "Online si legge spesso di destinare sempre una percentuale identica al ricevimento a prescindere da tutto. Nella realtà italiana, però, sposarsi con 50 invitati o con 150 invitati cambia radicalmente il peso del banchetto rispetto ai costi fissi come fotografo, abiti, musica o fedi.",
+          "Per avere una bussola onesta bisogna partire da tre numeri chiari: il budget complessivo ipotetico, la stima realistica degli ospiti e il tipo di struttura desiderata.",
+        ],
+      },
+      {
+        heading: "Ristorante con cucina interna vs Villa in esclusiva + Catering: cosa cambia davvero",
+        paragraphs: [
+          "Due coppie con 100 invitati possono spendere cifre molto diverse a seconda della formula scelta, entrambe meravigliose se coerenti col proprio budget:",
+        ],
+        bullets: [
+          "Ristorante, Sala Ricevimenti o Agriturismo: paghi il menù a persona con cucina, sala, brigata, tovagliato e mise en place già compresi, risparmiando i 3.000€–8.000€ di affitto location nuda.",
+          "Villa storica o Castello + Catering esterno: regala l'esclusività assoluta di una dimora privata e allestimenti su misura, ma somma l'affitto fisso della struttura al costo a persona del banqueting (più eventuale Piano B tensostruttura o service luci).",
+          "Scelta Smart del giorno: valutare un venerdì pomeriggio/sera o i mesi di maggio, fine settembre e ottobre permette spesso di ottenere la location dei sogni con il 10%–15% di risparmio.",
+        ],
+      },
+      {
+        heading: "Prova gratis il Simulatore Ipotetico e le 6 Idee di Budget su GentiLuna",
+        paragraphs: [
+          "Abbiamo creato uno strumento gratuito e imparziale dove puoi sia inserire il tuo budget per ricevere una ripartizione ragionata e le domande da fare prima di firmare, sia esplorare 6 scenari di matrimonio già pronti da condividere su WhatsApp col tuo partner.",
+          "Naturalmente ogni simulazione è un'idea orientativa e ipotetica che andrà poi verificata e confermata direttamente con le strutture e i professionisti scelti, a 0% commissioni.",
+        ],
+      },
+    ],
+    ctaLabel: "Prova Ora il Simulatore di Budget ✨",
+    ctaHref: "/budget-matrimonio",
+    secondaryCtaLabel: "Esplora 6 Idee di Budget Pronte",
+    secondaryCtaHref: "/budget-matrimonio?tab=idee",
+  },
+  {
     slug: "portale-ristorante-matrimonio-gestione-tavoli-allergie-intolleranze-live",
     title: "Portale Ristorante Matrimonio: come inviare tavoli, celiaci e intolleranze alla cucina in tempo reale",
     seoTitle: "Portale Ristorante Matrimonio: Tavoli e Allergie Live | GentiLuna",

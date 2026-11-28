@@ -30,6 +30,7 @@ export default function Footer() {
           <h4 className="text-white font-bold mb-4">Esplora</h4>
           <ul className="space-y-2 text-sm">
             <li><Link href="/sposi" className="hover:text-white transition-colors">Per gli Sposi</Link></li>
+            <li><Link href="/budget-matrimonio" className="text-amber-300 font-semibold hover:text-amber-200 transition-colors">Parti dal Budget &amp; Idee ✨</Link></li>
             <li><Link href="/demo" className="text-amber-300/90 hover:text-amber-200 transition-colors">Prova Demo Live ✨</Link></li>
             <li><Link href="/funzioni-sposi" className="hover:text-white transition-colors">Funzioni Sposi &amp; Eventi</Link></li>
             <li><Link href="/professionisti" className="hover:text-white transition-colors">Per i Professionisti</Link></li>

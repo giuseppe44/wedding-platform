@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Footer from "@/components/Footer";
 import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import HomeBudgetTeaser from "@/components/HomeBudgetTeaser";
 import { motion, Variants } from "framer-motion";
 
 type LifeMilestone = {
@@ -264,6 +265,9 @@ export default function Home() {
           <Link href="/funzioni-sposi" className="hover:text-amber-200 transition-colors whitespace-nowrap">
             Sposi &amp; Eventi
           </Link>
+          <Link href="/budget-matrimonio" className="text-amber-200 hover:text-white transition-colors whitespace-nowrap font-semibold">
+            Budget &amp; Idee ✨
+          </Link>
           <Link href="/funzioni-professionisti" className="hover:text-amber-200 transition-colors whitespace-nowrap">
             Professionisti
           </Link>
@@ -309,6 +313,9 @@ export default function Home() {
           <div className="absolute top-20 left-4 right-4 bg-stone-950/95 backdrop-blur-xl border border-amber-200/20 rounded-3xl p-6 flex flex-col gap-3 text-center xl:hidden shadow-2xl z-50">
             <Link href="/funzioni-sposi" onClick={() => setMobileMenuOpen(false)} className="text-stone-100 hover:text-amber-200 font-medium tracking-widest text-xs uppercase py-2.5 border-b border-stone-800/80">
               Funzioni Sposi &amp; Eventi
+            </Link>
+            <Link href="/budget-matrimonio" onClick={() => setMobileMenuOpen(false)} className="text-amber-300 hover:text-amber-200 font-bold tracking-widest text-xs uppercase py-2.5 border-b border-stone-800/80">
+              Simulatore Budget &amp; Idee ✨
             </Link>
             <Link href="/funzioni-professionisti" onClick={() => setMobileMenuOpen(false)} className="text-stone-100 hover:text-amber-200 font-medium tracking-widest text-xs uppercase py-2.5 border-b border-stone-800/80">
               Funzioni Professionisti
@@ -581,9 +588,20 @@ export default function Home() {
                 <span>Ristoranti, Agenzie Viaggi, Torte &amp; NCC</span>
                 <ArrowRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform" />
               </Link>
+              <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-rose-300" />
+              <Link
+                href="/budget-matrimonio"
+                className="group inline-flex items-center gap-2 text-sm font-serif italic font-semibold text-rose-700 hover:text-rose-600 transition-colors"
+              >
+                <span>Parti dal Budget &amp; Organizza ✨</span>
+                <ArrowRight className="w-4 h-4 text-rose-500 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
           </div>
         </section>
+
+        {/* SIMULATORE RAPIDO DI BUDGET & IDEE INTERATTIVO */}
+        <HomeBudgetTeaser />
   
         
       {/* CORE FEATURES BENTO GRID (PREMIUM) */}

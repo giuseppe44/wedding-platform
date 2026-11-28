@@ -101,6 +101,9 @@ export default function FunzioniSposiPage() {
             <span>GentiLuna</span>
           </Link>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
+            <Link href="/budget-matrimonio" className="text-amber-700 font-bold hover:text-amber-800 px-2.5 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 transition-colors">
+              Budget &amp; Idee ✨
+            </Link>
             <Link href="/funzioni-professionisti" className="text-stone-600 hover:text-stone-900 px-2.5 py-1.5 rounded-full hover:bg-stone-100 transition-colors">
               Funzioni Professionisti
             </Link>
@@ -215,6 +218,31 @@ export default function FunzioniSposiPage() {
               </div>
             );
           })}
+        </div>
+        <div className="mt-10 rounded-3xl bg-gradient-to-r from-amber-50 via-white to-rose-50 border border-amber-200/80 p-6 sm:p-8 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-sm">
+          <div className="space-y-2 text-center lg:text-left max-w-2xl">
+            <span className="inline-block text-[11px] font-bold uppercase tracking-widest text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full">
+              Bussola Gratuita Pre-Evento
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+              Hai in mente un budget? Parti da lì e organizza senza errori
+            </h3>
+            <p className="text-sm sm:text-base text-stone-600 font-light leading-relaxed">
+              Prova il nostro simulatore ipotetico gratuito o consulta le 6 Idee di Budget: confronta Ristorante vs Villa + Catering, scopri chi contattare e condividi il piano su WhatsApp col tuo partner.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2.5 shrink-0 w-full sm:w-auto">
+            <Link href="/budget-matrimonio">
+              <Button className="w-full sm:w-auto rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold px-6 h-11 text-sm">
+                Apri Simulatore Budget →
+              </Button>
+            </Link>
+            <Link href="/budget-matrimonio?tab=idee">
+              <Button variant="outline" className="w-full sm:w-auto rounded-full border-stone-300 text-stone-800 hover:bg-white px-5 h-11 text-sm">
+                Vedi 6 Idee Pronte
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

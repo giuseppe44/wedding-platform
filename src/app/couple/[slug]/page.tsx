@@ -307,6 +307,26 @@ export default async function CoupleDashboard({ params }: { params: Promise<{ sl
           />
         )}
         {isOwner && (
+          <div className="mb-6 rounded-3xl bg-white/90 border border-amber-200/90 p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-center sm:text-left">
+              <span className="inline-block text-[10px] font-bold uppercase tracking-widest text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full mb-1">
+                Strumento Gratuito Sposi
+              </span>
+              <h3 className="font-serif text-lg sm:text-xl font-bold text-stone-900">
+                Bussola Budget &amp; Idee Organizzative
+              </h3>
+              <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
+                Simula un&apos;ipotesi di spesa per le nozze o per i prossimi capitoli, confronta Ristorante vs Villa e condividi il piano su WhatsApp.
+              </p>
+            </div>
+            <Link href="/budget-matrimonio" className="shrink-0 w-full sm:w-auto">
+              <Button className="w-full sm:w-auto rounded-full bg-stone-900 hover:bg-stone-800 text-amber-300 font-semibold px-5 h-10 text-xs sm:text-sm">
+                Apri Simulatore Budget <ArrowRight className="w-4 h-4 ml-1.5" />
+              </Button>
+            </Link>
+          </div>
+        )}
+        {isOwner && (
           <PlanWidget 
             role="COUPLE"
             currentPlanName={couplePlanName}

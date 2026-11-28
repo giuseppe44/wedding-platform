@@ -27,10 +27,10 @@ const CONTEXT_CONFIG: Record<
     greeting:
       "Ciao! Sono **Luna ✨**, l'assistente virtuale AI di GentiLuna. Posso aiutarti a scoprire come funziona il sito matrimonio, i piani, il QR Code per le foto live o come contattare un fornitore verificato!",
     chips: [
+      "Aiutami col budget matrimonio",
       "Cos'è GentiLuna?",
       "Quanto costano i piani?",
       "Come funziona il QR Code foto?",
-      "Come contatto un fornitore?",
     ],
   },
   LOGIN: {
@@ -49,10 +49,10 @@ const CONTEXT_CONFIG: Record<
     greeting:
       "Ciao sposi! 💍 Sono **Luna ✨**, la vostra assistente AI. Chiedetemi pure come completare il vostro sito matrimonio, aggiungere location, invitati, tavoli o condividere i capitoli su WhatsApp!",
     chips: [
+      "Aiutami col budget matrimonio",
       "Come completo il nostro sito?",
       "Come condivido un capitolo su WhatsApp?",
       "Come gestisco invitati e tavoli?",
-      "Come funziona il QR Code foto?",
     ],
   },
   PRO: {
