@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import { PRO_CATEGORIES, getProCategoryMeta } from "@/lib/proCategories";
 
 const HIGHLIGHT_SECTORS = [
@@ -123,12 +123,8 @@ export default function PartnerHubClient() {
       {/* TOP NAVBAR */}
       <nav className="sticky top-0 z-50 bg-stone-950/95 backdrop-blur-md border-b border-stone-800 px-4 sm:px-6 py-4 text-white">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-          <Link href="/" className="flex items-center gap-2 font-serif text-xl sm:text-2xl text-white shrink-0">
-            <GentiLunaLogo variant="pro" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
-            <span>GentiLuna</span>
-            <span className="text-[11px] font-sans font-bold uppercase tracking-widest text-amber-400 ml-0.5">
-              PARTNER
-            </span>
+          <Link href="/" className="shrink-0">
+            <GentiLunaBrand theme="dark" variant="pro" badge="PARTNER" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-6 text-xs uppercase tracking-widest text-stone-300 font-medium">

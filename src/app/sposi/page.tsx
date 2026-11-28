@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart, Camera, MapPin, Users, CheckCircle2, Star, ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 
 export const metadata: Metadata = {
   title: "Area Sposi – Sito Matrimonio, Foto Invitati QR Code e RSVP",
@@ -16,6 +17,23 @@ export const metadata: Metadata = {
 export default function SposiLandingPage() {
   return (
     <div className="min-h-screen bg-[#faf9f8] font-sans text-stone-900 flex flex-col overflow-x-hidden">
+      {/* TOP NAVBAR CON LOGO AD ALTA VISIBILITÀ */}
+      <nav className="absolute top-0 w-full z-50 px-4 sm:px-8 py-5 flex items-center justify-between gap-3 bg-gradient-to-b from-stone-950/80 to-transparent">
+        <Link href="/" className="shrink-0">
+          <GentiLunaBrand theme="dark" size="md" />
+        </Link>
+        <div className="flex items-center gap-2.5">
+          <Link href="/budget-matrimonio" className="hidden sm:inline-block text-xs font-bold uppercase tracking-wider text-amber-200 hover:text-white">
+            Budget &amp; Idee ✨
+          </Link>
+          <Link href="/login?role=COUPLE">
+            <Button size="sm" className="rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white hover:bg-white hover:text-stone-950 font-semibold px-4 h-9 text-xs">
+              Accedi
+            </Button>
+          </Link>
+        </div>
+      </nav>
+
       {/* HERO SECTION */}
       <section className="relative pt-40 pb-32 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
         <div className="absolute inset-0 bg-stone-900 z-0">

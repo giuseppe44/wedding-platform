@@ -10,7 +10,7 @@ import {
   Infinity, LayoutDashboard, Moon, ChevronDown
 } from "lucide-react";
 import Footer from "@/components/Footer";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import HomeBudgetTeaser from "@/components/HomeBudgetTeaser";
 import { motion, Variants } from "framer-motion";
 
@@ -250,10 +250,11 @@ export default function Home() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex items-center gap-2.5 text-white font-serif text-xl sm:text-2xl tracking-wide drop-shadow-md shrink-0"
+          className="shrink-0"
         >
-          <GentiLunaLogo className="w-7 h-7 sm:w-8 sm:h-8 shrink-0" />
-          <span>GentiLuna</span>
+          <Link href="/" aria-label="GentiLuna Home">
+            <GentiLunaBrand theme="dark" size="lg" />
+          </Link>
         </motion.div>
         
         <motion.div 

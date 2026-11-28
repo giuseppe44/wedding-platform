@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import PortalSearch from "@/components/PortalSearch";
 import type { ProFilterGroup } from "@/lib/proCategories";
 import { getFeaturedLocalSeoSlugs } from "@/lib/localSeoData";
@@ -259,10 +259,7 @@ export default function FornitoriDirectoryClient({
       <nav className="sticky top-0 w-full z-50 px-4 sm:px-6 py-4 bg-white/90 backdrop-blur-md border-b border-stone-200/70">
         <div className="max-w-7xl mx-auto flex justify-between items-center gap-3">
           <Link href="/" className="shrink-0">
-            <div className="flex items-center gap-2 text-stone-900 font-serif text-xl sm:text-2xl">
-              <GentiLunaLogo className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
-              <span>GentiLuna</span>
-            </div>
+            <GentiLunaBrand theme="light" size="md" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-stone-600">

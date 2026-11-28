@@ -18,7 +18,7 @@ import {
   Loader2,
 } from "lucide-react";
 import Footer from "@/components/Footer";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import { createCheckoutSession } from "@/app/stripeActions";
 
 export default function ProfessionistiPage() {
@@ -40,10 +40,8 @@ export default function ProfessionistiPage() {
     <div className="min-h-screen bg-stone-950 font-sans text-stone-100 flex flex-col relative overflow-x-hidden">
       {/* NAVBAR SEZIONE PROFESSIONISTI */}
       <nav className="absolute top-0 w-full z-50 flex items-center justify-between px-4 sm:px-6 md:px-12 py-5 sm:py-6 gap-2">
-        <Link href="/" className="flex items-center gap-2 text-xl sm:text-2xl font-serif text-white tracking-tight shrink-0">
-          <GentiLunaLogo variant="pro" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
-          <span>GentiLuna</span>
-          <span className="text-amber-500 font-sans text-xs sm:text-sm tracking-widest font-bold ml-1 mt-0.5">PRO</span>
+        <Link href="/" className="shrink-0">
+          <GentiLunaBrand theme="dark" variant="pro" badge="PRO" />
         </Link>
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <Link href="/">

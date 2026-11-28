@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import {
   Camera,
   QrCode,
@@ -93,10 +93,8 @@ export default function FunzioniProfessionistiPage() {
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 w-full bg-stone-950/90 backdrop-blur-md border-b border-stone-800 px-4 sm:px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <Link href="/" className="flex items-center gap-2.5 font-serif text-xl sm:text-2xl text-white">
-            <GentiLunaLogo variant="pro" className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
-            <span>GentiLuna</span>
-            <span className="text-amber-400 font-sans text-xs tracking-widest font-bold">PRO</span>
+          <Link href="/" className="shrink-0">
+            <GentiLunaBrand theme="dark" variant="pro" badge="PRO" />
           </Link>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
             <Link href="/funzioni-sposi" className="text-stone-300 hover:text-white px-2.5 py-1.5 rounded-full hover:bg-stone-800 transition-colors">

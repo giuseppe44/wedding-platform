@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import { BLOG_POSTS } from "@/data/blogPosts";
 import { BlogClientGrid } from "./BlogClientGrid";
 
@@ -29,9 +29,8 @@ export default function BlogIndexPage() {
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-stone-200/80 px-4 sm:px-6 py-4">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <Link href="/" className="flex items-center gap-2.5 font-serif text-xl sm:text-2xl text-stone-900">
-            <GentiLunaLogo className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
-            <span>GentiLuna</span>
+          <Link href="/" className="shrink-0">
+            <GentiLunaBrand theme="light" size="md" />
           </Link>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
             <Link href="/funzioni-sposi" className="text-stone-600 hover:text-stone-900 px-2.5 py-1.5 rounded-full hover:bg-stone-100 transition-colors">

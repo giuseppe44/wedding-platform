@@ -16,6 +16,7 @@ import {
   getProCategoryMeta,
 } from "@/lib/proCategories";
 import { ITALIAN_PROVINCES } from "@/lib/provinceQuota";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import Link from "next/link";
 import {
   Camera,
@@ -629,18 +630,15 @@ function AuthFlow() {
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#faf9f8] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <div className="max-w-6xl w-full mx-auto mb-8 flex items-center justify-between">
-        <Link
-          href="/"
-          className="inline-flex items-center text-sm font-medium text-stone-500 hover:text-stone-800 transition-colors"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Torna alla Home
+      <div className="max-w-6xl w-full mx-auto mb-8 flex items-center justify-between gap-3">
+        <Link href="/" className="shrink-0">
+          <GentiLunaBrand theme="light" size="md" />
         </Link>
         <Link
           href="/prezzi"
-          className="text-sm font-medium text-rose-600 hover:text-rose-700 transition-colors"
+          className="text-xs sm:text-sm font-semibold text-rose-600 hover:text-rose-700 transition-colors shrink-0"
         >
-          Vedi tutti i Piani →
+          Vedi i Piani →
         </Link>
       </div>
       <Suspense fallback={<div className="text-center p-8 text-stone-500">Caricamento...</div>}>

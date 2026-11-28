@@ -36,7 +36,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import Footer from "@/components/Footer";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import { ITALIAN_PROVINCES, PROVINCE_MAP } from "@/lib/provinceQuota";
 import { submitLead } from "@/app/actions/leadActions";
 import {
@@ -344,10 +344,9 @@ export default function BudgetPlannerClient({
         <div className="max-w-7xl mx-auto flex justify-between items-center gap-3">
           <Link
             href="/"
-            className="flex items-center gap-2.5 text-stone-900 font-serif text-xl sm:text-2xl shrink-0"
+            className="shrink-0"
           >
-            <GentiLunaLogo className="w-6 h-6 sm:w-7 sm:h-7 shrink-0" />
-            <span>GentiLuna</span>
+            <GentiLunaBrand theme="light" size="md" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-6 text-xs font-semibold uppercase tracking-widest text-stone-600">

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { GentiLunaLogo } from "@/components/GentiLunaLogo";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 
 export default function Footer() {
   const openCookiePreferences = () => {
@@ -14,9 +14,8 @@ export default function Footer() {
     <footer className="bg-stone-950 text-stone-400 py-12 border-t border-stone-900">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="col-span-1 md:col-span-2">
-          <Link href="/" className="text-2xl font-serif text-white tracking-tight flex items-center gap-2.5 mb-4">
-            <GentiLunaLogo className="w-7 h-7 shrink-0" />
-            GentiLuna
+          <Link href="/" className="inline-block mb-4">
+            <GentiLunaBrand theme="dark" size="md" />
           </Link>
           <p className="text-sm max-w-sm leading-relaxed mb-3">
             La piattaforma digitale definitiva per sposi, invitati e professionisti. Raccogli ricordi, organizza il tuo evento e fai crescere il tuo business.

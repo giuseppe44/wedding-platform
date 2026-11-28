@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import Footer from "@/components/Footer";
+import { GentiLunaBrand } from "@/components/GentiLunaLogo";
 import { createCheckoutSession } from "@/app/stripeActions";
 import { validatePartnerCodeAction } from "@/app/actions/partnerReferralAction";
 
@@ -135,18 +136,15 @@ function PrezziContent() {
     <div className="min-h-screen bg-[#faf9f8] font-sans flex flex-col overflow-x-hidden">
       {/* HEADER */}
       <div className="bg-stone-950 text-white py-20 md:py-24 text-center px-4 relative">
-        <div className="max-w-7xl mx-auto mb-6 flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Torna alla Home
+        <div className="max-w-7xl mx-auto mb-8 flex items-center justify-between gap-3">
+          <Link href="/" className="shrink-0">
+            <GentiLunaBrand theme="dark" size="md" />
           </Link>
           <Link
             href="/demo"
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-amber-300 hover:text-amber-200 font-semibold"
           >
-            <Sparkles className="w-4 h-4" /> Prova la Demo Interattiva →
+            <Sparkles className="w-4 h-4 shrink-0" /> <span>Prova Demo →</span>
           </Link>
         </div>
         <h1 className="text-4xl md:text-6xl font-serif mb-6">
